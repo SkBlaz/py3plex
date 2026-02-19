@@ -38,6 +38,11 @@ from .engine import (
     find_counterexample,
 )
 
+from .claim_lang import (
+    parse_claim,
+    ClaimParseError,
+)
+
 __all__ = [
     "Claim",
     "Violation",
@@ -48,4 +53,6 @@ __all__ = [
     "build_witness",
     "minimize_witness",
     "find_counterexample",
+    "parse_claim",
+    "ClaimParseError",
 ]

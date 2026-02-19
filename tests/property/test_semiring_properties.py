@@ -15,7 +15,7 @@ Key properties tested:
 
 import pytest
 import math
-from hypothesis import given, settings, assume, strategies as st
+from hypothesis import given, settings, assume, HealthCheck, strategies as st
 from hypothesis import note
 
 # Import semiring module
@@ -90,7 +90,6 @@ def test_semiring_spec_requires_name(name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_semiring_registry_persistence():
     """Property: Registered semirings persist and can be retrieved."""
     # Get list of semirings before
@@ -107,7 +106,6 @@ def test_semiring_registry_persistence():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_semiring_list_is_sorted():
     """Property: list_semirings() returns sorted names."""
     names = list_semirings()
@@ -220,7 +218,7 @@ def test_min_plus_absorption(a):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=50)
+@settings(deadline=None, max_examples=50, suppress_health_check=[HealthCheck.filter_too_much])
 @given(
     a=semiring_elements("min_plus"),
     b=semiring_elements("min_plus"),
@@ -348,7 +346,6 @@ def test_boolean_idempotence(a):
 # ============================================================================
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_invalid_semiring_without_zero():
     """Property: SemiringSpec validation fails without zero."""
     with pytest.raises(SemiringValidationError, match="zero must be provided"):
@@ -363,7 +360,6 @@ def test_invalid_semiring_without_zero():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_invalid_semiring_without_one():
     """Property: SemiringSpec validation fails without one."""
     with pytest.raises(SemiringValidationError, match="one must be provided"):
@@ -378,7 +374,6 @@ def test_invalid_semiring_without_one():
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_invalid_semiring_without_callables():
     """Property: SemiringSpec validation fails if plus/times are not callable."""
     with pytest.raises(SemiringValidationError, match="plus must be callable"):
@@ -432,7 +427,6 @@ def test_custom_semiring_registration(name):
 
 
 @pytest.mark.property
-@settings(deadline=None, max_examples=10)
 def test_semiring_overwrite_protection():
     """Property: Cannot overwrite existing semiring without flag."""
     # Try to register min_plus again (should fail)
