@@ -193,12 +193,12 @@ Builder API (Recommended)
     )
     
     # Export results
-    (
+    result = (
         Q.nodes()
          .compute("degree")
-         .export_csv("output.csv")
          .execute(network)
     )
+    result.to_pandas().to_csv("output.csv", index=False)
     
     # Parameterized queries
     result = (

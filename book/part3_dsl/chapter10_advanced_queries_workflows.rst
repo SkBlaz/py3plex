@@ -498,21 +498,24 @@ Direct export without intermediate DataFrame:
 .. code-block:: python
 
     # Export to CSV
-    (
+    result = (
         Q.nodes()
          .from_layers(L["social"])
          .compute("degree", "betweenness_centrality")
-         .export_csv("social_centrality.csv")
          .execute(network)
     )
+    result.to_pandas().to_csv("social_centrality.csv", index=False)
     
     # Export to JSON
-    (
+    result = (
         Q.nodes()
          .compute("degree")
-         .export_json("node_degrees.json", orient="records")
          .execute(network)
     )
+    df = result.to_pandas()
+    json_str = df.to_json(orient="records", indent=2)
+    with open("node_degrees.json", "w") as f:
+        f.write(json_str)
 
 **Supported formats:**
 

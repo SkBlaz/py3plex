@@ -37,9 +37,9 @@ Case Study 1 — Social Multiplex Network
             .compute("betweenness_centrality")
             .order_by("-betweenness_centrality")
             .limit(20)
-            .export_csv("influencers.csv")
             .execute(network)
        )
+       influencers.to_pandas().to_csv("influencers.csv", index=False)
 
        # 3. Platform-specific analysis
        twitter_only = (
