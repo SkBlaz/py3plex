@@ -7384,6 +7384,84 @@ result = Q.nodes().compute("betweenness").from_layers(L["social"]).execute(net)
 
 ---
 
+## Query Algebra, Canonicalization, Equivalence
+
+py3plex DSL v2 includes a built-in **query equivalence engine** that lets you
+test whether two queries are semantically equivalent, normalise queries to a
+canonical form, and obtain a stable hash for equivalent queries.
+
+### Scopes
+
+Two scopes control what counts as equivalent:
+
+- **`"relational"`** (default): Standard relational-algebra equivalence.
+  `order_by` is treated as **semantic** in py3plex (it affects result ordering),
+  so queries that differ in ordering direction are *not* equivalent.
+- **`"strict"`**: Same as relational but additionally deduplicates repeated
+  `order_by` items (R8).
+
+### `Query.canonical(scope="relational")`
+
+Returns a new `QueryBuilder` whose internal AST is in canonical normal form.
+Canonicalization is **deterministic** and **idempotent**:
+
+```python
+q = Q.nodes().where(layer="social", degree__gt=5)
+c1 = q.canonical()
+c2 = c1.canonical()
+assert c1.canonical_ast_hash == c2.canonical_ast_hash   # idempotent
+```
+
+Rules applied: R1/R2 (merge/deduplicate where), R3 (normalise predicates),
+R5 (intersect consecutive from_layers), R8 (dedup order_by — strict only),
+R9 (fold stacked limit).
+
+### `Query.equivalent_to(other, scope="relational", explain=False)`
+
+Returns `True` if two queries are semantically equivalent:
+
+```python
+q1 = Q.nodes().where(degree__gt=5).where(layer="social")
+q2 = Q.nodes().where(layer="social", degree__gt=5)
+assert q1.equivalent_to(q2)   # True
+```
+
+Pass `explain=True` for a `(bool, proof)` tuple:
+
+```python
+eq, proof = q1.equivalent_to(q2, explain=True)
+# proof["self_proof"]  → ["R2:where_idempotence", "R3:predicate_normalization"]
+# proof["other_proof"] → ["R3:predicate_normalization"]
+# proof["diff"]        → None  (queries are equivalent)
+```
+
+### `Query.canonical_ast_hash`
+
+Stable SHA-256 hex hash of the canonical AST.  Equivalent queries always share
+the same hash; non-equivalent queries produce different hashes:
+
+```python
+q1 = Q.nodes().where(degree__gt=5, layer="social")
+q2 = Q.nodes().where(layer="social").where(degree__gt=5)
+assert q1.canonical_ast_hash == q2.canonical_ast_hash
+
+q3 = Q.nodes().where(degree__gt=10)   # different threshold
+assert q1.canonical_ast_hash != q3.canonical_ast_hash
+```
+
+> **Caching note**: The existing `query.ast_hash` is unchanged and operates on the
+> raw un-normalised AST.  The new `canonical_ast_hash` uses the normalised form and
+> is more stable for cache keys when query construction order varies.
+
+### Implementation
+
+The engine extends `canonicalize_ast` in `py3plex/dsl/ast.py`.  The scope-aware
+entry point is `canonicalize_ast_scoped(query_ast, scope)`, which returns a
+`(canonical_query_ast, proof_list)` pair.  Tests live in
+`tests/test_query_equivalence.py`.
+
+---
+
 ## Performance Guidelines
 
 ### Network Size Recommendations

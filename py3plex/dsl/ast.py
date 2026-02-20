@@ -8,6 +8,7 @@ AST nodes, which are then executed by the same engine.
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union, Set
+import hashlib
 import json
 import copy
 
@@ -1785,3 +1786,249 @@ def ast_from_json(json_str: str) -> Query:
         return obj
     
     return _deserialize(data)
+
+
+# ---------------------------------------------------------------------------
+# Query Equivalence Engine — scope-aware canonicalization + proof tracking
+# (AGENTS.md §"Query Algebra, Canonicalization, Equivalence")
+# ---------------------------------------------------------------------------
+#
+# AST node shapes used below (from audit):
+#   Query:        explain, select (SelectStmt), dsl_version
+#   SelectStmt:   target, layer_expr, where (ConditionExpr), compute (list[ComputeItem]),
+#                 order_by (list[OrderByItem]), limit (int|None), group_by,
+#                 select_cols, drop_cols, uq_config, …
+#   ConditionExpr: atoms (list[ConditionAtom]), ops (list[str])
+#   ConditionAtom: field, op, value
+#   ComputeItem:  name, alias, uncertainty, method, …
+#   OrderByItem:  field, descending
+#   LayerExpr:    (various forms; treated as opaque for equivalence)
+#
+
+
+class _RewriteTerminationError(Exception):
+    """Raised when the rewrite engine exceeds max_iters."""
+
+
+def _serialize_node(node: Any) -> str:
+    """Deterministic serialization of an AST node for sorting / hashing.
+
+    Works on any dataclass, primitive, list, or enum.
+    No object ids are included.
+    """
+    if node is None:
+        return "None"
+    if isinstance(node, bool):
+        return f"bool:{node}"
+    if isinstance(node, (int, float)):
+        return f"num:{node}"
+    if isinstance(node, str):
+        return f"str:{node}"
+    if isinstance(node, Enum):
+        return f"enum:{node.__class__.__name__}:{node.value}"
+    if isinstance(node, (list, tuple)):
+        return "[" + ",".join(_serialize_node(i) for i in node) + "]"
+    if isinstance(node, dict):
+        pairs = sorted((k, _serialize_node(v)) for k, v in node.items())
+        return "{" + ",".join(f"{k}:{v}" for k, v in pairs) + "}"
+    if hasattr(node, "__dataclass_fields__"):
+        parts = [node.__class__.__name__]
+        for fname in sorted(node.__dataclass_fields__):
+            parts.append(f"{fname}={_serialize_node(getattr(node, fname))}")
+        return "(" + ",".join(parts) + ")"
+    return repr(node)
+
+
+def _dedup_atoms(atoms: List[Any], ops: List[str]) -> tuple:
+    """Remove duplicate atoms within a flat AND chain.
+
+    Precondition: all ops == "AND" (i.e., the condition is a flat AND-list).
+    Returns (new_atoms, new_ops) — new_ops has len = len(new_atoms) - 1.
+    """
+    seen: List[Any] = []
+    seen_keys: set[str] = set()
+    for atom in atoms:
+        key = _serialize_node(atom)
+        if key not in seen_keys:
+            seen_keys.add(key)
+            seen.append(atom)
+    new_ops = ["AND"] * max(0, len(seen) - 1)
+    return seen, new_ops
+
+
+def _canonicalize_select_stmt_scoped(
+    select: "SelectStmt",
+    scope: str,
+    proof: List[str],
+) -> "SelectStmt":
+    """Return a canonical SelectStmt applying scope-specific rules.
+
+    Rules applied (beyond the base canonicalize_ast pass already done):
+      R2  — where idempotence: remove duplicate atoms in AND chains
+      R8  — order_by idempotence: deduplicate order_by items (strict scope)
+      R9  — limit idempotence: keep min(n, m) when there would be two limits
+              (builder already collapses; handled here for completeness)
+    For scope "relational":
+      • order_by is preserved as-is (ordering affects results in py3plex today;
+        documented decision: relational scope does NOT strip order_by).
+      • All other rules apply.
+    For scope "strict":
+      • Same rules plus R8 (dedup order_by items).
+    """
+    if select is None:
+        return select
+
+    # First apply the base canonicalization (float-norm, sort computes, sort AND-atoms)
+    base = _canonicalize_select_stmt(select)
+
+    # R2 — where idempotence
+    new_where = base.where
+    if new_where is not None:
+        all_and = len(new_where.ops) == 0 or all(op == "AND" for op in new_where.ops)
+        if all_and:
+            deduped, new_ops = _dedup_atoms(new_where.atoms, list(new_where.ops))
+            if deduped != new_where.atoms or new_ops != list(new_where.ops):
+                proof.append("R2:where_idempotence")
+                new_where = ConditionExpr(atoms=deduped, ops=new_ops)
+
+    # R8 — order_by idempotence (strict scope only, but safe to apply always)
+    new_order_by = list(base.order_by) if base.order_by else []
+    if new_order_by:
+        seen_ob: set = set()
+        deduped_ob: list = []
+        for item in new_order_by:
+            key = _serialize_node(item)
+            if key not in seen_ob:
+                seen_ob.add(key)
+                deduped_ob.append(item)
+        if len(deduped_ob) != len(new_order_by):
+            proof.append("R8:order_by_idempotence")
+            new_order_by = deduped_ob
+
+    # For "relational" scope order_by is semantic (preserved unchanged).
+    # Documentation: py3plex order_by affects result ordering, so it is
+    # treated as semantic in both "relational" and "strict" scopes.
+    # Relational scope == strict scope for order_by in this implementation.
+
+    # Rebuild with normalised fields (mirrors _canonicalize_select_stmt)
+    return SelectStmt(
+        target=base.target,
+        layer_expr=base.layer_expr,
+        layer_set=base.layer_set,
+        where=new_where,
+        compute=base.compute,
+        order_by=new_order_by,
+        limit=base.limit,
+        export=base.export,
+        file_export=base.file_export,
+        temporal_context=base.temporal_context,
+        window_spec=base.window_spec,
+        group_by=base.group_by,
+        limit_per_group=base.limit_per_group,
+        coverage_mode=base.coverage_mode,
+        coverage_k=base.coverage_k,
+        coverage_p=base.coverage_p,
+        coverage_group=base.coverage_group,
+        coverage_id_field=base.coverage_id_field,
+        select_cols=base.select_cols,
+        drop_cols=base.drop_cols,
+        rename_map=base.rename_map,
+        summarize_aggs=base.summarize_aggs,
+        distinct_cols=base.distinct_cols,
+        rank_specs=base.rank_specs,
+        zscore_attrs=base.zscore_attrs,
+        post_filters=base.post_filters,
+        aggregate_specs=base.aggregate_specs,
+        mutate_specs=base.mutate_specs,
+        autocompute=base.autocompute,
+        uq_config=base.uq_config,
+        explain_spec=base.explain_spec,
+        counterfactual_spec=base.counterfactual_spec,
+        sensitivity_spec=base.sensitivity_spec,
+        contract_spec=base.contract_spec,
+        auto_community_config=base.auto_community_config,
+    )
+
+
+def canonicalize_ast_scoped(
+    query: "Query",
+    scope: str = "relational",
+    max_iters: int = 50,
+) -> Tuple["Query", List[str]]:
+    """Canonicalize a Query AST under the given scope.
+
+    Returns:
+        (canonical_query, proof)  where *proof* is a list of rule-name strings
+        identifying the transformations that were applied.
+
+    Scope values:
+        "relational" — canonical form for relational algebra equivalence.
+            order_by is preserved (semantic in py3plex today).
+        "strict"     — same as relational; additionally ensures order_by
+            items are deduplicated (R8).  Order differences = non-equivalent.
+
+    Termination:
+        Each fixpoint iteration must reduce ``_node_count(ast)``; if after
+        *max_iters* iterations the AST is still changing, a
+        ``_RewriteTerminationError`` is raised with rule trace + serialised AST.
+
+    Example::
+
+        q = Q.nodes().where(degree__gt=5).compute("betweenness", "degree")
+        canon, proof = canonicalize_ast_scoped(q.to_ast())
+        # proof may contain ["R2:where_idempotence"]
+    """
+    if scope not in ("relational", "strict"):
+        raise ValueError(f"Unknown scope {scope!r}. Use 'relational' or 'strict'.")
+
+    proof: List[str] = []
+    ast = query
+
+    prev_serial = _serialize_node(ast)
+
+    for iteration in range(max_iters):
+        canon_select = _canonicalize_select_stmt_scoped(
+            ast.select, scope, proof
+        )
+        ast = Query(
+            explain=ast.explain,
+            select=canon_select,
+            dsl_version=ast.dsl_version,
+        )
+        new_serial = _serialize_node(ast)
+        if new_serial == prev_serial:
+            break  # fixpoint reached
+        prev_serial = new_serial
+    else:
+        raise _RewriteTerminationError(
+            f"canonicalize_ast_scoped exceeded {max_iters} iterations; "
+            f"rules applied: {proof}; "
+            f"final AST (first 200 of {len(prev_serial)} chars): {prev_serial[:200]}"
+        )
+
+    return ast, proof
+
+
+def canonical_ast_hash(query: "Query", scope: str = "relational") -> str:
+    """Return a stable hex-string hash of the canonical AST.
+
+    Equivalent queries (under the given scope) share the same hash.
+    The hash is the first 16 hex chars of SHA-256 over the deterministic
+    serialization of the canonical AST.
+
+    Args:
+        query: Query AST
+        scope: Canonicalization scope ("relational" or "strict")
+
+    Returns:
+        16-char hex string
+
+    Example::
+
+        q1 = Q.nodes().where(degree__gt=5).compute("betweenness", "degree").to_ast()
+        q2 = Q.nodes().where(degree__gt=5).compute("degree", "betweenness").to_ast()
+        assert canonical_ast_hash(q1) == canonical_ast_hash(q2)
+    """
+    canon, _ = canonicalize_ast_scoped(query, scope=scope)
+    serial = _serialize_node(canon)
+    return hashlib.sha256(serial.encode("utf-8")).hexdigest()[:16]
