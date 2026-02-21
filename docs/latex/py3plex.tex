@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Feb 17, 2026}
+\date{Feb 21, 2026}
 \release{1.1.3}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -51842,6 +51842,80 @@ Self for chaining
 
 \end{fulllineitems}\end{savenotes}
 
+\index{canonical() (py3plex.dsl.QueryBuilder method)@\spxentry{canonical()}\spxextra{py3plex.dsl.QueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.canonical}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{canonical}}}
+{\sphinxparam{\DUrole{n}{scope}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}relational\textquotesingle{}}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return a new QueryBuilder whose AST is in canonical normal form.
+
+\sphinxAtStartPar
+The canonical form is:
+* deterministic and idempotent: \sphinxcode{\sphinxupquote{q.canonical().canonical() ≡ q.canonical()}}
+* stable predicate normalization (AND terms sorted + deduplicated)
+* compute items sorted alphabetically
+* scope controls additional rules (see below)
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{scope}} \textendash{} “relational” (default) — treats ordering as semantic
+(py3plex order\_by affects results today).
+“strict” — same plus deduplication of order\_by items.
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+New QueryBuilder with canonicalized AST
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+Example:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{q} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{q\PYGZus{}canon} \PYG{o}{=} \PYG{n}{q}\PYG{o}{.}\PYG{n}{canonical}\PYG{p}{(}\PYG{p}{)}
+\PYG{k}{assert} \PYG{n}{q\PYGZus{}canon}\PYG{o}{.}\PYG{n}{canonical}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{canonical\PYGZus{}ast\PYGZus{}hash} \PYG{o}{==} \PYG{n}{q\PYGZus{}canon}\PYG{o}{.}\PYG{n}{canonical\PYGZus{}ast\PYGZus{}hash}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{canonical\_ast\_hash (py3plex.dsl.QueryBuilder property)@\spxentry{canonical\_ast\_hash}\spxextra{py3plex.dsl.QueryBuilder property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.canonical_ast_hash}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{canonical\_ast\_hash}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Stable hex hash of the canonical AST under “relational” scope.
+
+\sphinxAtStartPar
+Equivalent queries share the same \sphinxcode{\sphinxupquote{canonical\_ast\_hash}}.  The hash is
+the first 16 hex characters of SHA\sphinxhyphen{}256 over the deterministic
+serialization of the canonical AST.
+
+\sphinxAtStartPar
+Note: This hash is distinct from the existing \sphinxcode{\sphinxupquote{ast\_hash}} in
+provenance metadata (which uses its own serialization).
+
+\sphinxAtStartPar
+Example:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{q1} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{q2} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{assert} \PYG{n}{q1}\PYG{o}{.}\PYG{n}{canonical\PYGZus{}ast\PYGZus{}hash} \PYG{o}{==} \PYG{n}{q2}\PYG{o}{.}\PYG{n}{canonical\PYGZus{}ast\PYGZus{}hash}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{centrality() (py3plex.dsl.QueryBuilder method)@\spxentry{centrality()}\spxextra{py3plex.dsl.QueryBuilder method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -52713,6 +52787,61 @@ Self for chaining
 \PYG{g+gp}{... }    \PYG{o}{.}\PYG{n}{top\PYGZus{}k}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{end\PYGZus{}grouping}\PYG{p}{(}\PYG{p}{)}
 \PYG{g+gp}{... }  \PYG{o}{.}\PYG{n}{coverage}\PYG{p}{(}\PYG{n}{mode}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{all}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{equivalent\_to() (py3plex.dsl.QueryBuilder method)@\spxentry{equivalent\_to()}\spxextra{py3plex.dsl.QueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.equivalent_to}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{equivalent\_to}}}
+{\sphinxparam{\DUrole{n}{other}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{scope}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}relational\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{explain}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Check whether this query is semantically equivalent to \sphinxstyleemphasis{other}.
+
+\sphinxAtStartPar
+Equivalence is determined by comparing canonical AST forms under the
+given scope.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{other}} \textendash{} Another QueryBuilder to compare against
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{scope}} \textendash{} “relational” or “strict” (see {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.canonical}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{canonical()}}}}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{explain}} \textendash{} If True, return \sphinxcode{\sphinxupquote{(bool, proof\_dict)}} instead of bool.
+\sphinxstyleemphasis{proof\_dict} contains the rule steps for both queries and
+the first\sphinxhyphen{}mismatch path (if any).
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+bool — or \sphinxcode{\sphinxupquote{(bool, dict)}} when \sphinxstyleemphasis{explain=True}
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+Example:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{q1} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{,} \PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{q2} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{degree\PYGZus{}\PYGZus{}gt}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+\PYG{k}{assert} \PYG{n}{q1}\PYG{o}{.}\PYG{n}{equivalent\PYGZus{}to}\PYG{p}{(}\PYG{n}{q2}\PYG{p}{)}
+
+\PYG{n}{q1} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{)}
+\PYG{n}{q2} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{limit}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{)}
+\PYG{k}{assert} \PYG{n}{q1}\PYG{o}{.}\PYG{n}{equivalent\PYGZus{}to}\PYG{p}{(}\PYG{n}{q2}\PYG{p}{)}
 \end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}

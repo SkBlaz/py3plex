@@ -3468,3 +3468,99 @@ See Also
 - AGENTS.md section 3.11 for complete M builder specification
 - ``tests/test_meta_analysis.py`` for comprehensive test examples
 - ``py3plex/meta/`` module for implementation details
+
+
+Query Canonicalization and Equivalence
+=======================================
+
+py3plex DSL v2 includes a built-in **query equivalence engine** that lets you test whether
+two queries are semantically equivalent, normalize queries to a canonical form, and obtain
+a stable hash for equivalent queries.
+
+These features are implemented directly on the ``QueryBuilder`` object returned by
+``Q.nodes()``, ``Q.edges()``, etc.
+
+Scopes
+------
+
+Two scopes control what counts as equivalent:
+
+- **``"relational"``** (default): Standard relational-algebra equivalence.
+  ``order_by`` is considered **semantic** in py3plex (it affects result ordering),
+  so two queries that differ only in ordering direction are **not** equivalent under
+  this scope either.  Use ``"relational"`` for most comparisons.
+- **``"strict"``**: Same as relational, but additionally deduplicates repeated
+  ``order_by`` items (R8).  Two queries that merely have a duplicate sort key are
+  considered equivalent in strict scope.
+
+``Query.canonical(scope="relational")``
+----------------------------------------
+
+Returns a new ``QueryBuilder`` whose internal AST is in canonical normal form.
+Canonicalization is **deterministic** and **idempotent**::
+
+    q = Q.nodes().where(layer="social", degree__gt=5)
+    c1 = q.canonical()
+    c2 = c1.canonical()
+    assert c1.canonical_ast_hash == c2.canonical_ast_hash   # idempotent
+
+Canonical form rules applied:
+
+- **R1/R2** — consecutive/duplicate ``where`` predicates are merged into a single
+  AND-condition.
+- **R3** — AND/OR predicate trees are flattened and sorted by a deterministic key.
+- **R5** — consecutive ``from_layers`` calls are intersected into a single filter.
+- **R8** (strict scope only) — duplicate ``order_by`` items are removed.
+- **R9** — stacked ``limit`` calls are reduced to ``min(n, m)``.
+
+``Query.equivalent_to(other, scope="relational", explain=False)``
+-----------------------------------------------------------------
+
+Returns ``True`` if two queries are semantically equivalent under the given scope::
+
+    q1 = Q.nodes().where(degree__gt=5).where(layer="social")
+    q2 = Q.nodes().where(layer="social", degree__gt=5)
+    assert q1.equivalent_to(q2)   # True — merged AND with sorted terms
+
+Pass ``explain=True`` to receive a ``(bool, proof)`` tuple, where ``proof`` is a
+dictionary with keys ``"self_proof"``, ``"other_proof"`` (lists of rule names
+applied during canonicalization), and ``"diff"`` (first differing path, if any)::
+
+    eq, proof = q1.equivalent_to(q2, explain=True)
+    # proof["self_proof"]  → ["R2:where_idempotence", "R3:predicate_normalization"]
+    # proof["other_proof"] → ["R3:predicate_normalization"]
+    # Rule name prefix reference: see AGENTS.md § "Query Algebra, Canonicalization, Equivalence".
+
+``Query.canonical_ast_hash``
+-----------------------------
+
+A stable, run-independent hexadecimal SHA-256 hash of the canonical AST.
+Equivalent queries always share the same hash; non-equivalent queries produce
+different hashes::
+
+    q1 = Q.nodes().where(degree__gt=5, layer="social")
+    q2 = Q.nodes().where(layer="social").where(degree__gt=5)
+    assert q1.canonical_ast_hash == q2.canonical_ast_hash
+
+    q3 = Q.nodes().where(degree__gt=10)   # different threshold
+    assert q1.canonical_ast_hash != q3.canonical_ast_hash
+
+The hash is computed from ``Query.canonical(scope="relational")`` and is **not**
+the same as the existing ``Query.ast_hash`` (which operates on the raw, un-normalised
+AST).
+
+Algebraic Optimization (internal)
+----------------------------------
+
+The equivalence engine is built on top of the existing ``canonicalize_ast``
+machinery in ``py3plex/dsl/ast.py``.  The new scope-aware entry point
+``canonicalize_ast_scoped(query_ast, scope)`` extends that function and returns
+a ``(canonical_query_ast, proof_list)`` pair.  Application developers who need
+to extend the rule set should add new rules inside
+``_canonicalize_select_stmt_scoped`` in ``ast.py``.
+
+See Also
+--------
+
+- ``tests/test_query_equivalence.py`` — full test suite covering all rules and scopes.
+- AGENTS.md §"Query Algebra, Canonicalization, Equivalence" for the formal specification.

@@ -12266,6 +12266,50 @@ Filters to only include edges/nodes active before (and at) time t.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.QueryBuilder.canonical">
+<span class="sig-name descname"><span class="pre">canonical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'relational'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.builder.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.canonical" title="Link to this definition"></a></dt>
+<dd><p>Return a new QueryBuilder whose AST is in canonical normal form.</p>
+<p>The canonical form is:
+* deterministic and idempotent: <code class="docutils literal notranslate"><span class="pre">q.canonical().canonical()</span> <span class="pre">≡</span> <span class="pre">q.canonical()</span></code>
+* stable predicate normalization (AND terms sorted + deduplicated)
+* compute items sorted alphabetically
+* scope controls additional rules (see below)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>scope</strong> – “relational” (default) — treats ordering as semantic
+(py3plex order_by affects results today).
+“strict” — same plus deduplication of order_by items.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New QueryBuilder with canonicalized AST</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+<span class="n">q_canon</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">canonical</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">q_canon</span><span class="o">.</span><span class="n">canonical</span><span class="p">()</span><span class="o">.</span><span class="n">canonical_ast_hash</span> <span class="o">==</span> <span class="n">q_canon</span><span class="o">.</span><span class="n">canonical_ast_hash</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.dsl.QueryBuilder.canonical_ast_hash">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">canonical_ast_hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#py3plex.dsl.QueryBuilder.canonical_ast_hash" title="Link to this definition"></a></dt>
+<dd><p>Stable hex hash of the canonical AST under “relational” scope.</p>
+<p>Equivalent queries share the same <code class="docutils literal notranslate"><span class="pre">canonical_ast_hash</span></code>.  The hash is
+the first 16 hex characters of SHA-256 over the deterministic
+serialization of the canonical AST.</p>
+<p>Note: This hash is distinct from the existing <code class="docutils literal notranslate"><span class="pre">ast_hash</span></code> in
+provenance metadata (which uses its own serialization).</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q1</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+<span class="n">q2</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">q1</span><span class="o">.</span><span class="n">canonical_ast_hash</span> <span class="o">==</span> <span class="n">q2</span><span class="o">.</span><span class="n">canonical_ast_hash</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py3plex.dsl.QueryBuilder.centrality">
 <span class="sig-name descname"><span class="pre">centrality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">aliases</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.builder.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.centrality" title="Link to this definition"></a></dt>
 <dd><p>Compute centrality metrics (convenience wrapper for compute).</p>
@@ -12784,6 +12828,38 @@ It helps visually separate grouping operations from post-grouping operations.</p
 <span class="gp">... </span>    <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
 <span class="gp">... </span>  <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
 <span class="gp">... </span>  <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.QueryBuilder.equivalent_to">
+<span class="sig-name descname"><span class="pre">equivalent_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.builder.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'relational'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.equivalent_to" title="Link to this definition"></a></dt>
+<dd><p>Check whether this query is semantically equivalent to <em>other</em>.</p>
+<p>Equivalence is determined by comparing canonical AST forms under the
+given scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> – Another QueryBuilder to compare against</p></li>
+<li><p><strong>scope</strong> – “relational” or “strict” (see <a class="reference internal" href="#py3plex.dsl.QueryBuilder.canonical" title="py3plex.dsl.QueryBuilder.canonical"><code class="xref py py-meth docutils literal notranslate"><span class="pre">canonical()</span></code></a>)</p></li>
+<li><p><strong>explain</strong> – If True, return <code class="docutils literal notranslate"><span class="pre">(bool,</span> <span class="pre">proof_dict)</span></code> instead of bool.
+<em>proof_dict</em> contains the rule steps for both queries and
+the first-mismatch path (if any).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool — or <code class="docutils literal notranslate"><span class="pre">(bool,</span> <span class="pre">dict)</span></code> when <em>explain=True</em></p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q1</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+<span class="n">q2</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">q1</span><span class="o">.</span><span class="n">equivalent_to</span><span class="p">(</span><span class="n">q2</span><span class="p">)</span>
+
+<span class="n">q1</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">q2</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">q1</span><span class="o">.</span><span class="n">equivalent_to</span><span class="p">(</span><span class="n">q2</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
