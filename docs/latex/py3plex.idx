@@ -49,6 +49,7 @@
 \indexentry{merge\_with() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{merge\_with()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{389}
 \indexentry{monitor() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{monitor()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{389}
 \indexentry{monoplex\_nx\_wrapper() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{monoplex\_nx\_wrapper()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{389}
+\indexentry{network\_version (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{network\_version}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{389}
 \indexentry{node\_count (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{node\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{389}
 \indexentry{read\_ground\_truth\_communities() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{read\_ground\_truth\_communities()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{390}
 \indexentry{remove\_edges() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{remove\_edges()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{390}

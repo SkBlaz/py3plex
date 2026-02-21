@@ -32640,6 +32640,29 @@ kwargs=\{“weight”: “weight”, “normalized”: True\})
 
 \end{fulllineitems}\end{savenotes}
 
+\index{network\_version (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{network\_version}\spxextra{py3plex.core.multinet.multi\_layer\_network property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network.network_version}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{network\_version}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Monotonic mutation counter.
+
+\sphinxAtStartPar
+Starts at 0 for a freshly constructed empty object.  Incremented by 1
+on every public structural mutation (add\_nodes, add\_edges, remove\_nodes,
+remove\_edges, load\_network).  Wrapper methods that delegate to other
+public mutators suppress the inner bumps so the counter increases by
+exactly 1 per top\sphinxhyphen{}level call.
+
+\sphinxAtStartPar
+Useful for cache\sphinxhyphen{}invalidation keys and provenance records.
+
+\end{fulllineitems}\end{savenotes}
+
 \index{node\_count (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{node\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}}
 
 \begin{savenotes}\begin{fulllineitems}

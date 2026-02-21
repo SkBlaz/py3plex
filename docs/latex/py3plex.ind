@@ -1773,6 +1773,8 @@
   \item \spxentry{network\_effects}\spxextra{py3plex.dsl.MetaResult attribute}, 
 		\hyperpage{481, 482}
   \item \spxentry{network\_table()}\spxextra{py3plex.dsl.MetaResult method}, \hyperpage{482}
+  \item \spxentry{network\_version}\spxextra{py3plex.core.multinet.multi\_layer\_network property}, 
+		\hyperpage{389}
   \item \spxentry{NetworkConstructionError}, \hyperpage{425}
   \item \spxentry{NetworkSchemaProvider}\spxextra{class in py3plex.dsl}, \hyperpage{483}
   \item \spxentry{NETWORKX}\spxextra{py3plex.dsl.ExportTarget attribute}, \hyperpage{468}

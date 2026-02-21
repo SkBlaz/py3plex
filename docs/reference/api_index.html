@@ -2181,6 +2181,18 @@ centralities = network.monoplex_nx_wrapper(“betweenness_centrality”,</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.network_version">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">network_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.network_version" title="Link to this definition"></a></dt>
+<dd><p>Monotonic mutation counter.</p>
+<p>Starts at 0 for a freshly constructed empty object.  Incremented by 1
+on every public structural mutation (add_nodes, add_edges, remove_nodes,
+remove_edges, load_network).  Wrapper methods that delegate to other
+public mutators suppress the inner bumps so the counter increases by
+exactly 1 per top-level call.</p>
+<p>Useful for cache-invalidation keys and provenance records.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.node_count">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.node_count" title="Link to this definition"></a></dt>
 <dd><p>Number of nodes in the network.</p>
