@@ -294,9 +294,13 @@ def match_fastpath(select_stmt: Any) -> Optional[FastPlan]:
             if target == "nodes" and left in _LAYER_FIELDS:
                 if op not in _EQ_OPS:
                     return None  # Non-equality layer filter not supported
+                layer_val = str(right)
                 if allowed_layers is None:
-                    allowed_layers = set()
-                allowed_layers.add(str(right))
+                    allowed_layers = {layer_val}
+                elif layer_val not in allowed_layers:
+                    # AND of two different layer equalities is impossible;
+                    # fall back to baseline which returns an empty result.
+                    return None
                 continue
 
             # -- source_layer / target_layer for edges ---
@@ -516,8 +520,16 @@ def _build_edge_index(network: Any, idx: FastIndex, plan: FastPlan) -> None:
         # Edge tuples: (src, dst, data_dict) or (src, dst, src_layer, dst_layer, ...)
         if len(edge) == 3 and isinstance(edge[2], dict):
             src, dst, data = edge
-            src_layer = str(data.get("source_type", data.get("src_layer", data.get("layer", ""))))
-            dst_layer = str(data.get("target_type", data.get("dst_layer", data.get("layer", ""))))
+            # In multilayer networks, src/dst are (node_id, layer) tuples;
+            # extract the layer directly from the tuple if possible.
+            if isinstance(src, tuple) and len(src) == 2:
+                src_layer = str(src[1])
+            else:
+                src_layer = str(data.get("source_type", data.get("src_layer", data.get("layer", ""))))
+            if isinstance(dst, tuple) and len(dst) == 2:
+                dst_layer = str(dst[1])
+            else:
+                dst_layer = str(data.get("target_type", data.get("dst_layer", data.get("layer", ""))))
         elif len(edge) >= 4:
             src, dst, src_layer, dst_layer = edge[0], edge[1], str(edge[2]), str(edge[3])
             data = {}
