@@ -12,9 +12,19 @@ Stable APIs
 Features with strong backward-compatibility guarantees:
 
 * **Node queries** — ``Q.nodes()`` with filtering and measures
+* **Edge queries** — ``Q.edges()`` with full parity to node queries, including
+  ``per_layer_pair()``, ``aggregate()``, ``where()``, and all export formats
 * **Layer algebra** — Union, difference, intersection operations
 * **Core measures** — degree, betweenness, closeness, pagerank
 * **Result export** — pandas, JSON, CSV formats
+* **Aggregations** — ``per_layer()`` / ``per_layer_pair()`` with ``aggregate()``
+  supporting ``mean``, ``sum``, ``min``, ``max``, ``std``, ``var``, ``median``,
+  ``quantile``, and ``count``
+* **Temporal queries** — ``Q.edges().at(t)``, ``.during(t0, t1)``,
+  ``.before(t)``, ``.after(t)``, ``.window(size, step)``
+* **Join operations** — ``.join(right, on=..., how=...)`` with ``inner``,
+  ``left``, ``right``, ``outer``, ``semi``, and ``anti`` join types
+* **Graph pattern matching** — ``Q.pattern()`` with node/edge motif DSL
 
 **Guarantee:** Stable APIs will not break in minor version updates (1.x → 1.y).
 
@@ -23,9 +33,8 @@ Experimental Features
 
 Functional but may change in future versions:
 
-* **Edge queries** — ``Q.edges()`` (limited implementation)
-* **Advanced aggregations** — ``GROUP BY`` equivalents
-* **Nested subqueries** — Complex query composition
+* **Nested subqueries** — Complex query composition via ``join()`` and
+  ``QueryResult`` chaining; the exact semantics may be refined
 
 **Note:** Experimental features are marked in documentation. Use with awareness that API may evolve.
 
@@ -34,9 +43,8 @@ Planned Features
 
 Roadmap items (briefly mentioned, not detailed):
 
-* **Full edge query support** — Complete parity with node queries
-* **Graph pattern matching** — Motif detection DSL
-* **Temporal queries** — Time-aware filtering
+* **Streaming export** — Incremental result materialisation for very large networks
+* **Custom semiring registration** — User-defined algebraic structures at runtime
 
 Current Limitations
 -------------------
@@ -46,17 +54,20 @@ Query Capabilities
 
 What the DSL **can** do:
 
-* Node filtering by degree, layer, and computed measures
+* Node and edge filtering by degree, layer, and computed measures
 * Compute centrality measures
 * Layer algebra operations
 * Export results in multiple formats
+* Aggregate results per layer or per layer-pair (``mean``, ``sum``, ``min``,
+  ``max``, ``std``, ``var``, ``median``, ``quantile``, ``count``)
+* Query temporal networks with time-window and snapshot filters
+* Match graph motifs and patterns via ``Q.pattern()``
+* Join query results across layers with relational join semantics
 
 What the DSL **cannot** (yet) do:
 
-* Complex edge queries (partial support only)
-* Nested subqueries
-* Aggregate functions (SUM, AVG, etc.)
-* Join operations across layers
+* Nested subqueries — queries whose ``where()`` clause references the result of
+  another live query (not yet supported as a first-class construct)
 
 Performance Boundaries
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -185,16 +196,19 @@ Summary
 
 **Stable and production-ready:**
 
-* Node queries with filtering
+* Node and edge queries with filtering and full feature parity
 * Core centrality measures
 * Layer algebra
+* Aggregations (mean, sum, min, max, std, var, median, quantile, count)
+* Temporal queries (snapshots, windows, before/after)
+* Graph pattern matching via ``Q.pattern()``
+* Join operations (inner, left, right, outer, semi, anti)
 * Result export
 
 **Use with awareness:**
 
-* Experimental features may change
+* Experimental features (nested subqueries) may change
 * Large network performance depends on query structure
-* Some features are planned but not yet implemented
 
 The DSL prioritizes transparency about feature status and limitations. Users should feel confident relying on stable APIs while being aware of experimental features and performance boundaries.
 

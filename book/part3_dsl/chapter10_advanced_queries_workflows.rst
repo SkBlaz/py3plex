@@ -855,8 +855,8 @@ The **S builder** provides semiring-based path queries for computing shortest pa
     
     # Shortest paths using min-plus semiring
     result = (
-        S.path()
-         .source("A")
+        S.paths()
+         .from_node("A")
          .semiring("min_plus")
          .from_layers(L["*"])
          .execute(network)
