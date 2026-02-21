@@ -578,6 +578,35 @@ class multi_layer_network:
         self.hinmine_network: Optional[Any] = None
         self.label_delimiter: str = label_delimiter
 
+        # Mutation versioning: monotonic counter incremented on every structural change.
+        self._network_version: int = 0
+        # Guard flag: when True, _bump_version() is a no-op, preventing double-bumps
+        # in wrapper methods that call other public mutators internally.
+        self._suspend_version_bump: bool = False
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Mutation Versioning
+    # ─────────────────────────────────────────────────────────────────────────
+
+    @property
+    def network_version(self) -> int:
+        """Monotonic mutation counter.
+
+        Starts at 0 for a freshly constructed empty object.  Incremented by 1
+        on every public structural mutation (add_nodes, add_edges, remove_nodes,
+        remove_edges, load_network).  Wrapper methods that delegate to other
+        public mutators suppress the inner bumps so the counter increases by
+        exactly 1 per top-level call.
+
+        Useful for cache-invalidation keys and provenance records.
+        """
+        return self._network_version
+
+    def _bump_version(self) -> None:
+        """Increment the mutation counter by 1 (no-op when suspended)."""
+        if not self._suspend_version_bump:
+            self._network_version += 1
+
     # ═════════════════════════════════════════════════════════════════════════
     # Core Data Access Methods
     # ═════════════════════════════════════════════════════════════════════════
@@ -1020,6 +1049,7 @@ class multi_layer_network:
             assert not isinstance(self.core_network, (nx.DiGraph, nx.MultiDiGraph)), \
                 "core_network should not be directed when directed=False"
 
+        self._bump_version()
         return self
 
     def _couple_all_edges(self):
@@ -2695,6 +2725,7 @@ class multi_layer_network:
                 f"Example dict format: {{'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}}"
             )
 
+        self._bump_version()
         return self
 
     def remove_edges(
@@ -2720,6 +2751,7 @@ class multi_layer_network:
                 f"Expected 'dict' or 'list'. "
                 f"Example dict format: {{'source': 'A', 'target': 'B', 'source_type': 'layer1', 'target_type': 'layer1'}}"
             )
+        self._bump_version()
 
     def add_nodes(
         self, node_dict_list: Union[List[Dict], Dict], input_type: str = "dict"
@@ -2798,6 +2830,7 @@ class multi_layer_network:
         if input_type == "dict":
             self._generic_node_dict_manipulator(node_dict_list, "add_node")
 
+        self._bump_version()
         return self
 
     def remove_nodes(self, node_dict_list, input_type="dict"):
@@ -2810,6 +2843,8 @@ class multi_layer_network:
 
         if input_type == "list":
             self._generic_node_list_manipulator(node_dict_list, "remove_node")
+
+        self._bump_version()
 
     def _get_num_layers(self):
         """
