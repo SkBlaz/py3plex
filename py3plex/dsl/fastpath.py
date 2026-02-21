@@ -465,8 +465,11 @@ def _build_node_index(
     network: Any, idx: FastIndex, active_layers: Optional[Set[str]]
 ) -> None:
     """Populate node fields of *idx*."""
-    # Build a degree table once from the underlying NetworkX graph
+    # core_network is None for freshly-created empty networks.
+    # get_nodes() would also raise in that case, so bail out early.
     G = network.core_network  # type: ignore[attr-defined]
+    if G is None:
+        return
     degree_map: Dict[Any, int] = dict(G.degree())
 
     all_nodes = list(network.get_nodes())
@@ -492,7 +495,11 @@ def _build_node_index(
 
 def _build_edge_index(network: Any, idx: FastIndex, plan: FastPlan) -> None:
     """Populate edge fields of *idx*."""
+    # core_network is None for freshly-created empty networks.
+    # get_edges() would also raise in that case, so bail out early.
     G = network.core_network  # type: ignore[attr-defined]
+    if G is None:
+        return
     degree_map: Dict[Any, int] = dict(G.degree())
 
     # Resolve allowed layer pairs from from_layers / layer_expr
