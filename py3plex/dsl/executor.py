@@ -2344,22 +2344,86 @@ def _execute_select(
                 result.meta["provenance"] = provenance_builder.build()
             return result
 
-    # Step 1: Get initial items
-    stage_start = time.monotonic()
-    if progress:
-        logger.info(f"Step 3.1: Getting initial {select.target.value}")
-    if select.target == Target.NODES:
-        items = list(network.get_nodes())
+    # ------------------------------------------------------------------
+    # Selection fast path (WHERE-only acceleration)
+    # This is completely separate from the approximate-centrality fast
+    # path. It only accelerates item selection; it does NOT approximate
+    # any metric computation.
+    # ------------------------------------------------------------------
+    from py3plex import config as _cfg
+    _selection_fast_path_used = False
+    _selection_fast_path_plan_summary = None
+
+    if getattr(_cfg, "DSL_FAST_PATH_ENABLED", False):
+        try:
+            from .fastpath import match_fastpath, build_fast_index, fast_select_nodes, fast_select_edges
+            _fp_plan = match_fastpath(select)
+            if _fp_plan is not None:
+                _fp_idx = build_fast_index(network, _fp_plan)
+                fp_stage_start = time.monotonic()
+                if _fp_plan.target == "nodes":
+                    items = fast_select_nodes(_fp_plan, _fp_idx)
+                else:
+                    items = fast_select_edges(_fp_plan, _fp_idx)
+                _record_timing("get_items", (time.monotonic() - fp_stage_start) * 1000)
+                _selection_fast_path_used = True
+                _selection_fast_path_plan_summary = _fp_plan.summary()
+                if progress:
+                    logger.info(
+                        f"Selection fast path active: {_selection_fast_path_plan_summary}. "
+                        f"Selected {len(items)} {select.target.value}"
+                    )
+                # Record fast_path flag in whichever provenance system is active
+                if provenance_record is not None:
+                    provenance_record.metadata.setdefault("backend", {})
+                    provenance_record.metadata["backend"]["fast_path"] = True
+                    provenance_record.metadata["backend"]["fast_path_plan"] = _selection_fast_path_plan_summary
+                elif provenance_builder is not None:
+                    provenance_builder.backend_info["fast_path"] = True
+                    provenance_builder.backend_info["fast_path_plan"] = _selection_fast_path_plan_summary
+                # Skip Steps 1 and 2 (get_items + layer filter) — already done above
+                goto_step3 = True
+            else:
+                goto_step3 = False
+        except Exception as _fp_exc:
+            logger.debug(f"Selection fast path failed, using baseline: {_fp_exc}")
+            _selection_fast_path_used = False
+            goto_step3 = False
+            # Record fallback warning
+            if provenance_record is not None:
+                provenance_record.metadata.setdefault("warnings", [])
+                provenance_record.metadata["warnings"].append("fast_path_failed_fallback")
+            elif provenance_builder is not None:
+                provenance_builder.backend_info.setdefault("warnings", [])
+                provenance_builder.backend_info["warnings"].append("fast_path_failed_fallback")
     else:
-        # Get edges with data to access attributes like weight
-        items = list(network.get_edges(data=True))
-    if progress:
-        logger.info(f"Found {len(items)} initial {select.target.value}")
-    _record_timing("get_items", (time.monotonic() - stage_start) * 1000)
+        goto_step3 = False
+
+    if not goto_step3:
+        # Record fast_path = False when selection fast path was not used
+        if provenance_record is not None:
+            provenance_record.metadata.setdefault("backend", {})
+            provenance_record.metadata["backend"].setdefault("fast_path", False)
+        elif provenance_builder is not None:
+            provenance_builder.backend_info.setdefault("fast_path", False)
+
+    if not goto_step3:
+        # Step 1: Get initial items
+        stage_start = time.monotonic()
+        if progress:
+            logger.info(f"Step 3.1: Getting initial {select.target.value}")
+        if select.target == Target.NODES:
+            items = list(network.get_nodes())
+        else:
+            # Get edges with data to access attributes like weight
+            items = list(network.get_edges(data=True))
+        if progress:
+            logger.info(f"Found {len(items)} initial {select.target.value}")
+        _record_timing("get_items", (time.monotonic() - stage_start) * 1000)
 
     # Step 2: Apply layer filter
     stage_start = time.monotonic()
-    if select.layer_set is not None:
+    if not goto_step3 and select.layer_set is not None:
         # New style: LayerSet with algebra
         if progress:
             logger.info("Step 3.2: Applying layer filter")
@@ -2369,7 +2433,7 @@ def _execute_select(
             logger.info(
                 f"Filtered to {len(items)} {select.target.value} in {len(active_layers)} layers"
             )
-    elif select.layer_expr:
+    elif not goto_step3 and select.layer_expr:
         # Old style: LayerExprBuilder compatibility
         if progress:
             logger.info("Step 3.2: Applying layer filter")
@@ -2383,7 +2447,7 @@ def _execute_select(
 
     # Step 3: Apply WHERE conditions
     stage_start = time.monotonic()
-    if select.where:
+    if not goto_step3 and select.where:
         if progress:
             logger.info("Step 3.3: Applying WHERE conditions")
         items = _filter_by_conditions(items, select.where, network, G, params)

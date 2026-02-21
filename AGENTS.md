@@ -3790,7 +3790,98 @@ sim = (
 
 ---
 
-## Approximate Centrality Algorithms (Fast Path)
+## Query Selection Fast Path (Filter Fast Path)
+
+### Overview
+
+**New in v1.1.3:** py3plex includes a **selection-only** fast path that accelerates common WHERE filters by pre-building a compact index over the network and applying filters via simple integer comparisons, bypassing the full condition-evaluation pipeline.
+
+> **Important:** This fast path accelerates **item selection** (nodes / edges) only.
+> It does **not** approximate centrality metrics.  It is completely separate from
+> the approximate-centrality compute fast path described in the next section.
+
+### When the Fast Path Fires
+
+The fast path is activated when **all** of the following hold:
+
+1. `config.DSL_FAST_PATH_ENABLED = True` (default).
+2. The query contains **only** supported predicate shapes (see below).
+3. No grouping, aggregation, ordering, limit, UQ, community detection, temporal
+   context, sensitivity, explain, or compute steps are present.
+
+If any unsupported pattern is detected, the module returns `None` and the
+**baseline executor runs unchanged** — results are always correct.
+
+### Supported Predicate Shapes
+
+**Node queries** (`Q.nodes()`):
+- Layer filters: `.from_layers(L["X"])` or `WHERE layer="X"`
+- Degree thresholds: `degree__gt`, `degree__ge`, `degree__lt`, `degree__le`, `degree__eq`
+- Only **AND** combinations of the above.
+- **Not supported:** NOT, OR, nested expressions, function calls.
+
+**Edge queries** (`Q.edges()`):
+- `src_degree__gt/ge/lt/le/eq`
+- `dst_degree__gt/ge/lt/le/eq`
+- Optional `source_layer == X AND target_layer == Y`
+- Only **AND** combinations.
+- **Not supported:** NOT, OR.
+
+### Provenance Flag
+
+Every DSL v2 execution records:
+
+```python
+result.meta["provenance"]["backend"]["fast_path"] = True   # fast path used
+result.meta["provenance"]["backend"]["fast_path"] = False  # baseline used
+```
+
+When the fast path fires it also sets:
+
+```python
+result.meta["provenance"]["backend"]["fast_path_plan"] = "FastPlan(target=nodes, ...)"
+```
+
+If the fast path raises an unexpected exception it falls back to the baseline
+executor and appends `"fast_path_failed_fallback"` to
+`result.meta["provenance"]["warnings"]`.
+
+### Config Flag
+
+```python
+# py3plex/config.py
+DSL_FAST_PATH_ENABLED: bool = True   # set to False to always use baseline
+```
+
+Pass `planner={"enable_cache": False}` or temporarily set
+`config.DSL_FAST_PATH_ENABLED = False` to force the baseline for benchmarking.
+
+### Module Location
+
+`py3plex/dsl/fastpath.py` — public symbols:
+
+| Symbol | Purpose |
+|--------|---------|
+| `FastPlan` | Dataclass describing a fast-path eligible query |
+| `FastIndex` | Pre-built index over the network |
+| `match_fastpath(select_stmt)` | Returns `FastPlan` or `None` |
+| `build_fast_index(net, plan)` | Builds the index lazily |
+| `fast_select_nodes(plan, idx)` | Returns filtered node list |
+| `fast_select_edges(plan, idx)` | Returns filtered edge list |
+
+### Distinction from Compute Fast Path
+
+| Feature | Selection fast path | Compute fast path (approx centrality) |
+|---------|--------------------|-----------------------------------------|
+| Controls | Item selection (WHERE) | Centrality metric computation |
+| Trigger | `config.DSL_FAST_PATH_ENABLED` | `approx=True` in `.compute()` |
+| Provenance flag | `backend.fast_path` | `backend.fast_path` |
+| Safe fallback | Yes — returns None, baseline runs | Raises on bad params |
+| Affects metric values | **No** | **Yes** (approximation) |
+
+---
+
+## Approximate Centrality Algorithms (Compute Fast Path)
 
 ### Overview
 
