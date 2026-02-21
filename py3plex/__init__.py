@@ -179,6 +179,12 @@ from py3plex.dynamics import (
 )
 
 # Uncertainty module for first-class uncertainty estimation
+from py3plex.runtime.capabilities import (
+    capabilities,
+    capabilities_flat,
+    capabilities_fingerprint,
+)
+
 from py3plex.uncertainty import (
     StatSeries,
     StatMatrix,
@@ -314,4 +320,8 @@ __all__ = [
     "set_uncertainty_config",
     "uncertainty_enabled",
     "estimate_uncertainty",
+    # Runtime capability discovery
+    "capabilities",
+    "capabilities_flat",
+    "capabilities_fingerprint",
 ]
