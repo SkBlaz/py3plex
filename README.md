@@ -205,9 +205,9 @@ df.to_csv("results.csv", index=False)
 table = result.to_arrow()
 ```
 
-**💡 Tip**: Chain these patterns together! The DSL is designed for composability.
+**Tip**: Chain these patterns together! The DSL is designed for composability.
 
-**🎯 Pattern Selection Guide**:
+**Pattern Selection Guide**:
 - **New to py3plex?** Start with Pattern 1 (basic filtering)
 - **Need cross-layer insights?** Use Pattern 2 (hub analysis)
 - **Research publication?** Add Pattern 3 (uncertainty quantification)
@@ -216,7 +216,7 @@ table = result.to_arrow()
 - **Compare layers?** Use Pattern 6 (per-layer aggregation)
 - **Save results?** Use Pattern 7 (export formats)
 
-**📚 More Examples**: See [examples/](examples/) for 170+ complete examples:
+**More Examples**: See [examples/](examples/) for 170+ complete examples:
 - **Getting Started**: [examples/getting_started/](examples/getting_started/) - 10-minute tutorial and 7 essential patterns
 - **DSL Patterns**: [examples/getting_started/dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) - Executable pattern reference
 - **Ergonomics**: [examples/getting_started/example_ergonomics_demo.py](examples/getting_started/example_ergonomics_demo.py) - Interactive query building with `.hint()`
