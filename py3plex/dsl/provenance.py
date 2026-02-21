@@ -418,8 +418,11 @@ class ProvenanceBuilder:
         """
         self.network_fp = network_fingerprint(network)
         
-        # Try to get network version if available
-        if hasattr(network, "_version"):
+        # Prefer the public network_version property (monotonic mutation counter)
+        _nv = getattr(network, "network_version", None)
+        if _nv is not None:
+            self.network_ver = _nv
+        elif hasattr(network, "_version"):
             self.network_ver = network._version
         elif hasattr(network, "version"):
             self.network_ver = network.version

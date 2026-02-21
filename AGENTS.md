@@ -2708,6 +2708,62 @@ enable_provenance(mode="replayable", capture_network=True)
 5. **Execute**: Run query with same seeds
 6. **Compare**: Verify result matches original
 
+#### 13.4 Network Mutation Versioning (`network_version`)
+
+Every `multi_layer_network` instance carries a **monotonic mutation counter** called
+`network_version` that increments by exactly 1 on every public structural change.
+
+**Semantics**:
+- Starts at `0` for a freshly constructed empty object.
+- Incremented by exactly **1** per top-level public mutation call, regardless of how
+  many internal graph operations that call performs.
+- Read-only property: `net.network_version -> int`.
+- Wrapper methods that delegate internally use a `_suspend_version_bump` guard to
+  prevent double-counting.
+
+**Mutation triggers** (each increments the counter by 1):
+- `add_nodes()`
+- `add_edges()`
+- `remove_nodes()`
+- `remove_edges()`
+- `load_network()` (exactly once per call, after the file is fully parsed)
+
+**Non-mutating methods** (counter unchanged):
+- `get_nodes()`, `get_edges()`, `get_layers()`, and all read-only query methods.
+
+**Provenance integration**:
+`ProvenanceBuilder.set_network(net)` automatically reads `net.network_version` (via
+`getattr`) and stores it as `provenance["network_version"]`.  This makes it
+straightforward to tie a query result back to the exact structural state of the network
+at execution time.
+
+```python
+from py3plex.core.multinet import multi_layer_network
+from py3plex.dsl.provenance import ProvenanceBuilder
+
+net = multi_layer_network(directed=False)
+assert net.network_version == 0          # fresh object
+
+net.add_nodes([{"source": "A", "type": "social"}])
+assert net.network_version == 1
+
+net.add_edges([
+    {"source": "A", "target": "B", "source_type": "social", "target_type": "social"}
+])
+assert net.network_version == 2          # one bump for add_edges
+
+# Provenance captures the current version
+builder = ProvenanceBuilder(engine="my_engine")
+builder.set_network(net)
+prov = builder.build()
+assert prov["network_version"] == 2
+```
+
+**Cache invalidation**:
+Downstream caches (e.g., centrality fast-path) MAY use the tuple
+`(network_version, ast_hash, params)` as a cache key.  Because `network_version`
+changes on every structural mutation, stale cache entries are never silently reused.
+
 ---
 
 ### 14. Error Model (Complete Hierarchy)
