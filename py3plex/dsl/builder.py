@@ -3526,6 +3526,120 @@ class QueryBuilder:
 
         return ast_to_dsl(self.to_ast())
 
+    # ------------------------------------------------------------------
+    # Query Algebra, Canonicalization, Equivalence
+    # See AGENTS.md §"Query Algebra, Canonicalization, Equivalence"
+    # ------------------------------------------------------------------
+
+    def canonical(self, scope: str = "relational") -> "QueryBuilder":
+        """Return a new QueryBuilder whose AST is in canonical normal form.
+
+        The canonical form is:
+        * deterministic and idempotent: ``q.canonical().canonical() ≡ q.canonical()``
+        * stable predicate normalization (AND terms sorted + deduplicated)
+        * compute items sorted alphabetically
+        * scope controls additional rules (see below)
+
+        Args:
+            scope: "relational" (default) — treats ordering as semantic
+                   (py3plex order_by affects results today).
+                   "strict" — same plus deduplication of order_by items.
+
+        Returns:
+            New QueryBuilder with canonicalized AST
+
+        Example::
+
+            q = Q.nodes().where(degree__gt=5).compute("betweenness", "degree")
+            q_canon = q.canonical()
+            assert q_canon.canonical().canonical_ast_hash == q_canon.canonical_ast_hash
+        """
+        from .ast import canonicalize_ast_scoped
+
+        canon_ast, _proof = canonicalize_ast_scoped(self.to_ast(), scope=scope)
+        new_builder = QueryBuilder(target=self._select.target)
+        new_builder._select = canon_ast.select
+        return new_builder
+
+    def equivalent_to(
+        self,
+        other: "QueryBuilder",
+        scope: str = "relational",
+        explain: bool = False,
+    ):
+        """Check whether this query is semantically equivalent to *other*.
+
+        Equivalence is determined by comparing canonical AST forms under the
+        given scope.
+
+        Args:
+            other: Another QueryBuilder to compare against
+            scope: "relational" or "strict" (see :meth:`canonical`)
+            explain: If True, return ``(bool, proof_dict)`` instead of bool.
+                     *proof_dict* contains the rule steps for both queries and
+                     the first-mismatch path (if any).
+
+        Returns:
+            bool — or ``(bool, dict)`` when *explain=True*
+
+        Example::
+
+            q1 = Q.nodes().where(degree__gt=5, layer="social")
+            q2 = Q.nodes().where(layer="social", degree__gt=5)
+            assert q1.equivalent_to(q2)
+
+            q1 = Q.nodes().limit(5).limit(3)
+            q2 = Q.nodes().limit(3)
+            assert q1.equivalent_to(q2)
+        """
+        from .ast import canonicalize_ast_scoped, _serialize_node
+
+        canon_a, proof_a = canonicalize_ast_scoped(self.to_ast(), scope=scope)
+        canon_b, proof_b = canonicalize_ast_scoped(other.to_ast(), scope=scope)
+        eq = canon_a == canon_b
+        if not explain:
+            return eq
+        diff: Optional[str] = None
+        if not eq:
+            # First-mismatch: compare serialized forms character by character
+            sa = _serialize_node(canon_a)
+            sb = _serialize_node(canon_b)
+            for i, (ca, cb) in enumerate(zip(sa, sb)):
+                if ca != cb:
+                    diff = f"char {i}: {sa[max(0,i-20):i+20]!r} vs {sb[max(0,i-20):i+20]!r}"
+                    break
+            if diff is None and len(sa) != len(sb):
+                diff = f"length mismatch: {len(sa)} vs {len(sb)}"
+        return (
+            eq,
+            {
+                "self_proof": proof_a,
+                "other_proof": proof_b,
+                "diff": diff,
+            },
+        )
+
+    @property
+    def canonical_ast_hash(self) -> str:
+        """Stable hex hash of the canonical AST under "relational" scope.
+
+        Equivalent queries share the same ``canonical_ast_hash``.  The hash is
+        the first 16 hex characters of SHA-256 over the deterministic
+        serialization of the canonical AST.
+
+        Note: This hash is distinct from the existing ``ast_hash`` in
+        provenance metadata (which uses its own serialization).
+
+        Example::
+
+            q1 = Q.nodes().compute("betweenness", "degree")
+            q2 = Q.nodes().compute("degree", "betweenness")
+            assert q1.canonical_ast_hash == q2.canonical_ast_hash
+        """
+        from .ast import canonical_ast_hash as _canonical_ast_hash
+
+        return _canonical_ast_hash(self.to_ast(), scope="relational")
+
     def __getattr__(self, name: str):
         """Enable attribute sugar for predicate filters.
         
