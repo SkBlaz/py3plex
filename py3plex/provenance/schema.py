@@ -121,20 +121,38 @@ class ProvenanceSchema:
     performance: Dict[str, float] = field(default_factory=dict)
     warnings: List[str] = field(default_factory=list)
     size_bytes_estimate: int = 0
-    
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
         result = asdict(self)
         # Convert enums to strings
         result["mode"] = self.mode.value
         result["network_capture"]["capture_method"] = self.network_capture.capture_method.value
+        # Flatten metadata into the top-level dict so consumers can find
+        # keys like "backend" at the expected location.
+        extra = result.pop("metadata", {})
+        result.update(extra)
         return result
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ProvenanceSchema":
         """Create from dictionary."""
         # Make a copy to avoid mutating input
         data = dict(data)
+
+        # Collect keys that are not known ProvenanceSchema fields into metadata
+        known = {
+            "schema_version", "mode", "timestamp_utc", "query", "randomness",
+            "network_capture", "environment", "performance", "warnings",
+            "size_bytes_estimate", "metadata",
+        }
+        extra_keys = set(data.keys()) - known
+        if extra_keys:
+            merged_meta = dict(data.get("metadata") or {})
+            for k in extra_keys:
+                merged_meta[k] = data.pop(k)
+            data["metadata"] = merged_meta
         
         # Convert string enums back
         if isinstance(data.get("mode"), str):

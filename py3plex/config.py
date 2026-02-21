@@ -177,6 +177,15 @@ DEFAULT_N_JOBS: int = 1  # Serial by default (no multiprocessing overhead)
 DEFAULT_PARALLEL_BACKEND: str = "multiprocessing"  # "multiprocessing" or "joblib"
 
 # ─────────────────────────────────────────────────────────────────────────────
+# DSL Settings
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Enable selection fast path for simple WHERE filters (layer + degree predicates).
+# When True, the executor attempts a vectorised fast path before falling back to
+# the baseline filter pipeline. Set to False to disable globally.
+DSL_FAST_PATH_ENABLED: bool = True
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Validation Settings
 # ─────────────────────────────────────────────────────────────────────────────
 
