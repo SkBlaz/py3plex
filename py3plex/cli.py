@@ -820,6 +820,11 @@ Exit codes:
         help="Print SHA-256 fingerprint of the capability report",
     )
 
+    # EXPERIMENT command group
+    from py3plex.experiments.cli import add_experiment_subparser
+
+    add_experiment_subparser(subparsers)
+
     return parser
 
 
@@ -3691,6 +3696,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         "tutorial": cmd_tutorial,
         "capabilities": cmd_capabilities,
     }
+
+    # Experiment command group dispatches via its own dispatcher
+    if args.command == "experiment":
+        from py3plex.experiments.cli import dispatch_experiment
+
+        return dispatch_experiment(args)
 
     handler = command_handlers.get(args.command)
     if handler:
