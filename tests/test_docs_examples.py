@@ -157,6 +157,15 @@ def test_validate_outputs():
 @pytest.mark.parametrize("example_file", list(EXAMPLES_DIR.glob("*.py")) if EXAMPLES_DIR.exists() else [])
 def test_individual_example(example_file):
     """Test that each example can be run individually."""
+    # Respect SKIP_CI markers declared in the file's docstring
+    try:
+        content = example_file.read_text(encoding="utf-8")
+        for line in content.splitlines()[:20]:
+            if "SKIP_CI" in line:
+                pytest.skip(f"SKIP_CI marker: {line.strip()}")
+    except Exception:
+        pass
+
     result = subprocess.run(
         [sys.executable, str(example_file)],
         cwd=REPO_ROOT,

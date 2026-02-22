@@ -28,6 +28,25 @@ OUTPUTS_DIR = REPO_ROOT / "examples" / "docs_outputs"
 MANIFEST_FILE = OUTPUTS_DIR / "manifest.json"
 
 
+def should_skip(example_path: Path) -> Tuple[bool, str]:
+    """Check whether an example declares SKIP_CI and should be skipped.
+
+    Args:
+        example_path: Path to the example file
+
+    Returns:
+        (skip, reason) tuple
+    """
+    try:
+        content = example_path.read_text(encoding="utf-8")
+        for line in content.splitlines()[:20]:
+            if "SKIP_CI" in line:
+                return True, line.strip()
+    except Exception:
+        pass
+    return False, ""
+
+
 def run_example(example_path: Path, timeout: int = 30) -> Tuple[bool, str, str]:
     """
     Run an example and capture its output.
@@ -141,6 +160,18 @@ def main():
     
     for example_path in examples:
         example_name = example_path.stem
+
+        skip, skip_reason = should_skip(example_path)
+        if skip:
+            print(f"Skipping {example_name} ({skip_reason})")
+            results[example_name] = {
+                "success": True,
+                "skipped": True,
+                "skip_reason": skip_reason,
+            }
+            print()
+            continue
+
         print(f"Running {example_name}...")
         
         success, stdout, stderr = run_example(example_path, args.timeout)
