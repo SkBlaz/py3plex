@@ -465,7 +465,28 @@ def execute_ast(
     """
     params = params or {}
     logger = logging.getLogger(__name__)
-    
+
+    # -----------------------------------------------------------------------
+    # Cost-based optimizer integration (failsafe: never breaks execution)
+    # -----------------------------------------------------------------------
+    optimizer_meta: Dict[str, Any] = {}
+    try:
+        from py3plex import config as _cfg
+        if getattr(_cfg, "OPTIMIZER_ENABLED", False):
+            from py3plex.optimizer import optimize_query as _optimize_query
+            _physical_plan, optimizer_meta = _optimize_query(
+                ast=query.select,
+                network=network,
+                params=params,
+                backend="networkx",
+                enable_rule_based=getattr(_cfg, "OPTIMIZER_ENABLE_RULE_BASED", True),
+                enable_cost_based=getattr(_cfg, "OPTIMIZER_ENABLE_COST_BASED", True),
+                max_iter=getattr(_cfg, "OPTIMIZER_MAX_ITER", 10),
+            )
+    except Exception as _opt_err:
+        logger.warning("Optimizer raised an error (%s); falling back to legacy execution.", _opt_err)
+        optimizer_meta = {}
+
     # Create plan if planner is enabled
     planned_query = None
     if planner_config or explain_plan:
@@ -647,6 +668,8 @@ def execute_ast(
 
         # Finalize provenance
         prov_record.performance["total_ms"] = (time.monotonic() - start_time) * 1000
+        if optimizer_meta:
+            result.meta["optimizer"] = optimizer_meta
         result.meta["provenance"] = prov_record.to_dict()
     else:
         result = _execute_select(
@@ -673,8 +696,17 @@ def execute_ast(
         # Merge UQ provenance if it was set
         if hasattr(provenance_builder, '_uq_provenance'):
             prov_dict["uq"] = provenance_builder._uq_provenance
-        
+
+        # Attach optimizer metadata to provenance
+        if optimizer_meta:
+            prov_dict["optimizer"] = optimizer_meta
+
         result.meta["provenance"] = prov_dict
+
+    # Attach optimizer metadata directly on result.meta so explain_plan() can read it
+    if optimizer_meta:
+        result.meta["optimizer"] = optimizer_meta
+
     # Step 6: Handle sensitivity analysis if requested
     if bound_query.select.sensitivity_spec is not None:
         if progress:
