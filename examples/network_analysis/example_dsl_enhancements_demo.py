@@ -198,12 +198,12 @@ def demo_autocompute_control():
 def demo_pipeline_interop():
     """Demonstrate DSL result integration with pipeline operations."""
     print("\n" + "=" * 70)
-    print("DEMO 3: DSL ↔ Pipeline Interoperability")
+    print("DEMO 3: DSL <-> Pipeline Interoperability")
     print("=" * 70)
 
     network = create_temporal_network()
 
-    print("\nCombined workflow: DSL query → pandas transformations → analysis\n")
+    print("\nCombined workflow: DSL query -> pandas transformations -> analysis\n")
 
     # Step 1: DSL query to get nodes with centrality metrics
     result = (
@@ -322,7 +322,7 @@ def demo_comprehensive_workflow():
     print("Top 5 emerging influencers (biggest influence gain):\n")
     for idx, row in emerging.iterrows():
         print(f"  {row['id']:12} ({row['layer']:6}): "
-              f"{row['influence_early']:5.1f} → {row['influence_late']:5.1f} "
+              f"{row['influence_early']:5.1f} -> {row['influence_late']:5.1f} "
               f"(+{row['influence_change']:5.1f}, +{row['influence_change_pct']:5.1f}%)")
 
     print(f"\nWorkflow used:")

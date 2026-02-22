@@ -86,7 +86,7 @@ def main():
                 ci_low = mean - 1.96 * std
                 ci_high = mean + 1.96 * std
             ci_width = ci_high - ci_low
-            print(f"  {node_id:>4}: {mean:.2f} ± {std:.2f}, CI=[{ci_low:.2f}, {ci_high:.2f}], width={ci_width:.2f}")
+            print(f"  {node_id:>4}: {mean:.2f} +/- {std:.2f}, CI=[{ci_low:.2f}, {ci_high:.2f}], width={ci_width:.2f}")
         else:
             print(f"  {node_id:>4}: {deg}")
 
@@ -128,7 +128,7 @@ def main():
             else:
                 ci_low = mean - 1.96 * std
                 ci_high = mean + 1.96 * std
-            print(f"  {node_id:>4}: {mean:.3f} ± {std:.3f}, CI=[{ci_low:.3f}, {ci_high:.3f}]")
+            print(f"  {node_id:>4}: {mean:.3f} +/- {std:.3f}, CI=[{ci_low:.3f}, {ci_high:.3f}]")
         else:
             print(f"  {node_id:>4}: {clust:.3f}")
 
@@ -249,7 +249,7 @@ def main():
         node_id = row['id']
         deg = row['degree']
         if isinstance(deg, dict):
-            print(f"  {node_id}: {deg['mean']:.2f} ± {deg['std']:.2f}")
+            print(f"  {node_id}: {deg['mean']:.2f} +/- {deg['std']:.2f}")
 
     # Reset defaults
     Q.uncertainty.reset()
@@ -285,11 +285,11 @@ def main():
         print(f"\n  {node_id}:")
 
         if isinstance(deg, dict):
-            print(f"    Degree:      {deg['mean']:.2f} ± {deg['std']:.2f}")
+            print(f"    Degree:      {deg['mean']:.2f} +/- {deg['std']:.2f}")
         if isinstance(bc, dict):
-            print(f"    Betweenness: {bc['mean']:.4f} ± {bc['std']:.4f}")
+            print(f"    Betweenness: {bc['mean']:.4f} +/- {bc['std']:.4f}")
         if isinstance(clust, dict):
-            print(f"    Clustering:  {clust['mean']:.3f} ± {clust['std']:.3f}")
+            print(f"    Clustering:  {clust['mean']:.3f} +/- {clust['std']:.3f}")
 
     print("\n" + "=" * 70)
     print("Examples completed successfully!")

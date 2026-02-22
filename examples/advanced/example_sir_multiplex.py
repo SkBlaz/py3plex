@@ -63,13 +63,13 @@ def main():
     layer_weights = np.array([1.0, 0.5])  # Layer importance
 
     print(f"\nParameters:")
-    print(f"  β (transmission): {beta}")
-    print(f"  γ (recovery): {gamma}")
+    print(f"  beta (transmission): {beta}")
+    print(f"  gamma (recovery): {gamma}")
     print(f"  Layer weights: {layer_weights}")
 
     # Compute R0
     R0 = basic_reproduction_number(A_layers, beta, gamma, layer_weights)
-    print(f"\nBasic reproduction number R₀ ≈ {R0:.3f}")
+    print(f"\nBasic reproduction number R0 ~ {R0:.3f}")
 
     # Discrete-time simulation
     print("\n" + "=" * 70)
@@ -160,7 +160,7 @@ def main():
         rng_seed=42
     )
 
-    print(f"\nWith low transmission (β/2):")
+    print(f"\nWith low transmission (beta/2):")
     print(f"  Without imports: {result_no_import.R[-1]}/{N} infected ({result_no_import.R[-1]/N:.1%})")
     print(f"  With imports:    {result_with_import.R[-1]}/{N} infected ({result_with_import.R[-1]/N:.1%})")
 

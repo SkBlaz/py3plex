@@ -27,9 +27,9 @@ print("=" * 80)
 print("MULTILAYER LEIDEN COMMUNITY DETECTION WITH UQ")
 print("=" * 80)
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 1. Create a multilayer network
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n[1] Creating a 2-layer, 6-node multilayer network...")
 print("-" * 80)
@@ -62,9 +62,9 @@ n_nodes = len(list(network.get_nodes()))
 n_edges = len(list(network.get_edges()))
 print(f"Network created: {n_nodes} node-layer pairs, {n_edges} edges")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 2. Basic Leiden community detection
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n[2] Running basic multilayer Leiden...")
 print("-" * 80)
@@ -81,11 +81,11 @@ print(f"Modularity Q = {modularity:.4f}")
 print(f"Number of communities: {n_communities}")
 print("\nPartition:")
 for (node, layer), comm_id in sorted(partition.items()):
-    print(f"  ({node}, {layer}) → Community {comm_id}")
+    print(f"  ({node}, {layer}) -> Community {comm_id}")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 3. Leiden with diagnostics
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n[3] Running Leiden with diagnostics...")
 print("-" * 80)
@@ -103,9 +103,9 @@ print(f"Iterations: {diagnostics['convergence_info']['iterations']}")
 print(f"Converged: {diagnostics['convergence_info']['converged']}")
 print(f"Backend: {diagnostics['backend_used']}")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 4. Parameter sweep: gamma (resolution)
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n[4] Parameter sweep: gamma (resolution)...")
 print("-" * 80)
@@ -126,9 +126,9 @@ for gamma in gamma_values:
 
 print("\nObservation: Higher gamma typically leads to more communities.")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 5. Parameter sweep: omega (interlayer coupling)
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n[5] Parameter sweep: omega (interlayer coupling)...")
 print("-" * 80)
@@ -149,9 +149,9 @@ for omega in omega_values:
 
 print("\nObservation: Higher omega couples layers more strongly.")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 6. Uncertainty Quantification (UQ) via ensemble
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n[6] Multilayer Leiden with Uncertainty Quantification...")
 print("-" * 80)
@@ -186,11 +186,11 @@ for i, node in enumerate(nodes[:6]):  # Show first 6
 
 print(f"\nConsensus partition:")
 for (node, layer), comm_id in sorted(result.consensus_partition.items())[:6]:
-    print(f"  ({node}, {layer}) → Community {comm_id}")
+    print(f"  ({node}, {layer}) -> Community {comm_id}")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 7. UQ with perturbation (structural uncertainty)
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n[7] UQ with edge perturbation (structural uncertainty)...")
 print("-" * 80)
@@ -211,11 +211,11 @@ print(f"  Score mean: {result_perturb.summary['score_mean']:.4f}")
 print(f"  Score std: {result_perturb.summary['score_std']:.4f}")
 print(f"  NMI mean: {result_perturb.stability_metrics['nmi_mean']:.4f}")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 8. Determinism check
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
-print("\n[8] Determinism check (same seed → same result)...")
+print("\n[8] Determinism check (same seed -> same result)...")
 print("-" * 80)
 
 partition1, score1 = multilayer_leiden(network, random_state=42)
@@ -226,9 +226,9 @@ print(f"Partitions identical: {partition1 == partition2}")
 print(f"Scores identical: {abs(score1 - score2) < 1e-10}")
 print(f"Deterministic: {identical}")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # 9. DSL Integration (if DSL is available)
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n[9] DSL Integration (Q.nodes().community())...")
 print("-" * 80)
@@ -250,9 +250,9 @@ try:
 except ImportError:
     print("DSL not available in this environment")
 
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 # Summary
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
 
 print("\n" + "=" * 80)
 print("SUMMARY")
@@ -260,7 +260,7 @@ print("=" * 80)
 print("""
 Key takeaways:
 1. multilayer_leiden() provides production-quality community detection
-2. Deterministic by default (random_state=None → seed=0)
+2. Deterministic by default (random_state=None -> seed=0)
 3. Parameters: gamma (resolution), omega (coupling), n_iterations
 4. multilayer_leiden_uq() provides uncertainty quantification
 5. UQ methods: 'seed' (Monte Carlo), 'perturbation', 'bootstrap'

@@ -184,11 +184,11 @@ if fig:
 
     print(" Interactive visualization created!")
     print("\nFeatures:")
-    print("  • Node size = degree centrality")
-    print("  • Node color = primary layer membership")
-    print("  • Hover for node details")
-    print("  • Click and drag to explore")
-    print("  • Zoom with mouse wheel")
+    print("  - Node size = degree centrality")
+    print("  - Node color = primary layer membership")
+    print("  - Hover for node details")
+    print("  - Click and drag to explore")
+    print("  - Zoom with mouse wheel")
 
     # Save to HTML
     output_dir = "output"
@@ -204,10 +204,10 @@ if fig:
 
     print("\n" + "=" * 70)
     print("Layer Legend:")
-    print("  • Social layer: Dark blue nodes")
-    print("  • Professional layer: Green nodes")
-    print("  • Family layer: Yellow nodes")
-    print("  • Cross-layer nodes: Mixed colors")
+    print("  - Social layer: Dark blue nodes")
+    print("  - Professional layer: Green nodes")
+    print("  - Family layer: Yellow nodes")
+    print("  - Cross-layer nodes: Mixed colors")
     print("=" * 70)
 else:
     print(" Failed to create visualization")

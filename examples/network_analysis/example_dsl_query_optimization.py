@@ -143,8 +143,8 @@ def main():
     if time2 > 0:
         speedup = time2 / time1
         print(f"Speedup from optimization: {speedup:.1f}x")
-        print(f"  → Test 1 computed on {len(result1.attributes['betweenness_centrality'])} nodes")
-        print(f"  → Test 2 computed on {len(result2.attributes['betweenness_centrality'])} nodes")
+        print(f"  -> Test 1 computed on {len(result1.attributes['betweenness_centrality'])} nodes")
+        print(f"  -> Test 2 computed on {len(result2.attributes['betweenness_centrality'])} nodes")
 
     print("\nKEY INSIGHT:")
     print("When ordering by an existing attribute (degree), the DSL applies")

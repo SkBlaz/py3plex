@@ -266,12 +266,12 @@ def main():
     print("Examples completed successfully!")
     print("=" * 70)
     print("\nKey Takeaways:")
-    print("  • Temporal attributes (t, t_start, t_end) are optional")
-    print("  • Atemporal edges are always included (backwards compatible)")
-    print("  • Use TemporalMultinetView for low-level filtering")
-    print("  • Use DSL builder API (Q.at(), Q.during()) for high-level queries")
-    print("  • Point-in-time edges are discrete events")
-    print("  • Interval edges are active during [t_start, t_end]")
+    print("  - Temporal attributes (t, t_start, t_end) are optional")
+    print("  - Atemporal edges are always included (backwards compatible)")
+    print("  - Use TemporalMultinetView for low-level filtering")
+    print("  - Use DSL builder API (Q.at(), Q.during()) for high-level queries")
+    print("  - Point-in-time edges are discrete events")
+    print("  - Interval edges are active during [t_start, t_end]")
     print()
 
 

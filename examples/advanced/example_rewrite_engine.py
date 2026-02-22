@@ -66,9 +66,9 @@ def example_1_basic_rewrites():
     
     # Check if rewrites were applied
     if program.hash() != optimized.hash():
-        print("\n✓ Program was optimized!")
+        print("\nOK Program was optimized!")
     else:
-        print("\n✓ No optimizations needed (already optimal)")
+        print("\nOK No optimizations needed (already optimal)")
     
     print()
 
@@ -111,7 +111,7 @@ def example_2_pushdown_rules():
     print("\nOptimized query (conceptually):")
     print("  SELECT nodes WHERE layer='social' AND type='person'")
     print("  COMPUTE(degree, clustering, betweenness)")
-    print("  → Fewer nodes to compute metrics for!")
+    print("  -> Fewer nodes to compute metrics for!")
     
     print(f"\nProvenance chain shows applied rules:")
     for step in optimized.metadata.provenance_chain:
@@ -153,7 +153,7 @@ def example_3_projection_pushdown():
     print("\nOptimized query only computes what's needed:")
     print("  COMPUTE(degree, betweenness)")
     print("  SELECT_COLS(node, degree, betweenness)")
-    print("  → Closeness and clustering eliminated!")
+    print("  -> Closeness and clustering eliminated!")
     
     # Check compute items in optimized
     compute_names = [c.name for c in optimized.canonical_ast.select.compute]
@@ -193,7 +193,7 @@ def example_4_layer_distributivity():
     
     print("\nOptimization recognizes layer-local metrics:")
     print("  PER_LAYER() can be moved early for parallelization")
-    print("  → Each layer processed independently!")
+    print("  -> Each layer processed independently!")
     
     print()
 
@@ -221,14 +221,14 @@ def example_5_uq_aware_rewrites():
     
     print("\nOriginal query with UQ:")
     print("  UQ(COMPUTE(degree)) WHERE layer='social'")
-    print("  → Filter applied after 100 bootstrap samples")
+    print("  -> Filter applied after 100 bootstrap samples")
     
     # Apply rewrites
     optimized = apply_rewrites(program)
     
     print("\nOptimized query moves filter inside UQ:")
     print("  UQ(WHERE layer='social' COMPUTE(degree))")
-    print("  → Filter applied before sampling, reducing cost!")
+    print("  -> Filter applied before sampling, reducing cost!")
     
     print()
 
@@ -254,14 +254,14 @@ def example_6_community_optimization():
     
     print("\nOriginal query:")
     print("  SELECT communities WHERE community_id = 5")
-    print("  → Full community detection + filtering")
+    print("  -> Full community detection + filtering")
     
     # Apply rewrites
     optimized = apply_rewrites(program)
     
     print("\nOptimized query uses partition slice:")
     print("  PARTITION_SLICE(community_id=5)")
-    print("  → Direct access to single community!")
+    print("  -> Direct access to single community!")
     
     print()
 
@@ -299,7 +299,7 @@ def example_7_cse_caching():
     print("  COMPUTE(degree) [cache=True]")
     print("  WHERE degree > 5")
     print("  ORDER_BY degree DESC")
-    print("  → Degree computed once and reused!")
+    print("  -> Degree computed once and reused!")
     
     print()
 
@@ -327,7 +327,7 @@ def example_8_top_k_optimization():
     print("  COMPUTE(betweenness)")
     print("  ORDER_BY betweenness DESC")
     print("  LIMIT 10")
-    print("  → Full sort O(n log n)")
+    print("  -> Full sort O(n log n)")
     
     # Apply rewrites with context
     context = RewriteContext(network_stats={'node_count': 10000})
@@ -336,8 +336,8 @@ def example_8_top_k_optimization():
     print("\nOptimized query uses heap-based TOP-K:")
     print("  COMPUTE(betweenness)")
     print("  TOP_K(betweenness, 10)")
-    print("  → Heap-based selection O(n log k)")
-    print("  → Much faster for k << n!")
+    print("  -> Heap-based selection O(n log k)")
+    print("  -> Much faster for k << n!")
     
     print()
 
@@ -382,7 +382,7 @@ def example_9_custom_context():
     
     print("\nOptimized with context:")
     print("  Betweenness marked for aggressive caching")
-    print("  → Expensive metrics get special treatment!")
+    print("  -> Expensive metrics get special treatment!")
     
     print()
 

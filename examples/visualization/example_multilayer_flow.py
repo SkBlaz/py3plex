@@ -179,11 +179,11 @@ if __name__ == '__main__':
     print("="*70)
     print("\nThis example demonstrates the new flow/alluvial visualization style")
     print("for multilayer networks. The visualization shows:")
-    print("  • Each layer as a horizontal band")
-    print("  • Nodes positioned along the x-axis within each layer")
-    print("  • Node colors indicating activity (degree centrality)")
-    print("  • Inter-layer connections as flowing ribbons")
-    print("  • Sankey diagrams showing inter-layer flow strength")
+    print("  - Each layer as a horizontal band")
+    print("  - Nodes positioned along the x-axis within each layer")
+    print("  - Node colors indicating activity (degree centrality)")
+    print("  - Inter-layer connections as flowing ribbons")
+    print("  - Sankey diagrams showing inter-layer flow strength")
 
     try:
         example_basic_flow()

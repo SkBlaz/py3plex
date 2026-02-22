@@ -31,7 +31,7 @@ print("=" * 70)
 print("SUPRA-ADJACENCY MATRIX OPERATIONS")
 print("=" * 70)
 
-print("\nExample 1: Random Erdős-Rényi Multiplex Network")
+print("\nExample 1: Random Erdos-Renyi Multiplex Network")
 print("-" * 70)
 
 # Generate a random multiplex network
@@ -161,7 +161,7 @@ Key Concepts:
    - Off-diagonal blocks = inter-layer edges
 
 2. Matrix Dimensions:
-   - For N nodes and L layers: (N×L) × (N×L) matrix
+   - For N nodes and L layers: (NxL) x (NxL) matrix
    - Often sparse (many zero entries)
    - Can be very large for big networks
 

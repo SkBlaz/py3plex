@@ -1,7 +1,7 @@
 """
 NetworkX wrapper for multilayer networks.
 
-Builds a random multilayer Erdős-Rényi network, aggregates it, and runs a
+Builds a random multilayer Erdos-Renyi network, aggregates it, and runs a
 NetworkX centrality algorithm through `monoplex_nx_wrapper`. Prerequisites:
 py3plex installed; NetworkX is already bundled as a dependency.
 """
@@ -20,7 +20,7 @@ def main() -> int:
     np.random.seed(DEFAULT_SEED)
     random.seed(DEFAULT_SEED)
 
-    print("Generating random multilayer Erdős-Rényi network...")
+    print("Generating random multilayer Erdos-Renyi network...")
     print("Parameters: 300 nodes, 6 layers, edge probability 0.05")
 
     er_net = random_generators.random_multilayer_ER(

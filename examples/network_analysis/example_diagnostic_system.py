@@ -65,7 +65,7 @@ print("\nAttempting query with typo: .compute('betweennes')")
 try:
     result = Q.nodes().compute("betweennes").execute(network)
 except UnknownMeasureError as e:
-    print("\n✗ Error caught!")
+    print("\nFAIL Error caught!")
     print(f"Error message: {str(e).split('Known measures:')[0].strip()}")
     
     # Get diagnostic
@@ -83,9 +83,9 @@ except UnknownMeasureError as e:
     
     # Auto-correct based on suggestion
     if e.suggestion:
-        print(f"\n✓ Auto-correcting to '{e.suggestion}'...")
+        print(f"\nOK Auto-correcting to '{e.suggestion}'...")
         result = Q.nodes().compute(e.suggestion).execute(network)
-        print(f"✓ Success! Computed {e.suggestion} for {len(result.items)} nodes")
+        print(f"OK Success! Computed {e.suggestion} for {len(result.items)} nodes")
 
 print("\n" + "=" * 70)
 print("Example 3: Layer Name Typo Recovery")
@@ -95,15 +95,15 @@ print("\nAttempting query with layer typo: L['scoial']")
 try:
     result = Q.nodes().from_layers(L["scoial"]).execute(network)
 except UnknownLayerError as e:
-    print("\n✗ Error caught!")
+    print("\nFAIL Error caught!")
     print(f"Error: {str(e).split('Known layers:')[0].strip()}")
     
     # Get suggestion
     if e.suggestion:
-        print(f"\n✓ Did you mean '{e.suggestion}'?")
-        print(f"✓ Retrying with '{e.suggestion}'...")
+        print(f"\nOK Did you mean '{e.suggestion}'?")
+        print(f"OK Retrying with '{e.suggestion}'...")
         result = Q.nodes().from_layers(L[e.suggestion]).execute(network)
-        print(f"✓ Success! Got {len(result.items)} nodes from layer '{e.suggestion}'")
+        print(f"OK Success! Got {len(result.items)} nodes from layer '{e.suggestion}'")
 
 print("\n" + "=" * 70)
 print("Example 4: QueryResult.explain() - Interactive Help")
@@ -177,8 +177,8 @@ def bad_query(net):
 recovery = llm_error_recovery(bad_query, network)
 
 if isinstance(recovery, dict) and recovery.get('error'):
-    print(f"\n✓ LLM successfully extracted suggestion: {recovery['suggestion']}")
-    print("✓ LLM can now retry with corrected query")
+    print(f"\nOK LLM successfully extracted suggestion: {recovery['suggestion']}")
+    print("OK LLM can now retry with corrected query")
 
 print("\n" + "=" * 70)
 print("Summary")
@@ -186,12 +186,12 @@ print("=" * 70)
 print("""
 The diagnostic system provides:
 
-1. ✓ Structured error information (Diagnostic objects)
-2. ✓ Fuzzy matching for typo detection
-3. ✓ "Did you mean?" suggestions
-4. ✓ JSON export for LLM consumption
-5. ✓ Interactive help with .explain() and .debug()
-6. ✓ Stable error codes for programmatic handling
+1. OK Structured error information (Diagnostic objects)
+2. OK Fuzzy matching for typo detection
+3. OK "Did you mean?" suggestions
+4. OK JSON export for LLM consumption
+5. OK Interactive help with .explain() and .debug()
+6. OK Stable error codes for programmatic handling
 
 This makes py3plex errors:
 - More helpful for humans (clear suggestions)

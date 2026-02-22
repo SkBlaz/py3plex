@@ -278,11 +278,11 @@ def main():
     print(" ALL EXAMPLES COMPLETED")
     print("=" * 70)
     print("\nKey Takeaways:")
-    print("  • Use L['expression'] for compact layer selection")
-    print("  • Operators: | (union), & (intersection), - (difference), ~ (complement)")
-    print("  • Define named groups with L.define() for reuse")
-    print("  • Fully backward compatible with existing code")
-    print("  • Use .explain() for debugging layer expressions")
+    print("  - Use L['expression'] for compact layer selection")
+    print("  - Operators: | (union), & (intersection), - (difference), ~ (complement)")
+    print("  - Define named groups with L.define() for reuse")
+    print("  - Fully backward compatible with existing code")
+    print("  - Use .explain() for debugging layer expressions")
     print("=" * 70 + "\n")
 
 

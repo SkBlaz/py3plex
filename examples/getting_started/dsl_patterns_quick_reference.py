@@ -106,7 +106,7 @@ def pattern_2_cross_layer_hubs():
          .per_layer()                             # Group by layer
            .top_k(3, "degree")                    # Top 3 per layer
          .end_grouping()
-         .coverage(mode="at_least", k=2)         # Keep nodes in ≥2 layers
+         .coverage(mode="at_least", k=2)         # Keep nodes in >=2 layers
          .execute(net)
     )
     """)
@@ -200,7 +200,7 @@ def pattern_4_layer_algebra():
     """)
     
     result_union = Q.nodes().from_layers(L["social"] + L["work"]).execute(net)
-    print(f"\nSocial ∪ Work: {result_union.count} node replicas")
+    print(f"\nSocial | Work: {result_union.count} node replicas")
     
     result_diff = Q.nodes().from_layers(L["*"] - L["hobby"]).execute(net)
     print(f"All - Hobby: {result_diff.count} node replicas")
@@ -333,18 +333,18 @@ def pattern_7_export_formats():
     
     # Pandas
     df = result.to_pandas()
-    print(f"\n✓ Pandas DataFrame: {len(df)} rows × {len(df.columns)} columns")
+    print(f"\nOK Pandas DataFrame: {len(df)} rows x {len(df.columns)} columns")
     
     # NetworkX
     graph = result.to_networkx()
-    print(f"✓ NetworkX graph: {graph.number_of_nodes()} nodes, {graph.number_of_edges()} edges")
+    print(f"OK NetworkX graph: {graph.number_of_nodes()} nodes, {graph.number_of_edges()} edges")
     
     # Arrow (optional - requires pyarrow)
     try:
         table = result.to_arrow()
-        print(f"✓ Apache Arrow table: {len(table)} rows × {len(table.columns)} columns")
+        print(f"OK Apache Arrow table: {len(table)} rows x {len(table.columns)} columns")
     except ImportError:
-        print("✓ Apache Arrow: (skipped - pyarrow not installed)")
+        print("OK Apache Arrow: (skipped - pyarrow not installed)")
     
     print("\nDataFrame preview:")
     print(df[['id', 'layer', 'degree']].head())
@@ -384,9 +384,9 @@ def main():
     6. Aggregation              (8%)  - .per_layer().aggregate()
     7. Export Formats           (30%) - .to_pandas(), .to_networkx(), .to_arrow()
     
-    💡 Pro Tip: Chain these patterns together for powerful queries!
+     Pro Tip: Chain these patterns together for powerful queries!
     
-    📚 More Resources:
+     More Resources:
        - See README.md for quick patterns section
        - See AGENTS.md#quick-start-golden-paths for comprehensive guide
        - See examples/network_analysis/ for 50+ detailed examples

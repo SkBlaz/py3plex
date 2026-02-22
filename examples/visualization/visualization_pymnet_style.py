@@ -7,7 +7,7 @@ is native to py3plex.
 
 Reference:
     Pymnet library: https://github.com/bolozna/Multilayer-networks-library
-    Kivelä, M., et al. (2014). Multilayer networks. Journal of complex networks, 2(3), 203-271.
+    Kivela, M., et al. (2014). Multilayer networks. Journal of complex networks, 2(3), 203-271.
 
 Features demonstrated:
 - Creating a 3-layer multiplex network
@@ -356,7 +356,7 @@ Key features of pymnet style visualization:
 For more information:
 - See py3plex documentation on visualization
 - Reference: pymnet library (https://github.com/bolozna/Multilayer-networks-library)
-- Kivelä et al. (2014). Multilayer networks. Journal of complex networks.
+- Kivela et al. (2014). Multilayer networks. Journal of complex networks.
 """)
 
 print("=" * 70)

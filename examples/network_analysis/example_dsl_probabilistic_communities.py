@@ -248,7 +248,7 @@ def main():
                 for comm_id, metrics in sorted(stability.items()):
                     print(f"  Community {comm_id}:")
                     print(f"    Persistence: {metrics['persistence']:.3f}")
-                    print(f"    Size (mean ± std): {metrics['size_mean']:.1f} ± {metrics['size_std']:.1f}")
+                    print(f"    Size (mean +/- std): {metrics['size_mean']:.1f} +/- {metrics['size_std']:.1f}")
                     print(f"    Coefficient of variation: {metrics['size_cv']:.3f}")
 
                 # Access partition-space metrics

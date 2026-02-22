@@ -124,7 +124,7 @@ traj_window = (
 )
 
 print(f"Trajectory points in [20, 30]: {len(traj_window.items)}")
-print(f"Expected: {5 * 11} points (5 replicates × 11 timesteps)")
+print(f"Expected: {5 * 11} points (5 replicates x 11 timesteps)")
 print()
 
 # =============================================================================
@@ -298,12 +298,12 @@ print("""
 8. Pandas export for analysis
 
 Key Capabilities:
-• Full query execution (not placeholder)
-• Temporal slicing of trajectories
-• Computed statistics on trajectories
-• Integration with Q.dynamics() results
-• Familiar DSL syntax and chaining
-• Rich result format with QueryResult
+- Full query execution (not placeholder)
+- Temporal slicing of trajectories
+- Computed statistics on trajectories
+- Integration with Q.dynamics() results
+- Familiar DSL syntax and chaining
+- Rich result format with QueryResult
 
 The trajectory query DSL enables powerful post-hoc analysis of simulation
 results, making it easy to extract insights from dynamics simulations.

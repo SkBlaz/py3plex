@@ -22,9 +22,9 @@ print("=" * 70)
 print("NETWORK MANIPULATION AND BASIC OPERATIONS")
 print("=" * 70)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 1: Adding single nodes and edges
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[1] Adding single nodes and edges with attributes...")
 print("-" * 70)
@@ -38,9 +38,9 @@ A.add_nodes(simple_node)
 A.monitor("Added a single node.")
 print("Nodes:", list(A.get_nodes(data=True)))
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 2: Adding edges with attributes
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[2] Adding edges with custom attributes...")
 print("-" * 70)
@@ -59,9 +59,9 @@ A.add_edges(simple_edge)
 A.monitor("Added a single edge with weight attribute.")
 print("Edges:", list(A.get_edges(data=True)))
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 3: Adding multiple edges at once
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[3] Adding multiple edges at once...")
 print("-" * 70)
@@ -84,9 +84,9 @@ A.add_edges(simple_attributed_edges)
 A.monitor("Added multiple edges using list of dictionaries.")
 print(f"Total edges: {len(list(A.get_edges()))}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 4: Using list-based input format
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[4] Using list-based input format: [source, source_layer, target, target_layer, weight]...")
 print("-" * 70)
@@ -99,11 +99,11 @@ example_list_edge = [["node3", "t2", "node2", "t6", 1],
 A.add_edges(example_list_edge, input_type="list")
 print(f"Total edges after list additions: {len(list(A.get_edges()))}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 5: Generate random multilayer network
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
-print("\n[5] Generating random Erdős-Rényi multilayer network...")
+print("\n[5] Generating random Erdos-Renyi multilayer network...")
 print("-" * 70)
 
 A.monitor("Generating random ER multilayer graph...")
@@ -114,9 +114,9 @@ ER_multilayer = random_generators.random_multilayer_ER(300,
 print(f"Generated network: 300 nodes, 6 layers, edge probability 0.05")
 # Visualization: ER_multilayer.visualize_network(show=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 6: Working with multiplex networks (shared node sets)
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[6] Creating and manipulating multiplex networks...")
 print("-" * 70)
@@ -132,9 +132,9 @@ B.add_edges(
     input_type="list")
 print("Multiplex network created with shared nodes across layers")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 7: Subsetting networks
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[7] Subsetting networks by layers, nodes, and node-layer tuples...")
 print("-" * 70)
@@ -150,9 +150,9 @@ print(f"All instances of node 2: {list(C.get_nodes())}")
 C = B.subnetwork([(1, 1), (1, 2)], subset_by="node_layer_names")
 print(f"Specific node-layer tuples: {list(C.get_nodes())}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 8: Coupled vs non-coupled edges in multiplex networks
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[8] Working with coupled edges in multiplex networks...")
 print("-" * 70)
@@ -166,9 +166,9 @@ B.monitor(f"Non-coupled edges (intra-layer): {len(non_coupled_edges)} edges")
 
 # Visualization: B.visualize_network(show=True, resolution=0.01)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 9: Removing edges and nodes
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[9] Removing edges and nodes...")
 print("-" * 70)

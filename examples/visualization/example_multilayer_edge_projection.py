@@ -145,11 +145,11 @@ def main():
     print("EDGE-COLORED PROJECTION EXAMPLE COMPLETE")
     print("=" * 70)
     print("\nKey features demonstrated:")
-    print("  • Aggregated view of all layers in one plot")
-    print("  • Color-coded edges showing layer membership")
-    print("  • Legend distinguishing different layers")
-    print("  • Support for different layout algorithms")
-    print("  • Custom color schemes for layers")
+    print("  - Aggregated view of all layers in one plot")
+    print("  - Color-coded edges showing layer membership")
+    print("  - Legend distinguishing different layers")
+    print("  - Support for different layout algorithms")
+    print("  - Custom color schemes for layers")
 
 
 if __name__ == "__main__":

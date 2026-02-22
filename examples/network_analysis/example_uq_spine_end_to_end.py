@@ -131,8 +131,8 @@ for i, node_id in enumerate(node_ids):
 print()
 
 print("Stability metrics:")
-print(f" VI: {partition_uq.vi_mean:.3f} ± {partition_uq.vi_std:.3f}")
-print(f" NMI: {partition_uq.nmi_mean:.3f} ± {partition_uq.nmi_std:.3f}")
+print(f" VI: {partition_uq.vi_mean:.3f} +/- {partition_uq.vi_std:.3f}")
+print(f" NMI: {partition_uq.nmi_mean:.3f} +/- {partition_uq.nmi_std:.3f}")
 print()
 
 
@@ -243,7 +243,7 @@ print("Key Metrics:")
 print()
 
 print("1. Node-level uncertainty:")
-print(" - Entropy: H(node) = -Σ p_c log(p_c)")
+print(" - Entropy: H(node) = -Sigma p_c log(p_c)")
 print(" Higher entropy = node assignment is more uncertain")
 print()
 
@@ -260,10 +260,10 @@ print(" Higher NMI = more similar partitions across samples")
 print()
 
 print("Best Practices:")
-print(" • Use seed UQ for algorithmic uncertainty (randomness in algorithm)")
-print(" • Use perturbation UQ for structural uncertainty (network noise)")
-print(" • Check boundary nodes for communities that may need refinement")
-print(" • Compare VI/NMI across different parameter settings")
+print(" - Use seed UQ for algorithmic uncertainty (randomness in algorithm)")
+print(" - Use perturbation UQ for structural uncertainty (network noise)")
+print(" - Check boundary nodes for communities that may need refinement")
+print(" - Compare VI/NMI across different parameter settings")
 print()
 
 print("=" * 80)

@@ -227,8 +227,8 @@ print("=" * 70)
 
 print("\nApplying Ricci flow to the core network...")
 print("(Ricci flow adjusts edge weights based on curvature)")
-print(" - Edges with negative curvature (bottlenecks) → reduced weight")
-print(" - Edges with positive curvature (communities) → increased weight")
+print(" - Edges with negative curvature (bottlenecks) -> reduced weight")
+print(" - Edges with positive curvature (communities) -> increased weight")
 
 try:
     result_flow = net.compute_ollivier_ricci_flow(
@@ -264,9 +264,9 @@ try:
         print(f"{edge_str:<30} {orig:>10.4f} {flow_w:>12.4f} {change:>10.4f}")
 
     print("\nInterpretation:")
-    print("  • Edges with increased weights are likely within communities")
-    print("  • Edges with decreased weights are likely community boundaries")
-    print("  • This makes community detection more effective!")
+    print("  - Edges with increased weights are likely within communities")
+    print("  - Edges with decreased weights are likely community boundaries")
+    print("  - This makes community detection more effective!")
 
 except Exception as e:
     print(f"\n Error applying Ricci flow: {e}")
@@ -330,31 +330,31 @@ print("""
 Ollivier-Ricci Curvature in Multilayer Networks:
 
 1. CURVATURE INTERPRETATION:
-   • Positive curvature: Dense, well-connected regions (communities)
-   • Negative curvature: Sparse connections, bottlenecks (boundaries)
-   • Near-zero: Transitional regions
+   - Positive curvature: Dense, well-connected regions (communities)
+   - Negative curvature: Sparse connections, bottlenecks (boundaries)
+   - Near-zero: Transitional regions
 
 2. THREE MODES OF ANALYSIS:
-   • mode="core": Analyze the aggregated network (all layers combined)
-   • mode="layers": Analyze each layer independently
-   • mode="supra": Full multilayer structure with inter-layer coupling
+   - mode="core": Analyze the aggregated network (all layers combined)
+   - mode="layers": Analyze each layer independently
+   - mode="supra": Full multilayer structure with inter-layer coupling
 
 3. RICCI FLOW APPLICATIONS:
-   • Reveals hidden community structure
-   • Identifies critical edges and bottlenecks
-   • Enhances standard community detection algorithms
-   • Useful for hierarchical analysis
+   - Reveals hidden community structure
+   - Identifies critical edges and bottlenecks
+   - Enhances standard community detection algorithms
+   - Useful for hierarchical analysis
 
 4. PERFORMANCE TIPS:
-   • Start with small networks or subgraphs
-   • Use lower alpha values (e.g., 0.3) for faster computation
-   • Reduce iterations for Ricci flow (start with 5-10)
-   • Use parallel computation: backend_kwargs={"proc": 4}
+   - Start with small networks or subgraphs
+   - Use lower alpha values (e.g., 0.3) for faster computation
+   - Reduce iterations for Ricci flow (start with 5-10)
+   - Use parallel computation: backend_kwargs={"proc": 4}
 
 5. FURTHER READING:
-   • Ni et al. (2019): Community detection on networks with Ricci flow
-   • Ollivier (2009): Ricci curvature of Markov chains on metric spaces
-   • GraphRicciCurvature docs: https://github.com/saibalmars/GraphRicciCurvature
+   - Ni et al. (2019): Community detection on networks with Ricci flow
+   - Ollivier (2009): Ricci curvature of Markov chains on metric spaces
+   - GraphRicciCurvature docs: https://github.com/saibalmars/GraphRicciCurvature
 """)
 
 print("=" * 70)

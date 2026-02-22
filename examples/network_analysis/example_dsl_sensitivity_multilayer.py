@@ -166,9 +166,9 @@ def main():
 
     if result_rewire.has_sensitivity:
         curve = result_rewire.sensitivity_curves["kendall_tau"]
-        print("\nKendall-τ (ranking correlation) vs rewiring:")
+        print("\nKendall-tau (ranking correlation) vs rewiring:")
         for p, tau in zip(curve.grid, curve.values):
-            print(f"  {p*100:.0f}% rewired: τ={tau:.4f}")
+            print(f"  {p*100:.0f}% rewired: tau={tau:.4f}")
 
         # Interpretation
         print("\nInterpretation:")

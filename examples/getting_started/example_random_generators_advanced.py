@@ -1,8 +1,8 @@
 """
 Advanced random multilayer graph generators.
 
-Demonstrates the multilayer Erdős-Rényi generator and highlights other
-available generators (Barabási-Albert, SBM variants). Prerequisites:
+Demonstrates the multilayer Erdos-Renyi generator and highlights other
+available generators (Barabasi-Albert, SBM variants). Prerequisites:
 py3plex installed; no optional dependencies required.
 """
 
@@ -18,7 +18,7 @@ def main() -> int:
     """Generate a multilayer ER graph and convert it to py3plex."""
     print("=== Random Graph Generators Demo ===\n")
 
-    print("Generating multilayer Erdős-Rényi network...")
+    print("Generating multilayer Erdos-Renyi network...")
     graph = multilayer_erdos_renyi(
         n=20,
         p=0.2,

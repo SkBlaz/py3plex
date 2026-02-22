@@ -1,7 +1,7 @@
 """
 Generate and (optionally) visualize a random multilayer network.
 
-Creates a multilayer Erdős-Rényi network and explains key parameters.
+Creates a multilayer Erdos-Renyi network and explains key parameters.
 Prerequisites: py3plex installed; matplotlib is optional for visualization
 and skipped by default (backend set to Agg).
 """
@@ -24,11 +24,11 @@ def generate_random_multilayer_network(
     edge_prob: float = 0.09,
     directed: bool = True,
 ) -> Any:
-    """Generate a random multilayer Erdős-Rényi network."""
+    """Generate a random multilayer Erdos-Renyi network."""
     np.random.seed(DEFAULT_SEED)
     random.seed(DEFAULT_SEED)
 
-    print("Generating random multilayer Erdős-Rényi network...")
+    print("Generating random multilayer Erdos-Renyi network...")
     print("Parameters:")
     print(f"  - Number of nodes: {num_nodes}")
     print(f"  - Number of layers: {num_layers}")

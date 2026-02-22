@@ -45,9 +45,9 @@ print("For modern DSL v2 patterns, see examples/network_analysis/flagship_exampl
 print("and AGENTS.md documentation.")
 print()
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Create a sample network with clear community structure
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[1] Creating sample network with community structure...")
 print("-" * 80)
@@ -101,9 +101,9 @@ network.add_edges(edges)
 
 print(f"Network created: {len(list(network.get_nodes()))} nodes, {len(list(network.get_edges()))} edges")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 1: Basic community detection via legacy string DSL
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[2] Example 1: Basic Community Detection via Legacy String DSL")
@@ -118,9 +118,9 @@ print(f"Community assignments:")
 for node, community_id in sorted(result['computed']['communities'].items()):
     print(f"  {node}: Community {community_id}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 2: Full community analysis with convenience function
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[3] Example 2: Full Community Analysis with Convenience Function")
@@ -134,9 +134,9 @@ print(f"Size distribution: {communities['size_distribution']}")
 print(f"Biggest community: ID={communities['biggest_community'][0]}, Size={communities['biggest_community'][1]}")
 print(f"Smallest community: ID={communities['smallest_community'][0]}, Size={communities['smallest_community'][1]}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 3: Get the biggest community
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[4] Example 3: Biggest Community Details")
@@ -149,9 +149,9 @@ print(f"Members:")
 for node in nodes:
     print(f"  - {node}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 4: Get the smallest community
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[5] Example 4: Smallest Community Details")
@@ -164,9 +164,9 @@ print(f"Members:")
 for node in nodes:
     print(f"  - {node}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 5: Community size distribution analysis
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[6] Example 5: Community Size Distribution Analysis")
@@ -181,9 +181,9 @@ print(f"Average community size: {sum(sizes) / len(sizes):.2f}")
 print(f"Largest community: {max(sizes)} nodes")
 print(f"Smallest community: {min(sizes)} nodes")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 6: Working with the full partition
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[7] Example 6: Working with Community Partition")
@@ -202,9 +202,9 @@ for community_id, members in sorted(communities_grouped.items()):
     member_names = [str(m[0]) for m in members]  # Extract node names
     print(f"  Community {community_id}: {', '.join(sorted(member_names))}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 7: Combining community detection with other DSL features
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[8] Example 7: Community Detection with Other Measures")
@@ -224,9 +224,9 @@ for node in sorted(result['nodes']):
     btw = result['computed']['betweenness_centrality'].get(node, 0)
     print(f"{str(node[0]):<15} {comm:<12} {deg:<10} {btw:<12.4f}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Summary
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("LEGACY DSL COMMUNITY DETECTION EXAMPLES COMPLETE")

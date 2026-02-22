@@ -142,7 +142,7 @@ def demonstrate_rich_club():
     print("\nRich-Club Coefficient by Degree Threshold:")
     for k in [1, 2, 3]:
         phi = multilayer_statistics.multiplex_rich_club_coefficient(network, k=k)
-        print(f"  k={k}: φ(k) = {phi:.4f}")
+        print(f"  k={k}: phi(k) = {phi:.4f}")
 
 
 def demonstrate_percolation():

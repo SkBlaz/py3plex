@@ -154,15 +154,15 @@ def main():
     print("RADIAL LAYERS EXAMPLE COMPLETE")
     print("=" * 70)
     print("\nKey features demonstrated:")
-    print("  • Concentric circle layout for layers")
-    print("  • Aligned node positions across layers")
-    print("  • Color-coded layers for distinction")
-    print("  • Inter-layer edges as radial connections")
-    print("  • Adjustable ring spacing")
+    print("  - Concentric circle layout for layers")
+    print("  - Aligned node positions across layers")
+    print("  - Color-coded layers for distinction")
+    print("  - Inter-layer edges as radial connections")
+    print("  - Adjustable ring spacing")
     print("\nInterpretation:")
-    print("  • Each ring = one layer")
-    print("  • Same node appears at same angle on all rings")
-    print("  • Dashed lines = inter-layer connections")
+    print("  - Each ring = one layer")
+    print("  - Same node appears at same angle on all rings")
+    print("  - Dashed lines = inter-layer connections")
 
 
 if __name__ == "__main__":

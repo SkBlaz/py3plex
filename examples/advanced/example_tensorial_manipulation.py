@@ -1,7 +1,7 @@
 """Example: Tensor-based Operations and Network Access
 
 This example demonstrates how to:
-- Generate random Erdős-Rényi multilayer networks
+- Generate random Erdos-Renyi multilayer networks
 - Visualize the adjacency tensor as a matrix
 - Access node and edge data using bracket notation (tensor-like indexing)
 

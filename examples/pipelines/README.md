@@ -24,7 +24,7 @@ result = pipe.run()
 ### Data Loading and Generation
 - **LoadStep**: Load networks from files or generate random networks
   - Supports GraphML, gpickle, multiedgelist formats
-  - Can generate random Erdős-Rényi multilayer networks
+  - Can generate random Erdos-Renyi multilayer networks
 
 ### Network Transformations
 - **AggregateLayers**: Aggregate edges across multiple layers
@@ -96,7 +96,7 @@ python example_5_filtering.py
 ### Example 6: Complex Multi-step Pipeline
 **File**: `example_6_complex_pipeline.py`
 
-Demonstrates a complex pipeline: load → filter → aggregate → community detection.
+Demonstrates a complex pipeline: load -> filter -> aggregate -> community detection.
 
 ```bash
 python example_6_complex_pipeline.py

@@ -72,7 +72,7 @@ result = (
 )
 
 print(f"Network: {len(list(network.get_nodes()))} nodes, {len(list(network.get_edges()))} edges")
-print(f"Process: SIS (β=0.3, μ=0.1)")
+print(f"Process: SIS (beta=0.3, mu=0.1)")
 print(f"Result shape: {result.data['prevalence'].shape}") # (replicates, steps)
 print(f"Mean final prevalence: {result.data['prevalence'][:, -1].mean():.3f}")
 print(f"Std final prevalence: {result.data['prevalence'][:, -1].std():.3f}")
@@ -138,7 +138,7 @@ print(f"Multilayer network:")
 print(f" Offline layer: {len(offline_edges)} edges")
 print(f" Online layer: {len(online_edges)} edges")
 print(f"Process: SIR with layer-specific transmission")
-print(f" Offline β=0.3, Online β=0.1")
+print(f" Offline beta=0.3, Online beta=0.1")
 print(f"Mean peak prevalence: {result_multilayer.data['prevalence'].max(axis=1).mean():.3f}")
 print()
 
@@ -254,11 +254,11 @@ print("""
 7. Integration with structural DSL
 
 Key Advantages:
-• First-class DSL feature (not just imperative code)
-• Composable with existing Q, L, Param DSL components
-• Lazy execution: build query, then .execute()
-• Type-safe builder API with method chaining
-• Backward compatible: D.process() still works
+- First-class DSL feature (not just imperative code)
+- Composable with existing Q, L, Param DSL components
+- Lazy execution: build query, then .execute()
+- Type-safe builder API with method chaining
+- Backward compatible: D.process() still works
 
 The dynamics DSL makes complex multilayer simulations concise, readable,
 and declarative, following the same design philosophy as the query DSL.

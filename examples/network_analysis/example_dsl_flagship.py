@@ -20,9 +20,9 @@ print("=" * 80)
 print("FLAGSHIP DSL PATTERN: INTEGRATED COMMUNITY DETECTION")
 print("=" * 80)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Create a sample multilayer network
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[1] Creating sample multilayer network...")
 print("-" * 80)
@@ -73,9 +73,9 @@ network.add_edges(edges)
 print(f"Network created: {len(list(network.get_nodes()))} nodes, "
       f"{len(list(network.get_edges()))} edges")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 1: Basic flagship pattern (fast mode for demo)
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[2] Flagship Pattern: Q.communities().nodes() chain")
@@ -101,7 +101,7 @@ result = (
     .execute(network)
 )
 
-print(f"\n✓ Query executed successfully")
+print(f"\nOK Query executed successfully")
 print(f"  Found {len(result.nodes)} nodes matching criteria")
 
 # Convert to pandas for easy viewing
@@ -109,9 +109,9 @@ df = result.to_pandas()
 print(f"\nTop nodes by degree centrality:")
 print(df[['id', 'layer', 'degree_centrality']].head())
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 2: Verify community detection ran
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[3] Verify community assignments")
@@ -127,22 +127,22 @@ for node in sample_nodes:
     except Exception as e:
         print(f"  {node}: no community assigned")
 
-print("\n✓ Community detection completed successfully")
+print("\nOK Community detection completed successfully")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Key takeaways
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("KEY FEATURES DEMONSTRATED")
 print("=" * 80)
 
 print("""
-✓ Streamlined API: Community detection integrated into DSL chain
-✓ Auto-detection: Runs automatically when .nodes() is called
-✓ Attribute writing: Community IDs written to network with custom names
-✓ Chainable: Seamlessly transition from communities to node analysis
-✓ Configurable: Full control over detection parameters (mode, UQ, etc.)
+OK Streamlined API: Community detection integrated into DSL chain
+OK Auto-detection: Runs automatically when .nodes() is called
+OK Attribute writing: Community IDs written to network with custom names
+OK Chainable: Seamlessly transition from communities to node analysis
+OK Configurable: Full control over detection parameters (mode, UQ, etc.)
 
 For production use:
 - Use mode="pareto" for multi-objective optimization

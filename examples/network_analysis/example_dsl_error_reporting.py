@@ -44,7 +44,7 @@ try:
         .execute(network)
     )
 except InvalidJoinKeyError as e:
-    print("✗ Error caught!")
+    print("FAIL Error caught!")
     print(f"\nFormatted error message:")
     print("-" * 70)
     print(str(e))
@@ -54,7 +54,7 @@ except InvalidJoinKeyError as e:
     print(f"  Missing keys: {e.missing_keys}")
     print(f"  Side: {e.side}")
     print(f"  Available fields: {e.available_fields}")
-    print(f"\n✓ Error provides:")
+    print(f"\nOK Error provides:")
     print(f"    - What went wrong (missing key)")
     print(f"    - Where it happened (join stage)")
     print(f"    - What's available (field list)")
@@ -68,10 +68,10 @@ try:
     # Typo: "betweennes" instead of "betweenness_centrality"
     result = Q.nodes().compute("betweennes").execute(network)
 except UnknownMeasureError as e:
-    print("✗ Error caught!")
+    print("FAIL Error caught!")
     print(f"\nError message:")
     print(f"  {str(e).split('Known measures:')[0].strip()}")
-    print(f"\n✓ Error includes:")
+    print(f"\nOK Error includes:")
     print(f"    - Unknown measure: {e.measure}")
     if e.suggestion:
         print(f"    - Suggestion: Did you mean '{e.suggestion}'?")
@@ -97,7 +97,7 @@ print("-" * 70)
 print(str(error))
 print("-" * 70)
 
-print(f"\n✓ This error provides:")
+print(f"\nOK This error provides:")
 print(f"    - Clear message about what's wrong")
 print(f"    - Stage where the error occurred: {error.stage}")
 print(f"    - Field that caused the issue: {error.field}")
@@ -118,10 +118,10 @@ for i in range(3):
         errors.append(str(e))
 
 if len(set(errors)) == 1:
-    print("✓ Error is deterministic - same message every time")
+    print("OK Error is deterministic - same message every time")
     print(f"  Executed {len(errors)} times, got identical error each time")
 else:
-    print("✗ Errors differ across executions (unexpected)")
+    print("FAIL Errors differ across executions (unexpected)")
 
 print("\n" + "=" * 70)
 print("Example 5: Error Context and Formatting")
@@ -163,15 +163,15 @@ print("Example 6: Early Error Detection")
 print("=" * 70)
 
 print("Errors are detected as early as possible:")
-print("  - Join type validation: at builder creation ✓")
-print("  - Schema validation: at execution time ✓")
-print("  - AST validation: during compilation ✓")
+print("  - Join type validation: at builder creation OK")
+print("  - Schema validation: at execution time OK")
+print("  - AST validation: during compilation OK")
 
 try:
     # Invalid join type caught immediately
     Q.nodes().join(Q.nodes(), on=["id"], how="invalid_type")
 except ValueError as e:
-    print(f"\n✓ Invalid join type caught early: {str(e)[:50]}...")
+    print(f"\nOK Invalid join type caught early: {str(e)[:50]}...")
 
 print("\n" + "=" * 70)
 print("Example 7: Comparing Error Quality")
@@ -179,7 +179,7 @@ print("=" * 70)
 
 print("Before (typical error):")
 print("  KeyError: 'nonexistent_key'")
-print("  ❌ No context, no suggestion, not actionable")
+print("  FAIL No context, no suggestion, not actionable")
 
 print("\nAfter (compiler-quality error):")
 invalid_key_error = InvalidJoinKeyError(
@@ -189,7 +189,7 @@ invalid_key_error = InvalidJoinKeyError(
     ast_summary="Q.nodes().join(...)"
 )
 print(f"  {str(invalid_key_error)[:100]}...")
-print("  ✓ Clear context, available options, actionable")
+print("  OK Clear context, available options, actionable")
 
 print("\n" + "=" * 70)
 print("Key Takeaways")

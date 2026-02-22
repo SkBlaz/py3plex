@@ -411,8 +411,8 @@ Examples
 
 See:
 
-- ``examples/uncertainty/example_stats_degree_delta.py``
-- ``examples/uncertainty/example_stats_betweenness_bootstrap.py``
+- ``examples/network_analysis/example_stats_degree_delta.py``
+- ``examples/network_analysis/example_stats_betweenness_bootstrap.py``
 
 API Reference
 =============

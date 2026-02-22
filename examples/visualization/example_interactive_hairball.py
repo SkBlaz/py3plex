@@ -1,7 +1,7 @@
 """
 Interactive hairball visualization with Plotly.
 
-Generates a random multilayer Erdős–Rényi network, projects it to a
+Generates a random multilayer Erdos-Renyi network, projects it to a
 hairball view, and writes an interactive HTML plot.
 
 Requirements: pip install plotly

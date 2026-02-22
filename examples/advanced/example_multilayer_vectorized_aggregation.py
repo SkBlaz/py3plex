@@ -82,7 +82,7 @@ aggregated_matrix = aggregate_layers(edges_array, reducer="sum", to_sparse=True)
 vec_time = time.perf_counter() - t0
 
 print(f"[OK] Vectorized aggregation completed in {vec_time:.6f} seconds")
-print(f"  Result: {aggregated_matrix.shape[0]}×{aggregated_matrix.shape[1]} sparse matrix")
+print(f"  Result: {aggregated_matrix.shape[0]}x{aggregated_matrix.shape[1]} sparse matrix")
 print(f"  Non-zero entries: {aggregated_matrix.nnz}")
 
 # Show some aggregated edge weights
@@ -90,14 +90,14 @@ print("\n  Sample aggregated weights:")
 for i in range(min(5, aggregated_matrix.shape[0])):
     for j in range(min(5, aggregated_matrix.shape[1])):
         if aggregated_matrix[i, j] > 0:
-            print(f"    Edge ({i}→{j}): {aggregated_matrix[i, j]:.2f}")
+            print(f"    Edge ({i}->{j}): {aggregated_matrix[i, j]:.2f}")
 
 # Example 4: Compare with existing aggregate_edges method
 # Note: Skipping legacy method comparison due to missing imports in original code
 # The new vectorized method provides significant speedup as demonstrated in benchmarks
 print("\n4. Vectorized method provides significant speedup over legacy approaches")
 print("  (See benchmarks for detailed comparisons)")
-print("  Typical speedup: 5-8× on large networks")
+print("  Typical speedup: 5-8x on large networks")
 
 # Example 5: Larger network for performance comparison
 print("\n" + "=" * 70)
@@ -149,20 +149,20 @@ agg_matrix_large = aggregate_layers(edges_array_large, reducer="sum", to_sparse=
 vec_time_large = time.perf_counter() - t0
 
 print(f"[OK] Completed in {vec_time_large:.4f} seconds")
-print(f"  Matrix: {agg_matrix_large.shape[0]}×{agg_matrix_large.shape[1]}")
+print(f"  Matrix: {agg_matrix_large.shape[0]}x{agg_matrix_large.shape[1]}")
 print(f"  Non-zeros: {agg_matrix_large.nnz:,}")
 
 # Performance comparison with legacy method
 # Note: Using benchmarked comparison instead of direct call due to dependencies
 print("\nPerformance comparison (from benchmarks):")
 print(f"  Vectorized method: {vec_time_large:.4f}s")
-print(f"  Expected legacy time: ~{vec_time_large * 7:.4f}s (7× slower, from benchmarks)")
-print("  Expected speedup: ~7×")
+print(f"  Expected legacy time: ~{vec_time_large * 7:.4f}s (7x slower, from benchmarks)")
+print("  Expected speedup: ~7x")
 
 print(f"\n{'=' * 70}")
 print("Performance Summary:")
 print(f"  Vectorized method: {vec_time_large:.4f}s")
-print("  Typical speedup over legacy: 5-8× (from benchmarks)")
+print("  Typical speedup over legacy: 5-8x (from benchmarks)")
 print(f"{'=' * 70}")
 
 # Example 6: Different reducer modes

@@ -58,87 +58,87 @@ try:
     print("[OK] Network created: 4 nodes, 3 layers")
 
     # 1. Layer Density
-    print("\n2. Layer Density (ρᵢ)")
+    print("\n2. Layer Density (rho_i)")
     print("   Fraction of possible edges in each layer:")
     for layer in ['facebook', 'twitter', 'linkedin']:
         density = mls.layer_density(network, layer)
         print(f"   - {layer}: {density:.3f}")
 
     # 2. Inter-layer Coupling Strength
-    print("\n3. Inter-layer Coupling Strength (Cᵢⱼ)")
+    print("\n3. Inter-layer Coupling Strength (C_i_j)")
     print("   Average inter-layer connection weight:")
     coupling_fb_tw = mls.inter_layer_coupling_strength(network, 'facebook', 'twitter')
-    print(f"   - facebook ↔ twitter: {coupling_fb_tw:.3f}")
+    print(f"   - facebook <-> twitter: {coupling_fb_tw:.3f}")
 
     # 3. Node Activity
-    print("\n4. Node Activity (aᵢ)")
+    print("\n4. Node Activity (a_i)")
     print("   Fraction of layers where each node is active:")
     for node in ['Alice', 'Bob', 'Carol', 'David']:
         activity = mls.node_activity(network, node)
         print(f"   - {node}: {activity:.3f}")
 
     # 4. Degree Vector
-    print("\n5. Degree Vector (kᵢ)")
+    print("\n5. Degree Vector (k_i)")
     print("   Node degrees in each layer:")
     degrees_alice = mls.degree_vector(network, 'Alice')
     print(f"   - Alice: {degrees_alice}")
 
     # 5. Inter-layer Degree Correlation
-    print("\n6. Inter-layer Degree Correlation (rᵢⱼ)")
+    print("\n6. Inter-layer Degree Correlation (r_i_j)")
     corr = mls.inter_layer_degree_correlation(network, 'facebook', 'twitter')
     print(f"   - facebook vs twitter: {corr:.3f}")
 
     # 6. Edge Overlap
-    print("\n7. Edge Overlap (ωᵢⱼ)")
+    print("\n7. Edge Overlap (omega_i_j)")
     print("   Jaccard similarity of edge sets:")
     overlap = mls.edge_overlap(network, 'facebook', 'twitter')
-    print(f"   - facebook ∩ twitter: {overlap:.3f}")
+    print(f"   - facebook & twitter: {overlap:.3f}")
 
     # 7. Layer Similarity
-    print("\n8. Layer Similarity (Sᵢⱼ)")
+    print("\n8. Layer Similarity (S_i_j)")
     similarity = mls.layer_similarity(network, 'facebook', 'twitter', method='cosine')
     print(f"   - Cosine similarity: {similarity:.3f}")
 
     # 8. Multilayer Clustering Coefficient
-    print("\n9. Multilayer Clustering Coefficient (Cᴹ)")
+    print("\n9. Multilayer Clustering Coefficient (CM)")
     clustering = mls.multilayer_clustering_coefficient(network)
     print("   - Per node:", {k: f"{v:.3f}" for k, v in clustering.items()})
 
     # 9. Versatility Centrality
-    print("\n10. Versatility Centrality (Vᵢ)")
+    print("\n10. Versatility Centrality (V_i)")
     versatility = mls.versatility_centrality(network, centrality_type='degree')
     print("    Combined centrality across layers:")
     for node, v in sorted(versatility.items(), key=lambda x: x[1], reverse=True):
         print(f"    - {node}: {v:.3f}")
 
     # 10. Interdependence
-    print("\n11. Interdependence (λ)")
+    print("\n11. Interdependence (lambda)")
     print("    Shortest path dependency on inter-layer edges:")
     interdep = mls.interdependence(network, sample_size=10)
-    print(f"    - λ = {interdep:.3f}")
+    print(f"    - lambda = {interdep:.3f}")
 
     # 11. Supra-Laplacian Spectrum
-    print("\n12. Supra-Laplacian Spectrum (Λ)")
+    print("\n12. Supra-Laplacian Spectrum (Lambda)")
     spectrum = mls.supra_laplacian_spectrum(network, k=5)
     print(f"    - First 5 eigenvalues: {[f'{x:.3f}' for x in spectrum]}")
 
     # 12. Algebraic Connectivity
-    print("\n13. Algebraic Connectivity (λ₂)")
+    print("\n13. Algebraic Connectivity (lambda2)")
     alg_conn = mls.algebraic_connectivity(network)
     print(f"    - Fiedler value: {alg_conn:.3f}")
 
     # 13. Inter-layer Assortativity
-    print("\n14. Inter-layer Assortativity (rᴵ)")
+    print("\n14. Inter-layer Assortativity (rI)")
     assort = mls.inter_layer_assortativity(network, 'facebook', 'twitter')
     print(f"    - Degree mixing: {assort:.3f}")
 
     # 14. Entropy of Multiplexity
-    print("\n15. Entropy of Multiplexity (Hₘ)")
+    print("\n15. Entropy of Multiplexity (Hm)")
     entropy = mls.entropy_of_multiplexity(network)
     print(f"    - Layer diversity: {entropy:.3f} bits")
 
     # 15. Multilayer Motif Frequency
-    print("\n16. Multilayer Motif Frequency (fₘ)")
+    print("\n16. Multilayer Motif Frequency (fm)")
     motifs = mls.multilayer_motif_frequency(network, motif_size=3)
     print("    - Triangle frequencies:")
     for motif_type, freq in motifs.items():
@@ -153,7 +153,7 @@ try:
     print(f"    - After removing 50% couplings: {r_coupling:.3f}")
 
     # 17. Multilayer Modularity (using community detection)
-    print("\n18. Multilayer Modularity (Qᴹᴸ)")
+    print("\n18. Multilayer Modularity (QML)")
     print("    Community quality across layers:")
     # Simple community assignment
     communities = {
@@ -178,7 +178,7 @@ try:
     print("\n20. Inter-layer Dependence Entropy (H_dep)")
     print("    Coupling pattern diversity:")
     h_dep = mls.inter_layer_dependence_entropy(network, 'facebook', 'twitter')
-    print(f"    - facebook ↔ twitter: {h_dep:.3f} bits")
+    print(f"    - facebook <-> twitter: {h_dep:.3f} bits")
 
     # 21. Cross-layer Redundancy Entropy
     print("\n21. Cross-layer Redundancy Entropy (H_r)")
@@ -200,7 +200,7 @@ try:
 
     # 24. Multilayer Betweenness Surface
     print("\n24. Multilayer Betweenness Surface")
-    print("    Betweenness centrality matrix (nodes × layers):")
+    print("    Betweenness centrality matrix (nodes x layers):")
     surface, (nodes, layers) = mls.multilayer_betweenness_surface(network)
     print(f"    - Surface shape: {surface.shape}")
     print(f"    - Mean betweenness: {surface.mean():.3f}")

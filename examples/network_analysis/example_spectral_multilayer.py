@@ -27,9 +27,9 @@ print("=" * 80)
 print("MULTILAYER SPECTRAL CLUSTERING")
 print("=" * 80)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Create a multilayer network with clear community structure
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[1] Creating multilayer network...")
 print("-" * 80)
@@ -76,9 +76,9 @@ print(f" Nodes: {len(list(network.get_nodes()))}")
 print(f" Edges: {len(list(network.get_edges()))}")
 print(f" Layers: {list(network.get_layers())}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example A: Supra-Laplacian Spectral Clustering via DSL
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[2] Example A: Supra-Laplacian Spectral Clustering")
@@ -108,9 +108,9 @@ df_supra = result_supra.to_pandas()
 print("Node assignments (Supra-Laplacian):")
 print(df_supra.head(10))
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example B: Multiplex (Aggregated) Laplacian Spectral Clustering via DSL
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[3] Example B: Multiplex (Aggregated) Laplacian Spectral Clustering")
@@ -142,9 +142,9 @@ df_multiplex = result_multiplex.to_pandas()
 print("Node assignments (Multiplex):")
 print(df_multiplex.head(10))
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example C: Direct API Usage (without DSL)
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[4] Example C: Direct API Usage")
@@ -178,9 +178,9 @@ print(f" Partition size: {len(result_multiplex_direct['partition_nodes'])}")
 print(f" Embedding shape: {result_multiplex_direct['embedding_nodes'].shape}")
 print(f" Eigenvalues: {result_multiplex_direct['eigenvalues']}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example D: Accessing Spectral Embeddings
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[5] Example D: Accessing Spectral Embeddings")
@@ -203,9 +203,9 @@ print(f"First 3 nodes (multiplex):")
 for i in range(min(3, embedding_nodes_multiplex.shape[0])):
     print(f"  Node {i}: {embedding_nodes_multiplex[i]}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example E: Omega Sensitivity (Supra variant)
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[6] Example E: Omega Sensitivity Analysis")
@@ -229,9 +229,9 @@ for omega in omega_values:
 
     print(f"  omega={omega:.1f}: {n_communities} communities")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example F: Comparison of Variants
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[7] Example F: Comparison of Variants")
@@ -259,9 +259,9 @@ print(" - For larger networks (better scalability)")
 print(" - When layer coupling is implicit through aggregation")
 print(" - When you want simpler parameter tuning (no omega)")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example G: Determinism Check
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("[8] Example G: Determinism Check")
@@ -280,9 +280,9 @@ identical = partition1 == partition2
 print(f"Partitions identical: {identical}")
 print(f"This demonstrates deterministic behavior with fixed random_state.")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Summary
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n" + "=" * 80)
 print("MULTILAYER SPECTRAL CLUSTERING - SUMMARY")

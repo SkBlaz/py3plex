@@ -1,7 +1,7 @@
 """
 Betweenness centrality on a multilayer network.
 
-Generates a random multilayer Erdős-Rényi graph, aggregates it, and runs
+Generates a random multilayer Erdos-Renyi graph, aggregates it, and runs
 NetworkX betweenness centrality through `monoplex_nx_wrapper`. Prerequisites:
 py3plex installed; no optional extras needed.
 
@@ -22,7 +22,7 @@ def main() -> int:
     np.random.seed(DEFAULT_SEED)
     random.seed(DEFAULT_SEED)
 
-    print("Generating random multilayer Erdős-Rényi network...")
+    print("Generating random multilayer Erdos-Renyi network...")
     print("Parameters: 300 nodes, 6 layers, edge probability 0.05")
 
     multilayer_network = random_generators.random_multilayer_ER(

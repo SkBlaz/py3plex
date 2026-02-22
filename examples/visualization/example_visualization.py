@@ -37,9 +37,9 @@ def plot_intact_embedding(num_it):
     print("ADVANCED NETWORK VISUALIZATION")
     print("=" * 70)
     
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     # Step 1: Load protein interaction network
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     
     print("\n[1] Loading protein interaction network...")
     print("-" * 70)
@@ -49,9 +49,9 @@ def plot_intact_embedding(num_it):
     multilayer_network.basic_stats()
     print(f"Network loaded with {len(list(multilayer_network.get_nodes()))} nodes")
     
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     # Step 2: Generate/load Node2Vec embeddings
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     
     print("\n[2] Generating Node2Vec embeddings...")
     print("-" * 70)
@@ -68,9 +68,9 @@ def plot_intact_embedding(num_it):
     except FileNotFoundError:
         print("Node2Vec binary not found, attempting to load pre-computed embeddings...")
     
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     # Step 3: Load embeddings and project to 2D using t-SNE
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     
     print("\n[3] Loading embeddings and projecting to 2D...")
     print("-" * 70)
@@ -83,9 +83,9 @@ def plot_intact_embedding(num_it):
         multilayer_network, output_format="pos_dict")
     print("2D projection complete!")
     
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     # Step 4: Detect communities for coloring
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     
     print("\n[4] Detecting communities...")
     print("-" * 70)
@@ -97,9 +97,9 @@ def plot_intact_embedding(num_it):
     partition = cw.louvain_communities(multilayer_network)
     print(f"Found {len(set(partition.values()))} communities")
     
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     # Step 5: Assign colors to top communities
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     
     print("\n[5] Assigning colors to top communities...")
     print("-" * 70)
@@ -121,9 +121,9 @@ def plot_intact_embedding(num_it):
         for x in multilayer_network.get_nodes()
     ]
     
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     # Step 6: Create hairball plot with custom layout
-    # ═══════════════════════════════════════════════════════════════════════════════
+    # ===============================================================================
     
     print("\n[6] Generating hairball plot...")
     print("-" * 70)

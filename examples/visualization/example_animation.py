@@ -1,7 +1,7 @@
 """
 Visualization Example: Creating Network Growth Animations
 
-Generates snapshots of increasingly large multilayer Erdős–Rényi networks
+Generates snapshots of increasingly large multilayer Erdos-Renyi networks
 and stitches them into an animated GIF.
 
 Requirements:

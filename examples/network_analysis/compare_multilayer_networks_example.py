@@ -69,7 +69,7 @@ def main():
     print(results.to_string(index=False))
 
     # Show significant differences
-    print("\n5. Statistically Significant Differences (α = 0.05):")
+    print("\n5. Statistically Significant Differences (alpha = 0.05):")
     print("-" * 70)
     significant = results[results['significant']]
     if len(significant) > 0:

@@ -378,11 +378,11 @@ def main() -> int:
     print("\n" + "=" * 60)
     print("All examples completed successfully!")
     print("\nKey Benefits of Apache Arrow:")
-    print("  • Fast: Columnar format optimized for reading/writing")
-    print("  • Compact: Efficient binary encoding, especially with Parquet")
-    print("  • Interoperable: Works with pandas, polars, R, Julia, etc.")
-    print("  • Type-safe: Schema preservation with strong typing")
-    print("  • Standard: Industry-standard format for data interchange")
+    print("  - Fast: Columnar format optimized for reading/writing")
+    print("  - Compact: Efficient binary encoding, especially with Parquet")
+    print("  - Interoperable: Works with pandas, polars, R, Julia, etc.")
+    print("  - Type-safe: Schema preservation with strong typing")
+    print("  - Standard: Industry-standard format for data interchange")
     return 0
 
 

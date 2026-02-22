@@ -19,7 +19,7 @@ def list_available_datasets() -> None:
     print("Available Built-in Datasets")
     print("=" * 60)
     for name, description in p3.list_datasets():
-        print(f"  • {name}: {description}")
+        print(f"  - {name}: {description}")
     print()
 
 

@@ -5,7 +5,7 @@ This example shows how to use the new optimized aggregate_layers function
 with the main py3plex multi_layer_network data structure to efficiently
 aggregate edge weights across multiple layers.
 
-Performance: ~8× faster than legacy loop-based approaches.
+Performance: ~8x faster than legacy loop-based approaches.
 
 Runtime: FAST (< 5 seconds) - Standalone example suitable for CI
 """
@@ -72,12 +72,12 @@ mat_sum = aggregate_layers(edges, reducer="sum", to_sparse=True)
 print(f"\nExtracted {len(edges)} edges from network")
 print(f"Layer mapping: {layer_map}")
 print("\nAggregated result:")
-print(f"  Matrix size: {mat_sum.shape[0]}×{mat_sum.shape[1]} (sparse)")
+print(f"  Matrix size: {mat_sum.shape[0]}x{mat_sum.shape[1]} (sparse)")
 print(f"  Non-zero entries: {mat_sum.nnz}")
 print("\nAggregated weights:")
-print(f"  Edge (0→1): {mat_sum[0, 1]:.2f} (sum across layers)")
-print(f"  Edge (1→2): {mat_sum[1, 2]:.2f}")
-print(f"  Edge (2→3): {mat_sum[2, 3]:.2f}")
+print(f"  Edge (0->1): {mat_sum[0, 1]:.2f} (sum across layers)")
+print(f"  Edge (1->2): {mat_sum[1, 2]:.2f}")
+print(f"  Edge (2->3): {mat_sum[2, 3]:.2f}")
 
 # Example 2: Mean aggregation
 print("\n" + "=" * 60)
@@ -87,7 +87,7 @@ print("=" * 60)
 mat_mean = aggregate_layers(edges, reducer="mean", to_sparse=False)
 
 print("Mean aggregated weights:")
-print(f"  Edge (0→1): {mat_mean[0, 1]:.2f} (mean across layers)")
+print(f"  Edge (0->1): {mat_mean[0, 1]:.2f} (mean across layers)")
 
 # Example 3: Max aggregation
 print("\n" + "=" * 60)
@@ -97,7 +97,7 @@ print("=" * 60)
 mat_max = aggregate_layers(edges, reducer="max", to_sparse=False)
 
 print("Max aggregated weights:")
-print(f"  Edge (0→1): {mat_max[0, 1]:.2f} (max of 1.0, 0.5, 1.5)")
+print(f"  Edge (0->1): {mat_max[0, 1]:.2f} (max of 1.0, 0.5, 1.5)")
 
 # Example 4: Large-scale performance with random multiplex network
 print("\n" + "=" * 60)
@@ -144,7 +144,7 @@ large_mat = aggregate_layers(large_edges, reducer="sum", to_sparse=True)
 elapsed = time.perf_counter() - t0
 
 print(f"[OK] Completed in {elapsed:.4f} seconds")
-print(f"  Matrix shape: {large_mat.shape[0]:,} × {large_mat.shape[1]:,}")
+print(f"  Matrix shape: {large_mat.shape[0]:,} x {large_mat.shape[1]:,}")
 print(f"  Non-zero entries: {large_mat.nnz:,}")
 print(f"  Density: {large_mat.nnz / (large_mat.shape[0] * large_mat.shape[1]):.6f}")
 print(f"  Memory (sparse): {(large_mat.data.nbytes + large_mat.indices.nbytes + large_mat.indptr.nbytes) / 1024:.1f} KB")
@@ -176,7 +176,7 @@ print("\n" + "=" * 60)
 print("Summary")
 print("=" * 60)
 print("[OK] Works seamlessly with py3plex multi_layer_network data structure")
-print("[OK] Vectorized aggregation is ~8× faster than legacy loops")
+print("[OK] Vectorized aggregation is ~8x faster than legacy loops")
 print("[OK] Supports sum, mean, and max reducers")
 print("[OK] Returns memory-efficient sparse matrices by default")
 print("[OK] Integrates with NetworkX and SciPy for downstream analysis")

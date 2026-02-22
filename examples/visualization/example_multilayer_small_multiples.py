@@ -150,10 +150,10 @@ def main():
     print("SMALL MULTIPLES EXAMPLE COMPLETE")
     print("=" * 70)
     print("\nKey features demonstrated:")
-    print("  • Side-by-side comparison of layer structures")
-    print("  • Shared layout for consistent node positioning")
-    print("  • Independent layouts for layer-specific optimization")
-    print("  • Multiple layout algorithms (spring, circular)")
+    print("  - Side-by-side comparison of layer structures")
+    print("  - Shared layout for consistent node positioning")
+    print("  - Independent layouts for layer-specific optimization")
+    print("  - Multiple layout algorithms (spring, circular)")
 
 
 if __name__ == "__main__":

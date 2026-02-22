@@ -551,7 +551,7 @@ When ``uncertainty=False`` (the default), metrics return scalar values as before
 **Further reading:**
 
 * :doc:`compute_statistics`: General guide to network statistics and uncertainty
-* ``examples/uncertainty/example_first_class_uncertainty.py``: Complete examples
+* ``examples/network_analysis/example_first_class_uncertainty.py``: Complete examples
 * ``py3plex.uncertainty`` module: Low-level API for custom uncertainty workflows
 
 Sorting and Limiting

@@ -5,7 +5,7 @@ in the DSL. Unlike traditional UQ which only affects compute(), compositional UQ
 propagates uncertainty through aggregate/summarize, order_by, and coverage operations.
 
 Example output:
-    Average degree across all nodes: 2.5 ± 0.3 (95% CI: [1.9, 3.1])
+    Average degree across all nodes: 2.5 +/- 0.3 (95% CI: [1.9, 3.1])
     
 Key insight: The uncertainty reflects how the aggregate statistic varies
 across different resamples of the network, not just node-level uncertainty.
@@ -63,7 +63,7 @@ def main():
     
     avg_deg = result.attributes["avg_degree"][item]
     if isinstance(avg_deg, dict) and "mean" in avg_deg:
-        print(f"Average degree: {avg_deg['mean']:.2f} ± {avg_deg['std']:.2f}")
+        print(f"Average degree: {avg_deg['mean']:.2f} +/- {avg_deg['std']:.2f}")
         if avg_deg.get("quantiles"):
             q_low = min(avg_deg["quantiles"].values())
             q_high = max(avg_deg["quantiles"].values())
@@ -71,11 +71,11 @@ def main():
     
     median_deg = result.attributes["median_degree"][item]
     if isinstance(median_deg, dict) and "mean" in median_deg:
-        print(f"Median degree: {median_deg['mean']:.2f} ± {median_deg['std']:.2f}")
+        print(f"Median degree: {median_deg['mean']:.2f} +/- {median_deg['std']:.2f}")
     
     count_val = result.attributes["count"][item]
     if isinstance(count_val, dict) and "mean" in count_val:
-        print(f"Node count: {count_val['mean']:.0f} ± {count_val['std']:.2f}")
+        print(f"Node count: {count_val['mean']:.0f} +/- {count_val['std']:.2f}")
     
     print("\n" + "=" * 60)
     print("Example 2: Ranking with Stability Metrics")
@@ -104,10 +104,10 @@ def main():
             rank_mean = rank_stab["rank_means"].get(item)
             rank_std = rank_stab["rank_stds"].get(item)
             if rank_mean is not None:
-                print(f"  {node_id}: rank {rank_mean:.1f} ± {rank_std:.2f}")
+                print(f"  {node_id}: rank {rank_mean:.1f} +/- {rank_std:.2f}")
     
     print("\n" + "=" * 60)
-    print("✓ Compositional UQ example complete")
+    print("OK Compositional UQ example complete")
     print("=" * 60)
 
 
