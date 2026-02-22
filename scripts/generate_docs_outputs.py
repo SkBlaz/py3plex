@@ -3,7 +3,7 @@
 Generate documentation outputs from examples.
 
 This script:
-1. Discovers all examples in examples/docs/
+1. Discovers all examples in examples/getting_started/
 2. Executes each example and captures stdout/stderr
 3. Saves outputs to docs_outputs/ directory
 4. Creates a manifest file mapping examples to outputs
@@ -23,7 +23,7 @@ from typing import Dict, List, Tuple
 
 # Paths
 REPO_ROOT = Path(__file__).parent.parent
-EXAMPLES_DIR = REPO_ROOT / "examples" / "docs"
+EXAMPLES_DIR = REPO_ROOT / "examples" / "getting_started"
 OUTPUTS_DIR = REPO_ROOT / "examples" / "docs_outputs"
 MANIFEST_FILE = OUTPUTS_DIR / "manifest.json"
 

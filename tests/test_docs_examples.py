@@ -2,7 +2,7 @@
 Test documentation examples pipeline.
 
 This test suite validates:
-1. Examples in examples/docs/ can be executed
+1. Examples in examples/getting_started/ can be executed
 2. Outputs are captured correctly
 3. RST files reference the correct outputs
 4. Validation catches errors
@@ -18,14 +18,14 @@ import pytest
 
 # Paths
 REPO_ROOT = Path(__file__).parent.parent
-EXAMPLES_DIR = REPO_ROOT / "examples" / "docs"
+EXAMPLES_DIR = REPO_ROOT / "examples" / "getting_started"
 OUTPUTS_DIR = REPO_ROOT / "examples" / "docs_outputs"
 MANIFEST_FILE = OUTPUTS_DIR / "manifest.json"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 
 
 def test_examples_directory_exists():
-    """Test that examples/docs directory exists."""
+    """Test that examples/getting_started directory exists."""
     assert EXAMPLES_DIR.exists(), f"Examples directory not found: {EXAMPLES_DIR}"
     assert EXAMPLES_DIR.is_dir(), f"Examples path is not a directory: {EXAMPLES_DIR}"
 
