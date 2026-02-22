@@ -95,6 +95,10 @@ coverage.json
 coverage_*.json
 property_coverage_*.json
 property_test_coverage_*.json
+
+# Generated report/summary txt files (agent-produced, not project assets)
+PROJECT_SUMMARY.txt
+*_REPORT.txt
 auto/
 LLM_ORIGINAL_BACKUP.md
 mutants/
