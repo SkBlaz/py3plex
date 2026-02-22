@@ -12,10 +12,10 @@ rankings to network perturbations using the .sensitivity() DSL method.
 Comparison with UQ:
 -------------------
 - **UQ (.uq())**: "What is the uncertainty in betweenness centrality values?"
-  → Returns mean ± std, confidence intervals
+  -> Returns mean +/- std, confidence intervals
 
 - **Sensitivity (.sensitivity())**: "How stable is the top-10 ranking under edge noise?"
-  → Returns stability curves (Jaccard@k, Kendall-τ vs perturbation strength)
+  -> Returns stability curves (Jaccard@k, Kendall-tau vs perturbation strength)
 """
 
 from py3plex.core import multinet
@@ -126,7 +126,7 @@ def main():
     uq_df = uq_result.to_pandas(expand_uncertainty=True)
     print(uq_df[["id", "degree", "degree_std", "degree_ci95_low", "degree_ci95_high"]])
 
-    print("\n→ UQ gives: mean ± std, confidence intervals for VALUES")
+    print("\n-> UQ gives: mean +/- std, confidence intervals for VALUES")
 
     print("\n--- Sensitivity: Ranking stability ---")
     sens_result = (
@@ -147,7 +147,7 @@ def main():
     if sens_result.has_sensitivity:
         sens_df = sens_result.sensitivity_result.to_pandas(expand_sensitivity=False)
         print(sens_df.to_string(index=False))
-        print("\n→ Sensitivity gives: stability curves for CONCLUSIONS")
+        print("\n-> Sensitivity gives: stability curves for CONCLUSIONS")
 
     # Example 3: Interpret the results
     print("\n" + "=" * 70)
@@ -159,7 +159,7 @@ def main():
 When to use UQ:
 - "How confident am I in this centrality VALUE?"
 - "What is the measurement uncertainty?"
-- Reports: mean ± std, confidence intervals
+- Reports: mean +/- std, confidence intervals
 
 When to use Sensitivity:
 - "How robust is this top-10 RANKING?"
@@ -167,7 +167,7 @@ When to use Sensitivity:
 - Reports: stability curves, tipping points, influence scores
 
 Both are complementary:
-- UQ: "Node A has degree 15 ± 2"
+- UQ: "Node A has degree 15 +/- 2"
 - Sensitivity: "Node A stays in top-10 with 95% stability up to 15% edge removal"
 """
     )

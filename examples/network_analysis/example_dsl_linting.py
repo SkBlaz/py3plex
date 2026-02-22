@@ -88,7 +88,7 @@ def example_2_unknown_layer():
         for d in diagnostics:
             print(f"  [{d.severity.upper()}] {d.code}: {d.message}")
             if d.suggested_fix:
-                print(f"    → Suggestion: {d.suggested_fix.replacement}")
+                print(f"    -> Suggestion: {d.suggested_fix.replacement}")
 
     print()
 

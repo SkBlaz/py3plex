@@ -2,14 +2,14 @@
 
 This directory contains introductory examples to help you get started with py3plex. These examples demonstrate the core concepts and basic usage patterns.
 
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
 **New to py3plex?** Follow this path:
 
 1. **5-Minute Introduction**: [dsl_patterns_quick_reference.py](dsl_patterns_quick_reference.py) 
    - 7 essential DSL patterns (executable, copy-paste ready)
    - Covers 80% of typical use cases
-   - **⭐ Start here for fastest onboarding**
+   - Start here for fastest onboarding
 
 2. **10-Minute Tutorial**: [tutorial_10min.py](tutorial_10min.py)
    - Complete workflow from data loading to visualization
@@ -22,7 +22,7 @@ This directory contains introductory examples to help you get started with py3pl
 
 4. **Deep Dive**: See [AGENTS.md](../../AGENTS.md#quick-start-golden-paths) for comprehensive documentation
 
-## 🎯 Essential Patterns (from dsl_patterns_quick_reference.py)
+## Essential Patterns (from dsl_patterns_quick_reference.py)
 
 The `dsl_patterns_quick_reference.py` file contains **7 copy-paste patterns** for immediate use:
 
@@ -36,7 +36,7 @@ The `dsl_patterns_quick_reference.py` file contains **7 copy-paste patterns** fo
 | **6. Per-Layer Aggregation** | Compare layers statistically | Layer-level analysis |
 | **7. Export Formats** | Save results in various formats | Data integration |
 
-**💡 Pro Tip**: Run `dsl_patterns_quick_reference.py` to see all patterns with live output!
+Pro Tip: Run `dsl_patterns_quick_reference.py` to see all patterns with live output!
 
 ## Examples in This Category
 
@@ -47,7 +47,7 @@ The `dsl_patterns_quick_reference.py` file contains **7 copy-paste patterns** fo
 - **`example_datasets.py`** - Load bundled datasets and generate synthetic networks (similar to scikit-learn's datasets module)
 
 ### Creating Networks
-- **`example_random_generator.py`** - Generate random multilayer Erdős-Rényi networks
+- **`example_random_generator.py`** - Generate random multilayer Erdos-Renyi networks
 - **`example_random_generators_advanced.py`** - Advanced random network generators with custom parameters
 - **`example_multilayer_functionality.py`** - Core multilayer network operations (adding nodes, edges, layers)
 

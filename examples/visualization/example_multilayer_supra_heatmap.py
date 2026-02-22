@@ -142,15 +142,15 @@ def main():
     print("SUPRA-ADJACENCY HEATMAP EXAMPLE COMPLETE")
     print("=" * 70)
     print("\nKey features demonstrated:")
-    print("  • Matrix representation of multilayer structure")
-    print("  • Block-diagonal showing layer-specific connections")
-    print("  • Optional inter-layer coupling visualization")
-    print("  • Grid lines delineating layer boundaries")
-    print("  • Multiple colormap options")
+    print("  - Matrix representation of multilayer structure")
+    print("  - Block-diagonal showing layer-specific connections")
+    print("  - Optional inter-layer coupling visualization")
+    print("  - Grid lines delineating layer boundaries")
+    print("  - Multiple colormap options")
     print("\nInterpretation:")
-    print("  • Each block along diagonal = adjacency matrix of one layer")
-    print("  • Off-diagonal blocks = inter-layer connections (when enabled)")
-    print("  • White grid lines separate layers")
+    print("  - Each block along diagonal = adjacency matrix of one layer")
+    print("  - Off-diagonal blocks = inter-layer connections (when enabled)")
+    print("  - White grid lines separate layers")
 
 
 if __name__ == "__main__":

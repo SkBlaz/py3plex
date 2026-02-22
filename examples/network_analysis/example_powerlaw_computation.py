@@ -33,9 +33,9 @@ print("=" * 70)
 print("POWER-LAW DISTRIBUTION ANALYSIS")
 print("=" * 70)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 1: Power-law analysis on a simple NetworkX graph
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[1] Analyzing power-law distribution on a NetworkX powerlaw cluster graph...")
 print("-" * 70)
@@ -46,9 +46,9 @@ print(f"Degree distribution: {len(val_vect)} values")
 plot_power_law(val_vect, "", "Node degree", "individual node")
 print("Power-law plot saved/displayed successfully")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 2: Power-law analysis on a multilayer network
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[2] Analyzing power-law distribution on a multilayer network...")
 print("-" * 70)
@@ -70,9 +70,9 @@ print(f"Multilayer degree distribution: {len(val_vect)} values")
 plot_power_law(val_vect, "", "Node degree", "individual node")
 print("Multilayer power-law plot saved/displayed successfully")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Example 3: Statistical test for scale-free properties
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[3] Testing for scale-free properties...")
 print("-" * 70)

@@ -171,7 +171,7 @@ class ComputeUncertaintyStats(PipelineStep):
                     value = clustering[node]
                     # Rough uncertainty estimate based on degree
                     degree = G.degree(node) if node in G else 0
-                    # Higher degree → more stable clustering
+                    # Higher degree -> more stable clustering
                     std_estimate = 0.1 / (1 + degree) if degree > 0 else 0.1
 
                     clustering_stats[node] = StatValue(
@@ -338,7 +338,7 @@ def _run_bootstrap_pipeline() -> Dict[str, Any]:
     print(f"\n  Top 3 most robust nodes:")
     for i, node_info in enumerate(robust_sorted, 1):
         print(f"    {i}. Node {node_info['node']}:")
-        print(f"       Degree: {node_info['value']:.1f} ± {node_info['std']:.2f}")
+        print(f"       Degree: {node_info['value']:.1f} +/- {node_info['std']:.2f}")
         print(f"       Robustness: {node_info['robustness']:.3f}")
         ci_low, ci_high = node_info["ci"]
         print(f"       95% CI: [{ci_low:.2f}, {ci_high:.2f}]")
@@ -351,7 +351,7 @@ def _run_bootstrap_pipeline() -> Dict[str, Any]:
         print(f"\n  Top 3 most uncertain nodes:")
         for i, node_info in enumerate(uncertain_sorted, 1):
             print(f"    {i}. Node {node_info['node']}:")
-            print(f"       Degree: {node_info['value']:.1f} ± {node_info['std']:.2f}")
+            print(f"       Degree: {node_info['value']:.1f} +/- {node_info['std']:.2f}")
             print(f"       Robustness: {node_info['robustness']:.3f}")
     print()
     return result
@@ -372,15 +372,15 @@ def _demo_arithmetic_with_uncertainty(result_boot: Dict[str, Any]) -> None:
     stat_a = degree_stats[nodes_list[0]]
     stat_b = degree_stats[nodes_list[1]]
 
-    print(f"\nNode {nodes_list[0]}: degree = {float(stat_a):.2f} ± {stat_a.std():.2f}")
-    print(f"Node {nodes_list[1]}: degree = {float(stat_b):.2f} ± {stat_b.std():.2f}")
+    print(f"\nNode {nodes_list[0]}: degree = {float(stat_a):.2f} +/- {stat_a.std():.2f}")
+    print(f"Node {nodes_list[1]}: degree = {float(stat_b):.2f} +/- {stat_b.std():.2f}")
 
     stat_sum = stat_a + stat_b
-    print(f"\nSum: {float(stat_sum):.2f} ± {stat_sum.std():.2f}")
+    print(f"\nSum: {float(stat_sum):.2f} +/- {stat_sum.std():.2f}")
     print("  (Uncertainty propagated via Monte Carlo)")
 
     stat_avg = (stat_a + stat_b) / 2
-    print(f"\nAverage: {float(stat_avg):.2f} ± {stat_avg.std():.2f}")
+    print(f"\nAverage: {float(stat_avg):.2f} +/- {stat_avg.std():.2f}")
     print()
 
 
@@ -400,12 +400,12 @@ def main() -> int:
     print("=" * 70)
     print("Key Takeaways:")
     print("-" * 70)
-    print("• Pipeline steps can compute StatValue objects with uncertainty")
-    print("• Deterministic stats use Delta(0) for perfect certainty")
-    print("• Bootstrap provides empirical uncertainty estimates")
-    print("• Robustness filtering helps identify stable vs uncertain nodes")
-    print("• StatValue objects support arithmetic with uncertainty propagation")
-    print("• All uncertainty info is tracked in provenance for reproducibility")
+    print("- Pipeline steps can compute StatValue objects with uncertainty")
+    print("- Deterministic stats use Delta(0) for perfect certainty")
+    print("- Bootstrap provides empirical uncertainty estimates")
+    print("- Robustness filtering helps identify stable vs uncertain nodes")
+    print("- StatValue objects support arithmetic with uncertainty propagation")
+    print("- All uncertainty info is tracked in provenance for reproducibility")
     print("=" * 70)
     return 0
 

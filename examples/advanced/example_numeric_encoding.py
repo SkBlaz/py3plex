@@ -1,7 +1,7 @@
 """Example: Numeric Encoding (Supra-Adjacency Matrix)
 
 This example demonstrates how to:
-- Generate random Erdős-Rényi multilayer networks
+- Generate random Erdos-Renyi multilayer networks
 - Extract the supra-adjacency matrix representation
 - Load a multiplex network from edgelist format
 - Convert network to numeric encoding (node-to-index mapping)

@@ -255,33 +255,33 @@ print(
 Ricci-Flow-Based Visualization Features:
 
 1. CORE VISUALIZATION:
-   • Shows aggregated network structure
-   • Automatically computes Ricci flow
-   • Edge colors indicate curvature (red=bottleneck, blue=community)
-   • Node colors show layer participation
+   - Shows aggregated network structure
+   - Automatically computes Ricci flow
+   - Edge colors indicate curvature (red=bottleneck, blue=community)
+   - Node colors show layer participation
 
 2. PER-LAYER VISUALIZATION:
-   • Compare individual layer structures
-   • Shared layout for easy comparison
-   • Grid arrangement for side-by-side viewing
+   - Compare individual layer structures
+   - Shared layout for easy comparison
+   - Grid arrangement for side-by-side viewing
 
 3. SUPRA-GRAPH VISUALIZATION:
-   • Full multilayer structure including inter-layer edges
-   • 2D or 3D layouts
-   • Layer separation in 3D for hierarchical view
+   - Full multilayer structure including inter-layer edges
+   - 2D or 3D layouts
+   - Layer separation in 3D for hierarchical view
 
 INTERPRETATION:
-   • Red edges: Negative curvature → community boundaries/bottlenecks
-   • Blue edges: Positive curvature → within-community connections
-   • Edge width: Proportional to post-flow weight
-   • Node size/color: Customizable (degree, curvature, layer overlap)
+   - Red edges: Negative curvature -> community boundaries/bottlenecks
+   - Blue edges: Positive curvature -> within-community connections
+   - Edge width: Proportional to post-flow weight
+   - Node size/color: Customizable (degree, curvature, layer overlap)
 
 BEST PRACTICES:
-   • Start with iterations=10 for quick preview
-   • Use iterations=20-30 for publication quality
-   • MDS layout best for distance preservation
-   • Spring layout best for local structure
-   • Try different alpha values (0.3-0.7) for different effects
+   - Start with iterations=10 for quick preview
+   - Use iterations=20-30 for publication quality
+   - MDS layout best for distance preservation
+   - Spring layout best for local structure
+   - Try different alpha values (0.3-0.7) for different effects
 """
 )
 

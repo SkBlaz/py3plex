@@ -73,7 +73,7 @@ def main():
         bc_high = row['betweenness_centrality_ci95_high']
 
         print(f"\n{node_id}:")
-        print(f"  Betweenness: {bc_mean:.4f} ± {bc_std:.4f}")
+        print(f"  Betweenness: {bc_mean:.4f} +/- {bc_std:.4f}")
         print(f"  95% CI: [{bc_low:.4f}, {bc_high:.4f}]")
         print(f"  CI width: {bc_high - bc_low:.4f}")
 

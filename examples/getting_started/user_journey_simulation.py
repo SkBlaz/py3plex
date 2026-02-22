@@ -12,9 +12,9 @@ No new markdown documentation is created - this is pure demonstration code that
 serves as both a learning resource and a validation tool for ergonomics.
 
 User Personas Simulated:
-1. First-Time User: Installation → First Network → Basic Analysis
-2. Intermediate User: Data Loading → Queries → Visualization
-3. Advanced User: Custom Analysis → UQ → Temporal Networks
+1. First-Time User: Installation -> First Network -> Basic Analysis
+2. Intermediate User: Data Loading -> Queries -> Visualization
+3. Advanced User: Custom Analysis -> UQ -> Temporal Networks
 """
 
 import sys
@@ -41,7 +41,7 @@ def print_section(title, char="="):
 
 def print_step(step_num, description):
     """Helper to print step descriptions."""
-    print(f"\n{'▸' * 3} Step {step_num}: {description}")
+    print(f"\n{'>' * 3} Step {step_num}: {description}")
     print("-" * 70)
 
 
@@ -69,7 +69,7 @@ def simulate_first_time_user():
     print("Code: net = multinet.multi_layer_network(directed=False)")
     
     net = multinet.multi_layer_network(directed=False, verbose=False)
-    print(f"✓ Network created: {net}")
+    print(f"OK Network created: {net}")
     print("  Ergonomic win: __repr__ shows structure, not memory address")
     
     # Step 2: Add nodes (ergonomic: dict-based API with clear structure)
@@ -82,7 +82,7 @@ def simulate_first_time_user():
              for person in people for layer in layers]
     net.add_nodes(nodes)
     
-    print(f"✓ Added {len(nodes)} node replicas")
+    print(f"OK Added {len(nodes)} node replicas")
     print(f"  Network now: {net}")
     print("  Ergonomic win: Immediate feedback on what was added")
     
@@ -105,7 +105,7 @@ def simulate_first_time_user():
     ]
     net.add_edges(edges)
     
-    print(f"✓ Added {len(edges)} edges")
+    print(f"OK Added {len(edges)} edges")
     print(f"  Network now: {net}")
     print("  Ergonomic win: Clear progress indicator")
     
@@ -114,7 +114,7 @@ def simulate_first_time_user():
     print("Code: result = Q.nodes().execute(net)")
     
     result = Q.nodes().execute(net)
-    print(f"✓ Query completed: {result.count} node replicas found")
+    print(f"OK Query completed: {result.count} node replicas found")
     print(f"  Physical nodes: {len(set(n[0] for n in result.items))}")
     print("  Ergonomic win: Clear distinction between replicas and physical nodes")
     
@@ -124,23 +124,23 @@ def simulate_first_time_user():
     
     result = Q.nodes().compute("degree").execute(net)
     df = result.to_pandas()
-    print(f"✓ Computed degree for {len(df)} nodes")
+    print(f"OK Computed degree for {len(df)} nodes")
     print("\n  Top 5 by degree:")
     print(df.nlargest(5, 'degree')[['id', 'layer', 'degree']].to_string(index=False))
     print("  Ergonomic win: Easy conversion to pandas for analysis")
     
     # Step 6: Next steps hint (ergonomic: guidance)
     print_step(6, "What can I do next?")
-    print("  📖 Suggested next steps:")
-    print("     • Try filtering: .where(degree__gt=2)")
-    print("     • Try per-layer analysis: .per_layer().compute('degree')")
-    print("     • Try community detection: see intermediate user journey")
-    print("     • Try visualization: see examples/visualization/")
+    print("   Suggested next steps:")
+    print("     - Try filtering: .where(degree__gt=2)")
+    print("     - Try per-layer analysis: .per_layer().compute('degree')")
+    print("     - Try community detection: see intermediate user journey")
+    print("     - Try visualization: see examples/visualization/")
     
-    print("\n" + "✓" * 70)
+    print("\n" + "OK" * 70)
     print("FIRST-TIME USER JOURNEY COMPLETE!")
     print("User successfully created and analyzed their first network.")
-    print("✓" * 70)
+    print("OK" * 70)
     
     return net
 
@@ -202,7 +202,7 @@ def simulate_intermediate_user():
     
     net.add_edges(edges)
     
-    print(f"✓ Network loaded: {net}")
+    print(f"OK Network loaded: {net}")
     print("  Ergonomic win: Clear summary of loaded network")
     
     # Step 2: Complex query with filtering (ergonomic: chainable DSL)
@@ -219,7 +219,7 @@ def simulate_intermediate_user():
         .execute(net)
     )
     
-    print(f"✓ Found {result.count} influential nodes")
+    print(f"OK Found {result.count} influential nodes")
     df = result.to_pandas()
     print("\n  Top 5 influential nodes:")
     print(df.head()[['id', 'layer', 'degree', 'betweenness_centrality']].to_string(index=False))
@@ -237,7 +237,7 @@ def simulate_intermediate_user():
         .execute(net)
     )
     
-    print(f"✓ Found top hubs per layer")
+    print(f"OK Found top hubs per layer")
     df = result.to_pandas()
     print("\n  Top nodes by layer:")
     for layer in layers:
@@ -255,7 +255,7 @@ def simulate_intermediate_user():
     
     from collections import Counter
     community_sizes = Counter(communities.values())
-    print(f"✓ Found {len(community_sizes)} communities")
+    print(f"OK Found {len(community_sizes)} communities")
     print(f"  Community sizes: {dict(community_sizes)}")
     print("  Ergonomic win: Simple function call, clear results")
     
@@ -274,17 +274,17 @@ def simulate_intermediate_user():
         .execute(net)
     )
     
-    print(f"✓ Found {result.count} cross-layer hubs")
+    print(f"OK Found {result.count} cross-layer hubs")
     if result.count > 0:
         df = result.to_pandas()
         unique_nodes = df['id'].unique()
         print(f"  Nodes: {list(unique_nodes)[:5]}")
     print("  Ergonomic win: Complex cross-layer analysis made simple")
     
-    print("\n" + "✓" * 70)
+    print("\n" + "OK" * 70)
     print("INTERMEDIATE USER JOURNEY COMPLETE!")
     print("User successfully performed advanced multi-layer analysis.")
-    print("✓" * 70)
+    print("OK" * 70)
     
     return net
 
@@ -333,7 +333,7 @@ def simulate_advanced_user():
                     })
     
     net.add_edges(edges)
-    print(f"✓ Network created: {net}")
+    print(f"OK Network created: {net}")
     print("  Ergonomic win: All random operations seeded for reproducibility")
     
     # Step 2: Query with UQ (ergonomic: integrated uncertainty)
@@ -350,7 +350,7 @@ def simulate_advanced_user():
         .execute(net)
     )
     
-    print(f"✓ Computed PageRank with uncertainty for {result.count} nodes")
+    print(f"OK Computed PageRank with uncertainty for {result.count} nodes")
     df = result.to_pandas(expand_uncertainty=True)
     if 'pagerank_mean' in df.columns:
         print("\n  Results with confidence intervals:")
@@ -386,12 +386,12 @@ def simulate_advanced_user():
     
     # Export to pandas
     df = result.to_pandas()
-    print(f"✓ Pandas DataFrame: {len(df)} rows, {len(df.columns)} columns")
+    print(f"OK Pandas DataFrame: {len(df)} rows, {len(df.columns)} columns")
     
     # Export to NetworkX
     try:
         nx_graph = result.to_networkx()
-        print(f"✓ NetworkX graph: {nx_graph.number_of_nodes()} nodes, "
+        print(f"OK NetworkX graph: {nx_graph.number_of_nodes()} nodes, "
               f"{nx_graph.number_of_edges()} edges")
     except Exception as e:
         print(f"  NetworkX export: {type(e).__name__}")
@@ -400,21 +400,21 @@ def simulate_advanced_user():
     
     # Step 5: Advanced DSL features showcase
     print_step(5, "Advanced DSL features summary")
-    print("✓ Demonstrated features:")
-    print("  • Uncertainty quantification with confidence intervals")
-    print("  • Parameterized, reusable queries")
-    print("  • Multiple export formats (pandas, NetworkX)")
-    print("  • Reproducible analysis with seeds")
-    print("  • Complex multi-layer filtering and grouping")
+    print("OK Demonstrated features:")
+    print("  - Uncertainty quantification with confidence intervals")
+    print("  - Parameterized, reusable queries")
+    print("  - Multiple export formats (pandas, NetworkX)")
+    print("  - Reproducible analysis with seeds")
+    print("  - Complex multi-layer filtering and grouping")
     print("\n  Next steps for advanced users:")
-    print("  📖 Temporal networks: examples/temporal/")
-    print("  📖 Dynamics: examples/dynamics/")
-    print("  📖 Custom algorithms: AGENTS.md")
+    print("   Temporal networks: examples/network_analysis/")
+    print("   Dynamics: examples/dynamics/")
+    print("   Custom algorithms: AGENTS.md")
     
-    print("\n" + "✓" * 70)
+    print("\n" + "OK" * 70)
     print("ADVANCED USER JOURNEY COMPLETE!")
     print("User successfully performed reproducible, uncertainty-aware analysis.")
-    print("✓" * 70)
+    print("OK" * 70)
     
     return net
 
@@ -430,7 +430,7 @@ def demonstrate_ergonomic_improvements():
     improvements = [
         ("Clear Network Representations",
          "Network objects show statistics, not memory addresses",
-         "net = multinet.multi_layer_network() → <MultiLayerNetwork: 0 nodes, 0 edges, 0 layers>"),
+         "net = multinet.multi_layer_network() -> <MultiLayerNetwork: 0 nodes, 0 edges, 0 layers>"),
         
         ("Intuitive Dict-Based API",
          "Clear, self-documenting data structures",
@@ -442,7 +442,7 @@ def demonstrate_ergonomic_improvements():
         
         ("Automatic Type Conversion",
          "Easy export to pandas, NetworkX, Arrow",
-         "result.to_pandas() → DataFrame with all metrics"),
+         "result.to_pandas() -> DataFrame with all metrics"),
         
         ("Integrated Uncertainty",
          "UQ built into the query language",
@@ -454,7 +454,7 @@ def demonstrate_ergonomic_improvements():
         
         ("Progress Feedback",
          "Real-time updates for long operations",
-         "execute(net, progress=True) → step-by-step logging"),
+         "execute(net, progress=True) -> step-by-step logging"),
         
         ("Per-Layer Operations",
          "Intuitive grouping and aggregation",
@@ -492,26 +492,26 @@ def main():
         # Summary
         elapsed = time.time() - start_time
         print_section("SIMULATION COMPLETE", "=")
-        print(f"✓ All user journeys completed successfully in {elapsed:.2f}s")
+        print(f"OK All user journeys completed successfully in {elapsed:.2f}s")
         print("\nKey Takeaways:")
-        print("• First-time users can create networks and run queries immediately")
-        print("• Intermediate users can perform complex multi-layer analyses")
-        print("• Advanced users have full control with UQ and reproducibility")
-        print("• Clear feedback and guidance at every step")
-        print("• No friction points encountered")
+        print("- First-time users can create networks and run queries immediately")
+        print("- Intermediate users can perform complex multi-layer analyses")
+        print("- Advanced users have full control with UQ and reproducibility")
+        print("- Clear feedback and guidance at every step")
+        print("- No friction points encountered")
         
         print("\nErgonomic Wins:")
-        print("✓ Clear representations (__repr__ shows structure)")
-        print("✓ Intuitive dict-based API")
-        print("✓ Chainable query language")
-        print("✓ Integrated uncertainty quantification")
-        print("✓ Multiple export formats")
-        print("✓ Helpful error messages and guidance")
+        print("OK Clear representations (__repr__ shows structure)")
+        print("OK Intuitive dict-based API")
+        print("OK Chainable query language")
+        print("OK Integrated uncertainty quantification")
+        print("OK Multiple export formats")
+        print("OK Helpful error messages and guidance")
         
         return 0
     
     except Exception as e:
-        print(f"\n❌ Error during simulation: {e}")
+        print(f"\nFAIL Error during simulation: {e}")
         import traceback
         traceback.print_exc()
         return 1

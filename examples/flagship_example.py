@@ -14,7 +14,7 @@ Key features:
 - AutoCommunity with multi-objective optimization (no single objective function)
 - Seamless integration of community detection into DSL query chain
 - Uncertainty quantification (UQ) for confidence intervals on centralities
-- Layer-wise analysis with cross-layer coverage filtering (≥k layers requirement)
+- Layer-wise analysis with cross-layer coverage filtering (>=k layers requirement)
 - Composite scoring from multiple centrality measures
 - Interpretability via .explain() with top neighbors and community info
 
@@ -56,9 +56,9 @@ def main():
     print("\n1. Loading multilayer biological network...")
     net = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
     print(
-        f"   ✓ Loaded {len(list(net.get_nodes()))} nodes across {len(net.get_layers())} layers"
+        f"   OK Loaded {len(list(net.get_nodes()))} nodes across {len(net.get_layers())} layers"
     )
-    print(f"   ✓ Total edges: {net.edge_count}")
+    print(f"   OK Total edges: {net.edge_count}")
 
     # ========================================================================
     # 2. Advanced DSL query: Find robust master regulator gene candidates
@@ -72,7 +72,7 @@ def main():
     print("   - Removing peripheral nodes (degree > 3)")
     print("   - Computing centralities with UQ (100 samples, 95% CI)")
     print("   - Per-layer top-k selection (30 genes per layer)")
-    print("   - Cross-layer coverage filter (≥2 layers)")
+    print("   - Cross-layer coverage filter (>=2 layers)")
     print("   - Composite influence scoring")
 
     res = (
@@ -94,7 +94,7 @@ def main():
         .per_layer()  # Group by layer
         .top_k(30, "betweenness_centrality__mean")  # Top 30 per layer
         .end_grouping()
-        .coverage(mode="at_least", k=2)  # Keep genes in ≥2 layers (cross-layer hubs)
+        .coverage(mode="at_least", k=2)  # Keep genes in >=2 layers (cross-layer hubs)
         .mutate(  # Composite influence score (simple linear influence score - all based on UQ means)
             score=lambda r: (
                 0.5 * r.get("betweenness_centrality__mean", 0.0)
@@ -108,7 +108,7 @@ def main():
         .execute(net)
     )
 
-    print(f"   ✓ Query complete: {len(res.nodes)} master regulator candidates")
+    print(f"   OK Query complete: {len(res.nodes)} master regulator candidates")
 
     # ========================================================================
     # 3. Display results
@@ -146,16 +146,16 @@ def main():
     print("ANALYSIS COMPLETE!")
     print("=" * 80)
     print("\nKey insights:")
-    print("  ✓ Automated community detection integrated into DSL query")
-    print("  ✓ Robustness analysis quantified stability via perturbations")
-    print("  ✓ DSL query identified cross-layer hub genes with confidence intervals")
-    print("  ✓ Master regulators ranked by composite influence score")
+    print("  OK Automated community detection integrated into DSL query")
+    print("  OK Robustness analysis quantified stability via perturbations")
+    print("  OK DSL query identified cross-layer hub genes with confidence intervals")
+    print("  OK Master regulators ranked by composite influence score")
     print("\nInterpretation:")
-    print("  • community_stability: Node-level confidence in community assignment")
-    print("  • betweenness_centrality__mean: Average centrality across UQ samples")
-    print("  • ci95_low/high: 95% confidence interval bounds")
-    print("  • score: Weighted composite of multiple centrality measures")
-    print("  • coverage (≥2 layers): Ensures robustness across multilayer structure")
+    print("  - community_stability: Node-level confidence in community assignment")
+    print("  - betweenness_centrality__mean: Average centrality across UQ samples")
+    print("  - ci95_low/high: 95% confidence interval bounds")
+    print("  - score: Weighted composite of multiple centrality measures")
+    print("  - coverage (>=2 layers): Ensures robustness across multilayer structure")
 
 
 if __name__ == "__main__":

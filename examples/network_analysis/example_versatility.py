@@ -131,7 +131,7 @@ def example_3_layer_scores():
     print("  Layer 2: Path (node 1 central)")
     print("  Layer 3: Star (node 0 central)")
 
-    print("\nPer-layer scores (X[i, α]):")
+    print("\nPer-layer scores (X[i, alpha]):")
     print(f"{'Node':<8} {'Layer 1':<12} {'Layer 2':<12} {'Layer 3':<12} {'Total':<12}")
     print("-" * 56)
 
@@ -291,7 +291,7 @@ def example_7_supra_adjacency():
     print("\nL2 =")
     print(L2.toarray())
 
-    print(f"\nSupra-adjacency matrix (4×4 for 2 nodes × 2 layers):")
+    print(f"\nSupra-adjacency matrix (4x4 for 2 nodes x 2 layers):")
     print("     [L1 block | coupling ]")
     print("S =  [---------|----------]")
     print("     [coupling | L2 block ]")
@@ -302,7 +302,7 @@ def example_7_supra_adjacency():
     print("  - Block (0:2, 0:2): Layer 1 adjacency")
     print("  - Block (2:4, 2:4): Layer 2 adjacency")
     print("  - Off-diagonal: Interlayer coupling (omega=0.5)")
-    print("  - Total size: (N×L) × (N×L) = 4 × 4")
+    print("  - Total size: (NxL) x (NxL) = 4 x 4")
 
 
 def main():

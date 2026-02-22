@@ -28,7 +28,7 @@ print("=" * 70)
 print("MULTILAYER SPREADING PROCESS SIMULATION")
 print("=" * 70)
 
-# Generate a random multilayer Erdős-Rényi network
+# Generate a random multilayer Erdos-Renyi network
 print("\nGenerating multilayer network...")
 print("  Nodes: 5000")
 print("  Layers: 15")

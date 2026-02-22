@@ -2,7 +2,7 @@
 """
 Benchmark multiple centrality algorithms on synthetic multilayer networks.
 
-Generates a batch of random multilayer Erdős-Rényi networks, computes multiple
+Generates a batch of random multilayer Erdos-Renyi networks, computes multiple
 centrality measures, compares their top-k rankings using Jaccard similarity,
 and visualizes the average similarity matrix. The script is deterministic
 (`DEFAULT_SEED`) and uses a non-interactive matplotlib backend so it is safe to
@@ -123,7 +123,7 @@ def integrate_similarity_curve(similarities):
 
 def generate_synthetic_network(num_nodes=50, num_layers=3, edge_prob=0.15):
     """
-    Generate a synthetic multilayer Erdős-Rényi network.
+    Generate a synthetic multilayer Erdos-Renyi network.
 
     Args:
         num_nodes: Number of nodes in each layer

@@ -163,7 +163,7 @@ def example_6_type_checking_valid():
     print(f"Query: SELECT nodes COMPUTE degree ORDER BY degree DESC")
     try:
         is_valid = type_check(query)
-        print(f"Type check result: {'✓ Valid' if is_valid else '✗ Invalid'}")
+        print(f"Type check result: {'OK Valid' if is_valid else 'FAIL Invalid'}")
     except TypeCheckError as e:
         print(f"Type check error: {e}")
     print()
@@ -185,9 +185,9 @@ def example_7_type_checking_invalid():
     print(f"Query: SELECT nodes ORDER BY degree (without computing it)")
     try:
         is_valid = type_check(query)
-        print(f"Type check result: {'✓ Valid' if is_valid else '✗ Invalid'}")
+        print(f"Type check result: {'OK Valid' if is_valid else 'FAIL Invalid'}")
     except TypeCheckError as e:
-        print(f"Type check error: ✗ {e}")
+        print(f"Type check error: FAIL {e}")
     print()
 
 
@@ -281,7 +281,7 @@ def example_10_typesystem_operations():
     is_valid = ts.check(query)
     result_type = ts.infer(query)
     
-    print(f"Query type check: {'✓ Valid' if is_valid else '✗ Invalid'}")
+    print(f"Query type check: {'OK Valid' if is_valid else 'FAIL Invalid'}")
     print(f"Inferred result type: {result_type}")
     print()
 

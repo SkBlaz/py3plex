@@ -8,7 +8,7 @@ Teaches:
 - Link network communities to Gene Ontology annotations
 
 Background:
-CBSSD (Škrlj et al., 2017) discovers meaningful patterns in communities
+CBSSD (Skrlj et al., 2017) discovers meaningful patterns in communities
 by linking them to semantic knowledge bases (e.g., Gene Ontology).
 
 Prerequisites:
@@ -31,9 +31,9 @@ print("=" * 70)
 print("COMMUNITY-BASED SEMANTIC SUBGROUP DISCOVERY (CBSSD)")
 print("=" * 70)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Step 1: Load protein interaction network
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[1] Loading protein interaction network...")
 print("-" * 70)
@@ -43,9 +43,9 @@ network = multinet.multi_layer_network().load_network(
 print("Network loaded successfully!")
 network.basic_stats()
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Step 2: Detect communities using Louvain algorithm
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[2] Detecting communities...")
 print("-" * 70)
@@ -53,9 +53,9 @@ partition = cw.louvain_communities(network)
 print(f"Found {len(set(partition.values()))} communities")
 print(f"Sample partition: {dict(list(partition.items())[:5])}")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Step 3: Convert community partitions to RDF format
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[3] Converting partitions to RDF format...")
 print("-" * 70)
@@ -70,9 +70,9 @@ rdf_partitions = hedwig.convert_mapping_to_rdf(
 rdf_partitions.serialize(destination=dataset_name, format="n3")
 print("RDF conversion complete!")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Step 4: Convert Gene Ontology OBO file to N3 format
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[4] Converting Gene Ontology to N3 format...")
 print("-" * 70)
@@ -80,9 +80,9 @@ hedwig.obo2n3(get_dataset_path("go.obo.gz"), get_data_path("background_knowledge
               get_dataset_path("goa_human.gaf.gz"))
 print("Gene Ontology conversion complete!")
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 # Step 5: Configure and run Hedwig rule learner
-# ═══════════════════════════════════════════════════════════════════════════════
+# ===============================================================================
 
 print("\n[5] Configuring Hedwig rule learner...")
 print("-" * 70)

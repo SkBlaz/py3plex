@@ -290,7 +290,7 @@ def describe_cross_layer_participation(nodes_per_layer: Dict[str, Sequence[str]]
 
     sample_size = min(10, len(cross_layer_nodes))
     for node, node_layers in list(sorted(cross_layer_nodes.items()))[:sample_size]:
-        print(f"  • {node}: {', '.join(node_layers)}")
+        print(f"  - {node}: {', '.join(node_layers)}")
     remaining = len(cross_layer_nodes) - sample_size
     if remaining > 0:
         print(f"  ... and {remaining} more individuals active across layers")
@@ -343,9 +343,9 @@ def main() -> int:
     )
 
     print(" Interactive visualization created")
-    print("  • Layers arranged diagonally in 3D space")
-    print("  • Node size represents degree centrality")
-    print("  • Inter-layer edges shown as dashed lines")
+    print("  - Layers arranged diagonally in 3D space")
+    print("  - Node size represents degree centrality")
+    print("  - Inter-layer edges shown as dashed lines")
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     try:
@@ -358,10 +358,10 @@ def main() -> int:
 
     print("\n" + "=" * 70)
     print("Network Statistics:")
-    print(f"  • Total unique individuals: {len({n for nodes in nodes_per_layer.values() for n in nodes})}")
-    print(f"  • Total nodes (across all layers): {sum(len(nodes) for nodes in nodes_per_layer.values())}")
-    print(f"  • Total intra-layer edges: {sum(len(edges) for edges in edges_by_layer.values())}")
-    print(f"  • Total inter-layer edges: {len(inter_layer_connections)}")
+    print(f"  - Total unique individuals: {len({n for nodes in nodes_per_layer.values() for n in nodes})}")
+    print(f"  - Total nodes (across all layers): {sum(len(nodes) for nodes in nodes_per_layer.values())}")
+    print(f"  - Total intra-layer edges: {sum(len(edges) for edges in edges_by_layer.values())}")
+    print(f"  - Total inter-layer edges: {len(inter_layer_connections)}")
     print("\nCross-layer nodes (active in multiple contexts):")
     describe_cross_layer_participation(nodes_per_layer)
 

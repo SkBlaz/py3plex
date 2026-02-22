@@ -225,7 +225,7 @@ class ResamplingStrategy(Enum):
 
 ## Examples
 
-See `examples/uncertainty/example_first_class_uncertainty.py` for comprehensive examples including:
+See `examples/network_analysis/example_first_class_uncertainty.py` for comprehensive examples including:
 
 1. Deterministic computation
 2. Uncertainty estimation

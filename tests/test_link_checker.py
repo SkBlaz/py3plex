@@ -39,8 +39,12 @@ def test_no_new_markdown_files():
     """Test that no unexpected markdown files have been added."""
     repo_root = Path(__file__).parent.parent
     
-    # Get all markdown files
-    md_files = sorted([str(p.relative_to(repo_root)) for p in repo_root.rglob("*.md")])
+    # Get all markdown files (exclude cache/build directories)
+    md_files = sorted([
+        str(p.relative_to(repo_root))
+        for p in repo_root.rglob("*.md")
+        if ".pytest_cache" not in str(p) and "node_modules" not in str(p)
+    ])
     
     # Expected markdown files (based on repository audit)
     expected_md_files = [
@@ -52,18 +56,12 @@ def test_no_new_markdown_files():
         "example_images/README.md",
         "examples/README.md",
         "examples/advanced/README.md",
-        "examples/case_studies/README.md",
         "examples/cli/README.md",
-        "examples/communities/README.md",
-        "examples/dsl_query_zoo/README.md",
         "examples/dsl_zoo/README.md",
-        "examples/dynamics/README.md",
         "examples/getting_started/README.md",
         "examples/io_and_data/README.md",
         "examples/network_analysis/README.md",
         "examples/pipelines/README.md",
-        "examples/temporal/README.md",
-        "examples/workflows/README.md",
         "fuzzing/README.md",
         "gui/README.md",
         "gui/ci/api-tests/README.md",

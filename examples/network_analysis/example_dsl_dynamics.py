@@ -18,20 +18,20 @@ Mathematical Formalism:
 SIS Model (Susceptible-Infected-Susceptible):
     States: S (susceptible), I (infected)
     Update rules:
-        - S → I with probability λ_i = 1 - ∏_j (1 - β)^(A_ij · I_j)
-        - I → S with probability μ
+        - S -> I with probability lambda_i = 1 - prod_j (1 - beta)^(A_ij . I_j)
+        - I -> S with probability mu
     Parameters:
-        - β: transmission probability per contact
-        - μ: recovery probability
+        - beta: transmission probability per contact
+        - mu: recovery probability
 
 SIR Model (Susceptible-Infected-Recovered):
     States: S (susceptible), I (infected), R (recovered)
     Update rules:
-        - S → I with probability λ_i = 1 - ∏_j (1 - β)^(A_ij · I_j)
-        - I → R with probability γ
+        - S -> I with probability lambda_i = 1 - prod_j (1 - beta)^(A_ij . I_j)
+        - I -> R with probability gamma
     Parameters:
-        - β: transmission probability per contact
-        - γ: recovery probability
+        - beta: transmission probability per contact
+        - gamma: recovery probability
 
 Random Walk:
     State: Current node position
@@ -108,7 +108,7 @@ sim = (
 
 print("\nSimulation configuration:")
 print(f" Process: SIS")
-print(f" Parameters: β=0.3, μ=0.1")
+print(f" Parameters: beta=0.3, mu=0.1")
 print(f" Initial infected: 5%")
 print(f" Time steps: 100")
 print(f" Replicates: 10")
@@ -147,7 +147,7 @@ sim_sir = (
 
 print("\nSIR Simulation configuration:")
 print(f" Process: SIR")
-print(f" Parameters: β=0.4, γ=0.15")
+print(f" Parameters: beta=0.4, gamma=0.15")
 print(f" Initial infected: 10%")
 print(f" Time steps: 150")
 print(f" Replicates: 20")
@@ -224,7 +224,7 @@ sim_multi = (
 print("\nMultilayer SIS configuration:")
 print(f" Layers: offline + online")
 print(f" Coupling: strong (shared node states)")
-print(f" Parameters: β=0.25, μ=0.08")
+print(f" Parameters: beta=0.25, mu=0.08")
 
 result_multi = sim_multi.run(multilayer)
 
@@ -365,7 +365,7 @@ print("-" * 80)
 beta_values = [0.2, 0.3, 0.4, 0.5]
 comparison_results = {}
 
-print("\nRunning SIS simulations with varying β:")
+print("\nRunning SIS simulations with varying beta:")
 for beta in beta_values:
     sim_param = (
         D.process(SIS(beta=beta, mu=0.1))
@@ -380,7 +380,7 @@ for beta in beta_values:
     mean_final = result_param.data['prevalence'][:, -1].mean()
     comparison_results[beta] = mean_final
 
-    print(f"  β={beta:.1f}: mean final prevalence = {mean_final:.3f}")
+    print(f"  beta={beta:.1f}: mean final prevalence = {mean_final:.3f}")
 
 # Summary
 print("\n" + "=" * 80)
@@ -395,12 +395,12 @@ print("""
 6. Parameter comparison across simulations
 
 Key DSL Capabilities:
-  • Declarative simulation specification
-  • Type-safe builder API with method chaining
-  • Integration with query DSL (L[] for layers, Q for queries)
-  • Automatic replication management
-  • Built-in measures (prevalence, incidence, state_counts, etc.)
-  • Pandas export for analysis
+  - Declarative simulation specification
+  - Type-safe builder API with method chaining
+  - Integration with query DSL (L[] for layers, Q for queries)
+  - Automatic replication management
+  - Built-in measures (prevalence, incidence, state_counts, etc.)
+  - Pandas export for analysis
 
 The dynamics DSL makes complex multilayer simulations concise and readable,
 following the same design philosophy as the query DSL.

@@ -35,7 +35,7 @@ def demo_quick_network():
     print("=" * 70)
     
     print("\nTask: Create a social-work network with connections")
-    print("\n✓ Using ergonomic helper:")
+    print("\nOK Using ergonomic helper:")
     print("  net = quick_network(")
     print("      people=['Alice', 'Bob', 'Carol'],")
     print("      layers=['social', 'work'],")
@@ -57,7 +57,7 @@ def demo_quick_network():
         ]
     )
     
-    print(f"\n✓ Network created: {net}")
+    print(f"\nOK Network created: {net}")
     print("\n  Ergonomic win: 5 lines of clean code vs 15+ with manual setup!")
     
     return net
@@ -70,7 +70,7 @@ def demo_quick_analysis(net):
     print("=" * 70)
     
     print("\nTask: Find top hubs with multiple metrics")
-    print("\n✓ Using ergonomic helper:")
+    print("\nOK Using ergonomic helper:")
     print("  results = quick_analysis(")
     print("      net,")
     print("      metrics=['degree', 'betweenness_centrality'],")
@@ -83,7 +83,7 @@ def demo_quick_analysis(net):
         top_k=5
     )
     
-    print(f"\n✓ Analysis complete: {results['count']} nodes analyzed")
+    print(f"\nOK Analysis complete: {results['count']} nodes analyzed")
     print(f"  Network: {results['network_stats']['nodes']} nodes, "
           f"{results['network_stats']['edges']} edges, "
           f"{results['network_stats']['layers']} layers")
@@ -104,12 +104,12 @@ def demo_quick_communities(net):
     print("=" * 70)
     
     print("\nTask: Detect communities in multilayer network")
-    print("\n✓ Using ergonomic helper:")
+    print("\nOK Using ergonomic helper:")
     print("  results = quick_communities(net, algorithm='louvain', seed=42)")
     
     results = quick_communities(net, algorithm='louvain', seed=42)
     
-    print(f"\n✓ Found {results['n_communities']} communities")
+    print(f"\nOK Found {results['n_communities']} communities")
     print("  Community sizes:")
     for comm_id, size in sorted(results['sizes'].items()):
         print(f"    Community {comm_id}: {size} nodes")
@@ -126,7 +126,7 @@ def demo_network_summary(net):
     print("=" * 70)
     
     print("\nTask: Get a clear overview of network structure")
-    print("\n✓ Using ergonomic helper:")
+    print("\nOK Using ergonomic helper:")
     print("  show_network_summary(net)")
     
     print()
@@ -141,7 +141,7 @@ def demo_comparison():
     print("BEFORE & AFTER COMPARISON")
     print("=" * 70)
     
-    print("\n📝 BEFORE (Traditional approach):")
+    print("\n BEFORE (Traditional approach):")
     print("=" * 40)
     print("""
 from py3plex.core import multinet
@@ -177,7 +177,7 @@ sizes = Counter(communities.values())
 # Total: ~30 lines of code
 """)
     
-    print("\n✅ AFTER (Ergonomic helpers):")
+    print("\nOK AFTER (Ergonomic helpers):")
     print("=" * 40)
     print("""
 from py3plex.ergonomics import (
@@ -206,12 +206,12 @@ sizes = comm['sizes']
 # Total: ~15 lines of code, 50% reduction!
 """)
     
-    print("\n🎯 KEY IMPROVEMENTS:")
-    print("  ✓ 50% less code")
-    print("  ✓ No complex dict structures")
-    print("  ✓ No manual imports for algorithms")
-    print("  ✓ Sensible defaults (seed, algorithms)")
-    print("  ✓ Clear, readable API")
+    print("\n KEY IMPROVEMENTS:")
+    print("  OK 50% less code")
+    print("  OK No complex dict structures")
+    print("  OK No manual imports for algorithms")
+    print("  OK Sensible defaults (seed, algorithms)")
+    print("  OK Clear, readable API")
 
 
 def main():
@@ -234,14 +234,14 @@ def main():
     print("\n" + "=" * 70)
     print("SUMMARY: Ergonomic Helpers Make py3plex Easy")
     print("=" * 70)
-    print("\n✓ quick_network() - Create networks with minimal code")
-    print("✓ quick_analysis() - Analyze with one function call")
-    print("✓ quick_communities() - Detect communities easily")
-    print("✓ show_network_summary() - Get clear overviews")
+    print("\nOK quick_network() - Create networks with minimal code")
+    print("OK quick_analysis() - Analyze with one function call")
+    print("OK quick_communities() - Detect communities easily")
+    print("OK show_network_summary() - Get clear overviews")
     print("\nNext steps:")
-    print("  • Try these helpers in your own code")
-    print("  • See user_journey_simulation.py for complete workflows")
-    print("  • Explore examples/ for advanced features")
+    print("  - Try these helpers in your own code")
+    print("  - See user_journey_simulation.py for complete workflows")
+    print("  - Explore examples/ for advanced features")
     
     return 0
 

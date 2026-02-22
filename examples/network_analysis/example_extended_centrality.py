@@ -127,7 +127,7 @@ def example_collective_influence(calc):
     ci = calc.collective_influence(radius=2)
 
     print("\nCollective influence identifies influential spreaders by considering")
-    print("not just immediate neighbors but also nodes at distance ℓ.\n")
+    print("not just immediate neighbors but also nodes at distance l.\n")
 
     sorted_nodes = sorted(ci.items(), key=lambda x: x[1], reverse=True)[:3]
     print("Top 3 most influential nodes (radius=2):")
@@ -209,10 +209,10 @@ def example_compute_all(network):
     print(f"\nComputed {len(results)} centrality measures:")
     for key in sorted(results.keys()):
         if isinstance(results[key], dict):
-            print(f"  • {key}: {len(results[key])} values")
+            print(f"  - {key}: {len(results[key])} values")
         else:
             # For measures that return nested dicts (like HITS)
-            print(f"  • {key}: nested structure")
+            print(f"  - {key}: nested structure")
 
 
 def main():

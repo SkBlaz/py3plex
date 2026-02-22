@@ -114,7 +114,7 @@ def example_arrow_roundtrip() -> None:
         print(f"  Edge Alice-Bob weight: {edge_attrs.get('weight')}")
         print(f"  Edge Alice-Bob timestamp: {edge_attrs.get('timestamp')}")
         
-        print(f"\n✓ All attributes preserved!")
+        print(f"\nOK All attributes preserved!")
 
 
 def example_parquet_roundtrip() -> None:
@@ -153,7 +153,7 @@ def example_parquet_roundtrip() -> None:
         print(f"  Edges: {len(loaded.get_edges())}")
         print(f"  Layers: {loaded.get_layers()}")
         
-        print(f"\n✓ Parquet roundtrip successful!")
+        print(f"\nOK Parquet roundtrip successful!")
 
 
 def example_query_result_parquet() -> None:
@@ -188,7 +188,7 @@ def example_query_result_parquet() -> None:
         print(f"\nLoaded DataFrame:")
         print(df)
         
-        print(f"\n✓ QueryResult export successful!")
+        print(f"\nOK QueryResult export successful!")
 
 
 def example_network_comparison() -> None:
@@ -237,7 +237,7 @@ def example_network_comparison() -> None:
         print(f"  Attributes equal: {attrs_match}")
         
         if nodes1 == nodes2 and edges1 == edges2 and attrs_match:
-            print(f"\n✓ Networks are semantically identical!")
+            print(f"\nOK Networks are semantically identical!")
 
 
 def main() -> int:
@@ -262,11 +262,11 @@ def main() -> int:
     print("\n" + "=" * 60)
     print("All examples completed successfully!")
     print("\nKey Features:")
-    print("  • Zero-loss preservation of multilayer identity")
-    print("  • Attribute type preservation (int, float, bool, str)")
-    print("  • Complex attributes (dict, list) via JSON encoding")
-    print("  • Network metadata (directed, network_type, layers)")
-    print("  • QueryResult export to Parquet")
+    print("  - Zero-loss preservation of multilayer identity")
+    print("  - Attribute type preservation (int, float, bool, str)")
+    print("  - Complex attributes (dict, list) via JSON encoding")
+    print("  - Network metadata (directed, network_type, layers)")
+    print("  - QueryResult export to Parquet")
     return 0
 
 
