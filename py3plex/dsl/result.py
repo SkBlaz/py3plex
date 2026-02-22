@@ -1482,7 +1482,52 @@ class QueryResult:
             lines.append("(Use .meta[key] to access specific metadata)")
         
         return "\n".join(lines)
-    
+
+    def explain_plan(self, analyze: bool = False) -> dict:
+        """Return a structured description of the optimizer execution plan.
+
+        Parameters
+        ----------
+        analyze:
+            When ``True`` the returned dict will include ``actual_cost``
+            values recorded during execution (if available).
+
+        Returns
+        -------
+        dict with keys:
+
+        * ``logical_plan``  – textual summary of the logical operator tree
+        * ``physical_plan`` – serialised physical plan (or ``None``)
+        * ``estimated_cost`` – optimizer's pre-execution cost estimate
+        * ``actual_cost``   – post-execution actual cost (if *analyze* and
+          available)
+        * ``applied_rules`` – list of rule names applied by the optimizer
+
+        Example
+        -------
+        >>> result = Q.nodes().compute("degree").execute(net)
+        >>> plan = result.explain_plan()
+        >>> print(plan["applied_rules"])
+        """
+        optimizer_meta = self.meta.get("optimizer", {})
+        provenance = self.meta.get("provenance", {})
+
+        # Physical plan dict (stored by executor when optimizer is enabled)
+        physical_plan = self.meta.get("physical_plan", None)
+
+        plan: dict = {
+            "logical_plan": self.meta.get("logical_plan_summary", "N/A"),
+            "physical_plan": physical_plan,
+            "estimated_cost": optimizer_meta.get("cost_after",
+                              optimizer_meta.get("cost_before", None)),
+            "actual_cost": optimizer_meta.get("actual_cost", None) if analyze else None,
+            "applied_rules": optimizer_meta.get("rules_applied", []),
+            "estimated_rows": optimizer_meta.get("estimated_rows", len(self.items)),
+            "actual_rows": len(self.items),
+            "plan_hash": optimizer_meta.get("plan_hash", None),
+        }
+        return plan
+
     def __or__(self, other: "QueryResult") -> "QueryResult":
         """Union operator: r1 | r2
         

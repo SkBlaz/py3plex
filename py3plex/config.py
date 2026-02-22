@@ -186,6 +186,25 @@ DEFAULT_PARALLEL_BACKEND: str = "multiprocessing"  # "multiprocessing" or "jobli
 DSL_FAST_PATH_ENABLED: bool = True
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Optimizer Settings
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Master switch for the cost-based optimizer layer
+OPTIMIZER_ENABLED: bool = True
+
+# Log optimizer decisions to the DEBUG logger
+OPTIMIZER_VERBOSE: bool = False
+
+# Maximum rule-engine fixpoint iterations
+OPTIMIZER_MAX_ITER: int = 10
+
+# Enable rule-based rewrites (filter pushdown, TopK conversion, etc.)
+OPTIMIZER_ENABLE_RULE_BASED: bool = True
+
+# Enable cost-based plan selection
+OPTIMIZER_ENABLE_COST_BASED: bool = True
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Validation Settings
 # ─────────────────────────────────────────────────────────────────────────────
 
