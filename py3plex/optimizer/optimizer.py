@@ -98,7 +98,7 @@ class Optimizer:
         # --- 2. rule-based rewrites -------------------------------------------
         applied_rules: List[str] = []
         if self.enable_rule_based:
-            logical_plan, applied_rules = self._rule_engine.run(logical_plan)
+            logical_plan, applied_rules = self._rule_engine.rewrite(logical_plan)
 
         # --- 3. estimate final cost after rewrites ----------------------------
         final_estimate: CostEstimate = self.cost_model.estimate(logical_plan, stats)
@@ -168,9 +168,11 @@ def optimize_query(
     """
     from .logical_plan import LogicalPlanBuilder
 
-    # Build logical plan from AST
-    builder = LogicalPlanBuilder()
-    logical_plan = builder.build(ast, params=params or {})
+    # Build logical plan from AST.
+    # LogicalPlanBuilder takes the AST query as its constructor argument and
+    # .build() takes no additional arguments.
+    builder = LogicalPlanBuilder(ast)
+    logical_plan = builder.build()
 
     # Extract network stats if a network was provided
     stats: Optional[NetworkStats] = None

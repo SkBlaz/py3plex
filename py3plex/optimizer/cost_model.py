@@ -53,7 +53,7 @@ class NetworkStats:
         try:
             nodes = list(network.get_nodes())
             edges = list(network.get_edges())
-            layers = list(network.get_layers())
+            layers = list(network.layers)
             node_count = len(nodes)
             edge_count = len(edges)
             layer_count = max(len(layers), 1)
@@ -127,9 +127,18 @@ class CostModel:
     # Public entry-point
     # ------------------------------------------------------------------
 
-    def estimate(self, op: LogicalOp) -> CostEstimate:
-        """Return a :class:`CostEstimate` for *op* (not recursive)."""
-        s = self._stats
+    def estimate(self, op: LogicalOp, stats: Optional[NetworkStats] = None) -> CostEstimate:
+        """Return a :class:`CostEstimate` for *op* (not recursive).
+
+        Parameters
+        ----------
+        op:
+            Logical plan node to estimate.
+        stats:
+            Optional :class:`NetworkStats` override.  When provided it takes
+            precedence over the stats supplied at construction time.
+        """
+        s = stats if stats is not None else self._stats
         # Delegate to per-type helpers
         if isinstance(op, LogicalScanNodes):
             rows = s.node_count or 100
