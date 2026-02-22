@@ -488,6 +488,41 @@ async def py3plex_list_handles() -> List[types.TextContent]:
         return [types.TextContent(type="text", text=json.dumps(error_response, indent=2))]
 
 
+@app.call_tool()
+async def py3plex_capabilities() -> List[types.TextContent]:
+    """Return a deterministic runtime capability report for this py3plex installation.
+
+    No network handle required.  The report describes installed backends,
+    available community-detection algorithms, UQ support, plugins, and
+    operational limits.  The output is fully JSON-serialisable and stable
+    across calls in the same environment.
+
+    Returns:
+        Structured capability report including core, backends,
+        community_algorithms, uncertainty_quantification, pattern_matching,
+        plugins, mcp, limits, and performance sections.
+    """
+    try:
+        from py3plex.runtime.capabilities import capabilities, capabilities_fingerprint
+
+        caps = capabilities()
+
+        response = make_success_response(
+            tool="py3plex.capabilities",
+            data={
+                "capabilities": caps,
+                "fingerprint": capabilities_fingerprint(),
+            },
+        )
+
+        return [types.TextContent(type="text", text=json.dumps(response, indent=2))]
+
+    except Exception as e:
+        error_response = make_error_response(e)
+        error_response["meta"] = make_meta("py3plex.capabilities", ok=False)
+        return [types.TextContent(type="text", text=json.dumps(error_response, indent=2))]
+
+
 # ============================================================================
 # RESOURCES
 # ============================================================================

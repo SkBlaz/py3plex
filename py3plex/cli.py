@@ -790,6 +790,36 @@ Exit codes:
         help="Directory for output files (default: temporary directory)",
     )
 
+    # CAPABILITIES command
+    cap_parser = subparsers.add_parser(
+        "capabilities",
+        help="Show runtime capability report (installed backends, algorithms, plugins, etc.)",
+    )
+    cap_parser.add_argument(
+        "--json",
+        action="store_true",
+        dest="output_json",
+        help="Print raw JSON output (machine-readable)",
+    )
+    cap_parser.add_argument(
+        "--pretty",
+        action="store_true",
+        dest="output_pretty",
+        help="Print a formatted table (default behaviour)",
+    )
+    cap_parser.add_argument(
+        "--flat",
+        action="store_true",
+        dest="output_flat",
+        help="Print flat key=value capability map (LLM-friendly)",
+    )
+    cap_parser.add_argument(
+        "--fingerprint",
+        action="store_true",
+        dest="output_fingerprint",
+        help="Print SHA-256 fingerprint of the capability report",
+    )
+
     return parser
 
 
@@ -2967,6 +2997,115 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_capabilities(args: argparse.Namespace) -> int:
+    """Show the runtime capability report.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    import json as _json
+
+    from py3plex.runtime.capabilities import (
+        capabilities,
+        capabilities_fingerprint,
+        capabilities_flat,
+    )
+
+    # --fingerprint wins over other flags
+    if getattr(args, "output_fingerprint", False):
+        print(capabilities_fingerprint())
+        return 0
+
+    # --flat mode
+    if getattr(args, "output_flat", False):
+        flat = capabilities_flat()
+        if getattr(args, "output_json", False):
+            print(_json.dumps(flat, indent=2))
+        else:
+            for key, val in flat.items():
+                marker = "✓" if val else "✗"
+                print(f"  {marker}  {key}")
+        return 0
+
+    caps = capabilities()
+
+    # --json mode (or when stdout is not a tty – CI friendly)
+    if getattr(args, "output_json", False):
+        print(_json.dumps(caps, indent=2))
+        return 0
+
+    # Default: pretty table
+    print("=" * 60)
+    print(f"  py3plex {caps['core'].get('version', '?')} — Runtime Capabilities")
+    print("=" * 60)
+
+    def _yn(val: object) -> str:
+        return "yes" if val else "no"
+
+    # Core
+    print("\n[core]")
+    for k, v in caps["core"].items():
+        print(f"  {k:<30} {v}")
+
+    # Backends
+    print("\n[backends]")
+    for name, info in caps["backends"].items():
+        avail = _yn(info.get("available"))
+        ver = f" (v{info['version']})" if info.get("version") else ""
+        print(f"  {name:<20} {avail}{ver}")
+
+    # Community algorithms
+    print("\n[community_algorithms]")
+    for name, info in caps["community_algorithms"].items():
+        avail = _yn(info.get("available"))
+        note = f"  — {info['notes']}" if info.get("notes") else ""
+        print(f"  {name:<20} {avail}{note}")
+
+    # UQ
+    print("\n[uncertainty_quantification]")
+    for k, v in caps["uncertainty_quantification"].items():
+        print(f"  {k:<30} {_yn(v)}")
+
+    # Pattern matching
+    print("\n[pattern_matching]")
+    pm = caps["pattern_matching"]
+    print(f"  available                      {_yn(pm.get('available'))}")
+    if pm.get("engine"):
+        print(f"  engine                         {pm['engine']}")
+
+    # Plugins
+    print("\n[plugins]")
+    installed = caps["plugins"].get("installed", [])
+    if installed:
+        print(f"  installed: {', '.join(installed)}")
+    else:
+        print("  installed: (none)")
+
+    # MCP
+    print("\n[mcp]")
+    for k, v in caps["mcp"].items():
+        print(f"  {k:<30} {v}")
+
+    # Limits
+    print("\n[limits]")
+    for k, v in caps["limits"].items():
+        print(f"  {k:<30} {v}")
+
+    # Performance
+    print("\n[performance]")
+    for k, v in caps["performance"].items():
+        print(f"  {k:<30} {_yn(v) if isinstance(v, bool) else v}")
+
+    print("\n" + "=" * 60)
+    print(f"  fingerprint: {capabilities_fingerprint()}")
+    print("=" * 60)
+
+    return 0
+
+
 def cmd_check(args: argparse.Namespace) -> int:
     """Lint and validate a graph data file.
 
@@ -3550,6 +3689,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "quickstart": cmd_quickstart,
         "run-config": cmd_run_config,
         "tutorial": cmd_tutorial,
+        "capabilities": cmd_capabilities,
     }
 
     handler = command_handlers.get(args.command)

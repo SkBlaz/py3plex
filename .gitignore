@@ -92,6 +92,10 @@ doc-coverage.json
 loc-stats.json
 test-stats.json
 coverage.json
+coverage_*.json
+property_coverage_*.json
+property_test_coverage_*.json
+auto/
 LLM_ORIGINAL_BACKUP.md
 mutants/
 .mutmut-cache
