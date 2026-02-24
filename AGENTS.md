@@ -8683,14 +8683,14 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 ### Test Organization
 
 **Test Suite Statistics**:
-- **Total test files**: 495 files (509 including __init__.py files)
-- **DSL test files**: 67 files covering DSL v2, legacy DSL, and related features
-- **Verification test files**: 7 files with formal correctness guarantees
-- **Property-based test files**: 13 files in `tests/property/` using Hypothesis
+- **Total test files**: 535 test_*.py files (549 total Python files in tests/)
+- **DSL test files**: 76 files covering DSL v2, legacy DSL, and related features
+- **Verification test files**: 9 files with formal correctness guarantees
+- **Property-based test files**: 113 files in `tests/property/` using Hypothesis
 
 **Test Categories**:
 
-#### 1. DSL Tests (65 files)
+#### 1. DSL Tests (76 files)
 Core DSL v2 functionality, query building, execution, and exports:
 - `test_dsl_v2.py` - DSL v2 core builder API
 - `test_dsl.py` - Legacy DSL string-based queries
@@ -8721,23 +8721,25 @@ Core DSL v2 functionality, query building, execution, and exports:
 - `test_agents_golden_paths.py` - Validates 5 Golden Path examples from AGENTS.md
 - `test_agents_ergonomics_features.py` - Tests v1.1+ ergonomics features
 
-See `tests/` directory for complete list of 67 DSL test files.
+See `tests/` directory for complete list of 76 DSL test files.
 
-#### 2. Verification Tests (7 files in tests/verification/)
+#### 2. Verification Tests (9 files in tests/verification/)
 Formal correctness guarantees with metamorphic and differential testing:
-- `test_verification_provenance_oracles.py` - Provenance completeness (26 tests)
-- `test_verification_api_differential.py` - Cross-API equivalence (22 tests)
-- `test_verification_metamorphic_harness.py` - Transformation invariants (19 tests)
-- `test_verification_determinism_parallelism.py` - Seed determinism (16 tests)
+- `test_algorithm_sanity.py` - Algorithm sanity checks
+- `test_ast_errors.py` - AST error handling and diagnostics
+- `test_cli_smoke.py` - CLI smoke tests
+- `test_determinism.py` - Seed determinism and reproducibility
 - `test_dsl_equivalence.py` - DSL semantic equivalence
-- `test_semiring_verification.py` - Semiring algebra correctness
-- `test_centrality_robustness_oracles.py` - Centrality invariant testing
+- `test_fuzz_queries.py` - Fuzz testing for query parsing
+- `test_io_roundtrip.py` - I/O round-trip invariants
+- `test_query_result.py` - QueryResult correctness
+- `test_uq_correctness.py` - UQ correctness and invariants
 
 Total: 83+ tests with formal guarantees
 
-#### 3. Property-Based Tests (13 files in tests/property/)
+#### 3. Property-Based Tests (113 files in tests/property/)
 Hypothesis-driven property testing:
-- `test_dsl_*_properties.py` - DSL property tests (13 files)
+- `test_dsl_*_properties.py` - DSL property tests (113 files)
 - Covers: aggregation, AST, export, registry, serialization, UQ
 
 #### 4. Core Module Tests
@@ -8824,9 +8826,9 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 **Version**: py3plex 1.1.3  
 **Python Support**: 3.8+  
-**Repository Size**: 385K lines of code  
-**Test Coverage**: 8.0K tests across 525 test files (~14.7% statement coverage)  
-**Key Modules**: 411 Python files across core, algorithms, DSL, and utilities  
+**Repository Size**: ~201K lines of code  
+**Test Coverage**: 8.0K tests across 535 test files (~14.7% statement coverage)  
+**Key Modules**: 430 Python files across core, algorithms, DSL, and utilities  
 
 ### Major Subsystems
 
@@ -8886,7 +8888,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 ### Test Infrastructure
 
 **Test Organization**:
-- **525 test files** with **8,000+ individual tests**
+- **535 test files** with **8,000+ individual tests**
 - **83 verification tests** across 4 specialized modules (provenance, differential, metamorphic, determinism)
 - **210+ new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization, UQ propagation)
 - Property-based tests using Hypothesis
@@ -9333,16 +9335,16 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 ### Documentation
 
-- `AGENTS.md` (8,900+ lines) - **This file** - Comprehensive AI agent documentation
+- `AGENTS.md` (10,500+ lines) - **This file** - Comprehensive AI agent documentation
 - `README.md` - Quick start and project overview
 - `docfiles/` - Documentation source files
-- `examples/` - **264 example scripts** demonstrating all features
+- `examples/` - **257 example scripts** demonstrating all features
 - `docs/py3plex_book.pdf` (106 pages) - Technical documentation
 - `CITATION.cff` - Citation information
 
 ### Test Suite
 
-**Test Files** (366 files, 7,700+ tests):
+**Test Files** (535 files, 8,000+ tests):
 
 **DSL Tests**:
 - `tests/test_dsl_v2.py` - DSL v2 core functionality
@@ -10570,6 +10572,6 @@ Recommended areas for future test coverage:
 
 **Repo State Note**: As of February 2026, py3plex has 210+ new deterministic tests (203 baseline + 7 for UQ propagation) enforcing 10+ major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, edge cases, and UQ propagation. All tests are automated, CI-friendly, and passing. Test coverage has improved from 8% to 14.7% through focused testing of core modules, utilities, and validation infrastructure.
 
-**v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 525 test files (~14.7% coverage), 411 Python modules in py3plex, 385K total lines of code, and 264 example scripts. Test coverage significantly improved from 8% to 14.7% through focused efforts on cli.py (70.2%), utils.py (37.1%), validation.py (82.6%), and temporal_utils_extended.py (100%). Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
+**v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 535 test files (~14.7% coverage), 430 Python modules in py3plex, ~201K total lines of code, and 257 example scripts. Property-based test suite significantly expanded from 13 to 113 files. Test coverage maintained at ~14.7% through ongoing test improvements. Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
 
 **v1.1+ UQ Propagation Update** (January 2026): Implemented first-class uncertainty propagation semantics with `mode="propagate"` option in `.uq()`. This enables quantification of selection stability (p_present, p_selected, rank_uq) when queries include filtering, ordering, and selection operations. The propagate mode executes the full query end-to-end per replicate, capturing how uncertain metric values affect which items appear in final results. Aggregation now uses UQAlgebra to preserve uncertainty through grouping operations instead of silently dropping it. All changes are backward compatible (default mode="summarize_only"). New test module: tests/test_dsl_uq_propagation.py (7 deterministic tests).
