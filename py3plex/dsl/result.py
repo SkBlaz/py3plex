@@ -1025,6 +1025,52 @@ class QueryResult:
             "meta": self.meta,
         }
 
+    def record_as_experiment(
+        self,
+        *,
+        notes: "Optional[str]" = None,
+        tags: "Optional[list]" = None,
+        store=None,
+        save_table: bool = True,
+    ):
+        """Record this query result as a trackable experiment.
+
+        Wraps the result in an :class:`~py3plex.experiments.model.Experiment`
+        and persists it to the experiment registry store.  The returned object
+        can be used to retrieve, reproduce, or export the experiment later.
+
+        Args:
+            notes: Free-text annotation attached to the experiment.
+            tags: List of string tags for filtering (e.g. ``["baseline", "v2"]``).
+            store: Optional :class:`~py3plex.experiments.store.ExperimentStore`
+                instance.  If *None* the global default store is used.
+            save_table: If ``True`` (default) the result table is serialised
+                to an Arrow/Parquet or CSV artifact alongside the metadata.
+
+        Returns:
+            :class:`~py3plex.experiments.model.Experiment` with a stable
+            deterministic ``id``.
+
+        Raises:
+            :exc:`~py3plex.experiments.errors.ArtifactError`: If the artifact
+                cannot be persisted.
+
+        Example::
+
+            result = Q.nodes().compute("degree").execute(net)
+            exp = result.record_as_experiment(tags=["demo"])
+            print(exp.id)
+        """
+        from py3plex.experiments.runner import ExperimentRunner
+
+        runner = ExperimentRunner(store=store)
+        return runner.record_query_result(
+            self,
+            notes=notes,
+            tags=tags or [],
+            save_table=save_table,
+        )
+
     def group_summary(self):
         """Return a summary DataFrame with one row per group.
 
