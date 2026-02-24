@@ -14730,6 +14730,41 @@ cases, prefer using QueryBuilder.join() which is lazy and planner-aware.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.QueryResult.record_as_experiment">
+<span class="sig-name descname"><span class="pre">record_as_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.QueryResult.record_as_experiment" title="Link to this definition"></a></dt>
+<dd><p>Record this query result as a trackable experiment.</p>
+<p>Wraps the result in an <code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code>
+and persists it to the experiment registry store.  The returned object
+can be used to retrieve, reproduce, or export the experiment later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>notes</strong> – Free-text annotation attached to the experiment.</p></li>
+<li><p><strong>tags</strong> – List of string tags for filtering (e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;baseline&quot;,</span> <span class="pre">&quot;v2&quot;]</span></code>).</p></li>
+<li><p><strong>store</strong> – Optional <code class="xref py py-class docutils literal notranslate"><span class="pre">ExperimentStore</span></code>
+instance.  If <em>None</em> the global default store is used.</p></li>
+<li><p><strong>save_table</strong> – If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default) the result table is serialised
+to an Arrow/Parquet or CSV artifact alongside the metadata.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Experiment</span></code> with a stable
+deterministic <code class="docutils literal notranslate"><span class="pre">id</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ArtifactError</strong> – If the artifact
+    cannot be persisted.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="n">exp</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">record_as_experiment</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;demo&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="py3plex.dsl.QueryResult.replay">
 <span class="sig-name descname"><span class="pre">replay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryResult" title="py3plex.dsl.result.QueryResult"><span class="pre">QueryResult</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryResult.replay" title="Link to this definition"></a></dt>
 <dd><p>Replay this query to reproduce the result.</p>

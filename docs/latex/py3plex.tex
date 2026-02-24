@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Feb 22, 2026}
+\date{Feb 24, 2026}
 \release{1.1.3}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -55170,6 +55170,68 @@ Get provenance information from metadata.
 Provenance dictionary if available, None otherwise
 
 \end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{record\_as\_experiment() (py3plex.dsl.QueryResult method)@\spxentry{record\_as\_experiment()}\spxextra{py3plex.dsl.QueryResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryResult.record_as_experiment}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{record\_as\_experiment}}}
+{\sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{notes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{tags}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{list\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{store}\DUrole{o}{=}\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{save\_table}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Record this query result as a trackable experiment.
+
+\sphinxAtStartPar
+Wraps the result in an \sphinxcode{\sphinxupquote{Experiment}}
+and persists it to the experiment registry store.  The returned object
+can be used to retrieve, reproduce, or export the experiment later.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{notes}} \textendash{} Free\sphinxhyphen{}text annotation attached to the experiment.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{tags}} \textendash{} List of string tags for filtering (e.g. \sphinxcode{\sphinxupquote{{[}"baseline", "v2"{]}}}).
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{store}} \textendash{} Optional \sphinxcode{\sphinxupquote{ExperimentStore}}
+instance.  If \sphinxstyleemphasis{None} the global default store is used.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{save\_table}} \textendash{} If \sphinxcode{\sphinxupquote{True}} (default) the result table is serialised
+to an Arrow/Parquet or CSV artifact alongside the metadata.
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Experiment}} with a stable
+deterministic \sphinxcode{\sphinxupquote{id}}.
+
+\sphinxlineitem{Raises}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ArtifactError}} \textendash{} If the artifact
+    cannot be persisted.
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+Example:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}
+\PYG{n}{exp} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{record\PYGZus{}as\PYGZus{}experiment}\PYG{p}{(}\PYG{n}{tags}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{demo}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{exp}\PYG{o}{.}\PYG{n}{id}\PYG{p}{)}
+\end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
 
