@@ -19,6 +19,45 @@ _EXPLANATION_ATTRS = {
 }
 
 
+def _expand_embeddings_into_df(
+    df: Any,
+    embeddings: Dict[str, Any],
+    items: List[Any],
+    prefix: str,
+) -> Any:
+    """Expand an embedding matrix into per-dimension columns in *df*.
+
+    Args:
+        df: Existing pandas DataFrame.
+        embeddings: Mapping from kind (``"node"`` or ``"edge"``) to numpy
+            array of shape ``(n, dim)``.
+        items: Ordered list of node/edge identifiers aligned with the
+            embedding rows.
+        prefix: Column name prefix (e.g. ``"emb_"``).
+
+    Returns:
+        Updated DataFrame with additional ``prefix{i}`` columns.
+    """
+    import numpy as np
+    import pandas as pd
+
+    key = "node" if "node" in embeddings else "edge"
+    if key not in embeddings:
+        return df
+
+    matrix = np.asarray(embeddings[key])
+    if matrix.ndim != 2 or len(matrix) != len(items):
+        return df
+
+    dim = matrix.shape[1]
+    emb_cols = {f"{prefix}{i}": matrix[:, i].tolist() for i in range(dim)}
+    emb_df = pd.DataFrame(emb_cols, index=range(len(items)))
+
+    # Reset index for safe concat
+    df = df.reset_index(drop=True)
+    return pd.concat([df, emb_df], axis=1)
+
+
 def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
     """Expand an explanation value for pandas DataFrame.
 
@@ -305,6 +344,8 @@ class QueryResult:
         self.sensitivity_result = (
             None  # Will be set by executor if sensitivity is requested
         )
+        # Embedding matrices stored here by _execute_embedding
+        self.embeddings: Dict[str, Any] = {}
 
     @property
     def provenance(self) -> Optional[Dict[str, Any]]:
@@ -528,6 +569,8 @@ class QueryResult:
         expand_uncertainty: bool = False,
         expand_explanations: bool = False,
         expand_samples: bool = False,
+        expand_embeddings: bool = False,
+        embedding_prefix: str = "emb_",
     ):
         """Export results to pandas DataFrame.
 
@@ -645,6 +688,8 @@ class QueryResult:
                     if all(col in df.columns for col in index_cols):
                         df = df.set_index(index_cols)
 
+            if expand_embeddings:
+                df = _expand_embeddings_into_df(df, self.embeddings, self.items, embedding_prefix)
             return df
 
         elif self.target == "edges":
@@ -746,6 +791,8 @@ class QueryResult:
                     if all(col in df.columns for col in index_cols):
                         df = df.set_index(index_cols)
 
+            if expand_embeddings:
+                df = _expand_embeddings_into_df(df, self.embeddings, self.items, embedding_prefix)
             return df
 
         else:
@@ -847,7 +894,35 @@ class QueryResult:
                     if all(col in df.columns for col in index_cols):
                         df = df.set_index(index_cols)
 
+            if expand_embeddings:
+                df = _expand_embeddings_into_df(df, self.embeddings, self.items, embedding_prefix)
             return df
+
+    def to_numpy(self, kind: str = "embedding") -> "np.ndarray":
+        """Return embedding matrix aligned to ``self.items``.
+
+        Args:
+            kind: Currently only ``"embedding"`` is supported.
+
+        Returns:
+            numpy.ndarray of shape ``(n_items, dim)``.
+
+        Raises:
+            KeyError: If no embeddings have been computed.
+            ValueError: If *kind* is not recognised.
+        """
+        import numpy as np
+
+        if kind != "embedding":
+            raise ValueError(f"Unsupported kind={kind!r}. Currently only 'embedding' is supported.")
+
+        key = "node" if self.target == "nodes" else "edge"
+        if not self.embeddings or key not in self.embeddings:
+            raise KeyError(
+                f"No '{key}' embeddings found. Call .embed(...) in the query chain first."
+            )
+        matrix = self.embeddings[key]
+        return np.asarray(matrix)
 
     def to_networkx(self, network: Optional[Any] = None):
         """Export results to NetworkX graph.

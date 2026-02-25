@@ -697,6 +697,49 @@ class SelectStmt:
     sensitivity_spec: Optional["SensitivitySpec"] = None
     contract_spec: Optional["ContractSpec"] = None
     auto_community_config: Optional["AutoCommunityConfig"] = None
+    embedding_spec: Optional["EmbeddingSpec"] = None
+
+
+@dataclass
+class EmbeddingSpec:
+    """Specification for node or edge embedding computation.
+
+    Stored on :class:`SelectStmt` to trigger the embedding stage in the
+    executor.
+
+    Attributes:
+        method: Embedding method name (e.g. ``"netmf"``).
+        dim: Embedding dimensionality.
+        multilayer: Multilayer aggregation mode (``"union"`` | ``"supra"``).
+        layers: Optional list of layer names to restrict embedding.
+        window: Context window size for random-walk methods.
+        negative: Negative sampling ratio.
+        approx: SVD approximation method (``"randomized_svd"`` | ``"eigsh"``).
+        gamma: Interlayer coupling weight for supra mode.
+        seed: Random seed for reproducibility.
+        backend: Compute backend (``"auto"`` | ``"scipy"`` | ``"jax"``).
+        cache: Whether to use the embedding cache.
+        cache_namespace: Namespace prefix for cache keys.
+        link_op: For edge queries, the link operator to apply to node embeddings
+            (e.g. ``"hadamard"``).  When set, the executor first embeds nodes
+            and then applies the operator to produce edge embeddings.
+        ref_name: Optional reference name for cross-query embedding reuse.
+    """
+
+    method: str = "netmf"
+    dim: int = 128
+    multilayer: str = "supra"
+    layers: Optional[List[str]] = None
+    window: int = 10
+    negative: float = 1.0
+    approx: str = "randomized_svd"
+    gamma: float = 1.0
+    seed: Optional[int] = None
+    backend: str = "auto"
+    cache: bool = True
+    cache_namespace: str = "dsl_embeddings"
+    link_op: Optional[str] = None
+    ref_name: Optional[str] = None
 
 
 @dataclass

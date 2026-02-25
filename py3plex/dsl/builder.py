@@ -3234,6 +3234,80 @@ class QueryBuilder:
         ast = Query(explain=False, select=self._select)
         return GraphProgram.from_ast(ast)
 
+    def embed(
+        self,
+        method: str = "netmf",
+        dim: int = 128,
+        multilayer: str = "supra",
+        layers: Optional[List[str]] = None,
+        window: int = 10,
+        negative: float = 1.0,
+        approx: str = "randomized_svd",
+        gamma: float = 1.0,
+        seed: Optional[int] = None,
+        backend: str = "auto",
+        cache: bool = True,
+        cache_namespace: str = "dsl_embeddings",
+        link_op: Optional[str] = None,
+    ) -> "QueryBuilder":
+        """Attach a node (or edge) embedding computation to this query.
+
+        The embedding is computed after layer-filtering and WHERE filtering
+        so that it operates on the induced subgraph of the selected items.
+
+        Args:
+            method: Embedding method.  Currently ``"netmf"`` is supported.
+            dim: Embedding dimensionality.
+            multilayer: How to aggregate layers before embedding.
+                ``"supra"`` (default) builds a supra-adjacency matrix;
+                ``"union"`` collapses all layers into one graph.
+            layers: Optional list of layer names to include.  Defaults to
+                all layers in the query's layer selection.
+            window: Context window size (NetMF parameter).
+            negative: Negative sampling ratio (NetMF parameter).
+            approx: SVD approximation backend.  ``"randomized_svd"``
+                (default) or ``"eigsh"``.
+            gamma: Interlayer coupling weight used in supra mode.
+            seed: Random seed for reproducibility.
+            backend: Compute backend.  ``"auto"`` picks JAX if available,
+                otherwise scipy.
+            cache: Whether to cache the resulting embeddings.
+            cache_namespace: Prefix for cache keys.
+            link_op: For edge queries, the binary operator used to combine
+                source and target node embeddings (e.g. ``"hadamard"``).
+
+        Returns:
+            Self for chaining.
+
+        Example::
+
+            result = (
+                Q.nodes()
+                 .from_layers(L["social"])
+                 .embed(method="netmf", dim=64, seed=42)
+                 .execute(net)
+            )
+            emb = result.to_numpy("embedding")  # shape (n, 64)
+        """
+        from py3plex.dsl.ast import EmbeddingSpec
+
+        self._select.embedding_spec = EmbeddingSpec(
+            method=method,
+            dim=dim,
+            multilayer=multilayer,
+            layers=layers,
+            window=window,
+            negative=negative,
+            approx=approx,
+            gamma=gamma,
+            seed=seed,
+            backend=backend,
+            cache=cache,
+            cache_namespace=cache_namespace,
+            link_op=link_op,
+        )
+        return self
+
     def hint(self) -> "QueryBuilder":
         """Display context-aware hints for next query-building steps.
         
