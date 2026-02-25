@@ -58,12 +58,16 @@ class QueryResultOutOfCore:
         target: str,
         meta: Optional[Dict[str, Any]] = None,
         max_rows: Optional[int] = DEFAULT_MAX_ROWS,
+        grouped_by: Optional[List[str]] = None,
     ) -> None:
         self.items = items
         self.attributes = attributes
         self.target = target
         self.meta = meta or {}
         self._max_rows = max_rows
+        # When set, ``to_pandas`` uses these fields as column names for grouped
+        # results instead of the standard (id, layer) / (src, dst, ...) format.
+        self.grouped_by: Optional[List[str]] = grouped_by
 
     @property
     def count(self) -> int:
@@ -78,6 +82,7 @@ class QueryResultOutOfCore:
             target=self.target,
             meta=dict(self.meta),
             max_rows=None,
+            grouped_by=self.grouped_by,
         )
 
     def to_pandas(self, limit: Optional[int] = DEFAULT_MAX_ROWS):
@@ -100,7 +105,14 @@ class QueryResultOutOfCore:
             items = items[:limit]
             attrs = {k: v[:limit] for k, v in attrs.items()}
 
-        if self.target == "nodes":
+        if self.grouped_by:
+            # Grouped result: items are tuples aligned with grouped_by fields.
+            rows = [
+                {col: (item[idx] if idx < len(item) else None)
+                 for idx, col in enumerate(self.grouped_by)}
+                for item in items
+            ]
+        elif self.target == "nodes":
             rows = [{"id": i[0], "layer": i[1]} for i in items]
         else:
             rows = [
@@ -442,6 +454,7 @@ class OutOfCoreBackend:
             items=items,
             attributes=attrs,
             target="edges",
+            grouped_by=key_fields,
             meta={"grouping": {"mode": "per_layer_pair", "key_fields": key_fields}},
         )
 
@@ -456,6 +469,26 @@ class OutOfCoreBackend:
         limit_n = plan.get("limit_n")
         groupby_spec = plan.get("groupby")
         compute = plan.get("compute", [])
+
+        # Check for unsupported centrality measures in compute list or conditions.
+        _UNSUPPORTED_FIELDS = {
+            "betweenness_centrality",
+            "closeness_centrality",
+            "eigenvector_centrality",
+            "pagerank",
+            "clustering",
+            "triangles",
+        }
+        self._validate_compute(list(compute))
+        unsupported_conds = [c["field"] for c in conditions if c["field"] in _UNSUPPORTED_FIELDS]
+        if unsupported_conds:
+            raise UnsupportedOutOfCoreOperation(
+                f"conditions on unsupported measures: {sorted(set(unsupported_conds))}",
+                suggestion=(
+                    "Load the network into memory with multi_layer_network() "
+                    "for exact centrality computations."
+                ),
+            )
 
         degree_conditions = [c for c in conditions if c["field"] == "degree"]
         other_conditions = [c for c in conditions if c["field"] != "degree"]
@@ -578,6 +611,7 @@ class OutOfCoreBackend:
                 items=grp_items,
                 attributes=grp_attrs,
                 target="nodes",
+                grouped_by=key_fields,
                 meta={"grouping": {"mode": "per_layer", "key_fields": key_fields}},
             )
 
@@ -684,3 +718,148 @@ class OutOfCoreBackend:
                     "for exact centrality computations."
                 ),
             )
+
+
+# ---------------------------------------------------------------------------
+# DSL v2 AST → OOC plan translator
+# ---------------------------------------------------------------------------
+
+_OP_MAP = {
+    ">": "gt",
+    ">=": "gte",
+    "<": "lt",
+    "<=": "lte",
+    "=": "eq",
+    "==": "eq",
+    "!=": "ne",
+}
+
+
+def _ast_to_ooc_plan(select) -> Dict[str, Any]:
+    """Translate a DSL v2 SelectStmt into an out-of-core plan dict.
+
+    Only the MVP subset is translated; unsupported constructs raise
+    :class:`~py3plex.out_of_core.errors.UnsupportedOutOfCoreOperation`.
+
+    Args:
+        select: A :class:`~py3plex.dsl.ast.SelectStmt` instance.
+
+    Returns:
+        Plan dict compatible with :meth:`OutOfCoreBackend.execute`.
+    """
+    from py3plex.dsl.ast import Target  # local import to avoid circular deps
+
+    # Target
+    target_obj = select.target
+    if hasattr(target_obj, "value"):
+        target_str = target_obj.value  # enum
+    else:
+        target_str = str(target_obj).lower()
+    if target_str not in ("nodes", "edges"):
+        raise UnsupportedOutOfCoreOperation(
+            f"target={target_str!r} — only 'nodes' and 'edges' are supported out-of-core.",
+        )
+
+    plan: Dict[str, Any] = {"target": target_str}
+
+    # Layer filter
+    layer_names = None
+    if select.layer_expr is not None:
+        layer_names = select.layer_expr.get_layer_names()
+    elif select.layer_set is not None:
+        ls = select.layer_set
+        if hasattr(ls, "terms") and ls.terms:
+            layer_names = [t.name for t in ls.terms]
+    if layer_names:
+        plan["layer_names"] = layer_names
+
+    # WHERE conditions (AND-only; OR raises unsupported)
+    conditions: List[Dict[str, Any]] = []
+    if select.where is not None:
+        cond_expr = select.where
+        # Check for OR operators which we don't support out-of-core
+        if any(op.upper() == "OR" for op in getattr(cond_expr, "ops", [])):
+            raise UnsupportedOutOfCoreOperation(
+                "OR conditions",
+                suggestion="Use AND-only predicates for out-of-core queries.",
+            )
+        for atom in getattr(cond_expr, "atoms", []):
+            cmp = getattr(atom, "comparison", None)
+            if cmp is None:
+                raise UnsupportedOutOfCoreOperation(
+                    "non-comparison conditions (function/special predicates)",
+                    suggestion="Use simple attribute comparisons for out-of-core queries.",
+                )
+            op_str = _OP_MAP.get(cmp.op, cmp.op)
+            right = cmp.right
+            if hasattr(right, "name"):
+                # ParamRef — not supported without binding
+                raise UnsupportedOutOfCoreOperation(
+                    "unbound parameter references in WHERE clause",
+                    suggestion="Bind all parameters before executing against OutOfCoreNetwork.",
+                )
+            conditions.append({"field": cmp.left, "op": op_str, "value": right})
+    if conditions:
+        plan["conditions"] = conditions
+
+    # COMPUTE
+    compute = [ci.name if hasattr(ci, "name") else str(ci) for ci in getattr(select, "compute", [])]
+    if compute:
+        plan["compute"] = compute
+
+    # ORDER BY
+    order_items = getattr(select, "order_by", [])
+    if order_items:
+        item = order_items[0]
+        plan["order_by"] = {"key": item.key, "asc": not item.desc}
+
+    # LIMIT
+    if select.limit is not None:
+        plan["limit_n"] = int(select.limit)
+
+    # GROUP BY / per_layer aggregations
+    group_by = getattr(select, "group_by", [])
+    agg_specs = getattr(select, "aggregate_specs", None)
+    summarize_aggs = getattr(select, "summarize_aggs", None)
+    aggs_raw = agg_specs or summarize_aggs
+    if group_by:
+        plan["groupby"] = {
+            "key_fields": list(group_by),
+            "aggregations": aggs_raw or {},
+        }
+
+    # COVERAGE
+    cov_mode = getattr(select, "coverage_mode", None)
+    if cov_mode:
+        plan["coverage"] = {
+            "mode": cov_mode,
+            "k": getattr(select, "coverage_k", None),
+            "p": getattr(select, "coverage_p", None),
+        }
+
+    return plan
+
+
+def execute_dsl_on_ooc(network: "OutOfCoreNetwork", query) -> "QueryResultOutOfCore":
+    """Execute a DSL v2 Query against an OutOfCoreNetwork.
+
+    This is the bridge between the standard ``Q.edges().execute(net)`` /
+    ``Q.nodes().execute(net)`` DSL builder API and the out-of-core streaming
+    backend.  It is called automatically by the DSL executor when *network*
+    has ``is_out_of_core == True``.
+
+    Args:
+        network: An :class:`~py3plex.out_of_core.network.OutOfCoreNetwork`.
+        query: A :class:`~py3plex.dsl.ast.Query` AST object.
+
+    Returns:
+        :class:`QueryResultOutOfCore` with streamed results.
+
+    Raises:
+        :class:`~py3plex.out_of_core.errors.UnsupportedOutOfCoreOperation`
+            when the query contains constructs not supported out-of-core.
+    """
+    select = query.select
+    plan = _ast_to_ooc_plan(select)
+    backend = OutOfCoreBackend(network)
+    return backend.execute(plan)

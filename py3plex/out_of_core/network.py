@@ -6,10 +6,58 @@ import csv
 import json
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from .errors import OutOfCoreIOError, SchemaError
 from .schema import SUPPORTED_EDGE_FORMATS
+
+
+# ---------------------------------------------------------------------------
+# DSL-style kwarg condition parser
+# ---------------------------------------------------------------------------
+
+_SUFFIX_OPS = {
+    "__gt": "gt",
+    "__gte": "gte",
+    "__ge": "ge",
+    "__lt": "lt",
+    "__lte": "lte",
+    "__le": "le",
+    "__eq": "eq",
+    "__ne": "ne",
+}
+
+
+def _parse_condition_kwargs(conditions: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Parse DSL-style ``field__op=value`` kwargs into condition dicts.
+
+    For example::
+
+        _parse_condition_kwargs({"weight__gt": 0.5, "source__eq": "Alice"})
+        # [{"field": "weight", "op": "gt", "value": 0.5},
+        #  {"field": "source", "op": "eq", "value": "Alice"}]
+
+    Plain ``field=value`` (no operator suffix) is treated as equality.
+
+    Args:
+        conditions: Mapping of ``field__op`` to value (from **kwargs).
+
+    Returns:
+        List of condition spec dicts with keys ``field``, ``op``, ``value``.
+    """
+    result = []
+    for key, value in conditions.items():
+        matched = False
+        for suffix, op in _SUFFIX_OPS.items():
+            if key.endswith(suffix):
+                field = key[: -len(suffix)]
+                result.append({"field": field, "op": op, "value": value})
+                matched = True
+                break
+        if not matched:
+            # No operator suffix – treat as equality
+            result.append({"field": key, "op": "eq", "value": value})
+    return result
 
 
 class OutOfCoreNetwork:
@@ -156,3 +204,202 @@ class OutOfCoreNetwork:
             f"format={self.edges_format!r}, "
             f"directed={self.directed})"
         )
+
+    # ------------------------------------------------------------------
+    # Builder-style query methods (DSL-like API)
+    # ------------------------------------------------------------------
+
+    def query_edges(
+        self,
+        layer: Optional[str] = None,
+        layers: Optional[List[str]] = None,
+        limit: Optional[int] = None,
+        order_by: Optional[str] = None,
+        order_asc: bool = True,
+        per_layer_pair: bool = False,
+        coverage_k: Optional[int] = None,
+        **conditions: Any,
+    ) -> "QueryResultOutOfCore":
+        """Query edges using a DSL-style builder interface.
+
+        Supports predicate pushdown, chunked scanning, optional sorting,
+        per-layer-pair aggregation, and coverage filtering — all without
+        loading the full graph into memory.
+
+        Args:
+            layer: Single layer name to filter on (any-touch semantics: edge
+                   passes if either endpoint layer matches).
+            layers: List of layer names (alternative to ``layer``).
+            limit: Maximum number of edges to return.
+            order_by: Column name to sort by.  Prefix with ``"-"`` for
+                      descending order (e.g. ``"-weight"``).
+            order_asc: Sort ascending when ``True`` (default).  Ignored when
+                       ``order_by`` starts with ``"-"``.
+            per_layer_pair: When ``True``, return edge counts grouped by
+                            ``(source_layer, target_layer)`` pairs instead of
+                            individual edges.
+            coverage_k: When set, keep only edges whose ``(source, target)``
+                        base pair appears in at least *k* distinct layer pairs.
+            **conditions: Attribute filter conditions using DSL-style
+                          ``field__op=value`` syntax.  For example:
+                          ``weight__gt=0.5``, ``source__eq="Alice"``,
+                          ``weight__lte=1.0``.  A plain ``field=value``
+                          (no operator suffix) is treated as equality.
+
+        Returns:
+            :class:`~py3plex.out_of_core.executor.QueryResultOutOfCore`
+
+        Example::
+
+            net = OutOfCoreNetwork.from_edges_csv("edges.csv")
+
+            # Filter edges in the social layer with weight > 0.5
+            result = net.query_edges(layer="social", weight__gt=0.5, limit=100)
+            df = result.to_pandas()
+
+            # Multiple layers, sorted by weight descending
+            result = net.query_edges(layers=["social", "work"],
+                                     order_by="-weight", limit=50)
+
+            # Per-layer-pair edge counts
+            result = net.query_edges(per_layer_pair=True)
+
+            # Cross-layer coverage: edges in >= 2 layer pairs
+            result = net.query_edges(coverage_k=2, limit=200)
+        """
+        from .executor import OutOfCoreBackend
+
+        layer_names: Optional[List[str]] = None
+        if layer is not None:
+            layer_names = [layer] if isinstance(layer, str) else list(layer)
+        elif layers is not None:
+            layer_names = list(layers)
+
+        condition_dicts = _parse_condition_kwargs(conditions)
+
+        order_spec: Optional[Dict[str, Any]] = None
+        if order_by is not None:
+            if order_by.startswith("-"):
+                order_spec = {"key": order_by[1:], "asc": False}
+            else:
+                order_spec = {"key": order_by, "asc": order_asc}
+
+        groupby_spec: Optional[Dict[str, Any]] = None
+        if per_layer_pair:
+            groupby_spec = {
+                "key_fields": ["source_layer", "target_layer"],
+                "aggregations": {"edge_count": "count"},
+            }
+
+        coverage_spec: Optional[Dict[str, Any]] = None
+        if coverage_k is not None:
+            coverage_spec = {"mode": "at_least", "k": coverage_k}
+
+        plan: Dict[str, Any] = {
+            "target": "edges",
+            "layer_names": layer_names,
+            "conditions": condition_dicts,
+            "order_by": order_spec,
+            "limit_n": limit,
+            "groupby": groupby_spec,
+            "coverage": coverage_spec,
+            "directed": self.directed,
+        }
+
+        backend = OutOfCoreBackend(self)
+        return backend.execute(plan)
+
+    def query_nodes(
+        self,
+        layer: Optional[str] = None,
+        layers: Optional[List[str]] = None,
+        limit: Optional[int] = None,
+        order_by: Optional[str] = None,
+        order_asc: bool = True,
+        per_layer: bool = False,
+        **conditions: Any,
+    ) -> "QueryResultOutOfCore":
+        """Query nodes using a DSL-style builder interface.
+
+        Node degree is computed out-of-core by scanning the edge table (no
+        full adjacency structure needed).  Degree-based conditions
+        (``degree__gt``, ``degree__lte``, etc.) are pushed down to an
+        in-process SQLite accumulator.
+
+        Args:
+            layer: Single layer name to restrict the search to.
+            layers: List of layer names (alternative to ``layer``).
+            limit: Maximum number of nodes to return.
+            order_by: Column name to sort by (``"node"``, ``"degree"``,
+                      ``"layer"``).  Prefix ``"-"`` for descending.
+            order_asc: Sort ascending (default ``True``).
+            per_layer: When ``True``, return per-layer node counts grouped
+                       by layer instead of individual nodes.
+            **conditions: Attribute filter conditions.  Degree-based
+                          conditions are handled natively out-of-core:
+                          ``degree__gt=3``, ``degree__lte=10``.
+
+        Returns:
+            :class:`~py3plex.out_of_core.executor.QueryResultOutOfCore`
+
+        Example::
+
+            net = OutOfCoreNetwork.from_edges_csv("edges.csv")
+
+            # Nodes in 'work' layer with degree > 3
+            result = net.query_nodes(layer="work", degree__gt=3)
+            df = result.to_pandas()
+
+            # Top-10 highest-degree nodes
+            result = net.query_nodes(order_by="-degree", limit=10)
+
+            # Per-layer node counts
+            result = net.query_nodes(per_layer=True)
+        """
+        from .executor import OutOfCoreBackend
+
+        layer_names: Optional[List[str]] = None
+        if layer is not None:
+            layer_names = [layer] if isinstance(layer, str) else list(layer)
+        elif layers is not None:
+            layer_names = list(layers)
+
+        condition_dicts = _parse_condition_kwargs(conditions)
+
+        order_spec: Optional[Dict[str, Any]] = None
+        if order_by is not None:
+            if order_by.startswith("-"):
+                order_spec = {"key": order_by[1:], "asc": False}
+            else:
+                order_spec = {"key": order_by, "asc": order_asc}
+
+        groupby_spec: Optional[Dict[str, Any]] = None
+        if per_layer:
+            groupby_spec = {
+                "key_fields": ["layer"],
+                "aggregations": {"node_count": "count"},
+            }
+
+        plan: Dict[str, Any] = {
+            "target": "nodes",
+            "layer_names": layer_names,
+            "conditions": condition_dicts,
+            "order_by": order_spec,
+            "limit_n": limit,
+            "groupby": groupby_spec,
+            "directed": self.directed,
+        }
+
+        backend = OutOfCoreBackend(self)
+        return backend.execute(plan)
+
+
+# ---------------------------------------------------------------------------
+# Forward declaration: QueryResultOutOfCore type alias for type hints
+# ---------------------------------------------------------------------------
+# Avoid circular import by using a string annotation; the real class lives in
+# executor.py and is only imported inside the query methods above.
+try:
+    from .executor import QueryResultOutOfCore  # noqa: F401
+except ImportError:
+    pass
