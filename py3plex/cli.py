@@ -825,6 +825,11 @@ Exit codes:
 
     add_experiment_subparser(subparsers)
 
+    # OUT-OF-CORE command group
+    from py3plex.out_of_core.cli import build_ooc_parser
+
+    build_ooc_parser(subparsers)
+
     return parser
 
 
@@ -3702,6 +3707,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         from py3plex.experiments.cli import dispatch_experiment
 
         return dispatch_experiment(args)
+
+    # Out-of-core command group
+    if args.command == "ooc":
+        from py3plex.out_of_core.cli import dispatch_ooc
+
+        return dispatch_ooc(args)
 
     handler = command_handlers.get(args.command)
     if handler:

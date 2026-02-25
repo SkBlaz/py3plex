@@ -467,6 +467,17 @@ def execute_ast(
     logger = logging.getLogger(__name__)
 
     # -----------------------------------------------------------------------
+    # Out-of-core routing: delegate to OutOfCoreBackend when network is an
+    # OutOfCoreNetwork (detected via the is_out_of_core sentinel attribute).
+    # -----------------------------------------------------------------------
+    if getattr(network, "is_out_of_core", False):
+        try:
+            from py3plex.out_of_core.executor import execute_dsl_on_ooc
+            return execute_dsl_on_ooc(network, query)  # type: ignore[return-value]
+        except Exception:
+            raise  # propagate UnsupportedOutOfCoreOperation etc. unchanged
+
+    # -----------------------------------------------------------------------
     # Cost-based optimizer integration (failsafe: never breaks execution)
     # -----------------------------------------------------------------------
     optimizer_meta: Dict[str, Any] = {}
