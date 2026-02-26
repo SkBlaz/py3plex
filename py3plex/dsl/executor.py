@@ -708,6 +708,11 @@ def execute_ast(
         if hasattr(provenance_builder, '_uq_provenance'):
             prov_dict["uq"] = provenance_builder._uq_provenance
 
+        # Merge any extra blocks stored during execution (e.g. embedding)
+        if hasattr(provenance_builder, "_extra"):
+            for k, v in provenance_builder._extra.items():
+                prov_dict[k] = v
+
         # Attach optimizer metadata to provenance
         if optimizer_meta:
             prov_dict["optimizer"] = optimizer_meta
@@ -2825,6 +2830,22 @@ def _execute_select(
     )
     _record_timing("materialize", (time.monotonic() - stage_start) * 1000)
 
+    # Step 6.7: Compute embeddings if requested
+    if select.embedding_spec is not None:
+        embed_stage_start = time.monotonic()
+        if progress:
+            logger.info(
+                "Step 3.7b: Computing embeddings "
+                f"(method={select.embedding_spec.method}, dim={select.embedding_spec.dim})"
+            )
+        _execute_embedding(
+            result=result,
+            network=network,
+            spec=select.embedding_spec,
+            provenance_builder=provenance_builder,
+        )
+        _record_timing("embed", (time.monotonic() - embed_stage_start) * 1000)
+
     # Step 7: Apply file export if specified
     if select.file_export:
         if progress:
@@ -3648,6 +3669,160 @@ def _execute_select_with_items(
         attributes=attributes,
         meta={"dsl_version": "2.1"},
     )
+
+
+def _execute_embedding(
+    result: Any,
+    network: Any,
+    spec: Any,
+    provenance_builder: Any,
+) -> None:
+    """Execute the embedding stage and attach results to *result*.
+
+    This function is called after the main query pipeline has produced
+    ``result.items`` so the embedding operates on the induced subgraph of
+    the already-filtered node/edge set.
+
+    Args:
+        result: QueryResult to mutate in-place.
+        network: The multilayer network.
+        spec: EmbeddingSpec from the SelectStmt.
+        provenance_builder: Provenance builder for recording metadata.
+    """
+    import time as _time
+    import hashlib
+    import json
+
+    t0 = _time.perf_counter()
+
+    try:
+        from py3plex.embeddings.netmf import NetMFEmbedder
+        from py3plex.embeddings.link_ops import apply_link_op
+        from py3plex.embeddings.cache import (
+            make_embed_config_hash,
+            make_cache_key,
+            cache_get,
+            cache_put,
+        )
+    except ImportError as exc:
+        raise ImportError(
+            "py3plex.embeddings is required for .embed() but could not be imported. "
+            f"Original error: {exc}"
+        ) from exc
+
+    # --- build embed config hash -----------------------------------------
+    embed_config: dict = {
+        "method": spec.method,
+        "dim": spec.dim,
+        "multilayer": spec.multilayer,
+        "layers": spec.layers,
+        "window": spec.window,
+        "negative": spec.negative,
+        "approx": spec.approx,
+        "gamma": spec.gamma,
+        "seed": spec.seed,
+        "backend": spec.backend,
+        "cache_namespace": spec.cache_namespace,
+    }
+    embed_config_hash = make_embed_config_hash(embed_config)
+
+    # --- network fingerprint ------------------------------------------------
+    try:
+        fp = network.fingerprint() if hasattr(network, "fingerprint") else ""
+        if not isinstance(fp, str):
+            fp = json.dumps(fp, sort_keys=True, default=str)
+    except Exception:
+        fp = ""
+
+    network_version = getattr(network, "network_version", None)
+
+    # --- cache key ----------------------------------------------------------
+    # Use a placeholder ast_hash since we don't have it here; the embed config
+    # hash encodes all parameters so two identical embeds will share a key.
+    cache_key = make_cache_key(fp, embed_config_hash, embed_config_hash, network_version)
+    cache_hit = False
+
+    node_emb = None
+    if spec.cache:
+        node_emb = cache_get(cache_key)
+        if node_emb is not None:
+            cache_hit = True
+
+    if node_emb is None:
+        # Collect node items for embedding
+        if result.target == "nodes":
+            node_items = list(result.items)
+        else:
+            # For edges: collect unique node replicas referenced
+            node_set: dict = {}
+            for edge in result.items:
+                if len(edge) >= 4:
+                    src, src_layer = edge[0], edge[2]
+                    dst, dst_layer = edge[1], edge[3]
+                    node_set[(src, src_layer)] = True
+                    node_set[(dst, dst_layer)] = True
+                else:
+                    node_set[edge[0]] = True
+                    node_set[edge[1]] = True
+            node_items = list(node_set.keys())
+
+        embedder = NetMFEmbedder(
+            dim=spec.dim,
+            multilayer=spec.multilayer,
+            window=spec.window,
+            negative=spec.negative,
+            approx=spec.approx,
+            gamma=spec.gamma,
+            seed=spec.seed,
+        )
+        node_emb = embedder.fit_transform(
+            network=network,
+            item_ids=node_items,
+        )
+
+        if spec.cache:
+            cache_put(cache_key, node_emb)
+
+    # --- attach to result ---------------------------------------------------
+    if not hasattr(result, "embeddings") or result.embeddings is None:
+        result.embeddings = {}
+
+    if result.target == "nodes":
+        result.embeddings["node"] = node_emb.matrix
+
+        # Expose embedding_norm as a regular attribute for ordering/filtering
+        import numpy as np
+        norms = np.linalg.norm(node_emb.matrix, axis=1).tolist()
+        result.attributes["embedding_norm"] = dict(zip(result.items, norms))
+    else:
+        # Edge queries: apply link operator
+        link_op = spec.link_op or "hadamard"
+        edge_emb = apply_link_op(
+            node_embedding=node_emb,
+            edge_ids=list(result.items),
+            op=link_op,
+        )
+        result.embeddings["node"] = node_emb.matrix
+        result.embeddings["edge"] = edge_emb.matrix
+
+    # --- provenance ---------------------------------------------------------
+    embed_ms = (_time.perf_counter() - t0) * 1000.0
+
+    embed_prov: dict = {
+        **embed_config,
+        "cache_hit": cache_hit,
+        "embed_config_hash": embed_config_hash,
+        "embed_ms": embed_ms,
+    }
+
+    if provenance_builder is not None:
+        try:
+            if not hasattr(provenance_builder, "_extra"):
+                provenance_builder._extra = {}
+            provenance_builder._extra["embedding"] = embed_prov
+            provenance_builder.record_stage("embed", embed_ms)
+        except Exception:
+            pass
 
 
 def _apply_explanations(
@@ -6576,8 +6751,13 @@ def _execute_select_with_compositional_uq(
         provenance_record.metadata["uq"] = final_result.meta["uq"]
         final_result.meta["provenance"] = provenance_record.to_dict()
     elif provenance_builder is not None:
-        final_result.meta["provenance"] = provenance_builder.build()
-    
+        built_prov = provenance_builder.build()
+        # Merge any extra blocks (e.g. embedding) stored on the builder
+        if hasattr(provenance_builder, "_extra"):
+            for k, v in provenance_builder._extra.items():
+                built_prov[k] = v
+        final_result.meta["provenance"] = built_prov
+
     return final_result
 
 
