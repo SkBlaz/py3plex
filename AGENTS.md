@@ -8616,7 +8616,7 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 
 ## Testing Strategy
 
-### Current Test Coverage State (Updated: February 2026)
+### Current Test Coverage State (Updated: March 2026)
 
 **Overall Coverage**: ~14.7% (8,003 of 54,588 statements covered)
 
@@ -8827,7 +8827,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 **Version**: py3plex 1.1.3  
 **Python Support**: 3.8+  
 **Repository Size**: ~168K lines of code  
-**Test Coverage**: 8.0K tests across 536 test files (~14.7% statement coverage)  
+**Test Coverage**: 8.9K tests across 536 test files (~14.7% statement coverage)  
 **Key Modules**: 445 Python files across core, algorithms, DSL, and utilities  
 
 ### Major Subsystems
@@ -8838,7 +8838,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - Network generation (random_generators, advanced_random_generators)
 - Schema validation and lazy evaluation
 
-**DSL Subsystem** (62 modules):
+**DSL Subsystem** (~75 modules):
 - Query builder (builder.py - 6.9K lines, central module)
 - AST representation and execution (ast.py, executor.py, executor_semiring.py)
 - Result handling (result.py - 2.2K lines)
@@ -8846,10 +8846,14 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - Query planning and optimization (planner.py)
 - Uncertainty quantification integration (uq_algebra.py, uq_resolution.py)
 - Provenance tracking (provenance.py)
+- **NEW**: Static analysis and linting (lint/ — 15 modules, 8 lint rules)
+- **NEW**: GraphProgram immutable program objects (program/ — 10 modules, rewrite engine)
+- **NEW**: Specialized executors (executors/ — benchmark_executor)
 
 **Algorithms** (119 modules across 16 categories):
 - Community detection (16 modules, 6 algorithms)
 - Centrality measures (multilayer, supra-matrix, versatility)
+- **NEW**: Robustness centrality (`centrality/` package)
 - Statistical analysis (11 modules)
 - Temporal networks (community, centrality evolution)
 - Multilayer-specific algorithms (entanglement, multirank, multixrank)
@@ -8871,44 +8875,77 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 **Advanced Features**:
 - Counterexample generation (8 modules)
 - Claim learning and hypothesis discovery (6 modules)
-- Semiring algebra for path analysis (10 modules)
+- Semiring algebra for path analysis (`semiring/` — 10 modules, `algebra/` — 9 modules)
 - Network comparison and benchmarking (5 modules)
+- **NEW**: Meta-analysis pooling (`meta/` — 5 modules, DerSimonian–Laird)
+- **NEW**: Experiment registry (`experiments/` — 9 modules, filesystem-backed)
+
+**New Infrastructure Packages**:
+- **`py3plex/algebra/`** (9 modules): Comprehensive semiring/algebra framework with protocol, built-in semirings, registry, weight lifting, path solvers, closure, fixed-point iteration, backend dispatch, witness tracking
+- **`py3plex/embeddings/`** (5 modules): NetMF node embeddings, link feature operators, embedding cache
+- **`py3plex/experiments/`** (9 modules): Experiment tracking registry, ExperimentStore (filesystem), ExperimentRunner, artifact management
+- **`py3plex/meta/`** (5 modules): Meta-analytic pooling of network statistics (fixed-effect + random-effects)
+- **`py3plex/optimizer/`** (6 modules): Cost-based query optimizer (logical plan → optimizer → physical plan → executor)
+- **`py3plex/out_of_core/`** (10 modules): Out-of-core streaming query execution over disk-resident CSV/Arrow/Parquet files without loading full graph into RAM
+- **`py3plex/runtime/`** (2 modules): Runtime introspection and capability detection utilities
+- **`py3plex/ergonomics.py`**: Convenience helpers (`quick_network`, `quick_analysis`) to reduce boilerplate
 
 ### Module Distribution by Category
 
 | Category | Modules | Lines of Code | Purpose |
 |----------|---------|---------------|---------|
 | Core | 16 | ~50K | Network data structures and I/O |
-| DSL | 62 | ~80K | Query language and execution |
-| Algorithms | 119 | ~70K | Network analysis algorithms |
+| DSL | ~75 | ~80K | Query language and execution (+ lint, program, executors) |
+| Algorithms | 121 | ~70K | Network analysis algorithms (+ centrality/robustness) |
 | Uncertainty | 25 | ~25K | UQ and robustness analysis |
 | Dynamics | 14 | ~15K | Spreading processes |
-| Utilities | 50+ | ~30K | CLI, validation, profiling, visualization |
+| Algebra | 9 | ~8K | Comprehensive semiring algebra framework |
+| Embeddings | 5 | ~5K | NetMF node embeddings and link features |
+| Experiments | 9 | ~6K | Experiment tracking registry |
+| Meta | 5 | ~4K | Meta-analytic pooling of network statistics |
+| Optimizer | 6 | ~6K | Cost-based query optimizer |
+| Out-of-Core | 10 | ~8K | Streaming query execution on disk-resident data |
+| Runtime | 2 | ~2K | Runtime introspection and capability detection |
+| Utilities | 50+ | ~30K | CLI, validation, profiling, visualization, ergonomics |
 
 ### Test Infrastructure
 
 **Test Organization**:
-- **536 test files** with **8,000+ individual tests**
-- **83 verification tests** across 4 specialized modules (provenance, differential, metamorphic, determinism)
+- **536 test files** with **8,900+ individual tests**
+- **83+ verification tests** across specialized modules (provenance, differential, metamorphic, determinism) — 10 files in `tests/verification/`
 - **210+ new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization, UQ propagation)
-- Property-based tests using Hypothesis
+- **113 property-based test files** using Hypothesis in `tests/property/`
 - Metamorphic tests for invariant checking
 - Integration tests for end-to-end workflows
+- **NEW**: Tests for algebra, embeddings, experiments, meta-analysis, out-of-core, optimizer, DSL lint, DSL program objects
+
+**New Test Files for New Modules**:
+- `test_algebra_backend.py`, `test_algebra_core.py`, `test_algebra_fixed_point.py`, `test_algebra_paths.py`, `test_algebra_registry.py`, `test_algebra_witness.py` — algebra package
+- `test_dsl_lint.py` — DSL static analysis/linting
+- `test_dsl_program_rewrite.py`, `test_dsl_program_types.py`, `test_program.py`, `test_program_cost_executor.py` — GraphProgram objects
+- `test_experiments.py` — experiment tracking registry
+- `test_meta_analysis.py` — meta-analytic pooling
+- `test_out_of_core.py` — out-of-core streaming execution
+- `test_ergonomics.py`, `test_cli_ergonomics.py` — ergonomics helpers
+- `test_centrality_robustness.py`, `test_centrality_robustness_oracles.py`, `test_centrality_explain.py`, `test_centrality_explain_integration.py` — robustness centrality
+- `property/test_algebra_properties.py`, `property/test_graph_programs_properties.py`, `property/test_centrality_invariants.py`, `property/test_centrality_rankings.py`, `property/test_io_metamorphic_roundtrip.py`, `property/test_meta_properties.py`, `property/test_versatility_metamorphic.py` — property-based tests
 
 **Coverage Areas**:
 - Core functionality: 40-85% coverage
 - DSL: 23.5% coverage (high complexity, extensive functionality)
-- Algorithms: 1.1% → improved with 44 new tests
+- Algorithms: improved with 44+ new tests
 - Uncertainty: 21.3% coverage
 - Dynamics: 19.0% coverage with 39+ test functions
-- CLI: 70.2% coverage (improved from 0%)
-- Utils: 37.1% coverage (improved from 0%)
-- Validation: 82.6% coverage (improved from 0%)
-- Temporal Utils: 100% coverage (improved from 0%)
+- CLI: 70.2% coverage
+- Utils: 37.1% coverage
+- Validation: 82.6% coverage
+- Temporal Utils: 100% coverage
+- Algebra: new comprehensive test suite
+- Embeddings/Experiments/Meta/Optimizer/Out-of-Core: covered by dedicated test files
 
 ### Repository Growth
 
-**Recent Additions** (v1.1.x):
+**Recent Additions** (v1.1.x and v1.2):
 - Version 1.1.3 enhancements and documentation updates
 - Successive Halving for algorithm racing
 - SBM (Stochastic Block Model) integration
@@ -8918,6 +8955,18 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - Ergonomics features (hint(), enhanced repr, pedagogical errors)
 - Algorithm requirements and compatibility system
 - Enhanced provenance tracking
+- **NEW (v1.2)**: `py3plex/algebra/` — Comprehensive semiring algebra framework (`SemiringProtocol`, built-in semirings, algebra registry, weight lifting, path/closure solvers, fixed-point iteration, backend dispatch, witness support)
+- **NEW (v1.2)**: `py3plex/embeddings/` — NetMF node embedding algorithm, link feature operators, embedding result cache
+- **NEW (v1.2)**: `py3plex/experiments/` — Experiment tracking registry with filesystem-backed `ExperimentStore`, `ExperimentRunner`, artifact management, experiment metadata model
+- **NEW (v1.2)**: `py3plex/meta/` — Meta-analytic pooling with `MetaBuilder`, `MetaResult`, fixed-effect and DerSimonian–Laird random-effects models
+- **NEW (v1.2)**: `py3plex/optimizer/` — Cost-based query optimizer: logical plan, physical plan, cost model, optimization rules, plan nodes
+- **NEW (v1.2)**: `py3plex/out_of_core/` — Out-of-core streaming query execution over disk-resident CSV/Arrow/Parquet files, out-of-core network, streaming operators, spill-to-disk support
+- **NEW (v1.2)**: `py3plex/runtime/` — Runtime introspection utilities (`capabilities.py`)
+- **NEW (v1.2)**: `py3plex/centrality/` — Centrality robustness analysis package
+- **NEW (v1.2)**: `py3plex/ergonomics.py` — Ergonomic helper functions (`quick_network`, `quick_analysis`, etc.)
+- **NEW (v1.2)**: `py3plex/dsl/lint/` (15 modules) — DSL static analysis and linting framework with 8 lint rules (unknown layer, unknown attribute, type mismatch, unsatisfiable, redundant, full-scan, cross-layer)
+- **NEW (v1.2)**: `py3plex/dsl/program/` (10 modules) — `GraphProgram` first-class immutable program objects with rewrite engine, cost model, diff, distribution, and program cache
+- **NEW (v1.2)**: `py3plex/dsl/executors/` — Specialized execution engines (`benchmark_executor`)
 
 ---
 
@@ -8951,7 +9000,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `py3plex_mcp/errors.py` - Typed error handling
 - `py3plex_mcp/safe_paths.py` - Path validation and safety
 
-### DSL v2 Internals (62 modules, ~80K lines)
+### DSL v2 Internals (~75 modules, ~80K lines)
 
 **Core Builder API**:
 - `py3plex/dsl/__init__.py` (14KB) - Public API exports (Q, L, UQ, Param, F, C, N, P, D, S)
@@ -9001,6 +9050,39 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `py3plex/dsl/operator_registry.py` (5KB) - DSL operator registration
 - `py3plex/dsl/algebra.py` (11KB) - Algebraic operations
 - `py3plex/dsl/context.py` (1KB) - Execution context
+
+**NEW: DSL Lint / Static Analysis** (`py3plex/dsl/lint/` — 15 modules):
+- `py3plex/dsl/lint/__init__.py` - Public API: `lint(query, graph, schema)`, `explain(query, graph, schema)`
+- `py3plex/dsl/lint/diagnostic.py` - `Diagnostic` dataclass with severity, code, message, suggested fixes
+- `py3plex/dsl/lint/schema.py` - `SchemaProvider`, `NetworkSchemaProvider`, `EntityRef`
+- `py3plex/dsl/lint/types.py` - `AttrType`, `TypeEnvironment` for DSL type system
+- `py3plex/dsl/lint/type_resolver.py` - Type resolution engine
+- `py3plex/dsl/lint/lint_context.py` - `LintContext` threading schema + graph through rules
+- `py3plex/dsl/lint/rules/__init__.py` - Rule registry (`get_all_rules()`)
+- `py3plex/dsl/lint/rules/base.py` - `LintRule` Protocol
+- `py3plex/dsl/lint/rules/dsl001_unknown_layer.py` - Unknown layer detection
+- `py3plex/dsl/lint/rules/dsl002_unknown_attribute.py` - Unknown attribute detection with suggestions
+- `py3plex/dsl/lint/rules/dsl101_type_mismatch.py` - Type mismatch detection
+- `py3plex/dsl/lint/rules/dsl201_unsatisfiable.py` - Unsatisfiable filter detection
+- `py3plex/dsl/lint/rules/dsl202_redundant.py` - Redundant clause detection
+- `py3plex/dsl/lint/rules/perf301_full_scan.py` - Full-scan performance warning
+- `py3plex/dsl/lint/rules/perf302_cross_layer.py` - Cross-layer scan performance warning
+
+**NEW: DSL Program Objects** (`py3plex/dsl/program/` — 10 modules):
+- `py3plex/dsl/program/__init__.py` - Public API: `GraphProgram`, `type_check`, `infer_type`, `apply_rewrites`
+- `py3plex/dsl/program/program.py` - `GraphProgram` immutable program object with canonical AST
+- `py3plex/dsl/program/types.py` - Static type system for DSL IR
+- `py3plex/dsl/program/rewrite.py` - `RewriteEngine` with correctness-preserving transformations
+- `py3plex/dsl/program/cost.py` - `CostModel` for time/memory estimation
+- `py3plex/dsl/program/executor.py` - Program executor
+- `py3plex/dsl/program/explain.py` - Execution plan explanation
+- `py3plex/dsl/program/diff.py` - Program diff utilities
+- `py3plex/dsl/program/distribution.py` - UQ-aware result distribution type
+- `py3plex/dsl/program/cache.py` - `ProgramCache` keyed by provenance
+
+**NEW: Specialized Executors** (`py3plex/dsl/executors/` — 2 modules):
+- `py3plex/dsl/executors/__init__.py` - Executor registry
+- `py3plex/dsl/executors/benchmark_executor.py` - Benchmark-aware execution engine
 
 ### Algorithms - Complete Inventory
 
@@ -9344,7 +9426,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 ### Test Suite
 
-**Test Files** (536 files, 8,000+ tests):
+**Test Files** (536 files, 8,900+ tests):
 
 **DSL Tests**:
 - `tests/test_dsl_v2.py` - DSL v2 core functionality
@@ -10571,6 +10653,8 @@ Recommended areas for future test coverage:
 ---
 
 **Repo State Note**: As of February 2026, py3plex has 210+ new deterministic tests (203 baseline + 7 for UQ propagation) enforcing 10+ major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, edge cases, and UQ propagation. All tests are automated, CI-friendly, and passing. Test coverage has improved from 8% to 14.7% through focused testing of core modules, utilities, and validation infrastructure.
+
+**v1.2 Update** (March 2026): Repository expanded with 8 new infrastructure packages (`algebra`, `embeddings`, `experiments`, `meta`, `optimizer`, `out_of_core`, `runtime`, `centrality`) and major DSL subsystem additions (`dsl/lint/`, `dsl/program/`, `dsl/executors/`). Test suite grown to 8,900+ tests (8.9K) across 536 test files. Property-based test suite stable at 113 files; added `test_io_metamorphic_roundtrip.py`, `test_meta_properties.py`, `test_versatility_metamorphic.py` to property suite. Total of 263 example scripts, 445 Python modules in py3plex, ~168K LOC.
 
 **v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 536 test files (~14.7% coverage), 445 Python modules in py3plex, ~168K total lines of code, and 263 example scripts. Property-based test suite significantly expanded from 13 to 113 files. Test coverage maintained at ~14.7% through ongoing test improvements. Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
 
