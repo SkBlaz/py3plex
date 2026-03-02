@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Feb 24, 2026}
+\date{Mar 02, 2026}
 \release{1.1.3}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -51861,6 +51861,105 @@ Self for chaining
 
 \end{fulllineitems}\end{savenotes}
 
+\index{embed() (py3plex.dsl.QueryBuilder method)@\spxentry{embed()}\spxextra{py3plex.dsl.QueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.embed}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{embed}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}netmf\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dim}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multilayer}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}supra\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{approx}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}randomized\_svd\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{gamma}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{backend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}auto\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{cache}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{cache\_namespace}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}dsl\_embeddings\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{link\_op}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Attach a node (or edge) embedding computation to this query.
+
+\sphinxAtStartPar
+The embedding is computed after layer\sphinxhyphen{}filtering and WHERE filtering
+so that it operates on the induced subgraph of the selected items.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{method}} \textendash{} Embedding method.  Currently \sphinxcode{\sphinxupquote{"netmf"}} is supported.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{dim}} \textendash{} Embedding dimensionality.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{multilayer}} \textendash{} How to aggregate layers before embedding.
+\sphinxcode{\sphinxupquote{"supra"}} (default) builds a supra\sphinxhyphen{}adjacency matrix;
+\sphinxcode{\sphinxupquote{"union"}} collapses all layers into one graph.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{layers}} \textendash{} Optional list of layer names to include.  Defaults to
+all layers in the query’s layer selection.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{window}} \textendash{} Context window size (NetMF parameter).
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{negative}} \textendash{} Negative sampling ratio (NetMF parameter).
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{approx}} \textendash{} SVD approximation backend.  \sphinxcode{\sphinxupquote{"randomized\_svd"}}
+(default) or \sphinxcode{\sphinxupquote{"eigsh"}}.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{gamma}} \textendash{} Interlayer coupling weight used in supra mode.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{seed}} \textendash{} Random seed for reproducibility.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{backend}} \textendash{} Compute backend.  \sphinxcode{\sphinxupquote{"auto"}} picks JAX if available,
+otherwise scipy.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{cache}} \textendash{} Whether to cache the resulting embeddings.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{cache\_namespace}} \textendash{} Prefix for cache keys.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{link\_op}} \textendash{} For edge queries, the binary operator used to combine
+source and target node embeddings (e.g. \sphinxcode{\sphinxupquote{"hadamard"}}).
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Self for chaining.
+
+\end{description}\end{quote}
+
+\sphinxAtStartPar
+Example:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{result} \PYG{o}{=} \PYG{p}{(}
+    \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{embed}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{netmf}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{dim}\PYG{o}{=}\PYG{l+m+mi}{64}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+     \PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}
+\PYG{p}{)}
+\PYG{n}{emb} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}numpy}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{embedding}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} shape (n, 64)}
+\end{sphinxVerbatim}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{end\_grouping() (py3plex.dsl.QueryBuilder method)@\spxentry{end\_grouping()}\spxextra{py3plex.dsl.QueryBuilder method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -55381,6 +55480,42 @@ networkx.Graph subgraph containing result items
 
 \end{fulllineitems}\end{savenotes}
 
+\index{to\_numpy() (py3plex.dsl.QueryResult method)@\spxentry{to\_numpy()}\spxextra{py3plex.dsl.QueryResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryResult.to_numpy}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_numpy}}}
+{\sphinxparam{\DUrole{n}{kind}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}embedding\textquotesingle{}}}}
+{{ $\rightarrow$ np.ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return embedding matrix aligned to \sphinxcode{\sphinxupquote{self.items}}.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{kind}} \textendash{} Currently only \sphinxcode{\sphinxupquote{"embedding"}} is supported.
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+numpy.ndarray of shape \sphinxcode{\sphinxupquote{(n\_items, dim)}}.
+
+\sphinxlineitem{Raises}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{KeyError}} \textendash{} If no embeddings have been computed.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{ValueError}} \textendash{} If \sphinxstyleemphasis{kind} is not recognised.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{to\_pandas() (py3plex.dsl.QueryResult method)@\spxentry{to\_pandas()}\spxextra{py3plex.dsl.QueryResult method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -55388,7 +55523,7 @@ networkx.Graph subgraph containing result items
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{to\_pandas}}}
-{\sphinxparam{\DUrole{n}{multiindex}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{include\_grouping}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{expand\_uncertainty}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{expand\_explanations}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{expand\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
+{\sphinxparam{\DUrole{n}{multiindex}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{include\_grouping}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{expand\_uncertainty}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{expand\_explanations}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{expand\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{expand\_embeddings}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{embedding\_prefix}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}emb\_\textquotesingle{}}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -56112,7 +56247,7 @@ Get list of node types, optionally filtered by layer.
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{SelectStmt}}}
-{\sphinxparam{\DUrole{n}{target: \textasciitilde{}py3plex.dsl.ast.Target}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layer\_expr: \textasciitilde{}py3plex.dsl.ast.LayerExpr | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layer\_set: \textasciitilde{}typing.Any | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{where: \textasciitilde{}py3plex.dsl.ast.ConditionExpr | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{compute: \textasciitilde{}typing.List{[}\textasciitilde{}py3plex.dsl.ast.ComputeItem{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{order\_by: \textasciitilde{}typing.List{[}\textasciitilde{}py3plex.dsl.ast.OrderItem{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit: int | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{export: \textasciitilde{}py3plex.dsl.ast.ExportTarget | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{file\_export: \textasciitilde{}py3plex.dsl.ast.ExportSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{temporal\_context: \textasciitilde{}py3plex.dsl.ast.TemporalContext | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_spec: \textasciitilde{}py3plex.dsl.ast.WindowSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{group\_by: \textasciitilde{}typing.List{[}str{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit\_per\_group: int | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_mode: str | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_k: int | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_p: float | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_group: str | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_id\_field: str = \textquotesingle{}id\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{select\_cols: \textasciitilde{}typing.List{[}str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{drop\_cols: \textasciitilde{}typing.List{[}str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{rename\_map: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{summarize\_aggs: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{distinct\_cols: \textasciitilde{}typing.List{[}str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{rank\_specs: \textasciitilde{}typing.List{[}\textasciitilde{}typing.Tuple{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{str{]}{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{zscore\_attrs: \textasciitilde{}typing.List{[}str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{post\_filters: \textasciitilde{}typing.List{[}\textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textasciitilde{}typing.Any{]}{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{aggregate\_specs: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textasciitilde{}typing.Any{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{mutate\_specs: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textasciitilde{}typing.Any{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{autocompute: bool = True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uq\_config: \textasciitilde{}py3plex.dsl.ast.UQConfig | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{explain\_spec: \textasciitilde{}py3plex.dsl.ast.ExplainSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{counterfactual\_spec: \textasciitilde{}py3plex.dsl.ast.CounterfactualSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{sensitivity\_spec: \textasciitilde{}py3plex.dsl.ast.SensitivitySpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{contract\_spec: \textasciitilde{}py3plex.dsl.ast.ContractSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{auto\_community\_config: \textasciitilde{}py3plex.dsl.ast.AutoCommunityConfig | None = None}}}
+{\sphinxparam{\DUrole{n}{target: \textasciitilde{}py3plex.dsl.ast.Target}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layer\_expr: \textasciitilde{}py3plex.dsl.ast.LayerExpr | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layer\_set: \textasciitilde{}typing.Any | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{where: \textasciitilde{}py3plex.dsl.ast.ConditionExpr | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{compute: \textasciitilde{}typing.List{[}\textasciitilde{}py3plex.dsl.ast.ComputeItem{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{order\_by: \textasciitilde{}typing.List{[}\textasciitilde{}py3plex.dsl.ast.OrderItem{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit: int | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{export: \textasciitilde{}py3plex.dsl.ast.ExportTarget | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{file\_export: \textasciitilde{}py3plex.dsl.ast.ExportSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{temporal\_context: \textasciitilde{}py3plex.dsl.ast.TemporalContext | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_spec: \textasciitilde{}py3plex.dsl.ast.WindowSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{group\_by: \textasciitilde{}typing.List{[}str{]} = \textless{}factory\textgreater{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{limit\_per\_group: int | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_mode: str | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_k: int | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_p: float | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_group: str | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coverage\_id\_field: str = \textquotesingle{}id\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{select\_cols: \textasciitilde{}typing.List{[}str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{drop\_cols: \textasciitilde{}typing.List{[}str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{rename\_map: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{summarize\_aggs: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{distinct\_cols: \textasciitilde{}typing.List{[}str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{rank\_specs: \textasciitilde{}typing.List{[}\textasciitilde{}typing.Tuple{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{str{]}{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{zscore\_attrs: \textasciitilde{}typing.List{[}str{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{post\_filters: \textasciitilde{}typing.List{[}\textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textasciitilde{}typing.Any{]}{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{aggregate\_specs: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textasciitilde{}typing.Any{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{mutate\_specs: \textasciitilde{}typing.Dict{[}str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{\textasciitilde{}typing.Any{]} | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{autocompute: bool = True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{uq\_config: \textasciitilde{}py3plex.dsl.ast.UQConfig | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{explain\_spec: \textasciitilde{}py3plex.dsl.ast.ExplainSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{counterfactual\_spec: \textasciitilde{}py3plex.dsl.ast.CounterfactualSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{sensitivity\_spec: \textasciitilde{}py3plex.dsl.ast.SensitivitySpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{contract\_spec: \textasciitilde{}py3plex.dsl.ast.ContractSpec | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{auto\_community\_config: \textasciitilde{}py3plex.dsl.ast.AutoCommunityConfig | None = None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{embedding\_spec: \textasciitilde{}py3plex.dsl.ast.EmbeddingSpec | None = None}}}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -56817,6 +56952,16 @@ py3plex.dsl.ast.CounterfactualSpec | None
 \pysigstartsignatures
 \pysigline
 {\sphinxbfcode{\sphinxupquote{drop\_cols}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{embedding\_spec (py3plex.dsl.SelectStmt attribute)@\spxentry{embedding\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.SelectStmt.embedding_spec}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{embedding\_spec}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }EmbeddingSpec\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
 \pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
