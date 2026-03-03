@@ -2481,11 +2481,14 @@ class multi_layer_network:
         Generic manipulator of edge dicts
         """
 
+        # Resolve once per call rather than once per edge
+        func = getattr(self.core_network, target_function)
+
         def _apply(edge_dict):
             # Work with a copy to avoid mutating the original dictionary
             edge_dict = edge_dict.copy()
 
-            if "source_type" in edge_dict.keys() and "target_type" in edge_dict.keys():
+            if "source_type" in edge_dict and "target_type" in edge_dict:
                 u_for_edge = (edge_dict["source"], edge_dict["source_type"])
                 v_for_edge = (edge_dict["target"], edge_dict["target_type"])
             else:
@@ -2498,7 +2501,6 @@ class multi_layer_network:
             edge_dict.pop("target_type", None)
             edge_dict.pop("source_type", None)
 
-            func = getattr(self.core_network, target_function)
             key = edge_dict.pop("key", None)
 
             if raw:
@@ -2547,11 +2549,14 @@ class multi_layer_network:
         Generic manipulator of node dict
         """
 
+        # Resolve once per call rather than once per node
+        func = getattr(self.core_network, target_function)
+
         if isinstance(node_dict_list, dict):
             # Work with a copy to avoid mutating the original dictionary
             node_dict = node_dict_list.copy()
 
-            if "type" in node_dict.keys():
+            if "type" in node_dict:
                 node_dict["node_for_adding"] = (node_dict["source"], node_dict["type"])
             else:
                 node_dict["node_for_adding"] = (node_dict["source"], self.dummy_layer)
@@ -2561,7 +2566,7 @@ class multi_layer_network:
             node_dict.pop("type", None)
             nname = node_dict["node_for_adding"]
             node_dict.pop("node_for_adding", None)
-            getattr(self.core_network, target_function)(nname, **node_dict)
+            func(nname, **node_dict)
 
         else:
             # Handle list of node dictionaries
@@ -2569,7 +2574,7 @@ class multi_layer_network:
                 # Work with a copy to avoid mutating the original dictionary
                 node_dict = node_dict_item.copy()
 
-                if "type" in node_dict.keys():
+                if "type" in node_dict:
                     node_dict["node_for_adding"] = (
                         node_dict["source"],
                         node_dict["type"],
@@ -2585,7 +2590,7 @@ class multi_layer_network:
                 node_dict.pop("type", None)
                 nname = node_dict["node_for_adding"]
                 node_dict.pop("node_for_adding", None)
-                getattr(self.core_network, target_function)(nname, **node_dict)
+                func(nname, **node_dict)
 
     def _generic_node_list_manipulator(self, node_list, target_function):
         """Generic manipulator of node lists.
