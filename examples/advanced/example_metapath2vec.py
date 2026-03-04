@@ -74,7 +74,7 @@ if USE_MULTINET:
 else:
     network = _TinyNetwork()
 
-nodes = network.get_nodes()
+nodes = list(network.get_nodes())  # materialize once; generators are exhausted after first use
 
 embedder = MetaPath2VecEmbedder(
     metapaths=[["author", "paper", "author"]],

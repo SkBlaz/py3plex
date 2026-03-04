@@ -105,13 +105,30 @@ def _build_transition_index(
     metapath_layers = set(metapath)
 
     for edge in raw_edges:
-        # Edge format: (src, dst, src_layer, dst_layer[, weight])
-        if len(edge) < 4:
+        # Support two edge formats:
+        #   1. py3plex native: ((src_id, src_layer), (dst_id, dst_layer))
+        #   2. flat 4-tuple:   (src_id, dst_id, src_layer, dst_layer[, weight])
+        if (
+            len(edge) == 2
+            and isinstance(edge[0], tuple)
+            and isinstance(edge[1], tuple)
+        ):
+            src_tuple, dst_tuple = edge[0], edge[1]
+            if len(src_tuple) < 2 or len(dst_tuple) < 2:
+                continue
+            src, src_layer = src_tuple[0], str(src_tuple[1])
+            dst, dst_layer = dst_tuple[0], str(dst_tuple[1])
+            # Normalise to (id, str_layer) so later comparisons are consistent
+            src_tuple = (src, src_layer)
+            dst_tuple = (dst, dst_layer)  # layers from nested tuples may not be str yet
+        elif len(edge) >= 4:
+            src, dst, src_layer, dst_layer = edge[0], edge[1], edge[2], edge[3]
+            src_layer, dst_layer = str(src_layer), str(dst_layer)
+            src_tuple = (src, src_layer)
+            dst_tuple = (dst, dst_layer)
+        else:
             continue
-        src, dst, src_layer, dst_layer = edge[:4]
         # Only index layers that appear in at least one metapath
-        src_tuple = (src, src_layer)
-        dst_tuple = (dst, dst_layer)
 
         if src_layer in metapath_layers and dst_layer in metapath_layers:
             # Forward: src -> dst
@@ -463,7 +480,7 @@ class MetaPath2VecEmbedder:
         _seed = seed if seed is not None else self.seed
         rng = np.random.default_rng(_seed)
 
-        # Resolve item_ids
+        # Resolve item_ids – always materialize to a list so len() works
         if item_ids is None:
             try:
                 item_ids = list(network.get_nodes())
@@ -471,6 +488,10 @@ class MetaPath2VecEmbedder:
                 raise EmbeddingError(
                     f"Failed to retrieve nodes from network: {exc}"
                 ) from exc
+
+        # Ensure item_ids is a list (caller may pass a generator/iterator)
+        if not isinstance(item_ids, list):
+            item_ids = list(item_ids)
 
         if not item_ids:
             raise EmbeddingError("No nodes available for embedding.")

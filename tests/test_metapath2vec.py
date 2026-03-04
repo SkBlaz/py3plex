@@ -22,30 +22,30 @@ import numpy as np
 class _FakeNetwork:
     """Minimal multilayer network stub for MetaPath2Vec testing.
 
-    Nodes are stored as (node_id, layer) tuples in core_network.
+    Nodes are stored as (node_id, layer) tuples.
+    Edges are stored as (src, dst, src_layer, dst_layer) tuples.
     """
 
+    _EDGES = [
+        ("a1", "p1", "author", "paper"),
+        ("a2", "p1", "author", "paper"),
+        ("a2", "p2", "author", "paper"),
+        ("a3", "p2", "author", "paper"),
+    ]
+
     def __init__(self) -> None:
-        import networkx as nx
-
-        G = nx.MultiGraph()
-        # Layer "author" nodes
-        for a in ["a1", "a2", "a3"]:
-            G.add_node((a, "author"))
-        # Layer "paper" nodes
-        for p in ["p1", "p2"]:
-            G.add_node((p, "paper"))
-
-        # author-paper edges
-        G.add_edge(("a1", "author"), ("p1", "paper"))
-        G.add_edge(("a2", "author"), ("p1", "paper"))
-        G.add_edge(("a2", "author"), ("p2", "paper"))
-        G.add_edge(("a3", "author"), ("p2", "paper"))
-
-        self.core_network = G
+        self.directed = False
 
     def get_nodes(self):
-        return list(self.core_network.nodes())
+        nodes = set()
+        for src, dst, sl, dl in self._EDGES:
+            nodes.add((src, sl))
+            nodes.add((dst, dl))
+        return sorted(nodes)
+
+    def get_edges(self):
+        """Return edges as (src, dst, src_layer, dst_layer) tuples."""
+        return list(self._EDGES)
 
 
 # ---------------------------------------------------------------------------
@@ -55,7 +55,6 @@ class _FakeNetwork:
 
 @pytest.fixture()
 def tiny_net():
-    pytest.importorskip("networkx")
     return _FakeNetwork()
 
 
@@ -132,10 +131,11 @@ def test_different_seeds_differ(tiny_net):
 
 
 def test_metapath_must_have_at_least_two_types(tiny_net):
-    """Single-type metapath (trivial loop) still runs without crashing."""
+    """Metapath with no valid transitions raises EmbeddingError."""
     from py3plex.embeddings.metapath2vec import MetaPath2VecEmbedder
+    from py3plex.exceptions import EmbeddingError
 
-    # A metapath of just one repeated type is degenerate but should not crash
+    # author->author has no transitions in the author-paper bipartite network
     embedder = MetaPath2VecEmbedder(
         metapaths=[["author", "author"]],
         dim=4,
@@ -144,10 +144,9 @@ def test_metapath_must_have_at_least_two_types(tiny_net):
         epochs=1,
         seed=7,
     )
-    # May produce few or no walks, but must not raise
     nodes = tiny_net.get_nodes()
-    result = embedder.fit_transform(tiny_net, item_ids=nodes)
-    assert result is not None
+    with pytest.raises(EmbeddingError):
+        embedder.fit_transform(tiny_net, item_ids=nodes)
 
 
 def test_normalize_flag(tiny_net):
