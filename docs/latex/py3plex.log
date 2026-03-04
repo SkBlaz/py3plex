@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.2)  2 MAR 2026 01:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.4)  4 MAR 2026 03:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -39959,7 +39959,7 @@ texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public/lm/
 lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on py3plex.pdf (1013 pages, 4502361 bytes).
+Output written on py3plex.pdf (1013 pages, 4502346 bytes).
 PDF statistics:
  17451 PDF objects out of 18468 (max. 8388607)
  16220 compressed objects within 163 object streams
