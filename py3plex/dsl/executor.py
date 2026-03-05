@@ -3766,19 +3766,38 @@ def _execute_embedding(
                     node_set[edge[1]] = True
             node_items = list(node_set.keys())
 
-        embedder = NetMFEmbedder(
-            dim=spec.dim,
-            multilayer=spec.multilayer,
-            window=spec.window,
-            negative=spec.negative,
-            approx=spec.approx,
-            gamma=spec.gamma,
-            seed=spec.seed,
-        )
-        node_emb = embedder.fit_transform(
-            network=network,
-            item_ids=node_items,
-        )
+        if spec.method == "metapath2vec":
+            from py3plex.embeddings.metapath2vec import MetaPath2VecEmbedder
+
+            metapaths = getattr(spec, "metapaths", None) or []
+            walk_length = getattr(spec, "walk_length", 80)
+            num_walks = getattr(spec, "num_walks", 10)
+
+            embedder = MetaPath2VecEmbedder(
+                metapaths=metapaths,
+                walk_length=walk_length,
+                num_walks=num_walks,
+                dim=spec.dim,
+                seed=spec.seed,
+            )
+            node_emb = embedder.fit_transform(
+                network=network,
+                item_ids=node_items,
+            )
+        else:
+            embedder = NetMFEmbedder(
+                dim=spec.dim,
+                multilayer=spec.multilayer,
+                window=spec.window,
+                negative=spec.negative,
+                approx=spec.approx,
+                gamma=spec.gamma,
+                seed=spec.seed,
+            )
+            node_emb = embedder.fit_transform(
+                network=network,
+                item_ids=node_items,
+            )
 
         if spec.cache:
             cache_put(cache_key, node_emb)

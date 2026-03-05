@@ -3249,6 +3249,9 @@ class QueryBuilder:
         cache: bool = True,
         cache_namespace: str = "dsl_embeddings",
         link_op: Optional[str] = None,
+        metapaths: Optional[List[List[str]]] = None,
+        walk_length: int = 80,
+        num_walks: int = 10,
     ) -> "QueryBuilder":
         """Attach a node (or edge) embedding computation to this query.
 
@@ -3256,7 +3259,8 @@ class QueryBuilder:
         so that it operates on the induced subgraph of the selected items.
 
         Args:
-            method: Embedding method.  Currently ``"netmf"`` is supported.
+            method: Embedding method.  ``"netmf"`` (default) or
+                ``"metapath2vec"``.
             dim: Embedding dimensionality.
             multilayer: How to aggregate layers before embedding.
                 ``"supra"`` (default) builds a supra-adjacency matrix;
@@ -3275,6 +3279,11 @@ class QueryBuilder:
             cache_namespace: Prefix for cache keys.
             link_op: For edge queries, the binary operator used to combine
                 source and target node embeddings (e.g. ``"hadamard"``).
+            metapaths: List of metapaths for MetaPath2Vec.  Each metapath is
+                a list of layer names, e.g.
+                ``[["author", "paper", "author"]]``.
+            walk_length: Random walk length for MetaPath2Vec.
+            num_walks: Number of walks per node for MetaPath2Vec.
 
         Returns:
             Self for chaining.
@@ -3288,6 +3297,19 @@ class QueryBuilder:
                  .execute(net)
             )
             emb = result.to_numpy("embedding")  # shape (n, 64)
+
+            # MetaPath2Vec example::
+
+            result = (
+                Q.nodes()
+                 .embed(
+                     method="metapath2vec",
+                     metapaths=[["author", "paper", "author"]],
+                     dim=32,
+                     seed=42,
+                 )
+                 .execute(net)
+            )
         """
         from py3plex.dsl.ast import EmbeddingSpec
 
@@ -3305,6 +3327,9 @@ class QueryBuilder:
             cache=cache,
             cache_namespace=cache_namespace,
             link_op=link_op,
+            metapaths=metapaths,
+            walk_length=walk_length,
+            num_walks=num_walks,
         )
         return self
 
