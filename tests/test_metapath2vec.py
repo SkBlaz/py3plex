@@ -175,3 +175,44 @@ def test_embedding_result_exported_from_package():
     from py3plex.embeddings import MetaPath2VecEmbedder
 
     assert callable(MetaPath2VecEmbedder)
+
+
+def test_compute_embedding_pipeline_step(tiny_net):
+    """ComputeEmbedding pipeline step produces EmbeddingResult in context."""
+    from py3plex.pipeline import ComputeEmbedding
+
+    step = ComputeEmbedding(
+        metapaths=[["author", "paper", "author"]],
+        dim=8,
+        walk_length=5,
+        num_walks=2,
+        epochs=1,
+        seed=42,
+    )
+
+    ctx = step.transform({"network": tiny_net})
+
+    assert "embedding" in ctx
+    assert "network" in ctx
+    result = ctx["embedding"]
+    assert result.matrix.shape[1] == 8
+    assert result.method == "metapath2vec"
+
+
+def test_compute_embedding_pipeline_step_bare_network(tiny_net):
+    """ComputeEmbedding accepts a bare network (not just a dict context)."""
+    from py3plex.pipeline import ComputeEmbedding
+
+    step = ComputeEmbedding(
+        metapaths=[["author", "paper", "author"]],
+        dim=4,
+        walk_length=4,
+        num_walks=1,
+        epochs=1,
+        seed=0,
+    )
+
+    ctx = step.transform(tiny_net)
+
+    assert "embedding" in ctx
+    assert ctx["embedding"].matrix.shape[1] == 4

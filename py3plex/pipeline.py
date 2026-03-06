@@ -659,17 +659,21 @@ class ComputeEmbedding(PipelineStep):
         """
         from py3plex.embeddings.metapath2vec import MetaPath2VecEmbedder
 
-        # Accept either a bare network or a dict context
-        if isinstance(data, multinet.multi_layer_network):
+        # Accept either a bare network (duck-typed: has get_nodes/get_edges)
+        # or a dict context produced by a previous pipeline step.
+        is_network = hasattr(data, "get_nodes") and hasattr(data, "get_edges")
+        context: Dict[str, Any]
+        if is_network:
             network = data
-            context: Dict[str, Any] = {"network": data}
+            context = {"network": data}
         elif isinstance(data, dict) and "network" in data:
             network = data["network"]
             context = dict(data)
         else:
             raise TypeError(
-                "ComputeEmbedding expects a multi_layer_network or a dict "
-                f"with key 'network', got {type(data).__name__}"
+                "ComputeEmbedding expects an object with get_nodes/get_edges "
+                "methods or a dict with key 'network', "
+                f"got {type(data).__name__}"
             )
 
         logger.info(
