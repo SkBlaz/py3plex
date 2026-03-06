@@ -48,6 +48,7 @@ __all__ = [
     "ComputeStats",
     "FilterNodes",
     "SaveNetwork",
+    "ComputeEmbedding",
 ]
 
 
@@ -573,3 +574,133 @@ class SaveNetwork(PipelineStep):
         
         # Pass through the network for further processing
         return data
+
+
+class ComputeEmbedding(PipelineStep):
+    """
+    Compute node embeddings for a multilayer network using MetaPath2Vec.
+
+    This step wraps :class:`~py3plex.embeddings.metapath2vec.MetaPath2VecEmbedder`
+    as a reusable pipeline component.  The input network is passed through
+    unchanged; the resulting :class:`~py3plex.embeddings.base.EmbeddingResult`
+    is stored under ``context["embedding"]`` so downstream steps can access it.
+
+    Args:
+        metapaths: List of metapaths (layer-name sequences), e.g.
+            ``[["author", "paper", "author"]]``.
+        dim: Embedding dimensionality (default: 64).
+        walk_length: Length of each random walk (default: 40).
+        num_walks: Number of walks per start node (default: 5).
+        window_size: Skip-gram context window (default: 5).
+        negative_samples: Negative samples per positive pair (default: 5).
+        epochs: Training epochs (default: 5).
+        lr: Initial learning rate (default: 0.025).
+        normalize: L2-normalise vectors after training (default: True).
+        seed: Random seed for reproducibility (default: None).
+
+    Example::
+
+        from py3plex.pipeline import Pipeline, LoadStep, ComputeEmbedding
+
+        pipe = Pipeline([
+            ("load", LoadStep(path="network.csv", input_type="multiedgelist")),
+            ("embed", ComputeEmbedding(
+                metapaths=[["author", "paper", "author"]],
+                dim=32,
+                seed=42,
+            )),
+        ])
+        result = pipe.run()
+        embedding = result["embedding"]  # EmbeddingResult
+    """
+
+    def __init__(
+        self,
+        metapaths: List[List[str]],
+        dim: int = 64,
+        walk_length: int = 40,
+        num_walks: int = 5,
+        window_size: int = 5,
+        negative_samples: int = 5,
+        epochs: int = 5,
+        lr: float = 0.025,
+        normalize: bool = True,
+        seed: Optional[int] = None,
+    ) -> None:
+        """Initialise the ComputeEmbedding pipeline step."""
+        self.metapaths = metapaths
+        self.dim = dim
+        self.walk_length = walk_length
+        self.num_walks = num_walks
+        self.window_size = window_size
+        self.negative_samples = negative_samples
+        self.epochs = epochs
+        self.lr = lr
+        self.normalize = normalize
+        self.seed = seed
+
+    def transform(self, data: Any) -> Any:
+        """Compute embeddings and attach them to the result context.
+
+        Args:
+            data: A :class:`~py3plex.core.multinet.multi_layer_network` **or**
+                a ``dict`` context produced by a previous pipeline step.  When
+                a dict is provided the network is expected under the
+                ``"network"`` key.
+
+        Returns:
+            The original *data* value with an ``"embedding"`` key added.  If
+            *data* was a bare network object, a dict ``{"network": data,
+            "embedding": result}`` is returned so subsequent steps can still
+            access both.
+
+        Raises:
+            TypeError: If no network can be found in *data*.
+        """
+        from py3plex.embeddings.metapath2vec import MetaPath2VecEmbedder
+
+        # Accept either a bare network (duck-typed: has get_nodes/get_edges)
+        # or a dict context produced by a previous pipeline step.
+        is_network = hasattr(data, "get_nodes") and hasattr(data, "get_edges")
+        context: Dict[str, Any]
+        if is_network:
+            network = data
+            context = {"network": data}
+        elif isinstance(data, dict) and "network" in data:
+            network = data["network"]
+            context = dict(data)
+        else:
+            raise TypeError(
+                "ComputeEmbedding expects an object with get_nodes/get_edges "
+                "methods or a dict with key 'network', "
+                f"got {type(data).__name__}"
+            )
+
+        logger.info(
+            "ComputeEmbedding: fitting MetaPath2Vec "
+            f"(dim={self.dim}, walks={self.num_walks}×{self.walk_length}, "
+            f"seed={self.seed})"
+        )
+
+        embedder = MetaPath2VecEmbedder(
+            metapaths=self.metapaths,
+            dim=self.dim,
+            walk_length=self.walk_length,
+            num_walks=self.num_walks,
+            window_size=self.window_size,
+            negative_samples=self.negative_samples,
+            epochs=self.epochs,
+            lr=self.lr,
+            normalize=self.normalize,
+            seed=self.seed,
+        )
+
+        item_ids = network.get_nodes()
+        embedding = embedder.fit_transform(network, item_ids=item_ids)
+
+        logger.info(
+            f"  Embedded {embedding.n_items} nodes into {embedding.dim}-d space"
+        )
+
+        context["embedding"] = embedding
+        return context

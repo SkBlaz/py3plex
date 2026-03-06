@@ -724,6 +724,10 @@ class EmbeddingSpec:
             (e.g. ``"hadamard"``).  When set, the executor first embeds nodes
             and then applies the operator to produce edge embeddings.
         ref_name: Optional reference name for cross-query embedding reuse.
+        metapaths: List of metapaths for MetaPath2Vec (each metapath is a list
+            of layer names, e.g. ``[["author","paper","author"]]``).
+        walk_length: Random walk length for MetaPath2Vec.
+        num_walks: Number of walks per node for MetaPath2Vec.
     """
 
     method: str = "netmf"
@@ -740,6 +744,9 @@ class EmbeddingSpec:
     cache_namespace: str = "dsl_embeddings"
     link_op: Optional[str] = None
     ref_name: Optional[str] = None
+    metapaths: Optional[List[List[str]]] = None
+    walk_length: int = 80
+    num_walks: int = 10
 
 
 @dataclass

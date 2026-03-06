@@ -11,12 +11,14 @@ Public API::
 
 from .base import EmbeddingResult, Embedder
 from .netmf import NetMFEmbedder
+from .metapath2vec import MetaPath2VecEmbedder
 from .link_ops import apply_link_op, LINK_OPS
 
 __all__ = [
     "EmbeddingResult",
     "Embedder",
     "NetMFEmbedder",
+    "MetaPath2VecEmbedder",
     "apply_link_op",
     "LINK_OPS",
 ]
