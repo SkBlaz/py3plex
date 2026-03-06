@@ -573,7 +573,7 @@ class multi_layer_network:
         self.labels: Optional[Any] = None
         self.embedding: Optional[Any] = None
         self.verbose: bool = verbose
-        self.network_type: str = network_type  # assing network type
+        self.network_type: str = network_type  # assign network type
         self.sparse_enabled: bool = False
         self.hinmine_network: Optional[Any] = None
         self.label_delimiter: str = label_delimiter
@@ -1080,7 +1080,7 @@ class multi_layer_network:
         #        for potential_node in itertools.product(unique_nodes,unique_layers):
         #            self.core_network.add_node(potential_node)
 
-        # draw edges between same nodes accross layers
+        # draw edges between same nodes across layers
         for node in unique_nodes:
             for layer_first in unique_layers:
                 for layer_second in unique_layers:
@@ -1144,7 +1144,7 @@ class multi_layer_network:
 
     def to_sparse_matrix(self, replace_core=False, return_only=False):
         """
-        Conver the matrix to scipy-sparse version. This is useful for classification.
+        Convert the matrix to scipy-sparse version. This is useful for classification.
         """
         if return_only:
             return nx_to_scipy_sparse_matrix(self.core_network)
@@ -3198,7 +3198,7 @@ class multi_layer_network:
 
     def _assign_types_for_hinmine(self):
         """
-        Assing some basic types...
+        Assign some basic types...
         """
         for node in self.get_nodes(data=True):
             node[1]["type"] = node[0][1]

@@ -1,6 +1,6 @@
 # modules directed towards enrichment of node partitions..
 
-# this pyton code enables enrichment calculation from graph results from previous step
+# this python code enables enrichment calculation from graph results from previous step
 
 # this is to calculate enrichment scores
 
