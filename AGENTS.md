@@ -8683,7 +8683,7 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 ### Test Organization
 
 **Test Suite Statistics**:
-- **Total test files**: 536 test_*.py files (550 total Python files in tests/)
+- **Total test files**: 537 test_*.py files (551 total Python files in tests/)
 - **DSL test files**: 76 files covering DSL v2, legacy DSL, and related features
 - **Verification test files**: 9 files with formal correctness guarantees
 - **Property-based test files**: 113 files in `tests/property/` using Hypothesis
@@ -8827,8 +8827,8 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 **Version**: py3plex 1.1.3  
 **Python Support**: 3.8+  
 **Repository Size**: ~168K lines of code  
-**Test Coverage**: 8,931 tests across 536 test files (~14.7% statement coverage)  
-**Key Modules**: 445 Python files across core, algorithms, DSL, and utilities  
+**Test Coverage**: 8,940 tests across 537 test files (~14.7% statement coverage)  
+**Key Modules**: 446 Python files across core, algorithms, DSL, and utilities  
 
 ### Major Subsystems
 
@@ -8882,7 +8882,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 **New Infrastructure Packages**:
 - **`py3plex/algebra/`** (9 modules): Comprehensive semiring/algebra framework with protocol, built-in semirings, registry, weight lifting, path solvers, closure, fixed-point iteration, backend dispatch, witness tracking
-- **`py3plex/embeddings/`** (5 modules): NetMF node embeddings, link feature operators, embedding cache
+- **`py3plex/embeddings/`** (6 modules): NetMF + MetaPath2Vec node embeddings, link feature operators, embedding cache
 - **`py3plex/experiments/`** (9 modules): Experiment tracking registry, ExperimentStore (filesystem), ExperimentRunner, artifact management
 - **`py3plex/meta/`** (5 modules): Meta-analytic pooling of network statistics (fixed-effect + random-effects)
 - **`py3plex/optimizer/`** (6 modules): Cost-based query optimizer (logical plan → optimizer → physical plan → executor)
@@ -8900,7 +8900,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 | Uncertainty | 25 | ~25K | UQ and robustness analysis |
 | Dynamics | 14 | ~15K | Spreading processes |
 | Algebra | 9 | ~8K | Comprehensive semiring algebra framework |
-| Embeddings | 5 | ~5K | NetMF node embeddings and link features |
+| Embeddings | 6 | ~6K | NetMF + MetaPath2Vec node embeddings and link features |
 | Experiments | 9 | ~6K | Experiment tracking registry |
 | Meta | 5 | ~4K | Meta-analytic pooling of network statistics |
 | Optimizer | 6 | ~6K | Cost-based query optimizer |
@@ -8911,7 +8911,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 ### Test Infrastructure
 
 **Test Organization**:
-- **536 test files** with **8,931 individual tests**
+- **537 test files** with **8,940 individual tests**
 - **83+ verification tests** across specialized modules (provenance, differential, metamorphic, determinism) — 10 files in `tests/verification/`
 - **210+ new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization, UQ propagation)
 - **113 property-based test files** using Hypothesis in `tests/property/`
@@ -8952,11 +8952,12 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - Partition UQ with entropy and stability metrics
 - Stratified perturbation for variance-reduced UQ
 - AutoCommunity with Pareto-optimal selection
+- MetaPath2Vec embedding for heterogeneous/multilayer networks
 - Ergonomics features (hint(), enhanced repr, pedagogical errors)
 - Algorithm requirements and compatibility system
 - Enhanced provenance tracking
 - **NEW (v1.2)**: `py3plex/algebra/` — Comprehensive semiring algebra framework (`SemiringProtocol`, built-in semirings, algebra registry, weight lifting, path/closure solvers, fixed-point iteration, backend dispatch, witness support)
-- **NEW (v1.2)**: `py3plex/embeddings/` — NetMF node embedding algorithm, link feature operators, embedding result cache
+- **NEW (v1.2)**: `py3plex/embeddings/` — NetMF + MetaPath2Vec node embedding algorithms, link feature operators, embedding result cache
 - **NEW (v1.2)**: `py3plex/experiments/` — Experiment tracking registry with filesystem-backed `ExperimentStore`, `ExperimentRunner`, artifact management, experiment metadata model
 - **NEW (v1.2)**: `py3plex/meta/` — Meta-analytic pooling with `MetaBuilder`, `MetaResult`, fixed-effect and DerSimonian–Laird random-effects models
 - **NEW (v1.2)**: `py3plex/optimizer/` — Cost-based query optimizer: logical plan, physical plan, cost model, optimization rules, plan nodes
@@ -9420,13 +9421,13 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `AGENTS.md` (10,500+ lines) - **This file** - Comprehensive AI agent documentation
 - `README.md` - Quick start and project overview
 - `docfiles/` - Documentation source files
-- `examples/` - **263 example scripts** demonstrating all features
+- `examples/` - **264 example scripts** demonstrating all features
 - `docs/py3plex_book.pdf` (106 pages) - Technical documentation
 - `CITATION.cff` - Citation information
 
 ### Test Suite
 
-**Test Files** (536 files, 8,931 tests):
+**Test Files** (537 files, 8,940 tests):
 
 **DSL Tests**:
 - `tests/test_dsl_v2.py` - DSL v2 core functionality
@@ -9438,6 +9439,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `tests/test_community_detection/` - Community detection algorithms
 - `tests/test_algorithms_random_generators.py` (21 tests) - BA, ER, SBM generators
 - `tests/test_algorithms_attribute_correlation.py` (23 tests) - Attribute-centrality correlation
+- `tests/test_metapath2vec.py` - MetaPath2Vec embedding validation
 
 **Infrastructure Tests**:
 - `tests/test_pipeline.py` - Pipeline API
@@ -10103,7 +10105,7 @@ Check that the server is running and stdio transport is properly configured.
 
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-03-03 (for py3plex v1.1.3)
+**Last Updated**: 2026-03-06 (for py3plex v1.1.3)
 
 
 ---
@@ -10654,10 +10656,10 @@ Recommended areas for future test coverage:
 
 **Repo State Note**: As of February 2026, py3plex has 210+ new deterministic tests (203 baseline + 7 for UQ propagation) enforcing 10+ major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, edge cases, and UQ propagation. All tests are automated, CI-friendly, and passing. Test coverage has improved from 8% to 14.7% through focused testing of core modules, utilities, and validation infrastructure.
 
-**v1.2 Update** (March 2026): Repository expanded with 8 new infrastructure packages (`algebra`, `embeddings`, `experiments`, `meta`, `optimizer`, `out_of_core`, `runtime`, `centrality`) and major DSL subsystem additions (`dsl/lint/`, `dsl/program/`, `dsl/executors/`). Test suite grown to 8,931 tests across 536 test files. Property-based test suite stable at 113 files; added `test_io_metamorphic_roundtrip.py`, `test_meta_properties.py`, `test_versatility_metamorphic.py` to property suite. Total of 263 example scripts, 445 Python modules in py3plex, ~168K LOC.
+**v1.2 Update** (March 2026): Repository expanded with 8 new infrastructure packages (`algebra`, `embeddings`, `experiments`, `meta`, `optimizer`, `out_of_core`, `runtime`, `centrality`) and major DSL subsystem additions (`dsl/lint/`, `dsl/program/`, `dsl/executors/`). Test suite grown to 8,940 tests across 537 test files. Property-based test suite stable at 113 files; added `test_io_metamorphic_roundtrip.py`, `test_meta_properties.py`, `test_versatility_metamorphic.py` to property suite. Embeddings now include MetaPath2Vec (`py3plex/embeddings/metapath2vec.py`) with dedicated coverage in `tests/test_metapath2vec.py`, and examples include `examples/advanced/example_metapath2vec.py`. Total of 264 example scripts, 446 Python modules in py3plex, ~168K LOC.
 
-**v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 536 test files (~14.7% coverage), 445 Python modules in py3plex, ~168K total lines of code, and 263 example scripts. Property-based test suite significantly expanded from 13 to 113 files. Test coverage maintained at ~14.7% through ongoing test improvements. Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
+**v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 537 test files (~14.7% coverage), 446 Python modules in py3plex, ~168K total lines of code, and 264 example scripts. Property-based test suite significantly expanded from 13 to 113 files. Test coverage maintained at ~14.7% through ongoing test improvements. Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
 
 **v1.1+ UQ Propagation Update** (January 2026): Implemented first-class uncertainty propagation semantics with `mode="propagate"` option in `.uq()`. This enables quantification of selection stability (p_present, p_selected, rank_uq) when queries include filtering, ordering, and selection operations. The propagate mode executes the full query end-to-end per replicate, capturing how uncertain metric values affect which items appear in final results. Aggregation now uses UQAlgebra to preserve uncertainty through grouping operations instead of silently dropping it. All changes are backward compatible (default mode="summarize_only"). New test module: tests/test_dsl_uq_propagation.py (7 deterministic tests).
 
-**March 2026 Statistics Update**: AGENTS.md refreshed with verified repository counts — 536 test files (550 total Python files in tests/), 8,931 individual test functions, 113 property-based test files, 445 Python modules in py3plex/, 263 example scripts, ~168K lines of code (~14.7% statement coverage). Precise test count updated from approximate "8,900+" to exact 8,931.
+**March 2026 Statistics Update**: AGENTS.md refreshed with verified repository counts — 537 test files (551 total Python files in tests/), 8,940 individual test functions, 113 property-based test files, 446 Python modules in py3plex/, 264 example scripts, ~168K lines of code (~14.7% statement coverage). Precise test count updated from approximate "8,900+" to exact 8,940.
