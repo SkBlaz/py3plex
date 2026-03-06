@@ -809,7 +809,7 @@
 \contentsline {paragraph}{HINMINE Network Decomposition}{396}{paragraph*.991}%
 \contentsline {subsubsection}{Configuration and Utilities}{398}{subsubsection*.1017}%
 \contentsline {subsubsection}{Domain\sphinxhyphen {}Specific Language (DSL)}{410}{subsubsection*.1089}%
-\contentsline {subsubsection}{Uncertainty Quantification}{575}{subsubsection*.2298}%
+\contentsline {subsubsection}{Uncertainty Quantification}{576}{subsubsection*.2298}%
 \contentsline {paragraph}{Note: Co\sphinxhyphen {}assignment matrix computation}{596}{paragraph*.2402}%
 \contentsline {subsubsection}{Algorithms}{652}{subsubsection*.2714}%
 \contentsline {paragraph}{Community Detection}{652}{paragraph*.2715}%
