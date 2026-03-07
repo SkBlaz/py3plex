@@ -223,9 +223,9 @@ def linear_gradient(
     # Starting and ending colors in RGB form
     s = hex_to_RGB(start_hex)
     f = hex_to_RGB(finish_hex)
-    # Initilize a list of the output colors with the starting color
+    # Initialize a list of the output colors with the starting color
     RGB_list = [s]
-    # Calcuate a color at each evenly spaced value of t from 1 to n
+    # Calculate a color at each evenly spaced value of t from 1 to n
     for t in range(1, n):
         # Interpolate RGB vector for color at the current value of t
         curr_vector = [

@@ -511,7 +511,7 @@ def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None
 
 def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Loader for generic embedding as outputed by GenSim
+    Loader for generic embedding as outputted by GenSim
 
     Args:
         input_name: Path to embedding file
