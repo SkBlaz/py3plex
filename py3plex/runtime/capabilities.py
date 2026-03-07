@@ -268,7 +268,7 @@ def capabilities() -> Dict[str, Any]:
     >>> import py3plex
     >>> caps = py3plex.capabilities()
     >>> caps["core"]["version"]
-    '1.1.3'
+    '1.1.4'
     >>> caps["backends"]["networkx"]["available"]
     True
     """
