@@ -197,10 +197,10 @@ def _run_leiden(
         uq_result = multilayer_leiden_uq(
             network,
             n_runs=n_samples,
-            seed=seed,
+            random_state=seed,
         )
 
-        partition = uq_result.consensus
+        partition = uq_result.consensus_partition
 
         meta = {
             "uq_enabled": True,

@@ -252,6 +252,7 @@ def example_custom_algorithm_basic() -> None:
     print("\nRunning auto_select with custom algorithm...")
     result = auto_select_community(
         network,
+        mode="wins",
         fast=True,
         max_candidates=3,
         custom_candidates=[custom_candidate],
@@ -344,6 +345,7 @@ def example_multiple_custom_algorithms() -> None:
     print("\nRunning auto_select to compare custom algorithms...")
     result = auto_select_community(
         network,
+        mode="wins",
         fast=True,
         custom_candidates=candidates,
         seed=DEFAULT_SEED
@@ -394,6 +396,7 @@ def example_custom_with_default() -> None:
 
     result = auto_select_community(
         network,
+        mode="wins",
         fast=True,
         custom_candidates=[custom_candidate],
         seed=DEFAULT_SEED

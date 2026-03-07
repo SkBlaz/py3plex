@@ -218,8 +218,16 @@ def _compute_graph_regime(network: Any) -> Dict[str, float]:
             densities = []
             for layer in layers:
                 layer_edges = [
-                    e for e in network.core_network.edges()
-                    if e[2].get('layer') == layer
+                    edge
+                    for edge in network.core_network.edges(data=True)
+                    if (
+                        isinstance(edge[0], tuple)
+                        and len(edge[0]) >= 2
+                        and isinstance(edge[1], tuple)
+                        and len(edge[1]) >= 2
+                        and edge[0][1] == layer
+                        and edge[1][1] == layer
+                    )
                 ]
                 layer_nodes = [
                     n for n in network.get_nodes()
@@ -334,9 +342,9 @@ def _run_candidate_algorithms(
                     uq_result = multilayer_leiden_uq(
                         network,
                         n_runs=uq_config.get('n_samples', 50),
-                        seed=seed,
+                        random_state=seed,
                     )
-                    partition_dict = uq_result.consensus
+                    partition_dict = uq_result.consensus_partition
                     uq_data = uq_result
                 else:
                     leiden_result = leiden_multilayer(

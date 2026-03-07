@@ -44,9 +44,19 @@ class CandidateSpec:
         else:
             return self.name
 
+    @property
+    def algo_name(self) -> str:
+        """Backward-compatible alias used by older auto-select code paths."""
+        return self.name
+
 
 class CommunityRegistry:
     """Registry of community detection algorithm candidates."""
+
+    EXCLUDED_ALGORITHMS = {
+        "auto_select_community",
+        "multilayer_leiden_distribution",
+    }
     
     # Default parameter grids for algorithms
     DEFAULT_PARAM_GRIDS = {
@@ -125,7 +135,7 @@ class CommunityRegistry:
         
         # Add candidates from priority algorithms
         for algo_name in priority_algos:
-            if algo_name in self.algorithms:
+            if algo_name in self.algorithms and algo_name not in self.EXCLUDED_ALGORITHMS:
                 self._add_candidates_for_algorithm(
                     algo_name,
                     self.algorithms[algo_name],
@@ -135,7 +145,10 @@ class CommunityRegistry:
         # If we don't have enough, add more
         if len(self.candidates) < max_candidates:
             for algo_name, algo_info in self.algorithms.items():
-                if algo_name not in priority_algos:
+                if (
+                    algo_name not in priority_algos
+                    and algo_name not in self.EXCLUDED_ALGORITHMS
+                ):
                     self._add_candidates_for_algorithm(
                         algo_name,
                         algo_info,
@@ -169,6 +182,8 @@ class CommunityRegistry:
         # Detect which parameters this algorithm supports
         params_to_grid = {}
         for param_name in algo_info.params:
+            if param_name == "mode" and "sbm" not in algo_name:
+                continue
             if param_name in param_grids:
                 params_to_grid[param_name] = param_grids[param_name]
         
