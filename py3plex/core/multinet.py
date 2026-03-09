@@ -3187,7 +3187,7 @@ class multi_layer_network:
         """
         Test the scale-free-nness of the network
         """
-
+        from py3plex.algorithms.statistics import topology
         val_vect = sorted(dict(nx.degree(self.core_network)).values(), reverse=True)
         alpha, sigma = topology.basic_pl_stats(val_vect)
         return (alpha, sigma)

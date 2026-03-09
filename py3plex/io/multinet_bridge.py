@@ -263,7 +263,7 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
             # Add node attributes (excluding internal attributes)
             for key, value in node.attributes.items():
                 if key not in ['__layer__', '__node_id__']:
-                    node_dict[key] = value
+                    node_dict[key] = _decode_attribute(value)
             
             nodes_to_add.append(node_dict)
         
@@ -291,7 +291,12 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
                 'target_type': edge.dst_layer
             }
             # Add edge attributes
-            edge_dict.update(edge.attributes)
+            edge_dict.update(
+                {
+                    key: _decode_attribute(value)
+                    for key, value in edge.attributes.items()
+                }
+            )
             edges_to_add.append(edge_dict)
         
         if edges_to_add:
@@ -328,139 +333,66 @@ def multinet_to_multilayergraph_with_metadata(net: multi_layer_network) -> tuple
     Raises:
         ConversionError: If conversion fails
     """
-    # Build metadata
     metadata = {
-        'py3plex_schema_version': '1.0',
-        'py3plex_version': getattr(py3plex, '__version__', 'unknown'),
-        'network_type': net.network_type,
-        'directed': net.directed,
-        'attribute_type_manifest': {},
-        'json_encoded_columns': []
+        "py3plex_schema_version": "1.0",
+        "py3plex_version": getattr(py3plex, "__version__", "unknown"),
+        "network_type": net.network_type,
+        "directed": net.directed,
+        "attribute_type_manifest": {},
+        "json_encoded_columns": [],
     }
-    
-    # Track coupling if present
-    if hasattr(net, 'coupling_weight'):
-        metadata['coupling_weight'] = net.coupling_weight
-    
-    # Track which attributes were JSON-encoded
+
+    if hasattr(net, "coupling_weight"):
+        metadata["coupling_weight"] = net.coupling_weight
+
     json_encoded = set()
-    
+
     try:
-        # Create graph with metadata
-        graph_attrs = {
-            'network_type': net.network_type,
-        }
-        
-        # Add coupling weight if it exists
-        if hasattr(net, 'coupling_weight'):
-            graph_attrs['coupling_weight'] = net.coupling_weight
-            
-        graph = MultiLayerGraph(
-            directed=net.directed,
-            attributes=graph_attrs
-        )
-        
-        # Handle empty networks
+        graph = multinet_to_multilayergraph(net)
+
         if net.core_network is None:
-            # Empty network - return empty graph
-            metadata = {
-                "py3plex_schema_version": "1.0",
-                "py3plex_version": py3plex.__version__,
-                "directed": net.directed,
-                "network_type": getattr(net, 'network_type', 'multilayer'),
-            }
             return graph, metadata
-        
-        # Get all layers first
-        try:
-            layers_info = net.get_layers()
-            if isinstance(layers_info, tuple) and len(layers_info) > 0:
-                layers = layers_info[0]  # Extract layer list
-            else:
-                layers = layers_info
-        except (AttributeError, TypeError) as e:
-            # Fallback: extract layers from nodes if possible
-            layers = set()
-            for node, layer in net.get_nodes():
-                layers.add(layer)
-            layers = list(layers)
-        
-        for layer_id in layers:
-            graph.add_layer(Layer(id=layer_id, attributes={}))
-        
-        # Get all node replicas with attributes
-        nodes_seen = set()
+
         for node, layer in net.get_nodes():
-            node_id = node
-            node_attrs = {}
-            if net.core_network.has_node((node, layer)):
-                raw_attrs = dict(net.core_network.nodes[(node, layer)])
-                # Encode attributes and track types
-                for key, value in raw_attrs.items():
-                    encoded, needs_json = _encode_attribute(value, track_type=True)
-                    node_attrs[key] = encoded
-                    
-                    # Track JSON encoding
-                    if needs_json:
-                        json_encoded.add(f'node_{key}')
-                    
-                    # Track original type (use full name once)
-                    manifest_key = f'node_{key}'
-                    if manifest_key not in metadata['attribute_type_manifest']:
-                        metadata['attribute_type_manifest'][manifest_key] = type(value).__name__
-                
-            if node_id not in nodes_seen:
-                graph.add_node(Node(id=node_id, attributes=node_attrs))
-                nodes_seen.add(node_id)
-        
-        # Get all edges with attributes
-        for edge_tuple in net.get_edges():
-            (src, src_layer), (dst, dst_layer) = edge_tuple
-            
-            edge_attrs = {}
-            if net.core_network.has_edge((src, src_layer), (dst, dst_layer)):
-                edge_data_dict = net.core_network.get_edge_data((src, src_layer), (dst, dst_layer))
-                
-                # For multigraphs, get_edge_data returns dict of {key: data}
-                if isinstance(edge_data_dict, dict):
-                    if 0 in edge_data_dict:
-                        raw_attrs = dict(edge_data_dict[0])
-                    else:
-                        first_key = next(iter(edge_data_dict.keys()))
-                        raw_attrs = dict(edge_data_dict[first_key])
+            if not net.core_network.has_node((node, layer)):
+                continue
+            raw_attrs = dict(net.core_network.nodes[(node, layer)])
+            for key, value in raw_attrs.items():
+                _, needs_json = _encode_attribute(value, track_type=True)
+                if needs_json:
+                    json_encoded.add(f"node_{key}")
+                manifest_key = f"node_{key}"
+                metadata["attribute_type_manifest"].setdefault(
+                    manifest_key, type(value).__name__
+                )
+
+        for (src, src_layer), (dst, dst_layer) in net.get_edges():
+            if not net.core_network.has_edge((src, src_layer), (dst, dst_layer)):
+                continue
+            edge_data_dict = net.core_network.get_edge_data(
+                (src, src_layer), (dst, dst_layer)
+            )
+            if isinstance(edge_data_dict, dict):
+                if 0 in edge_data_dict:
+                    raw_attrs = dict(edge_data_dict[0])
                 else:
-                    raw_attrs = dict(edge_data_dict) if edge_data_dict else {}
-                
-                # Remove internal NetworkX attributes
-                raw_attrs.pop('_edge_id', None)
-                
-                # Encode attributes and track types
-                for key, value in raw_attrs.items():
-                    encoded, needs_json = _encode_attribute(value, track_type=True)
-                    edge_attrs[key] = encoded
-                    
-                    # Track JSON encoding
-                    if needs_json:
-                        json_encoded.add(f'edge_{key}')
-                    
-                    # Track original type
-                    manifest_key = f'edge_{key}'
-                    if manifest_key not in metadata['attribute_type_manifest']:
-                        metadata['attribute_type_manifest'][manifest_key] = type(value).__name__
-            
-            graph.add_edge(Edge(
-                src=src,
-                dst=dst,
-                src_layer=src_layer,
-                dst_layer=dst_layer,
-                key=0,
-                attributes=edge_attrs
-            ))
-        
-        metadata['json_encoded_columns'] = sorted(list(json_encoded))
-        
+                    first_key = next(iter(edge_data_dict.keys()))
+                    raw_attrs = dict(edge_data_dict[first_key])
+            else:
+                raw_attrs = dict(edge_data_dict) if edge_data_dict else {}
+            raw_attrs.pop("_edge_id", None)
+            for key, value in raw_attrs.items():
+                _, needs_json = _encode_attribute(value, track_type=True)
+                if needs_json:
+                    json_encoded.add(f"edge_{key}")
+                manifest_key = f"edge_{key}"
+                metadata["attribute_type_manifest"].setdefault(
+                    manifest_key, type(value).__name__
+                )
+
+        metadata["json_encoded_columns"] = sorted(json_encoded)
         return graph, metadata
-        
+
     except Exception as e:
         raise ConversionError(
             f"Failed to convert multi_layer_network to MultiLayerGraph with metadata: {e}"

@@ -14,8 +14,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add repository root to path for imports when running from a source checkout.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from py3plex.core import multinet
 
@@ -67,6 +67,27 @@ def create_multilayer_network() -> multinet.multi_layer_network:
     return net
 
 
+def _normalize_attrs(attrs: dict) -> dict:
+    """Normalize attrs so equality checks are stable across array/scalar wrappers."""
+    normalized = {}
+    for key, value in attrs.items():
+        if key == "pos":
+            continue
+        if hasattr(value, "tolist"):
+            normalized[key] = value.tolist()
+        else:
+            normalized[key] = value
+    return normalized
+
+
+def _layer_names(net: multinet.multi_layer_network) -> list[str]:
+    """Return sorted layer names without comparing backend graph objects."""
+    layers_info = net.get_layers()
+    if isinstance(layers_info, tuple):
+        return sorted(layers_info[0])
+    return sorted(layers_info)
+
+
 def example_arrow_roundtrip() -> None:
     """Example: Arrow format preserves everything."""
     print("=== Arrow Format (Single File) ===")
@@ -76,9 +97,9 @@ def example_arrow_roundtrip() -> None:
     net = create_multilayer_network()
     
     print(f"Original network:")
-    print(f"  Nodes: {len(net.get_nodes())}")
-    print(f"  Edges: {len(net.get_edges())}")
-    print(f"  Layers: {net.get_layers()}")
+    print(f"  Nodes: {len(list(net.get_nodes()))}")
+    print(f"  Edges: {len(list(net.get_edges()))}")
+    print(f"  Layers: {_layer_names(net)}")
     print(f"  Directed: {net.directed}")
     
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -94,26 +115,38 @@ def example_arrow_roundtrip() -> None:
         
         # Verify preservation
         print(f"\nLoaded network:")
-        print(f"  Nodes: {len(loaded.get_nodes())}")
-        print(f"  Edges: {len(loaded.get_edges())}")
-        print(f"  Layers: {loaded.get_layers()}")
+        print(f"  Nodes: {len(list(loaded.get_nodes()))}")
+        print(f"  Edges: {len(list(loaded.get_edges()))}")
+        print(f"  Layers: {_layer_names(loaded)}")
         print(f"  Directed: {loaded.directed}")
         
         # Check attributes
         print(f"\nAttribute preservation:")
-        alice_social = loaded.get_node_attributes('Alice', 'social')
+        alice_social = dict(loaded.core_network.nodes[('Alice', 'social')])
         print(f"  Alice (social) age: {alice_social.get('age')}")
         print(f"  Alice (social) active: {alice_social.get('active')}")
-        
-        alice_work = loaded.get_node_attributes('Alice', 'work')
+
+        alice_work = dict(loaded.core_network.nodes[('Alice', 'work')])
         print(f"  Alice (work) tags: {alice_work.get('tags')}")
         print(f"  Alice (work) metadata: {alice_work.get('metadata')}")
-        
+
         # Check edge attributes
-        edge_attrs = loaded.get_edge_data(('Alice', 'social'), ('Bob', 'social'))
+        edge_attrs = loaded.core_network.get_edge_data(('Alice', 'social'), ('Bob', 'social'))[0]
         print(f"  Edge Alice-Bob weight: {edge_attrs.get('weight')}")
         print(f"  Edge Alice-Bob timestamp: {edge_attrs.get('timestamp')}")
         
+        assert len(list(loaded.get_nodes())) == len(list(net.get_nodes()))
+        assert len(list(loaded.get_edges())) == len(list(net.get_edges()))
+        assert alice_social.get("age") == 30
+        assert alice_social.get("active") is True
+        assert alice_work.get("tags") == ["researcher", "python"]
+        assert alice_work.get("metadata") == {
+            "department": "CS",
+            "projects": ["A", "B"],
+        }
+        assert edge_attrs.get("weight") == 1.5
+        assert edge_attrs.get("timestamp") == "2024-01-01"
+
         print(f"\nOK All attributes preserved!")
 
 
@@ -126,9 +159,9 @@ def example_parquet_roundtrip() -> None:
     net = create_multilayer_network()
     
     print(f"Original network:")
-    print(f"  Nodes: {len(net.get_nodes())}")
-    print(f"  Edges: {len(net.get_edges())}")
-    print(f"  Layers: {net.get_layers()}")
+    print(f"  Nodes: {len(list(net.get_nodes()))}")
+    print(f"  Edges: {len(list(net.get_edges()))}")
+    print(f"  Layers: {_layer_names(net)}")
     
     with tempfile.TemporaryDirectory() as tmpdir:
         dirpath = Path(tmpdir) / "network_dir"
@@ -149,9 +182,9 @@ def example_parquet_roundtrip() -> None:
         
         # Verify preservation
         print(f"\nLoaded network:")
-        print(f"  Nodes: {len(loaded.get_nodes())}")
-        print(f"  Edges: {len(loaded.get_edges())}")
-        print(f"  Layers: {loaded.get_layers()}")
+        print(f"  Nodes: {len(list(loaded.get_nodes()))}")
+        print(f"  Edges: {len(list(loaded.get_edges()))}")
+        print(f"  Layers: {_layer_names(loaded)}")
         
         print(f"\nOK Parquet roundtrip successful!")
 
@@ -221,13 +254,13 @@ def example_network_comparison() -> None:
         
         # Metadata comparison
         print(f"  Directed equal: {net1.directed == net2.directed}")
-        print(f"  Layers equal: {net1.get_layers() == net2.get_layers()}")
+        print(f"  Layers equal: {_layer_names(net1) == _layer_names(net2)}")
         
         # Attribute comparison
         attrs_match = True
         for node, layer in net1.get_nodes():
-            attrs1 = net1.get_node_attributes(node, layer)
-            attrs2 = net2.get_node_attributes(node, layer)
+            attrs1 = _normalize_attrs(dict(net1.core_network.nodes[(node, layer)]))
+            attrs2 = _normalize_attrs(dict(net2.core_network.nodes[(node, layer)]))
             if attrs1 != attrs2:
                 attrs_match = False
                 print(f"  Attribute mismatch for ({node}, {layer})")
@@ -236,8 +269,10 @@ def example_network_comparison() -> None:
         
         print(f"  Attributes equal: {attrs_match}")
         
-        if nodes1 == nodes2 and edges1 == edges2 and attrs_match:
-            print(f"\nOK Networks are semantically identical!")
+        assert nodes1 == nodes2
+        assert edges1 == edges2
+        assert attrs_match
+        print(f"\nOK Networks are semantically identical!")
 
 
 def main() -> int:

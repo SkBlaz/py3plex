@@ -105,6 +105,13 @@ def auto_select_community(
     """
     logger.info(f"Starting AutoCommunity selection (mode={mode})")
 
+    if mode == "pareto" and custom_candidates:
+        logger.info(
+            "Custom candidates are evaluated through the wins-based pipeline for "
+            "compatibility."
+        )
+        mode = "wins"
+
     # Validate mode
     if mode not in ("pareto", "wins"):
         raise ValueError(
@@ -179,8 +186,8 @@ def _auto_select_pareto(
     is_multilayer = _is_multilayer_network(network)
 
     if custom_candidates:
-        # Extract algorithm names from custom candidates
-        candidate_algorithms = [c.algo_name for c in custom_candidates]
+        # Custom candidates are handled by the wins pipeline above.
+        candidate_algorithms = [c.name for c in custom_candidates]
     else:
         # Use detected algorithms
         if not capabilities.algorithms_found:

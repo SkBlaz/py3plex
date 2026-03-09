@@ -5,6 +5,7 @@ Provides abstraction layer for different execution backends:
 - Matrix backend (placeholder): future support for matrix operations
 """
 
+from enum import Enum
 from typing import Any, Dict, List, Literal, Tuple
 from py3plex.exceptions import Py3plexException
 
@@ -15,6 +16,14 @@ from .closure import closure
 
 
 BackendType = Literal["graph", "matrix"]
+
+
+class AlgebraBackend(str, Enum):
+    """Legacy backend identifiers used by the operation registry tests."""
+
+    NETWORKX = "networkx"
+    SPARSE = "sparse"
+    IGRAPH = "igraph"
 
 
 class GraphBackend:

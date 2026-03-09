@@ -32,6 +32,21 @@ from py3plex.io.schema import MultiLayerGraph
 from py3plex.io.multinet_bridge import multinet_to_multilayergraph, multilayergraph_to_multinet
 
 
+def _normalize_value(value):
+    """Convert pyarrow/pandas scalar containers to JSON-serializable Python values."""
+    if hasattr(value, "tolist"):
+        try:
+            return value.tolist()
+        except TypeError:
+            pass
+    if hasattr(value, "item"):
+        try:
+            return value.item()
+        except (TypeError, ValueError):
+            pass
+    return value
+
+
 def save_network_to_parquet(net, path: Union[str, Path]) -> None:
     """
     Save a multi_layer_network to Parquet directory format.
@@ -198,23 +213,27 @@ def load_network_from_parquet(path: Union[str, Path]):
         )
         
         # Add layers
-        from py3plex.io.schemas import Layer
+        from py3plex.io.schema import Layer
         for layer_id in metadata.get('layers', []):
             graph.add_layer(Layer(id=layer_id, attributes={}))
-        
+
         # Add nodes
-        from py3plex.io.schemas import Node
+        from py3plex.io.schema import Node
         for _, row in nodes_df.iterrows():
             node_id = row['node']
-            node_attrs = {k: v for k, v in row.items() if k != 'node'}
+            node_attrs = {k: _normalize_value(v) for k, v in row.items() if k != 'node'}
             # Handle NaN values
             node_attrs = {k: v for k, v in node_attrs.items() if not (isinstance(v, float) and str(v) == 'nan')}
             graph.add_node(Node(id=node_id, attributes=node_attrs))
         
         # Add edges
-        from py3plex.io.schemas import Edge
+        from py3plex.io.schema import Edge
         for _, row in edges_df.iterrows():
-            edge_attrs = {k: v for k, v in row.items() if k not in ['source', 'target', 'source_layer', 'target_layer']}
+            edge_attrs = {
+                k: _normalize_value(v)
+                for k, v in row.items()
+                if k not in ['source', 'target', 'source_layer', 'target_layer']
+            }
             # Handle NaN values
             edge_attrs = {k: v for k, v in edge_attrs.items() if not (isinstance(v, float) and str(v) == 'nan')}
             graph.add_edge(Edge(

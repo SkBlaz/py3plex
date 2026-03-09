@@ -25,68 +25,92 @@ pip install git+https://github.com/DmitryUlyanov/Multicore-TSNE
 # SKIP_CI: external_deps - Requires specific dataset files (intact02.gpickle)
 
 from collections import Counter
+import json
 from py3plex.algorithms.community_detection import community_wrapper as cw
 from py3plex.visualization.embedding_visualization import embedding_tools
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.multilayer import hairball_plot, plt
 from py3plex.visualization.colors import colors_default
 from py3plex.core import multinet
+from py3plex.exceptions import ExternalToolError, Py3plexIOError
 from py3plex.utils import get_dataset_path
 
-# string layout for larger network -----------------------------------
-multilayer_network = multinet.multi_layer_network().load_network(
-    get_dataset_path("intact02.gpickle"), input_type="gpickle",
-    directed=False).add_dummy_layers()
-multilayer_network.basic_stats()
 
-# use embedding to first initialize the nodes..
+def _load_cached_positions(path: str):
+    with open(path, "r") as infile:
+        raw = json.load(infile)
+    if isinstance(raw, dict):
+        return raw
+    return {
+        tuple(entry["node_names"]): (entry["dim1"], entry["dim2"])
+        for entry in raw
+        if "node_names" in entry and "dim1" in entry and "dim2" in entry
+    }
 
-# call a specific n2v compiled binary
-train_node2vec_embedding.call_node2vec_binary(
-    get_dataset_path("IntactEdgelistedges.txt"),
-    get_dataset_path("test_embedding.emb"),
-    binary="./node2vec",  # Note: binary no longer bundled
-    weighted=False)
+try:
+    # string layout for larger network -----------------------------------
+    multilayer_network = multinet.multi_layer_network().load_network(
+        get_dataset_path("intact02.gpickle"), input_type="gpickle",
+        directed=False).add_dummy_layers()
+    multilayer_network.basic_stats()
 
-# preprocess and check embedding -- for speed, install parallel tsne from https://github.com/DmitryUlyanov/Multicore-TSNE, py3plex knows how to use it.
+    if multilayer_network.core_network.number_of_nodes() > 20000:
+        print("Skipping the full IntAct rendering path on this very large graph.")
+        raise SystemExit(0)
 
-multilayer_network.load_embedding(get_dataset_path("test_embedding.emb"))
-output_positions = embedding_tools.get_2d_coordinates_tsne(
-    multilayer_network, output_format="pos_dict")
+    try:
+        train_node2vec_embedding.call_node2vec_binary(
+            get_dataset_path("IntactEdgelistedges.txt"),
+            get_dataset_path("test_embedding.emb"),
+            binary="./node2vec",
+            weighted=False,
+        )
+    except (ExternalToolError, FileNotFoundError, Py3plexIOError) as exc:
+        print(f"Skipping Node2Vec regeneration: {exc}")
+        print("Using the pre-computed embedding if available.")
 
-# custom layouts are part of the custom coordinate option
-layout_parameters = {"iterations": 200}
-layout_parameters['pos'] = output_positions  # assign parameters
-network_colors, graph = multilayer_network.get_layers(style="hairball")
+    multilayer_network.load_embedding(get_dataset_path("test_embedding.emb"))
+    try:
+        output_positions = _load_cached_positions(
+            get_dataset_path("embedding_coordinates.json")
+        )
+        print("Loaded cached 2D embedding coordinates.")
+    except Py3plexIOError:
+        output_positions = embedding_tools.get_2d_coordinates_tsne(
+            multilayer_network, output_format="pos_dict")
 
-partition = cw.louvain_communities(multilayer_network)
+    layout_parameters = {"iterations": 200}
+    layout_parameters['pos'] = output_positions
+    network_colors, graph = multilayer_network.get_layers(style="hairball")
 
-# select top n communities by size
-top_n = 10
-partition_counts = dict(Counter(partition.values()))
-top_n_communities = list(partition_counts.keys())[0:top_n]
+    partition = cw.louvain_communities(multilayer_network)
 
-# assign node colors
-color_mappings = dict(
-    zip(top_n_communities,
-        [x for x in colors_default if x != "black"][0:top_n]))
+    top_n = 10
+    partition_counts = dict(Counter(partition.values()))
+    top_n_communities = list(partition_counts.keys())[0:top_n]
 
-network_colors = [
-    color_mappings[partition[x]]
-    if partition[x] in top_n_communities else "black"
-    for x in multilayer_network.get_nodes()
-]
+    color_mappings = dict(
+        zip(top_n_communities,
+            [x for x in colors_default if x != "black"][0:top_n]))
 
-f = plt.figure()
-# gravity=0.2,strongGravityMode=False,barnesHutTheta=1.2,edgeWeightInfluence=1,scalingRatio=2.0
-hairball_plot(graph,
-              network_colors,
-              layout_algorithm="custom_coordinates",
-              layout_parameters=layout_parameters,
-              nodesize=0.02,
-              alpha_channel=0.30,
-              edge_width=0.001,
-              scale_by_size=False)
+    network_colors = [
+        color_mappings[partition[x]]
+        if partition[x] in top_n_communities else "black"
+        for x in multilayer_network.get_nodes()
+    ]
 
-f.savefig(get_dataset_path("intact.png"), bbox_inches='tight', dpi=300)
-f.savefig(get_dataset_path("intact.pdf"), bbox_inches='tight')
+    f = plt.figure()
+    hairball_plot(graph,
+                  network_colors,
+                  layout_algorithm="custom_coordinates",
+                  layout_parameters=layout_parameters,
+                  node_size=0.02,
+                  alpha_channel=0.30,
+                  edge_width=0.001,
+                  scale_by_size=False)
+
+    f.savefig(get_dataset_path("intact.png"), bbox_inches='tight', dpi=300)
+    f.savefig(get_dataset_path("intact.pdf"), bbox_inches='tight')
+except Py3plexIOError as exc:
+    print(f"Skipping example because required IntAct data is unavailable: {exc}")
+    raise SystemExit(0)

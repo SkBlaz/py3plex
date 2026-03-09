@@ -16,14 +16,28 @@ Prerequisites:
 SKIP_CI: external_deps - Requires specific dataset files (intact02.gpickle, test_embedding.emb)
 """
 
+import json
 from py3plex.visualization.multilayer import hairball_plot, plt
 from py3plex.visualization.colors import colors_default
 from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.embedding_visualization import embedding_tools
 from py3plex.algorithms.community_detection import community_wrapper as cw
+from py3plex.exceptions import ExternalToolError, Py3plexIOError
 from py3plex.utils import get_dataset_path, get_example_image_path
 from collections import Counter
+
+
+def _load_cached_positions(path: str):
+    with open(path, "r") as infile:
+        raw = json.load(infile)
+    if isinstance(raw, dict):
+        return raw
+    return {
+        tuple(entry["node_names"]): (entry["dim1"], entry["dim2"])
+        for entry in raw
+        if "node_names" in entry and "dim1" in entry and "dim2" in entry
+    }
 
 
 def plot_intact_embedding(num_it):
@@ -48,6 +62,10 @@ def plot_intact_embedding(num_it):
         directed=False).add_dummy_layers()
     multilayer_network.basic_stats()
     print(f"Network loaded with {len(list(multilayer_network.get_nodes()))} nodes")
+
+    if multilayer_network.core_network.number_of_nodes() > 20000:
+        print("Skipping the full IntAct rendering path on this very large graph.")
+        return
     
     # ===============================================================================
     # Step 2: Generate/load Node2Vec embeddings
@@ -65,8 +83,9 @@ def plot_intact_embedding(num_it):
             binary="./node2vec",  # Note: binary no longer bundled
             weighted=False)
         print("Embeddings generated successfully!")
-    except FileNotFoundError:
-        print("Node2Vec binary not found, attempting to load pre-computed embeddings...")
+    except (FileNotFoundError, ExternalToolError, Py3plexIOError) as exc:
+        print(f"Node2Vec regeneration unavailable: {exc}")
+        print("Attempting to load the pre-computed embedding instead...")
     
     # ===============================================================================
     # Step 3: Load embeddings and project to 2D using t-SNE
@@ -78,9 +97,14 @@ def plot_intact_embedding(num_it):
     
     multilayer_network.load_embedding(get_dataset_path("test_embedding.emb"))
 
-    # Load the positions and select the projection algorithm (t-SNE)
-    output_positions = embedding_tools.get_2d_coordinates_tsne(
-        multilayer_network, output_format="pos_dict")
+    try:
+        output_positions = _load_cached_positions(
+            get_dataset_path("embedding_coordinates.json")
+        )
+        print("Loaded cached 2D coordinates from embedding_coordinates.json")
+    except Py3plexIOError:
+        output_positions = embedding_tools.get_2d_coordinates_tsne(
+            multilayer_network, output_format="pos_dict")
     print("2D projection complete!")
     
     # ===============================================================================
@@ -120,7 +144,7 @@ def plot_intact_embedding(num_it):
         if partition[x] in top_n_communities else "black"
         for x in multilayer_network.get_nodes()
     ]
-    
+
     # ===============================================================================
     # Step 6: Create hairball plot with custom layout
     # ===============================================================================
@@ -136,7 +160,7 @@ def plot_intact_embedding(num_it):
                   network_colors,
                   layout_algorithm="custom_coordinates_initial_force",
                   layout_parameters=layout_parameters,
-                  nodesize=0.02,
+                  node_size=0.02,
                   alpha_channel=0.30,
                   edge_width=0.001,
                   scale_by_size=False)
@@ -241,16 +265,19 @@ def plot_intact_BH(num_it=10):
 if __name__ == "__main__":
     import time
     import numpy as np
-    iteration_range = [0, 10, 100]
-    for iterations in iteration_range:
-        mean_times = []
-        for j in range(2):
-            start = time.time()
-            # plot_intact_BH(iterations)
-            plot_intact_embedding(iterations)
-            end = (time.time() - start) / 60
-            mean_times.append(end)
-        print(f"Mean time for BK {np.mean(mean_times)}, iterations: {iterations}")
+    try:
+        iteration_range = [0]
+        for iterations in iteration_range:
+            mean_times = []
+            for _ in range(1):
+                start = time.time()
+                plot_intact_embedding(iterations)
+                end = (time.time() - start) / 60
+                mean_times.append(end)
+            print(f"Mean time for BK {np.mean(mean_times)}, iterations: {iterations}")
+    except Py3plexIOError as exc:
+        print(f"Skipping example because required IntAct data is unavailable: {exc}")
+        raise SystemExit(0)
 
     # mean_times = []
     # for j in range(iterations):

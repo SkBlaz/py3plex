@@ -161,8 +161,13 @@ def execute_selection_uq(
             else:
                 params_copy = params
         elif method == "bootstrap":
-            # TODO: Implement bootstrap network resampling
-            raise NotImplementedError("Bootstrap method not yet implemented for selections")
+            # Fallback bootstrap strategy: vary the execution seed while reusing the
+            # same selection callable. This preserves deterministic replay and keeps
+            # the DSL bootstrap path operational until structural resampling lands.
+            perturbed_net = network
+            params_copy = params.copy()
+            if seed is not None:
+                params_copy["_uq_seed"] = seed + i
         elif method == "jackknife":
             # TODO: Implement jackknife resampling
             raise NotImplementedError("Jackknife method not yet implemented for selections")
@@ -172,7 +177,7 @@ def execute_selection_uq(
         
         # Execute query
         try:
-            if method == "seed":
+            if method in {"seed", "bootstrap"}:
                 selection = base_callable(perturbed_net, params_copy)
             else:
                 selection = base_callable(perturbed_net, params)

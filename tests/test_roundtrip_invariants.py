@@ -771,18 +771,19 @@ class TestArrowRoundtripZeroLoss:
             path = Path(tmpdir) / "test.arrow"
             save_to_arrow(net, str(path))
             loaded_net = load_from_arrow(str(path))
-            
-            # Check node attributes for a specific node replica
-            alice_social = ('Alice', 'social')
-            if alice_social in loaded_net.get_nodes():
-                # Note: attribute access might vary, this is a basic check
-                # The key is that the node structure is preserved
-                pass
-            
-            # At minimum, check that attribute data is present somewhere
-            # The exact API for accessing attributes may vary
-            assert len(list(loaded_net.get_nodes())) > 0
-            assert len(list(loaded_net.get_edges())) > 0
+
+            alice_social_attrs = dict(loaded_net.core_network.nodes[('Alice', 'social')])
+            assert alice_social_attrs["age"] == 30
+            assert alice_social_attrs["score"] == 0.85
+            assert alice_social_attrs["active"] is True
+            assert alice_social_attrs["tags"] == ['friend', 'colleague']
+
+            edge_attrs = loaded_net.core_network.get_edge_data(
+                ('Alice', 'social'),
+                ('Bob', 'social'),
+            )[0]
+            assert edge_attrs["weight"] == 1.5
+            assert edge_attrs["interaction_count"] == 10
     
     def test_arrow_roundtrip_fingerprint_stability(self, multilayer_network_with_attributes):
         """Test that network fingerprint is stable across Arrow roundtrip."""
@@ -1081,4 +1082,3 @@ class TestNetworkSemanticEquality:
         
         with pytest.raises(AssertionError, match="attribute.*differs"):
             assert_network_semantic_equal(net1, net2, check_attrs=True)
-

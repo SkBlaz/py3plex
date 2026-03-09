@@ -26,10 +26,12 @@ SKIP_CI: external_deps - Requires specific dataset files (cora.gml)
 
 import os
 import json
+import tempfile
 from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.embedding_visualization import embedding_visualization
 from py3plex.visualization.embedding_visualization import embedding_tools
+from py3plex.exceptions import ExternalToolError
 from py3plex.utils import get_dataset_path
 
 print("=" * 70)
@@ -40,7 +42,10 @@ print("=" * 70)
 input_network = get_dataset_path("imdb_gml.gml")
 edgelist_file = get_dataset_path("test.edgelist")
 embedding_file = get_dataset_path("test_embedding.emb")
-json_output = get_dataset_path("embedding_coordinates.json")
+cached_json_output = get_dataset_path("embedding_coordinates.json")
+json_output = os.path.join(
+    tempfile.gettempdir(), "py3plex_example_embedding_coordinates.json"
+)
 
 # Check if input file exists
 if not os.path.exists(input_network):
@@ -113,18 +118,21 @@ try:
 
     print("  [OK] Node2Vec embeddings generated successfully!")
 
-except FileNotFoundError as e:
-    print(f"  [X] Node2Vec binary not found: {e}")
-    print("\n  Please install Node2Vec to continue:")
-    print("    pip install node2vec")
-    print("  Or download the binary from:")
-    print("    https://github.com/snap-stanford/snap")
-    print("\n  Exiting...")
-    exit(1)
+except (FileNotFoundError, ExternalToolError) as e:
+    if os.path.exists(embedding_file):
+        print(f"  [!] Node2Vec generation unavailable: {e}")
+        print("  [OK] Falling back to existing embedding file already present in datasets/")
+    else:
+        print(f"  [!] Node2Vec generation unavailable: {e}")
+        print("  Skipping the rest of the example because no embedding file is available.")
+        raise SystemExit(0)
 except Exception as e:
     print(f"  [X] Error generating embeddings: {e}")
-    print("  Please check Node2Vec installation and try again.")
-    exit(1)
+    if os.path.exists(embedding_file):
+        print("  [OK] Falling back to the existing embedding file.")
+    else:
+        print("  Skipping the rest of the example.")
+        raise SystemExit(0)
 
 print(f"\nStep 4: Loading embeddings into network object")
 print("-" * 70)
@@ -148,28 +156,36 @@ For faster computation, consider:
 Generating visualization...
 """)
 
-try:
-    # Visualize the embeddings
-    # This creates a 2D scatter plot of nodes based on their embeddings
-    # Nodes that are structurally similar will be close together
-    embedding_visualization.visualize_embedding(multilayer_network)
+use_cached_projection = os.path.exists(cached_json_output)
 
-    print("  [OK] Visualization complete!")
-    print("  (Close the window to continue)")
+if use_cached_projection:
+    print("  [OK] Using cached 2D projection from datasets/ to keep the example fast.")
+else:
+    try:
+        # Visualize the embeddings
+        # This creates a 2D scatter plot of nodes based on their embeddings
+        # Nodes that are structurally similar will be close together
+        embedding_visualization.visualize_embedding(multilayer_network)
 
-except Exception as e:
-    print(f"  [X] Visualization error: {e}")
-    print("  Continuing with coordinate export...")
+        print("  [OK] Visualization complete!")
+        print("  (Close the window to continue)")
+
+    except Exception as e:
+        print(f"  [X] Visualization error: {e}")
+        print("  Continuing with coordinate export...")
 
 print(f"\nStep 6: Exporting embedding coordinates")
 print("-" * 70)
 
-# Get 2D coordinates using t-SNE projection
-# These coordinates can be used for custom visualizations
-output_positions = embedding_tools.get_2d_coordinates_tsne(
-    multilayer_network,
-    output_format="json"
-)
+# Get 2D coordinates using a cached projection when available.
+if use_cached_projection:
+    with open(cached_json_output) as infile:
+        output_positions = json.load(infile)
+else:
+    output_positions = embedding_tools.get_2d_coordinates_tsne(
+        multilayer_network,
+        output_format="json"
+    )
 
 # Save coordinates to JSON file
 with open(json_output, 'w') as outfile:

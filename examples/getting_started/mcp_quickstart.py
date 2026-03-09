@@ -9,6 +9,10 @@ with the py3plex-mcp server configured.
 SKIP_CI: true - This is a documentation file showing JSON examples, not executable code
 """
 
+if __name__ == "__main__":
+    print("This file is documentation-only. Use it as an MCP payload reference.")
+    raise SystemExit(0)
+
 # ==============================================================================
 # Example 1: Load Network and Get Statistics
 # ==============================================================================

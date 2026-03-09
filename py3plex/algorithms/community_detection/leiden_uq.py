@@ -69,6 +69,11 @@ class UQResult:
     summary: Dict[str, Any] = field(default_factory=dict)
     diagnostics: Dict[str, Any] = field(default_factory=dict)
 
+    @property
+    def consensus(self) -> Dict[Tuple[Any, Any], int]:
+        """Backward-compatible alias for older callers."""
+        return self.consensus_partition
+
 
 def canonicalize_partition(
     partition: Dict[Tuple[Any, Any], int],
@@ -298,6 +303,7 @@ def multilayer_leiden_uq(
     return_all: bool = False,
     method: str = "seed",
     perturbation_rate: float = 0.05,
+    seed: Optional[int] = None,
 ) -> UQResult:
     """Multilayer Leiden with uncertainty quantification via ensemble runs.
     
@@ -331,6 +337,8 @@ def multilayer_leiden_uq(
         method: UQ strategy: "seed", "perturbation", or "bootstrap". Default: "seed"
         perturbation_rate: For method="perturbation", fraction of edges to drop.
             Default: 0.05
+        seed: Backward-compatible alias for random_state. If both are provided,
+            random_state takes precedence.
             
     Returns:
         UQResult with:
@@ -400,6 +408,9 @@ def multilayer_leiden_uq(
         )
     
     # Set deterministic default seed
+    if random_state is None and seed is not None:
+        random_state = seed
+
     if random_state is None:
         random_state = 0
     
