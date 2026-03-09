@@ -85,6 +85,16 @@ class TestRandomMultilayerER:
         assert network_sparse is not None
         assert network_dense is not None
 
+    def test_multilayer_supra_shape_tracks_present_replicas(self):
+        """General multilayer ER uses one node-layer replica per base node."""
+        n, l, p = 12, 3, 0.4
+        network = random_multilayer_ER(n, l, p)
+
+        supra = network.get_supra_adjacency_matrix()
+
+        assert len(list(network.get_nodes())) == n
+        assert supra.shape == (n, n)
+
 
 class TestRandomMultiplexER:
     """Tests for random_multiplex_ER function."""
@@ -148,6 +158,17 @@ class TestRandomMultiplexER:
         assert hasattr(network, 'core_network')
         G = network.core_network
         assert isinstance(G, (nx.MultiGraph, nx.MultiDiGraph))
+
+    def test_multiplex_preserves_all_node_replicas(self):
+        """Multiplex ER should materialize every node in every layer."""
+        n, l, p = 8, 4, 0.0
+        network = random_multiplex_ER(n, l, p)
+
+        nodes = list(network.get_nodes())
+        supra = network.get_supra_adjacency_matrix()
+
+        assert len(nodes) == n * l
+        assert supra.shape == (n * l, n * l)
 
 
 class TestRandomMultiplexGenerator:

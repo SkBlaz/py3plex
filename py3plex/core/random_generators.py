@@ -305,6 +305,10 @@ def random_multilayer_ER(
     """
     Generate random multilayer Erdős-Rényi network.
 
+    This generator creates a general multilayer network where each base node is
+    assigned to exactly one layer. As a result, the number of node-layer pairs
+    is typically ``n`` rather than ``n * l``.
+
     Args:
         n: Number of nodes (must be positive)
         l: Number of layers (must be positive)
@@ -369,6 +373,11 @@ def random_multiplex_ER(
     """
     Generate random multiplex Erdős-Rényi network.
 
+    This generator creates a strict multiplex network where all ``n`` base
+    nodes are instantiated in every one of the ``l`` layers. Consequently, the
+    node-layer replica set has size ``n * l`` and the supra-adjacency matrix has
+    shape ``(n * l, n * l)``.
+
     Args:
         n: Number of nodes (must be positive)
         l: Number of layers (must be positive)
@@ -391,6 +400,9 @@ def random_multiplex_ER(
         G = nx.MultiGraph()
 
     for lx in range(l):
+        for node in range(n):
+            G.add_node((node, lx), type="default")
+
         network = nx.fast_gnp_random_graph(n, p, seed=None, directed=directed)
         for edge in network.edges():
             G.add_edge((edge[0], lx), (edge[1], lx), type="default")

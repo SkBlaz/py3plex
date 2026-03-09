@@ -371,24 +371,26 @@ Working with Supra-Adjacency Matrices in Py3plex
 
     from py3plex.core import multinet, random_generators
     
-    # Generate random multilayer network
-    network = random_generators.random_multilayer_ER(
-        num_nodes=100, 
-        num_layers=3, 
-        probability=0.05, 
+    # Generate random multiplex network
+    network = random_generators.random_multiplex_ER(
+        n=100,
+        l=3,
+        p=0.05,
         directed=False
     )
     
     # Get supra-adjacency matrix (sparse format)
     supra_matrix = network.get_supra_adjacency_matrix()
     
-    print(f"Matrix shape: {supra_matrix.shape}")  # (300, 300) for 100 nodes × 3 layers
+    print(f"Matrix shape: {supra_matrix.shape}")  # (300, 300) for 100 nodes replicated across 3 layers
     print(f"Matrix density: {supra_matrix.nnz / (supra_matrix.shape[0] ** 2):.4f}")
     
     # Visualize matrix structure
     network.visualize_matrix({"display": True})
 
 The supra-adjacency matrix enables tensor-based algorithms and linear algebra operations on the full multilayer structure.
+
+Use ``random_multiplex_ER`` when you want the classic :math:`N \times L` node-replica construction with identity coupling between layers. By contrast, ``random_multilayer_ER`` creates a general multilayer network in which each base node is assigned to a single layer, so the supra-adjacency shape is determined by the node-layer pairs that actually exist.
 
 Common Multilayer Semantic Pitfalls
 ------------------------------------
