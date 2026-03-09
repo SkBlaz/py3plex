@@ -151,7 +151,7 @@
 
 <span class="c1"># Generate network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">random_generators</span><span class="o">.</span><span class="n">random_multilayer_ER</span><span class="p">(</span>
-    <span class="n">num_nodes</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Get supra-adjacency matrix</span>
 <span class="n">supra_matrix</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
