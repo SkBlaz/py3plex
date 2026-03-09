@@ -9,7 +9,7 @@ Multiplex networks can be represented as supra-adjacency matrices for tensor-bas
     
     # Generate network
     network = random_generators.random_multilayer_ER(
-        num_nodes=500, num_layers=8, probability=0.05, directed=False)
+        n=500, l=8, p=0.05, directed=False)
     
     # Get supra-adjacency matrix
     supra_matrix = network.get_supra_adjacency_matrix()
