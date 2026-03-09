@@ -423,6 +423,24 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Compute basic statistics per layer using the DSL.</p>
 <section id="query-code">
 <h3><a class="toc-backref" href="#id53" role="doc-backlink">Query Code</a><a class="headerlink" href="#query-code" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="n">n_nodes</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="n">n_edges</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+        <span class="n">avg_degree</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_edges</span> <span class="o">/</span> <span class="n">n_nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">n_nodes</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+                <span class="s2">&quot;n_nodes&quot;</span><span class="p">:</span> <span class="n">n_nodes</span><span class="p">,</span>
+                <span class="s2">&quot;n_edges&quot;</span><span class="p">:</span> <span class="n">n_edges</span><span class="p">,</span>
+                <span class="s2">&quot;avg_degree&quot;</span><span class="p">:</span> <span class="n">avg_degree</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;n_nodes&quot;</span><span class="p">,</span> <span class="s2">&quot;n_edges&quot;</span><span class="p">,</span> <span class="s2">&quot;avg_degree&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
 </section>
 <section id="why-it-s-interesting">
 <h3><a class="toc-backref" href="#id54" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#why-it-s-interesting" title="Link to this heading"></a></h3>
@@ -488,6 +506,39 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Find top-k central nodes per layer, then identify which nodes appear in multiple layers’ top lists.</p>
 <section id="id1">
 <h3><a class="toc-backref" href="#id58" role="doc-backlink">Query Code</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">_layer_counts</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
+        <span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="k">if</span> <span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">ordered</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">(),</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">node</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">degree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="n">betweenness</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">node</span><span class="p">),</span>
+        <span class="p">)[:</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ordered</span><span class="p">:</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+                    <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+                    <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="n">degree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">:</span> <span class="n">betweenness</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                    <span class="s2">&quot;layer_count&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">rows</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;node&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;layer&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;layer_count&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="id2">
 <h3><a class="toc-backref" href="#id59" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
@@ -569,6 +620,19 @@ To run all queries and generate outputs:</p>
 <p><strong>Solution:</strong> Compute degree distributions per layer and measure pairwise correlations.</p>
 <section id="id5">
 <h3><a class="toc-backref" href="#id63" role="doc-backlink">Query Code</a><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">_replicas</span><span class="p">(</span><span class="n">network</span><span class="p">)})</span>
+    <span class="n">layer_vectors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="n">layer_vectors</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">graph</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">graph</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">all_nodes</span><span class="p">])</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">layer_vectors</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">layers</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="id6">
 <h3><a class="toc-backref" href="#id64" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
@@ -634,6 +698,33 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 <p><strong>Solution:</strong> Detect communities using multilayer community detection, then analyze their distribution across layers.</p>
 <section id="id9">
 <h3><a class="toc-backref" href="#id68" role="doc-backlink">Query Code</a><a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_community_structure</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">community_id</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
+            <span class="n">subgraph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+            <span class="n">avg_degree</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">sum</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">subgraph</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="n">size</span> <span class="k">if</span> <span class="n">size</span> <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="p">)</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;community_id&quot;</span><span class="p">:</span> <span class="n">community_id</span><span class="p">,</span>
+                    <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+                    <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span>
+                    <span class="s2">&quot;avg_degree&quot;</span><span class="p">:</span> <span class="n">avg_degree</span><span class="p">,</span>
+                    <span class="s2">&quot;dominant_layer&quot;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">community_id</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">rows</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;community_id&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="s2">&quot;avg_degree&quot;</span><span class="p">,</span> <span class="s2">&quot;dominant_layer&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="id10">
 <h3><a class="toc-backref" href="#id69" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
@@ -708,6 +799,13 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 <p><strong>Solution:</strong> Compute PageRank per layer, then take the average across layers as a simplified multiplex score. (True multiplex PageRank uses supra-adjacency matrices.)</p>
 <section id="id13">
 <h3><a class="toc-backref" href="#id73" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">_aggregate_physical_graph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">pagerank</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">pagerank</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span> <span class="s2">&quot;multiplex_pagerank&quot;</span><span class="p">:</span> <span class="n">pagerank</span><span class="p">[</span><span class="n">node</span><span class="p">]}</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">graph</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="s2">&quot;multiplex_pagerank&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
 </section>
 <section id="id14">
 <h3><a class="toc-backref" href="#id74" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
@@ -788,6 +886,41 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 <p><strong>Solution:</strong> Simulate removing each layer and measure connectivity loss.</p>
 <section id="id17">
 <h3><a class="toc-backref" href="#id78" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">baseline_graph</span> <span class="o">=</span> <span class="n">_aggregate_physical_graph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">baseline_cc</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">baseline_graph</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">baseline_graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="k">else</span> <span class="mi">0</span>
+    <span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">scenarios</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;baseline&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;without </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">layer</span><span class="p">])</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">removed</span> <span class="ow">in</span> <span class="n">scenarios</span><span class="p">:</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">_aggregate_physical_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">drop_layers</span><span class="o">=</span><span class="n">removed</span><span class="p">)</span>
+        <span class="n">n_nodes</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="n">n_edges</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+        <span class="n">avg_degree</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_edges</span> <span class="o">/</span> <span class="n">n_nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">n_nodes</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">largest_cc</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">graph</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">))</span> <span class="k">if</span> <span class="n">n_nodes</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">baseline_cc</span> <span class="k">else</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">baseline_cc</span> <span class="o">-</span> <span class="n">largest_cc</span><span class="p">)</span> <span class="o">/</span> <span class="n">baseline_cc</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;scenario&quot;</span><span class="p">:</span> <span class="n">scenario</span><span class="p">,</span>
+                <span class="s2">&quot;n_nodes&quot;</span><span class="p">:</span> <span class="n">n_nodes</span><span class="p">,</span>
+                <span class="s2">&quot;avg_degree&quot;</span><span class="p">:</span> <span class="n">avg_degree</span><span class="p">,</span>
+                <span class="s2">&quot;total_edges&quot;</span><span class="p">:</span> <span class="n">n_edges</span><span class="p">,</span>
+                <span class="s2">&quot;connectivity_loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">rows</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;scenario&quot;</span><span class="p">,</span> <span class="s2">&quot;n_nodes&quot;</span><span class="p">,</span> <span class="s2">&quot;avg_degree&quot;</span><span class="p">,</span> <span class="s2">&quot;total_edges&quot;</span><span class="p">,</span> <span class="s2">&quot;connectivity_loss&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="id18">
 <h3><a class="toc-backref" href="#id79" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
@@ -865,6 +998,49 @@ The reported loss compares baseline total degree to the degree after removing a 
 <p><strong>Solution:</strong> Compute multiple centralities, normalize them, and classify nodes by how many centralities place them in the top tier.</p>
 <section id="id21">
 <h3><a class="toc-backref" href="#id83" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">_aggregate_physical_graph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">degree</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
+    <span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+    <span class="n">closeness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">closeness_centrality</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+    <span class="n">pagerank</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">pagerank</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">degree</span><span class="p">,</span> <span class="n">betweenness</span><span class="p">,</span> <span class="n">closeness</span><span class="p">,</span> <span class="n">pagerank</span><span class="p">]</span>
+    <span class="n">thresholds</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="mf">0.75</span><span class="p">)</span> <span class="k">if</span> <span class="n">metric</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">]</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()):</span>
+        <span class="n">versatility</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">threshold</span> <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">threshold</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">versatility</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">hub_type</span> <span class="o">=</span> <span class="s2">&quot;versatile_hub&quot;</span>
+        <span class="k">elif</span> <span class="n">versatility</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">hub_type</span> <span class="o">=</span> <span class="s2">&quot;specialized_hub&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hub_type</span> <span class="o">=</span> <span class="s2">&quot;peripheral&quot;</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+                <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="n">degree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">:</span> <span class="n">betweenness</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                <span class="s2">&quot;closeness_centrality&quot;</span><span class="p">:</span> <span class="n">closeness</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                <span class="s2">&quot;pagerank&quot;</span><span class="p">:</span> <span class="n">pagerank</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                <span class="s2">&quot;versatility&quot;</span><span class="p">:</span> <span class="n">versatility</span><span class="p">,</span>
+                <span class="s2">&quot;hub_type&quot;</span><span class="p">:</span> <span class="n">hub_type</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">rows</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;node&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;closeness_centrality&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;versatility&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;hub_type&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="id22">
 <h3><a class="toc-backref" href="#id84" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
@@ -943,6 +1119,41 @@ The reported loss compares baseline total degree to the degree after removing a 
 <p><strong>Solution:</strong> Use the new <code class="docutils literal notranslate"><span class="pre">.per_layer_pair()</span></code> method to group edges by (src_layer, dst_layer) pairs, then keep the top-k edges per pair. (Add <code class="docutils literal notranslate"><span class="pre">.coverage(...)</span></code> if you later need to filter across groups.)</p>
 <section id="id25">
 <h3><a class="toc-backref" href="#id88" role="doc-backlink">Query Code</a><a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_edge_grouping_and_coverage</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+    <span class="n">grouped</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">_replica_graph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+        <span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">grouped</span><span class="p">[(</span><span class="n">source</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;source_layer&quot;</span><span class="p">:</span> <span class="n">source</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;target_layer&quot;</span><span class="p">:</span> <span class="n">target</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="n">edge_rows</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">summary_rows</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">src_layer</span><span class="p">,</span> <span class="n">dst_layer</span><span class="p">),</span> <span class="n">items</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">grouped</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">top_items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="o">-</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">])[:</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">edge_rows</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">top_items</span><span class="p">)</span>
+        <span class="n">summary_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;src_layer&quot;</span><span class="p">:</span> <span class="n">src_layer</span><span class="p">,</span> <span class="s2">&quot;dst_layer&quot;</span><span class="p">:</span> <span class="n">dst_layer</span><span class="p">,</span> <span class="s2">&quot;n_items&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">top_items</span><span class="p">)}</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;edges_by_pair&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">edge_rows</span><span class="p">),</span>
+        <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">summary_rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;src_layer&quot;</span><span class="p">,</span> <span class="s2">&quot;dst_layer&quot;</span><span class="p">,</span> <span class="s2">&quot;n_items&quot;</span><span class="p">]),</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="id26">
 <h3><a class="toc-backref" href="#id89" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id26" title="Link to this heading"></a></h3>
@@ -1146,6 +1357,31 @@ for nodes. Both support the same coverage modes and grouping operations.</p>
 <p><strong>Solution:</strong> Generate null models (e.g., configuration model) that preserve certain properties while randomizing connections, then compute z-scores to identify significant patterns.</p>
 <section id="id37">
 <h3><a class="toc-backref" href="#id103" role="doc-backlink">Query Code</a><a class="headerlink" href="#id37" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_null_model_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="n">degrees</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">degree</span><span class="p">()),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">degrees</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">degrees</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">degrees</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">degree</span> <span class="ow">in</span> <span class="n">degrees</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">z_score</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">std</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">degree</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">std</span>
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+                    <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+                    <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="n">degree</span><span class="p">,</span>
+                    <span class="s2">&quot;expected_degree&quot;</span><span class="p">:</span> <span class="n">mean</span><span class="p">,</span>
+                    <span class="s2">&quot;z_score&quot;</span><span class="p">:</span> <span class="n">z_score</span><span class="p">,</span>
+                    <span class="s2">&quot;is_significant&quot;</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z_score</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">1.96</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">rows</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;expected_degree&quot;</span><span class="p">,</span> <span class="s2">&quot;z_score&quot;</span><span class="p">,</span> <span class="s2">&quot;is_significant&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="id38">
 <h3><a class="toc-backref" href="#id104" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id38" title="Link to this heading"></a></h3>
@@ -1228,6 +1464,23 @@ typically use 100-1000 samples for more robust statistics.</p>
 <p><strong>Solution:</strong> Analyze cross-layer variability to estimate uncertainty in centrality measures, identifying nodes with stable vs fragile importance.</p>
 <section id="id41">
 <h3><a class="toc-backref" href="#id108" role="doc-backlink">Query Code</a><a class="headerlink" href="#id41" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_bootstrap_confidence_intervals</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">samples</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="n">samples</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)))</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="n">rel</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">mean</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">std</span> <span class="o">/</span> <span class="n">mean</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">mean</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">:</span> <span class="n">std</span><span class="p">,</span> <span class="s2">&quot;relative_variability&quot;</span><span class="p">:</span> <span class="n">rel</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std&quot;</span><span class="p">,</span> <span class="s2">&quot;relative_variability&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
 </section>
 <section id="id42">
 <h3><a class="toc-backref" href="#id109" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id42" title="Link to this heading"></a></h3>
@@ -1313,6 +1566,34 @@ typically use 100-1000 samples for more robust statistics.</p>
 <p><strong>Solution:</strong> Compare multiple ranking strategies—by maximum value, by mean across layers, and by consistency (low variability)—to make uncertainty-aware decisions.</p>
 <section id="id45">
 <h3><a class="toc-backref" href="#id113" role="doc-backlink">Query Code</a><a class="headerlink" href="#id45" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_uncertainty_aware_ranking</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">samples</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="n">samples</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)))</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+                <span class="s2">&quot;max_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+                <span class="s2">&quot;mean_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+                <span class="s2">&quot;consistency_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">arr</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">))),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;rank_by_max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;max_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;dense&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;rank_by_mean&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;mean_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;dense&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;rank_by_consistency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;consistency_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;dense&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="s2">&quot;rank_by_max&quot;</span><span class="p">,</span> <span class="s2">&quot;rank_by_mean&quot;</span><span class="p">,</span> <span class="s2">&quot;rank_by_consistency&quot;</span><span class="p">]]</span>
+</pre></div>
+</div>
 </section>
 <section id="id46">
 <h3><a class="toc-backref" href="#id114" role="doc-backlink">Why It’s Interesting</a><a class="headerlink" href="#id46" title="Link to this heading"></a></h3>

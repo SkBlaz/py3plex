@@ -4407,6 +4407,25 @@ Test the queries with:
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:query-code}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}basic\PYGZus{}exploration}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}layers}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}layer\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}
+        \PYG{n}{n\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{n\PYGZus{}edges} \PYG{o}{=} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}edges}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{n\PYGZus{}edges} \PYG{o}{/} \PYG{n}{n\PYGZus{}nodes}\PYG{p}{)} \PYG{k}{if} \PYG{n}{n\PYGZus{}nodes} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+        \PYG{n}{rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+            \PYG{p}{\PYGZob{}}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{layer}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{n\PYGZus{}nodes}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}edges}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{n\PYGZus{}edges}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{avg\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{avg\PYGZus{}degree}\PYG{p}{,}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{rows}\PYG{p}{,} \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}edges}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{avg\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:why-it-s-interesting}}\begin{itemize}
@@ -4536,6 +4555,40 @@ family
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id1}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}cross\PYGZus{}layer\PYGZus{}hubs}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{k}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{=} \PYG{l+m+mi}{5}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{n}{counts} \PYG{o}{=} \PYG{n}{\PYGZus{}layer\PYGZus{}counts}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}layers}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}layer\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}
+        \PYG{n}{degree} \PYG{o}{=} \PYG{n+nb}{dict}\PYG{p}{(}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{betweenness} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{betweenness\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{)} \PYG{k}{if} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)} \PYG{k}{else} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}
+        \PYG{n}{ordered} \PYG{o}{=} \PYG{n+nb}{sorted}\PYG{p}{(}
+            \PYG{n}{graph}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,}
+            \PYG{n}{key}\PYG{o}{=}\PYG{k}{lambda} \PYG{n}{node}\PYG{p}{:} \PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{n}{degree}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{n}{betweenness}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mf}{0.0}\PYG{p}{)}\PYG{p}{,} \PYG{n}{node}\PYG{p}{)}\PYG{p}{,}
+        \PYG{p}{)}\PYG{p}{[}\PYG{p}{:}\PYG{n}{k}\PYG{p}{]}
+        \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{ordered}\PYG{p}{:}
+            \PYG{n}{rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+                \PYG{p}{\PYGZob{}}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{node}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{layer}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{degree}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{betweenness}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mf}{0.0}\PYG{p}{)}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer\PYGZus{}count}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{counts}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}
+                \PYG{p}{\PYGZcb{}}
+            \PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}
+        \PYG{n}{rows}\PYG{p}{,}
+        \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer\PYGZus{}count}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+        \PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id2}}\begin{itemize}
@@ -4708,6 +4761,20 @@ Per\sphinxhyphen{}layer iteration and aggregation across layers
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id5}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}layer\PYGZus{}similarity}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{layers} \PYG{o}{=} \PYG{n}{\PYGZus{}layers}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{n}{all\PYGZus{}nodes} \PYG{o}{=} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{p}{\PYGZob{}}\PYG{n}{node} \PYG{k}{for} \PYG{n}{node}\PYG{p}{,} \PYG{n}{\PYGZus{}} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}replicas}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    \PYG{n}{layer\PYGZus{}vectors} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{layers}\PYG{p}{:}
+        \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}layer\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}
+        \PYG{n}{layer\PYGZus{}vectors}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{[}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)} \PYG{k}{if} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{graph} \PYG{k}{else} \PYG{l+m+mi}{0} \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{all\PYGZus{}nodes}\PYG{p}{]}\PYG{p}{)}
+    \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{corrcoef}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{layer\PYGZus{}vectors}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{float}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{nan\PYGZus{}to\PYGZus{}num}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,} \PYG{n}{nan}\PYG{o}{=}\PYG{l+m+mf}{0.0}\PYG{p}{)}
+    \PYG{n}{np}\PYG{o}{.}\PYG{n}{fill\PYGZus{}diagonal}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,} \PYG{n}{index}\PYG{o}{=}\PYG{n}{layers}\PYG{p}{,} \PYG{n}{columns}\PYG{o}{=}\PYG{n}{layers}\PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id6}}\begin{itemize}
@@ -4831,6 +4898,34 @@ Using computed attributes for layer\sphinxhyphen{}level comparisons
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id9}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}community\PYGZus{}structure}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{n}{community\PYGZus{}id} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}layers}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}layer\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{component} \PYG{o+ow}{in} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{connected\PYGZus{}components}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{subgraph} \PYG{o}{=} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{subgraph}\PYG{p}{(}\PYG{n}{component}\PYG{p}{)}
+            \PYG{n}{size} \PYG{o}{=} \PYG{n}{subgraph}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}
+            \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{p}{(}
+                \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n+nb}{dict}\PYG{p}{(}\PYG{n}{subgraph}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)} \PYG{o}{/} \PYG{n}{size} \PYG{k}{if} \PYG{n}{size} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+            \PYG{p}{)}
+            \PYG{n}{rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+                \PYG{p}{\PYGZob{}}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{community\PYGZus{}id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{community\PYGZus{}id}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{layer}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{size}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{size}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{avg\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{avg\PYGZus{}degree}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dominant\PYGZus{}layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{layer}\PYG{p}{,}
+                \PYG{p}{\PYGZcb{}}
+            \PYG{p}{)}
+            \PYG{n}{community\PYGZus{}id} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}
+        \PYG{n}{rows}\PYG{p}{,}
+        \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{community\PYGZus{}id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{size}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{avg\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dominant\PYGZus{}layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id10}}\begin{itemize}
@@ -4986,6 +5081,14 @@ Identifying dominant layers via aggregation
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id13}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}multiplex\PYGZus{}pagerank}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}aggregate\PYGZus{}physical\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{n}{pagerank} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{pagerank}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{,} \PYG{n}{weight}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{node}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiplex\PYGZus{}pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{pagerank}\PYG{p}{[}\PYG{n}{node}\PYG{p}{]}\PYG{p}{\PYGZcb{}} \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{)}\PYG{p}{]}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{rows}\PYG{p}{,} \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiplex\PYGZus{}pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id14}}\begin{itemize}
@@ -5156,6 +5259,42 @@ Combining degree and PageRank for richer analysis
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id17}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}robustness\PYGZus{}analysis}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{baseline\PYGZus{}graph} \PYG{o}{=} \PYG{n}{\PYGZus{}aggregate\PYGZus{}physical\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{n}{baseline\PYGZus{}cc} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{nx}\PYG{o}{.}\PYG{n}{connected\PYGZus{}components}\PYG{p}{(}\PYG{n}{baseline\PYGZus{}graph}\PYG{p}{)}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{n+nb}{len}\PYG{p}{)}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{baseline\PYGZus{}graph}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}
+        \PYG{k}{else} \PYG{l+m+mi}{0}
+    \PYG{p}{)}
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{n}{scenarios} \PYG{o}{=} \PYG{p}{[}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{baseline}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{)}\PYG{p}{]} \PYG{o}{+} \PYG{p}{[}
+        \PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{without }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{layer}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{n}{layer}\PYG{p}{]}\PYG{p}{)} \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}layers}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{scenario}\PYG{p}{,} \PYG{n}{removed} \PYG{o+ow}{in} \PYG{n}{scenarios}\PYG{p}{:}
+        \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}aggregate\PYGZus{}physical\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{drop\PYGZus{}layers}\PYG{o}{=}\PYG{n}{removed}\PYG{p}{)}
+        \PYG{n}{n\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{n\PYGZus{}edges} \PYG{o}{=} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}edges}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{avg\PYGZus{}degree} \PYG{o}{=} \PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{n\PYGZus{}edges} \PYG{o}{/} \PYG{n}{n\PYGZus{}nodes}\PYG{p}{)} \PYG{k}{if} \PYG{n}{n\PYGZus{}nodes} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+        \PYG{n}{largest\PYGZus{}cc} \PYG{o}{=} \PYG{p}{(}
+            \PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{nx}\PYG{o}{.}\PYG{n}{connected\PYGZus{}components}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{)}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{n+nb}{len}\PYG{p}{)}\PYG{p}{)} \PYG{k}{if} \PYG{n}{n\PYGZus{}nodes} \PYG{k}{else} \PYG{l+m+mi}{0}
+        \PYG{p}{)}
+        \PYG{n}{loss} \PYG{o}{=} \PYG{l+m+mf}{0.0} \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{baseline\PYGZus{}cc} \PYG{k}{else} \PYG{n+nb}{max}\PYG{p}{(}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{l+m+mf}{100.0} \PYG{o}{*} \PYG{p}{(}\PYG{n}{baseline\PYGZus{}cc} \PYG{o}{\PYGZhy{}} \PYG{n}{largest\PYGZus{}cc}\PYG{p}{)} \PYG{o}{/} \PYG{n}{baseline\PYGZus{}cc}\PYG{p}{)}
+        \PYG{n}{rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+            \PYG{p}{\PYGZob{}}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{scenario}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{scenario}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{n\PYGZus{}nodes}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{avg\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{avg\PYGZus{}degree}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{total\PYGZus{}edges}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{n\PYGZus{}edges}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{connectivity\PYGZus{}loss}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{loss}\PYG{p}{,}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}
+        \PYG{n}{rows}\PYG{p}{,}
+        \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{scenario}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{avg\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{total\PYGZus{}edges}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{connectivity\PYGZus{}loss}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id18}}\begin{itemize}
@@ -5314,6 +5453,50 @@ Measuring connectivity metrics before/after perturbations
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id21}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}advanced\PYGZus{}centrality\PYGZus{}comparison}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}aggregate\PYGZus{}physical\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+    \PYG{n}{degree} \PYG{o}{=} \PYG{n+nb}{dict}\PYG{p}{(}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{betweenness} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{betweenness\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{,} \PYG{n}{weight}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{closeness} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{closeness\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{)}
+    \PYG{n}{pagerank} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{pagerank}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{,} \PYG{n}{weight}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{metrics} \PYG{o}{=} \PYG{p}{[}\PYG{n}{degree}\PYG{p}{,} \PYG{n}{betweenness}\PYG{p}{,} \PYG{n}{closeness}\PYG{p}{,} \PYG{n}{pagerank}\PYG{p}{]}
+    \PYG{n}{thresholds} \PYG{o}{=} \PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{quantile}\PYG{p}{(}\PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{metric}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,} \PYG{l+m+mf}{0.75}\PYG{p}{)} \PYG{k}{if} \PYG{n}{metric} \PYG{k}{else} \PYG{l+m+mf}{0.0} \PYG{k}{for} \PYG{n}{metric} \PYG{o+ow}{in} \PYG{n}{metrics}\PYG{p}{]}
+
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{versatility} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{metric}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mf}{0.0}\PYG{p}{)} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{n}{threshold} \PYG{k}{for} \PYG{n}{metric}\PYG{p}{,} \PYG{n}{threshold} \PYG{o+ow}{in} \PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{metrics}\PYG{p}{,} \PYG{n}{thresholds}\PYG{p}{)}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{versatility} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mi}{3}\PYG{p}{:}
+            \PYG{n}{hub\PYGZus{}type} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{versatile\PYGZus{}hub}\PYG{l+s+s2}{\PYGZdq{}}
+        \PYG{k}{elif} \PYG{n}{versatility} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{:}
+            \PYG{n}{hub\PYGZus{}type} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{specialized\PYGZus{}hub}\PYG{l+s+s2}{\PYGZdq{}}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n}{hub\PYGZus{}type} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{peripheral}\PYG{l+s+s2}{\PYGZdq{}}
+        \PYG{n}{rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+            \PYG{p}{\PYGZob{}}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{node}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{degree}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{betweenness}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mf}{0.0}\PYG{p}{)}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{closeness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{closeness}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mf}{0.0}\PYG{p}{)}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{pagerank}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{l+m+mf}{0.0}\PYG{p}{)}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{versatility}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{versatility}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{hub\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{hub\PYGZus{}type}\PYG{p}{,}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}
+        \PYG{n}{rows}\PYG{p}{,}
+        \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{betweenness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{closeness\PYGZus{}centrality}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{versatility}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+            \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{hub\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+        \PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id22}}\begin{itemize}
@@ -5477,6 +5660,42 @@ Classification based on computed attributes
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id25}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}edge\PYGZus{}grouping\PYGZus{}and\PYGZus{}coverage}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{k}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{=} \PYG{l+m+mi}{3}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{Dict}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{]}\PYG{p}{:}
+    \PYG{n}{grouped}\PYG{p}{:} \PYG{n}{Dict}\PYG{p}{[}\PYG{n}{Tuple}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{,} \PYG{n+nb}{str}\PYG{p}{]}\PYG{p}{,} \PYG{n}{List}\PYG{p}{[}\PYG{n+nb}{dict}\PYG{p}{]}\PYG{p}{]} \PYG{o}{=} \PYG{n}{defaultdict}\PYG{p}{(}\PYG{n+nb}{list}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{source}\PYG{p}{,} \PYG{n}{target}\PYG{p}{,} \PYG{n}{data} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}replica\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{(}\PYG{n}{data}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{if} \PYG{o+ow}{not} \PYG{p}{(}
+            \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{source}\PYG{p}{,} \PYG{n+nb}{tuple}\PYG{p}{)}
+            \PYG{o+ow}{and} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{target}\PYG{p}{,} \PYG{n+nb}{tuple}\PYG{p}{)}
+            \PYG{o+ow}{and} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{source}\PYG{p}{)} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mi}{2}
+            \PYG{o+ow}{and} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{target}\PYG{p}{)} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mi}{2}
+        \PYG{p}{)}\PYG{p}{:}
+            \PYG{k}{continue}
+        \PYG{n}{grouped}\PYG{p}{[}\PYG{p}{(}\PYG{n}{source}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{n}{target}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{)}\PYG{p}{]}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+            \PYG{p}{\PYGZob{}}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{source}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{source}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{target}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{target}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{source\PYGZus{}layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{source}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{target\PYGZus{}layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{target}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{)}
+
+    \PYG{n}{edge\PYGZus{}rows}\PYG{p}{:} \PYG{n}{List}\PYG{p}{[}\PYG{n+nb}{dict}\PYG{p}{]} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{n}{summary\PYGZus{}rows}\PYG{p}{:} \PYG{n}{List}\PYG{p}{[}\PYG{n+nb}{dict}\PYG{p}{]} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{p}{(}\PYG{n}{src\PYGZus{}layer}\PYG{p}{,} \PYG{n}{dst\PYGZus{}layer}\PYG{p}{)}\PYG{p}{,} \PYG{n}{items} \PYG{o+ow}{in} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{grouped}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{top\PYGZus{}items} \PYG{o}{=} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{items}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{k}{lambda} \PYG{n}{item}\PYG{p}{:} \PYG{o}{\PYGZhy{}}\PYG{n}{item}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}\PYG{p}{[}\PYG{p}{:}\PYG{n}{k}\PYG{p}{]}
+        \PYG{n}{edge\PYGZus{}rows}\PYG{o}{.}\PYG{n}{extend}\PYG{p}{(}\PYG{n}{top\PYGZus{}items}\PYG{p}{)}
+        \PYG{n}{summary\PYGZus{}rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+            \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{src\PYGZus{}layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{src\PYGZus{}layer}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dst\PYGZus{}layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{dst\PYGZus{}layer}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}items}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{top\PYGZus{}items}\PYG{p}{)}\PYG{p}{\PYGZcb{}}
+        \PYG{p}{)}
+
+    \PYG{k}{return} \PYG{p}{\PYGZob{}}
+        \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{edges\PYGZus{}by\PYGZus{}pair}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{edge\PYGZus{}rows}\PYG{p}{)}\PYG{p}{,}
+        \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{summary}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{summary\PYGZus{}rows}\PYG{p}{,} \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{src\PYGZus{}layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dst\PYGZus{}layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{n\PYGZus{}items}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{\PYGZcb{}}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id26}}\begin{itemize}
@@ -5916,6 +6135,32 @@ Semantic path filtering
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id37}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}null\PYGZus{}model\PYGZus{}comparison}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}layers}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}layer\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}
+        \PYG{n}{degrees} \PYG{o}{=} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{Series}\PYG{p}{(}\PYG{n+nb}{dict}\PYG{p}{(}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{float}\PYG{p}{)}
+        \PYG{n}{mean} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{degrees}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)} \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{degrees}\PYG{o}{.}\PYG{n}{empty} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+        \PYG{n}{std} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{degrees}\PYG{o}{.}\PYG{n}{std}\PYG{p}{(}\PYG{n}{ddof}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{)} \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{degrees}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{1} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+        \PYG{k}{for} \PYG{n}{node}\PYG{p}{,} \PYG{n}{degree} \PYG{o+ow}{in} \PYG{n}{degrees}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{z\PYGZus{}score} \PYG{o}{=} \PYG{l+m+mf}{0.0} \PYG{k}{if} \PYG{n}{std} \PYG{o}{==} \PYG{l+m+mi}{0} \PYG{k}{else} \PYG{p}{(}\PYG{n}{degree} \PYG{o}{\PYGZhy{}} \PYG{n}{mean}\PYG{p}{)} \PYG{o}{/} \PYG{n}{std}
+            \PYG{n}{rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+                \PYG{p}{\PYGZob{}}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{node}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{layer}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{degree}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{expected\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{mean}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{z\PYGZus{}score}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{z\PYGZus{}score}\PYG{p}{,}
+                    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{is\PYGZus{}significant}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{z\PYGZus{}score}\PYG{p}{)} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mf}{1.96}\PYG{p}{,}
+                \PYG{p}{\PYGZcb{}}
+            \PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}
+        \PYG{n}{rows}\PYG{p}{,}
+        \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{layer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{expected\PYGZus{}degree}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{z\PYGZus{}score}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{is\PYGZus{}significant}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
+    \PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id38}}\begin{itemize}
@@ -6088,6 +6333,24 @@ typically use 100\sphinxhyphen{}1000 samples for more robust statistics.
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id41}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}bootstrap\PYGZus{}confidence\PYGZus{}intervals}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{samples}\PYG{p}{:} \PYG{n}{Dict}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{List}\PYG{p}{[}\PYG{n+nb}{float}\PYG{p}{]}\PYG{p}{]} \PYG{o}{=} \PYG{n}{defaultdict}\PYG{p}{(}\PYG{n+nb}{list}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}layers}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}layer\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{samples}\PYG{p}{[}\PYG{n}{node}\PYG{p}{]}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{node}\PYG{p}{,} \PYG{n}{values} \PYG{o+ow}{in} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{samples}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{arr} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{values}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{float}\PYG{p}{)}
+        \PYG{n}{mean} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{arr}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)} \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{arr}\PYG{p}{)} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+        \PYG{n}{std} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{arr}\PYG{o}{.}\PYG{n}{std}\PYG{p}{(}\PYG{n}{ddof}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{)} \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{arr}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{1} \PYG{k}{else} \PYG{l+m+mf}{0.0}
+        \PYG{n}{rel} \PYG{o}{=} \PYG{l+m+mf}{0.0} \PYG{k}{if} \PYG{n}{mean} \PYG{o}{==} \PYG{l+m+mi}{0} \PYG{k}{else} \PYG{n}{std} \PYG{o}{/} \PYG{n}{mean}
+        \PYG{n}{rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{node}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mean}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{mean}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{std}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{std}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{relative\PYGZus{}variability}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{rel}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{rows}\PYG{p}{,} \PYG{n}{columns}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{id}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mean}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{std}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{relative\PYGZus{}variability}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id42}}\begin{itemize}
@@ -6273,6 +6536,35 @@ Uncertainty quantification in multilayer networks
 
 \paragraph{Query Code}
 \label{\detokenize{how-to/query_zoo:id45}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{query\PYGZus{}uncertainty\PYGZus{}aware\PYGZus{}ranking}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{:}
+    \PYG{n}{samples}\PYG{p}{:} \PYG{n}{Dict}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{List}\PYG{p}{[}\PYG{n+nb}{float}\PYG{p}{]}\PYG{p}{]} \PYG{o}{=} \PYG{n}{defaultdict}\PYG{p}{(}\PYG{n+nb}{list}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{layer} \PYG{o+ow}{in} \PYG{n}{\PYGZus{}layers}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{graph} \PYG{o}{=} \PYG{n}{\PYGZus{}layer\PYGZus{}graph}\PYG{p}{(}\PYG{n}{network}\PYG{p}{,} \PYG{n}{layer}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{samples}\PYG{p}{[}\PYG{n}{node}\PYG{p}{]}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+
+    \PYG{n}{rows} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{node}\PYG{p}{,} \PYG{n}{values} \PYG{o+ow}{in} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{samples}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{arr} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{values}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n+nb}{float}\PYG{p}{)}
+        \PYG{n}{rows}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}
+            \PYG{p}{\PYGZob{}}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{node}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{max\PYGZus{}score}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{arr}\PYG{o}{.}\PYG{n}{max}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mean\PYGZus{}score}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{arr}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}
+                \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{consistency\PYGZus{}score}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{arr}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)} \PYG{o}{/} \PYG{p}{(}\PYG{l+m+mf}{1.0} \PYG{o}{+} \PYG{n}{arr}\PYG{o}{.}\PYG{n}{std}\PYG{p}{(}\PYG{n}{ddof}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{)}
+
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{pd}\PYG{o}{.}\PYG{n}{DataFrame}\PYG{p}{(}\PYG{n}{rows}\PYG{p}{)}\PYG{o}{.}\PYG{n}{sort\PYGZus{}values}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{reset\PYGZus{}index}\PYG{p}{(}\PYG{n}{drop}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{rank\PYGZus{}by\PYGZus{}max}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{max\PYGZus{}score}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{rank}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dense}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{ascending}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}\PYG{o}{.}\PYG{n}{astype}\PYG{p}{(}\PYG{n+nb}{int}\PYG{p}{)}
+    \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{rank\PYGZus{}by\PYGZus{}mean}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mean\PYGZus{}score}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{rank}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dense}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{ascending}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}\PYG{o}{.}\PYG{n}{astype}\PYG{p}{(}\PYG{n+nb}{int}\PYG{p}{)}
+    \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{rank\PYGZus{}by\PYGZus{}consistency}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}
+        \PYG{n}{df}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{consistency\PYGZus{}score}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{o}{.}\PYG{n}{rank}\PYG{p}{(}\PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dense}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{ascending}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}\PYG{o}{.}\PYG{n}{astype}\PYG{p}{(}\PYG{n+nb}{int}\PYG{p}{)}
+    \PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{df}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{rank\PYGZus{}by\PYGZus{}max}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{rank\PYGZus{}by\PYGZus{}mean}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{rank\PYGZus{}by\PYGZus{}consistency}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{]}
+\end{sphinxVerbatim}
+
 
 \paragraph{Why It’s Interesting}
 \label{\detokenize{how-to/query_zoo:id46}}\begin{itemize}
