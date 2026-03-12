@@ -8826,7 +8826,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 **Version**: py3plex 1.1.4  
 **Python Support**: 3.8+  
-**Repository Size**: ~168K lines of code  
+**Repository Size**: ~169K lines of code  
 **Test Coverage**: 8,942 tests across 537 test files (~14.7% statement coverage)  
 **Key Modules**: 446 Python files across core, algorithms, DSL, and utilities  
 
@@ -9635,7 +9635,7 @@ print(py3plex.__version__)  # "1.1.4"
 - **README.md**: Quick start and flagship example
 - **AGENTS.md**: Comprehensive AI agent documentation (this file)
 - **docfiles/**: Detailed documentation
-- **examples/**: 267 working examples
+- **examples/**: 267 example scripts
 - **pyproject.toml**: Dependencies and build config
 - **Technical Book**: `docs/py3plex_book.pdf` (106 pages)
 
