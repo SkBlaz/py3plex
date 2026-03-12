@@ -382,6 +382,10 @@ def _encode_multiplex_network(core_network):
     import scipy.sparse as sp
 
     unique_layers = sorted({n[1] for n in core_network.nodes()})
+    if not unique_layers:
+        return sp.csr_matrix((0, 0)), []
+
+    base_node_order = list(dict.fromkeys(node[0] for node in core_network.nodes()))
     num_layers = len(unique_layers)
     individual_adj_sparse = []
     all_nodes = []
@@ -390,11 +394,15 @@ def _encode_multiplex_network(core_network):
     # Build sparse adjacency matrix for each layer
     # Using sparse matrices from the start avoids dense intermediate arrays
     for layer in unique_layers:
-        layer_nodes = [n for n in core_network.nodes() if n[1] == layer]
+        layer_nodes = [
+            (base_node, layer)
+            for base_node in base_node_order
+            if (base_node, layer) in core_network
+        ]
         H = core_network.subgraph(layer_nodes)
 
         # Use nx_to_scipy_sparse_matrix for direct sparse conversion
-        adj_sparse = nx_to_scipy_sparse_matrix(H)
+        adj_sparse = nx_to_scipy_sparse_matrix(H, nodelist=layer_nodes)
 
         all_nodes += list(H.nodes())
         individual_adj_sparse.append(adj_sparse)

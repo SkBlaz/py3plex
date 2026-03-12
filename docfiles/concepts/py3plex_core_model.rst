@@ -339,9 +339,9 @@ Visualize the supra-adjacency matrix structure:
     from py3plex.core import multinet, random_generators
     import matplotlib.pyplot as plt
     
-    # Generate a small multilayer network
-    network = random_generators.random_multilayer_ER(
-        num_nodes=50, num_layers=3, probability=0.1, directed=False
+    # Generate a small multiplex network
+    network = random_generators.random_multiplex_ER(
+        n=50, l=3, p=0.1, directed=False
     )
     
     # Visualize the supra-adjacency matrix

@@ -8,7 +8,7 @@ Multiplex networks can be represented as supra-adjacency matrices for tensor-bas
     from py3plex.core import multinet, random_generators
     
     # Generate network
-    network = random_generators.random_multilayer_ER(
+    network = random_generators.random_multiplex_ER(
         n=500, l=8, p=0.05, directed=False)
     
     # Get supra-adjacency matrix
@@ -43,7 +43,7 @@ You can access nodes and edges using tensor-like indexing:
     from py3plex.core import random_generators
 
     # Initiate an instance of a random graph
-    ER_multilayer = random_generators.random_multilayer_ER(500, 8, 0.05, directed=False)
+    ER_multilayer = random_generators.random_multiplex_ER(500, 8, 0.05, directed=False)
 
     # Some simple visualization
     visualization_params = {"display": True}
