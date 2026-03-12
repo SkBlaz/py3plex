@@ -131,8 +131,8 @@
 \indexentry{add\_mpx\_edges() (in module py3plex.core.supporting)@\spxentry{add\_mpx\_edges()}\spxextra{in module py3plex.core.supporting}|hyperpage}{398}
 \indexentry{ensure() (in module py3plex.core.supporting)@\spxentry{ensure()}\spxextra{in module py3plex.core.supporting}|hyperpage}{398}
 \indexentry{parse\_gaf\_to\_uniprot\_GO() (in module py3plex.core.supporting)@\spxentry{parse\_gaf\_to\_uniprot\_GO()}\spxextra{in module py3plex.core.supporting}|hyperpage}{398}
-\indexentry{require() (in module py3plex.core.supporting)@\spxentry{require()}\spxextra{in module py3plex.core.supporting}|hyperpage}{398}
-\indexentry{split\_to\_layers() (in module py3plex.core.supporting)@\spxentry{split\_to\_layers()}\spxextra{in module py3plex.core.supporting}|hyperpage}{398}
+\indexentry{require() (in module py3plex.core.supporting)@\spxentry{require()}\spxextra{in module py3plex.core.supporting}|hyperpage}{399}
+\indexentry{split\_to\_layers() (in module py3plex.core.supporting)@\spxentry{split\_to\_layers()}\spxextra{in module py3plex.core.supporting}|hyperpage}{399}
 \indexentry{module@\spxentry{module}!py3plex.core.nx\_compat@\spxentry{py3plex.core.nx\_compat}|hyperpage}{399}
 \indexentry{py3plex.core.nx\_compat@\spxentry{py3plex.core.nx\_compat}!module@\spxentry{module}|hyperpage}{399}
 \indexentry{ensure() (in module py3plex.core.nx\_compat)@\spxentry{ensure()}\spxextra{in module py3plex.core.nx\_compat}|hyperpage}{399}
@@ -157,10 +157,10 @@
 \indexentry{calculate\_importance\_tf() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_tf()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{402}
 \indexentry{calculate\_importance\_w2w() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importance\_w2w()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{402}
 \indexentry{calculate\_importances() (in module py3plex.core.HINMINE.decomposition)@\spxentry{calculate\_importances()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{402}
-\indexentry{chi\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{chi\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{402}
-\indexentry{get\_aggregation\_method() (in module py3plex.core.HINMINE.decomposition)@\spxentry{get\_aggregation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{402}
-\indexentry{get\_calculation\_method() (in module py3plex.core.HINMINE.decomposition)@\spxentry{get\_calculation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{402}
-\indexentry{gr\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{gr\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{402}
+\indexentry{chi\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{chi\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{403}
+\indexentry{get\_aggregation\_method() (in module py3plex.core.HINMINE.decomposition)@\spxentry{get\_aggregation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{403}
+\indexentry{get\_calculation\_method() (in module py3plex.core.HINMINE.decomposition)@\spxentry{get\_calculation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{403}
+\indexentry{gr\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{gr\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{403}
 \indexentry{hinmine\_decompose() (in module py3plex.core.HINMINE.decomposition)@\spxentry{hinmine\_decompose()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{403}
 \indexentry{hinmine\_get\_cycles() (in module py3plex.core.HINMINE.decomposition)@\spxentry{hinmine\_get\_cycles()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{403}
 \indexentry{ig\_value() (in module py3plex.core.HINMINE.decomposition)@\spxentry{ig\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}|hyperpage}{403}
@@ -173,7 +173,7 @@
 \indexentry{module@\spxentry{module}!py3plex.config@\spxentry{py3plex.config}|hyperpage}{403}
 \indexentry{py3plex.config@\spxentry{py3plex.config}!module@\spxentry{module}|hyperpage}{403}
 \indexentry{get\_color\_palette() (in module py3plex.config)@\spxentry{get\_color\_palette()}\spxextra{in module py3plex.config}|hyperpage}{403}
-\indexentry{reset\_to\_defaults() (in module py3plex.config)@\spxentry{reset\_to\_defaults()}\spxextra{in module py3plex.config}|hyperpage}{403}
+\indexentry{reset\_to\_defaults() (in module py3plex.config)@\spxentry{reset\_to\_defaults()}\spxextra{in module py3plex.config}|hyperpage}{404}
 \indexentry{module@\spxentry{module}!py3plex.utils@\spxentry{py3plex.utils}|hyperpage}{404}
 \indexentry{py3plex.utils@\spxentry{py3plex.utils}!module@\spxentry{module}|hyperpage}{404}
 \indexentry{deprecated() (in module py3plex.utils)@\spxentry{deprecated()}\spxextra{in module py3plex.utils}|hyperpage}{404}
@@ -188,12 +188,12 @@
 \indexentry{get\_rng() (in module py3plex.utils)@\spxentry{get\_rng()}\spxextra{in module py3plex.utils}|hyperpage}{407}
 \indexentry{require() (in module py3plex.utils)@\spxentry{require()}\spxextra{in module py3plex.utils}|hyperpage}{408}
 \indexentry{validate\_multilayer\_input() (in module py3plex.utils)@\spxentry{validate\_multilayer\_input()}\spxextra{in module py3plex.utils}|hyperpage}{408}
-\indexentry{warn\_if\_deprecated() (in module py3plex.utils)@\spxentry{warn\_if\_deprecated()}\spxextra{in module py3plex.utils}|hyperpage}{408}
+\indexentry{warn\_if\_deprecated() (in module py3plex.utils)@\spxentry{warn\_if\_deprecated()}\spxextra{in module py3plex.utils}|hyperpage}{409}
 \indexentry{module@\spxentry{module}!py3plex.exceptions@\spxentry{py3plex.exceptions}|hyperpage}{409}
 \indexentry{py3plex.exceptions@\spxentry{py3plex.exceptions}!module@\spxentry{module}|hyperpage}{409}
 \indexentry{AlgorithmError@\spxentry{AlgorithmError}|hyperpage}{409}
 \indexentry{default\_code (py3plex.exceptions.AlgorithmError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.AlgorithmError attribute}|hyperpage}{409}
-\indexentry{BenchmarkError@\spxentry{BenchmarkError}|hyperpage}{409}
+\indexentry{BenchmarkError@\spxentry{BenchmarkError}|hyperpage}{410}
 \indexentry{default\_code (py3plex.exceptions.BenchmarkError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.BenchmarkError attribute}|hyperpage}{410}
 \indexentry{CentralityComputationError@\spxentry{CentralityComputationError}|hyperpage}{410}
 \indexentry{default\_code (py3plex.exceptions.CentralityComputationError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.CentralityComputationError attribute}|hyperpage}{410}
@@ -202,8 +202,8 @@
 \indexentry{ConversionError@\spxentry{ConversionError}|hyperpage}{410}
 \indexentry{default\_code (py3plex.exceptions.ConversionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ConversionError attribute}|hyperpage}{410}
 \indexentry{DecompositionError@\spxentry{DecompositionError}|hyperpage}{410}
-\indexentry{default\_code (py3plex.exceptions.DecompositionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.DecompositionError attribute}|hyperpage}{410}
-\indexentry{EmbeddingError@\spxentry{EmbeddingError}|hyperpage}{410}
+\indexentry{default\_code (py3plex.exceptions.DecompositionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.DecompositionError attribute}|hyperpage}{411}
+\indexentry{EmbeddingError@\spxentry{EmbeddingError}|hyperpage}{411}
 \indexentry{default\_code (py3plex.exceptions.EmbeddingError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.EmbeddingError attribute}|hyperpage}{411}
 \indexentry{ExternalToolError@\spxentry{ExternalToolError}|hyperpage}{411}
 \indexentry{default\_code (py3plex.exceptions.ExternalToolError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.ExternalToolError attribute}|hyperpage}{411}
@@ -231,7 +231,7 @@
 \indexentry{Py3plexFormatError@\spxentry{Py3plexFormatError}|hyperpage}{413}
 \indexentry{default\_code (py3plex.exceptions.Py3plexFormatError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexFormatError attribute}|hyperpage}{413}
 \indexentry{Py3plexIOError@\spxentry{Py3plexIOError}|hyperpage}{413}
-\indexentry{default\_code (py3plex.exceptions.Py3plexIOError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexIOError attribute}|hyperpage}{413}
+\indexentry{default\_code (py3plex.exceptions.Py3plexIOError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexIOError attribute}|hyperpage}{414}
 \indexentry{Py3plexLayoutError@\spxentry{Py3plexLayoutError}|hyperpage}{414}
 \indexentry{default\_code (py3plex.exceptions.Py3plexLayoutError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexLayoutError attribute}|hyperpage}{414}
 \indexentry{Py3plexMatrixError@\spxentry{Py3plexMatrixError}|hyperpage}{414}
@@ -240,7 +240,7 @@
 \indexentry{default\_code (py3plex.exceptions.SemiringError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.SemiringError attribute}|hyperpage}{414}
 \indexentry{SemiringExecutionError@\spxentry{SemiringExecutionError}|hyperpage}{414}
 \indexentry{default\_code (py3plex.exceptions.SemiringExecutionError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.SemiringExecutionError attribute}|hyperpage}{414}
-\indexentry{SemiringValidationError@\spxentry{SemiringValidationError}|hyperpage}{414}
+\indexentry{SemiringValidationError@\spxentry{SemiringValidationError}|hyperpage}{415}
 \indexentry{default\_code (py3plex.exceptions.SemiringValidationError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.SemiringValidationError attribute}|hyperpage}{415}
 \indexentry{VisualizationError@\spxentry{VisualizationError}|hyperpage}{415}
 \indexentry{default\_code (py3plex.exceptions.VisualizationError attribute)@\spxentry{default\_code}\spxextra{py3plex.exceptions.VisualizationError attribute}|hyperpage}{415}

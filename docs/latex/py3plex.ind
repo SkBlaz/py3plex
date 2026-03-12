@@ -169,7 +169,7 @@
 		\hyperpage{781}
   \item \spxentry{benchmark\_type}\spxextra{py3plex.dsl.BenchmarkNode attribute}, \hyperpage{419}
   \item \spxentry{BenchmarkAlgorithmSpec}\spxextra{class in py3plex.dsl}, \hyperpage{418}
-  \item \spxentry{BenchmarkError}, \hyperpage{409}
+  \item \spxentry{BenchmarkError}, \hyperpage{410}
   \item \spxentry{BenchmarkNode}\spxextra{class in py3plex.dsl}, \hyperpage{418}
   \item \spxentry{BenchmarkProtocol}\spxextra{class in py3plex.dsl}, \hyperpage{419}
   \item \spxentry{BenchmarkProxy}\spxextra{class in py3plex.dsl}, \hyperpage{419}
@@ -297,7 +297,7 @@
   \item \spxentry{cheap\_metrics()}\spxextra{py3plex.dsl.ClaimLearnerBuilder method}, 
 		\hyperpage{423}
   \item \spxentry{chi\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
-		\hyperpage{402}
+		\hyperpage{403}
   \item \spxentry{chisq()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}, 
 		\hyperpage{821}
   \item \spxentry{ci}\spxextra{py3plex.dsl.ComputeItem attribute}, \hyperpage{435, 436}
@@ -553,7 +553,7 @@
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.ConversionError attribute}, 
 		\hyperpage{410}
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.DecompositionError attribute}, 
-		\hyperpage{410}
+		\hyperpage{411}
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.EmbeddingError attribute}, 
 		\hyperpage{411}
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.ExternalToolError attribute}, 
@@ -577,7 +577,7 @@
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexFormatError attribute}, 
 		\hyperpage{413}
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexIOError attribute}, 
-		\hyperpage{413}
+		\hyperpage{414}
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexLayoutError attribute}, 
 		\hyperpage{414}
   \item \spxentry{default\_code}\spxextra{py3plex.exceptions.Py3plexMatrixError attribute}, 
@@ -713,7 +713,7 @@
 		\hyperpage{363}
   \item \spxentry{embed()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{507}
   \item \spxentry{embedding\_spec}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{547}
-  \item \spxentry{EmbeddingError}, \hyperpage{410}
+  \item \spxentry{EmbeddingError}, \hyperpage{411}
   \item \spxentry{enabled}\spxextra{py3plex.dsl.ApproximationSpec attribute}, \hyperpage{416, 417}
   \item \spxentry{enabled}\spxextra{py3plex.dsl.AutoCommunityConfig attribute}, 
 		\hyperpage{417, 418}
@@ -960,7 +960,7 @@
   \item \spxentry{get()}\spxextra{py3plex.dsl.InMemoryCacheBackend method}, \hyperpage{458}
   \item \spxentry{get()}\spxextra{py3plex.dsl.Q.uncertainty class method}, \hyperpage{494}
   \item \spxentry{get\_aggregation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
-		\hyperpage{402}
+		\hyperpage{403}
   \item \spxentry{get\_all()}\spxextra{py3plex.dsl.Q.uncertainty class method}, \hyperpage{494}
   \item \spxentry{get\_attribute\_type()}\spxextra{py3plex.dsl.NetworkSchemaProvider method}, 
 		\hyperpage{470}
@@ -975,7 +975,7 @@
   \item \spxentry{get\_biggest\_community()}\spxextra{in module py3plex.dsl}, \hyperpage{574}
   \item \spxentry{get\_cache\_statistics()}\spxextra{in module py3plex.dsl}, \hyperpage{574}
   \item \spxentry{get\_calculation\_method()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
-		\hyperpage{402}
+		\hyperpage{403}
   \item \spxentry{get\_color\_palette()}\spxextra{in module py3plex.config}, \hyperpage{403}
   \item \spxentry{get\_community\_partition()}\spxextra{in module py3plex.dsl}, \hyperpage{574}
   \item \spxentry{get\_community\_size\_distribution()}\spxextra{in module py3plex.dsl}, 
@@ -1082,7 +1082,7 @@
   \item \spxentry{get\_unique\_entity\_counts()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{372}
   \item \spxentry{gr\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
-		\hyperpage{402}
+		\hyperpage{403}
   \item \spxentry{graph}\spxextra{py3plex.dsl.DSLExecutionContext attribute}, \hyperpage{441, 442}
   \item \spxentry{GROUP}\spxextra{py3plex.dsl.StageType attribute}, \hyperpage{558}
   \item \spxentry{group\_by}\spxextra{py3plex.dsl.SelectStmt attribute}, \hyperpage{544}, 
@@ -2402,7 +2402,7 @@
   \item \spxentry{require()}\spxextra{in module py3plex.core.nx\_compat}, \hyperpage{401}
   \item \spxentry{require()}\spxextra{in module py3plex.core.parsers}, \hyperpage{393}
   \item \spxentry{require()}\spxextra{in module py3plex.core.random\_generators}, \hyperpage{398}
-  \item \spxentry{require()}\spxextra{in module py3plex.core.supporting}, \hyperpage{398}
+  \item \spxentry{require()}\spxextra{in module py3plex.core.supporting}, \hyperpage{399}
   \item \spxentry{require()}\spxextra{in module py3plex.io.api}, \hyperpage{792}
   \item \spxentry{require()}\spxextra{in module py3plex.multinet.aggregation}, \hyperpage{783}
   \item \spxentry{require()}\spxextra{in module py3plex.utils}, \hyperpage{408}
@@ -2432,7 +2432,7 @@
   \item \spxentry{reset()}\spxextra{py3plex.uncertainty.PartitionReducer method}, \hyperpage{598}
   \item \spxentry{reset()}\spxextra{py3plex.uncertainty.Reducer method}, \hyperpage{609}
   \item \spxentry{reset\_global\_uq\_defaults()}\spxextra{in module py3plex.dsl}, \hyperpage{578}
-  \item \spxentry{reset\_to\_defaults()}\spxextra{in module py3plex.config}, \hyperpage{403}
+  \item \spxentry{reset\_to\_defaults()}\spxextra{in module py3plex.config}, \hyperpage{404}
   \item \spxentry{resilience()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
 		\hyperpage{702}
   \item \spxentry{resolve()}\spxextra{py3plex.dsl.LayerSet method}, \hyperpage{465}
@@ -2550,7 +2550,7 @@
   \item \spxentry{SemiringPathStmt}\spxextra{class in py3plex.dsl}, \hyperpage{554}
   \item \spxentry{SemiringSpecNode}\spxextra{class in py3plex.dsl}, \hyperpage{556}
   \item \spxentry{SemiringStmt}\spxextra{class in py3plex.dsl}, \hyperpage{556}
-  \item \spxentry{SemiringValidationError}, \hyperpage{414}
+  \item \spxentry{SemiringValidationError}, \hyperpage{415}
   \item \spxentry{sensitivity()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{524}
   \item \spxentry{sensitivity\_curves}\spxextra{py3plex.dsl.QueryResult property}, \hyperpage{538}
   \item \spxentry{sensitivity\_result}\spxextra{py3plex.dsl.QueryResult attribute}, \hyperpage{533}
@@ -2631,7 +2631,7 @@
   \item \spxentry{SpecialPredicate}\spxextra{class in py3plex.dsl}, \hyperpage{557}
   \item \spxentry{split\_to\_indices()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
 		\hyperpage{814}
-  \item \spxentry{split\_to\_layers()}\spxextra{in module py3plex.core.supporting}, \hyperpage{398}
+  \item \spxentry{split\_to\_layers()}\spxextra{in module py3plex.core.supporting}, \hyperpage{399}
   \item \spxentry{split\_to\_layers()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{380}
   \item \spxentry{split\_to\_parts()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}, 
@@ -3007,7 +3007,7 @@
 
   \indexspace
   \bigletter W
-  \item \spxentry{warn\_if\_deprecated()}\spxextra{in module py3plex.utils}, \hyperpage{408}
+  \item \spxentry{warn\_if\_deprecated()}\spxextra{in module py3plex.utils}, \hyperpage{409}
   \item \spxentry{warnings}\spxextra{py3plex.dsl.ExecutionPlan attribute}, \hyperpage{452}
   \item \spxentry{WeightLiftSpecNode}\spxextra{class in py3plex.dsl}, \hyperpage{568}
   \item \spxentry{WeightNoise}\spxextra{class in py3plex.uncertainty}, \hyperpage{626}

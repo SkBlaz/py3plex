@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Mar 09, 2026}
+\date{Mar 12, 2026}
 \release{1.1.4}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -21335,9 +21335,9 @@ Visualize the supra\sphinxhyphen{}adjacency matrix structure:
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}\PYG{p}{,} \PYG{n}{random\PYGZus{}generators}
 \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
 
-\PYG{c+c1}{\PYGZsh{} Generate a small multilayer network}
-\PYG{n}{network} \PYG{o}{=} \PYG{n}{random\PYGZus{}generators}\PYG{o}{.}\PYG{n}{random\PYGZus{}multilayer\PYGZus{}ER}\PYG{p}{(}
-    \PYG{n}{num\PYGZus{}nodes}\PYG{o}{=}\PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{num\PYGZus{}layers}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{probability}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}
+\PYG{c+c1}{\PYGZsh{} Generate a small multiplex network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{random\PYGZus{}generators}\PYG{o}{.}\PYG{n}{random\PYGZus{}multiplex\PYGZus{}ER}\PYG{p}{(}
+    \PYG{n}{n}\PYG{o}{=}\PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{l}\PYG{o}{=}\PYG{l+m+mi}{3}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}
 \PYG{p}{)}
 
 \PYG{c+c1}{\PYGZsh{} Visualize the supra\PYGZhy{}adjacency matrix}
@@ -34479,6 +34479,11 @@ List{[}str{]}
 \pysigstopsignatures
 \sphinxAtStartPar
 Generate random multilayer Erdős\sphinxhyphen{}Rényi network.
+
+\sphinxAtStartPar
+This generator creates a general multilayer network where each base node is
+assigned to exactly one layer. As a result, the number of node\sphinxhyphen{}layer pairs
+is typically \sphinxcode{\sphinxupquote{n}} rather than \sphinxcode{\sphinxupquote{n * l}}.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
@@ -34654,6 +34659,12 @@ Edges are inserted via the py3plex list\sphinxhyphen{}based API:
 \pysigstopsignatures
 \sphinxAtStartPar
 Generate random multiplex Erdős\sphinxhyphen{}Rényi network.
+
+\sphinxAtStartPar
+This generator creates a strict multiplex network where all \sphinxcode{\sphinxupquote{n}} base
+nodes are instantiated in every one of the \sphinxcode{\sphinxupquote{l}} layers. Consequently, the
+node\sphinxhyphen{}layer replica set has size \sphinxcode{\sphinxupquote{n * l}} and the supra\sphinxhyphen{}adjacency matrix has
+shape \sphinxcode{\sphinxupquote{(n * l, n * l)}}.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}\begin{itemize}
 \item {} 
