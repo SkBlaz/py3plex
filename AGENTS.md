@@ -8,7 +8,7 @@
 - A set of known-good pipeline blueprints ("Golden Paths")
 - A reproducibility + performance policy manual
 
-**Version**: py3plex 1.1.3 | DSL v2.1 | Python 3.8+
+**Version**: py3plex 1.1.4 | DSL v2.1 | Python 3.8+
 
 **🚀 New to py3plex?** 
 - **5 minutes**: See [dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) for 7 copy-paste patterns
@@ -8824,10 +8824,10 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 ### Overview Statistics
 
-**Version**: py3plex 1.1.3  
+**Version**: py3plex 1.1.4  
 **Python Support**: 3.8+  
-**Repository Size**: ~168K lines of code  
-**Test Coverage**: 8,940 tests across 537 test files (~14.7% statement coverage)  
+**Repository Size**: ~169K lines of code  
+**Test Coverage**: 8,942 tests across 537 test files (~14.7% statement coverage)  
 **Key Modules**: 446 Python files across core, algorithms, DSL, and utilities  
 
 ### Major Subsystems
@@ -8911,7 +8911,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 ### Test Infrastructure
 
 **Test Organization**:
-- **537 test files** with **8,940 individual tests**
+- **537 test files** with **8,942 individual tests**
 - **83+ verification tests** across specialized modules (provenance, differential, metamorphic, determinism) — 10 files in `tests/verification/`
 - **210+ new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization, UQ propagation)
 - **113 property-based test files** using Hypothesis in `tests/property/`
@@ -9421,13 +9421,13 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `AGENTS.md` (10,500+ lines) - **This file** - Comprehensive AI agent documentation
 - `README.md` - Quick start and project overview
 - `docfiles/` - Documentation source files
-- `examples/` - **264 example scripts** demonstrating all features
+- `examples/` - **267 example scripts** demonstrating all features
 - `docs/py3plex_book.pdf` (106 pages) - Technical documentation
 - `CITATION.cff` - Citation information
 
 ### Test Suite
 
-**Test Files** (537 files, 8,940 tests):
+**Test Files** (537 files, 8,942 tests):
 
 **DSL Tests**:
 - `tests/test_dsl_v2.py` - DSL v2 core functionality
@@ -9616,11 +9616,12 @@ raise Py3plexException("Invalid configuration")
 ```python
 import py3plex
 
-print(py3plex.__version__)  # "1.1.3"
+print(py3plex.__version__)  # "1.1.4"
 ```
 
 **Version History**:
-- **1.1.3** (Current): Repository state updates and documentation improvements
+- **1.1.4** (Current): Repository statistics refresh and AGENTS.md consistency updates
+- **1.1.3**: Repository state updates and documentation improvements
 - **1.1.2**: Removed redundant documentation files
 - **1.1.1**: Documentation updates and AutoCommunity examples
 - **1.1.0**: DSL v2, Dynamics, UQ, Temporal, Null models, Counterexamples, Claim learning
@@ -9634,7 +9635,7 @@ print(py3plex.__version__)  # "1.1.3"
 - **README.md**: Quick start and flagship example
 - **AGENTS.md**: Comprehensive AI agent documentation (this file)
 - **docfiles/**: Detailed documentation
-- **examples/**: 170+ working examples
+- **examples/**: 267 example scripts
 - **pyproject.toml**: Dependencies and build config
 - **Technical Book**: `docs/py3plex_book.pdf` (106 pages)
 
@@ -10105,7 +10106,7 @@ Check that the server is running and stdio transport is properly configured.
 
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-03-06 (for py3plex v1.1.3)
+**Last Updated**: 2026-03-12 (for py3plex v1.1.4)
 
 
 ---
@@ -10656,10 +10657,10 @@ Recommended areas for future test coverage:
 
 **Repo State Note**: As of February 2026, py3plex has 210+ new deterministic tests (203 baseline + 7 for UQ propagation) enforcing 10+ major architectural guarantees across DSL, provenance, determinism, round-trips, parity, exceptions, grouping, null models, API equivalence, edge cases, and UQ propagation. All tests are automated, CI-friendly, and passing. Test coverage has improved from 8% to 14.7% through focused testing of core modules, utilities, and validation infrastructure.
 
-**v1.2 Update** (March 2026): Repository expanded with 8 new infrastructure packages (`algebra`, `embeddings`, `experiments`, `meta`, `optimizer`, `out_of_core`, `runtime`, `centrality`) and major DSL subsystem additions (`dsl/lint/`, `dsl/program/`, `dsl/executors/`). Test suite grown to 8,940 tests across 537 test files. Property-based test suite stable at 113 files; added `test_io_metamorphic_roundtrip.py`, `test_meta_properties.py`, `test_versatility_metamorphic.py` to property suite. Embeddings now include MetaPath2Vec (`py3plex/embeddings/metapath2vec.py`) with dedicated coverage in `tests/test_metapath2vec.py`, and examples include `examples/advanced/example_metapath2vec.py`. Total of 264 example scripts, 446 Python modules in py3plex, ~168K LOC.
+**v1.2 Update** (March 2026): Repository expanded with 8 new infrastructure packages (`algebra`, `embeddings`, `experiments`, `meta`, `optimizer`, `out_of_core`, `runtime`, `centrality`) and major DSL subsystem additions (`dsl/lint/`, `dsl/program/`, `dsl/executors/`). Test suite grown to 8,942 tests across 537 test files. Property-based test suite stable at 113 files; added `test_io_metamorphic_roundtrip.py`, `test_meta_properties.py`, `test_versatility_metamorphic.py` to property suite. Embeddings now include MetaPath2Vec (`py3plex/embeddings/metapath2vec.py`) with dedicated coverage in `tests/test_metapath2vec.py`, and examples include `examples/advanced/example_metapath2vec.py`. Total of 267 example scripts, 446 Python modules in py3plex, ~169K LOC.
 
 **v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 537 test files (~14.7% coverage), 446 Python modules in py3plex, ~168K total lines of code, and 264 example scripts. Property-based test suite significantly expanded from 13 to 113 files. Test coverage maintained at ~14.7% through ongoing test improvements. Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
 
 **v1.1+ UQ Propagation Update** (January 2026): Implemented first-class uncertainty propagation semantics with `mode="propagate"` option in `.uq()`. This enables quantification of selection stability (p_present, p_selected, rank_uq) when queries include filtering, ordering, and selection operations. The propagate mode executes the full query end-to-end per replicate, capturing how uncertain metric values affect which items appear in final results. Aggregation now uses UQAlgebra to preserve uncertainty through grouping operations instead of silently dropping it. All changes are backward compatible (default mode="summarize_only"). New test module: tests/test_dsl_uq_propagation.py (7 deterministic tests).
 
-**March 2026 Statistics Update**: AGENTS.md refreshed with verified repository counts — 537 test files (551 total Python files in tests/), 8,940 individual test functions, 113 property-based test files, 446 Python modules in py3plex/, 264 example scripts, ~168K lines of code (~14.7% statement coverage). Precise test count updated from approximate "8,900+" to exact 8,940.
+**March 2026 Statistics Update**: AGENTS.md refreshed with verified repository counts — 537 test files (551 total Python files in tests/), 8,942 individual test functions, 113 property-based test files, 446 Python modules in py3plex/, 267 example scripts, ~169K lines of code (~14.7% statement coverage). Precise test count updated from approximate "8,900+" to exact 8,942.
