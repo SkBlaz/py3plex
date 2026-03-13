@@ -3,10 +3,10 @@ name: Publish Python package to PyPI
 on:
   push:
     tags:
-      - "v*"  # runs when you push a tag like v0.1.0
+      - "v*"
   release:
-    types: [published]  # runs when a release is published via GitHub GUI
-  workflow_dispatch:  # allows manual triggering
+    types: [published]
+  workflow_dispatch:
 
 jobs:
   build-and-publish:
@@ -14,7 +14,7 @@ jobs:
 
     permissions:
       contents: read
-      id-token: write
+      id-token: write   # REQUIRED for trusted publishing
 
     steps:
       - name: Check out repository
@@ -27,7 +27,6 @@ jobs:
 
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
-        timeout-minutes: 5
 
       - name: Install build backend
         run: |
@@ -42,5 +41,3 @@ jobs:
 
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
