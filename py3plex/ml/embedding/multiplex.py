@@ -77,6 +77,14 @@ class LayerRegularizedEmbedding(NetMFEmbedding):
         ).fit_transform(network)
 
         union_aligned = union.reorder(supra.item_ids)
+        if supra.matrix.shape != union_aligned.matrix.shape:
+            raise ValueError(
+                "LayerRegularizedEmbedding requires aligned supra/union matrices "
+                f"with identical shape, got {supra.matrix.shape} and "
+                f"{union_aligned.matrix.shape}. This may happen when supra/union "
+                "modes produce different node sets. Ensure nodes are present "
+                "across layers or use a single multilayer mode."
+            )
         blended = self.alpha * supra.matrix + (1.0 - self.alpha) * union_aligned.matrix
         self._result = EmbeddingResult(
             matrix=blended.astype(np.float32),
@@ -85,4 +93,3 @@ class LayerRegularizedEmbedding(NetMFEmbedding):
             meta={"alpha": self.alpha},
         )
         return self
-

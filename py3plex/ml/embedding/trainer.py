@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, List, Optional, Sequence
 
 import numpy as np
 
@@ -58,8 +58,7 @@ class EmbeddingTrainer:
                     walk = random_walk(
                         G, node, walk_length=walk_length, rng=self.rng
                     )
-                if walk:
-                    walks.append(walk)
+                walks.append(walk)
         return walks
 
     def train_skipgram(
@@ -73,11 +72,11 @@ class EmbeddingTrainer:
     ) -> EmbeddingResult:
         """Train a lightweight skipgram proxy via co-occurrence + SVD."""
         if item_ids is None:
-            uniq: Dict[Any, bool] = {}
+            uniq = set()
             for walk in walks:
                 for node in walk:
-                    uniq[node] = True
-            item_ids = list(uniq.keys())
+                    uniq.add(node)
+            item_ids = list(uniq)
 
         node_to_idx = {n: i for i, n in enumerate(item_ids)}
         cooc = cooccurrence_matrix(
@@ -140,4 +139,3 @@ def train_skipgram(walks: Sequence[Sequence[Any]], **kwargs) -> EmbeddingResult:
         seed=kwargs.pop("seed", None),
     )
     return trainer.train_skipgram(walks, **kwargs)
-

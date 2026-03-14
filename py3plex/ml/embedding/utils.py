@@ -9,6 +9,8 @@ import numpy as np
 
 
 NodeId = Any
+_EPSILON = 1e-6
+_MAX_BIAS_WEIGHT = 1e3
 
 
 def as_node_layer(node: Any) -> Any:
@@ -83,6 +85,9 @@ def node2vec_walk(
     current = neighbors[int(rng.integers(0, len(neighbors)))]
     walk.append(current)
 
+    def _inv_bias(val: float) -> float:
+        return min(1.0 / max(val, _EPSILON), _MAX_BIAS_WEIGHT)
+
     for _ in range(max(0, walk_length - 2)):
         neigh = list(G.neighbors(current))
         if not neigh:
@@ -92,11 +97,11 @@ def node2vec_walk(
         weights = []
         for dst in neigh:
             if dst == prev:
-                weights.append(1.0 / max(p, 1e-12))
+                weights.append(_inv_bias(p))
             elif G.has_edge(dst, prev) or G.has_edge(prev, dst):
                 weights.append(1.0)
             else:
-                weights.append(1.0 / max(q, 1e-12))
+                weights.append(_inv_bias(q))
         probs = np.array(weights, dtype=np.float64)
         probs = probs / probs.sum()
         idx = int(rng.choice(len(neigh), p=probs))
@@ -138,8 +143,7 @@ def truncated_svd_embedding(matrix: np.ndarray, dim: int) -> np.ndarray:
     n = matrix.shape[0]
     k = max(1, min(dim, n))
     U, S, _ = np.linalg.svd(matrix, full_matrices=False)
-    emb = U[:, :k] * np.sqrt(np.maximum(S[:k], 1e-12))
+    emb = U[:, :k] * np.sqrt(np.maximum(S[:k], 0.0))
     if k < dim:
         emb = np.pad(emb, ((0, 0), (0, dim - k)))
     return emb.astype(np.float32, copy=False)
-

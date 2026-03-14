@@ -30,9 +30,14 @@ def evaluate_node_classification(
     random_state: int = 42,
 ) -> float:
     """Evaluate node classification with macro-F1."""
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state, stratify=y
-    )
+    try:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=random_state, stratify=y
+        )
+    except ValueError:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=random_state, stratify=None
+        )
     clf = LogisticRegression(max_iter=1000, random_state=random_state)
     clf.fit(X_train, y_train)
     pred = clf.predict(X_test)
@@ -48,4 +53,3 @@ def evaluate_clustering(
         "NMI": float(normalized_mutual_info_score(y_true, y_pred)),
         "ARI": float(adjusted_rand_score(y_true, y_pred)),
     }
-

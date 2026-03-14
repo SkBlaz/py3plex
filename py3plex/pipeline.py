@@ -30,6 +30,8 @@ Example:
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 from abc import ABC, abstractmethod
+import sys as _sys
+import types as _types
 import networkx as nx
 
 from py3plex.core import multinet, random_generators
@@ -743,10 +745,8 @@ class NodeEmbedding(PipelineStep):
 
 # Backward/forward compatibility shim for ``py3plex.pipeline.steps.embedding``.
 # The project currently exposes pipeline as a module (not a package), so we
-# register virtual submodules for import compatibility.
-import sys as _sys
-import types as _types
-
+# register virtual submodules for import compatibility until a package-level
+# pipeline refactor is introduced.
 _steps_mod_name = "py3plex.pipeline.steps"
 _embedding_mod_name = "py3plex.pipeline.steps.embedding"
 if _steps_mod_name not in _sys.modules:

@@ -75,6 +75,13 @@ def test_embedding_similarity():
     assert len(neighbors) <= 2
 
 
+def test_node2vec_embedding_deterministic_seed():
+    net = _toy_network()
+    emb_a = net.embed(method="node2vec", dimensions=8, walk_length=8, num_walks=2, seed=123)
+    emb_b = net.embed(method="node2vec", dimensions=8, walk_length=8, num_walks=2, seed=123)
+    np.testing.assert_allclose(emb_a.to_numpy(), emb_b.to_numpy())
+
+
 def test_multiplex_walks():
     net = _toy_network()
     emb = net.embed(
@@ -85,11 +92,12 @@ def test_multiplex_walks():
         seed=5,
     )
     assert emb.to_numpy().shape[1] == 4
-    assert any(isinstance(n, tuple) and len(n) == 2 for n in emb.nodes)
+    assert all(isinstance(n, tuple) and len(n) == 2 for n in emb.nodes)
 
 
 class _LoadToyNetwork(PipelineStep):
     def transform(self, data):
+        assert data is None
         return _toy_network()
 
 

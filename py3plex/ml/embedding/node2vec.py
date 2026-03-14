@@ -69,7 +69,9 @@ class Node2VecEmbedding(BaseEmbedding):
 
     def transform(self, nodes: Optional[List[Any]] = None) -> EmbeddingResult:
         if self._result is None:
-            raise ValueError("Model is not fitted. Call fit() first.")
+            raise ValueError(
+                f"{self.__class__.__name__} is not fitted. Call fit() first."
+            )
         if nodes is None:
             return self._result
         return self._result.reorder(nodes)
@@ -86,4 +88,3 @@ class Node2VecEmbedding(BaseEmbedding):
 
     def to_numpy(self) -> np.ndarray:
         return self.transform().to_numpy()
-

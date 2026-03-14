@@ -10,6 +10,8 @@ from py3plex.embeddings.base import BaseEmbedding, EmbeddingResult
 
 from .utils import build_graph_from_network, truncated_svd_embedding
 
+_EPSILON = 1e-6
+
 
 class LINEEmbedding(BaseEmbedding):
     """Lightweight LINE approximation via sparse adjacency factorization."""
@@ -47,7 +49,7 @@ class LINEEmbedding(BaseEmbedding):
         if self.order == 1:
             matrix = adj
         else:
-            deg = np.maximum(adj.sum(axis=1, keepdims=True), 1e-12)
+            deg = np.maximum(adj.sum(axis=1, keepdims=True), _EPSILON)
             matrix = (adj / deg) @ (adj / deg).T
 
         emb = truncated_svd_embedding(matrix, dim=self.dimensions)
@@ -83,4 +85,3 @@ class LINEEmbedding(BaseEmbedding):
 
     def to_numpy(self) -> np.ndarray:
         return self.transform().to_numpy()
-
