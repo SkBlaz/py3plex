@@ -3723,6 +3723,12 @@ def _execute_embedding(
         "seed": spec.seed,
         "backend": spec.backend,
         "cache_namespace": spec.cache_namespace,
+        "p": getattr(spec, "p", 1.0),
+        "q": getattr(spec, "q", 1.0),
+        "window_size": getattr(spec, "window_size", spec.window),
+        "negative_samples": getattr(spec, "negative_samples", 5),
+        "workers": getattr(spec, "workers", 1),
+        "order": getattr(spec, "order", 2),
     }
     embed_config_hash = make_embed_config_hash(embed_config)
 
@@ -3766,12 +3772,39 @@ def _execute_embedding(
                     node_set[edge[1]] = True
             node_items = list(node_set.keys())
 
-        if spec.method == "metapath2vec":
-            from py3plex.embeddings.metapath2vec import MetaPath2VecEmbedder
+        metapaths = getattr(spec, "metapaths", None) or []
+        walk_length = getattr(spec, "walk_length", 80)
+        num_walks = getattr(spec, "num_walks", 10)
+        window_size = getattr(spec, "window_size", spec.window)
+        p = getattr(spec, "p", 1.0)
+        q = getattr(spec, "q", 1.0)
+        negative_samples = getattr(spec, "negative_samples", 5)
+        workers = getattr(spec, "workers", 1)
+        order = getattr(spec, "order", 2)
 
-            metapaths = getattr(spec, "metapaths", None) or []
-            walk_length = getattr(spec, "walk_length", 80)
-            num_walks = getattr(spec, "num_walks", 10)
+        if hasattr(network, "embed"):
+            node_emb = network.embed(
+                method=spec.method,
+                dimensions=spec.dim,
+                walk_length=walk_length,
+                num_walks=num_walks,
+                context_size=window_size,
+                workers=workers,
+                p=p,
+                q=q,
+                negative_samples=negative_samples,
+                order=order,
+                window=spec.window,
+                negative=spec.negative,
+                approx=spec.approx,
+                gamma=spec.gamma,
+                multilayer=spec.multilayer,
+                metapaths=metapaths,
+                seed=spec.seed,
+                backend=spec.backend,
+            ).reorder(node_items)
+        elif spec.method == "metapath2vec":
+            from py3plex.embeddings.metapath2vec import MetaPath2VecEmbedder
 
             embedder = MetaPath2VecEmbedder(
                 metapaths=metapaths,
@@ -3813,6 +3846,10 @@ def _execute_embedding(
         import numpy as np
         norms = np.linalg.norm(node_emb.matrix, axis=1).tolist()
         result.attributes["embedding_norm"] = dict(zip(result.items, norms))
+        result.attributes["embedding"] = {
+            item: node_emb.matrix[i]
+            for i, item in enumerate(result.items)
+        }
     else:
         # Edge queries: apply link operator
         link_op = spec.link_op or "hadamard"
@@ -3823,6 +3860,10 @@ def _execute_embedding(
         )
         result.embeddings["node"] = node_emb.matrix
         result.embeddings["edge"] = edge_emb.matrix
+        result.attributes["embedding"] = {
+            item: edge_emb.matrix[i]
+            for i, item in enumerate(result.items)
+        }
 
     # --- provenance ---------------------------------------------------------
     embed_ms = (_time.perf_counter() - t0) * 1000.0

@@ -2083,6 +2083,140 @@ class multi_layer_network:
 
         yield from self.core_network.nodes(data=data)
 
+    def embed(
+        self,
+        method: str = "node2vec",
+        dimensions: int = 128,
+        walk_length: int = 40,
+        num_walks: int = 10,
+        context_size: int = 10,
+        workers: int = 4,
+        **kwargs: Any,
+    ) -> Any:
+        """Learn node embeddings as a first-class ML primitive.
+
+        Args:
+            method: Embedding backend name.
+            dimensions: Embedding dimensionality.
+            walk_length: Random-walk length for walk-based models.
+            num_walks: Number of walks per node for walk-based models.
+            context_size: Skipgram context window.
+            workers: Number of workers (reserved for backend implementations).
+            **kwargs: Method-specific parameters.
+
+        Returns:
+            EmbeddingResult aligned with ``self.get_nodes()``.
+        """
+        from py3plex.ml.embedding import (
+            DeepWalkEmbedding,
+            LINEEmbedding,
+            MetaPath2VecEmbedding,
+            MultiplexNode2Vec,
+            NetMFEmbedding,
+            Node2VecEmbedding,
+            SupraAdjacencyEmbedding,
+            LayerRegularizedEmbedding,
+        )
+
+        method_key = str(method).lower()
+        seed = kwargs.pop("seed", None)
+        backend = kwargs.pop("backend", "numpy")
+        window_size = kwargs.pop("window_size", context_size)
+
+        if method_key == "node2vec":
+            model = Node2VecEmbedding(
+                dimensions=dimensions,
+                walk_length=walk_length,
+                num_walks=num_walks,
+                p=float(kwargs.pop("p", 1.0)),
+                q=float(kwargs.pop("q", 1.0)),
+                window_size=window_size,
+                negative_samples=int(kwargs.pop("negative_samples", 5)),
+                workers=workers,
+                backend=backend,
+                seed=seed,
+            )
+        elif method_key == "deepwalk":
+            model = DeepWalkEmbedding(
+                dimensions=dimensions,
+                walk_length=walk_length,
+                num_walks=num_walks,
+                window_size=window_size,
+                negative_samples=int(kwargs.pop("negative_samples", 5)),
+                workers=workers,
+                backend=backend,
+                seed=seed,
+            )
+        elif method_key == "netmf":
+            model = NetMFEmbedding(
+                dimensions=dimensions,
+                window=int(kwargs.pop("window", context_size)),
+                negative=float(kwargs.pop("negative", 1.0)),
+                multilayer=str(kwargs.pop("multilayer", "supra")),
+                gamma=float(kwargs.pop("gamma", 1.0)),
+                approx=str(kwargs.pop("approx", "randomized_svd")),
+                seed=seed,
+            )
+        elif method_key == "line":
+            model = LINEEmbedding(
+                dimensions=dimensions,
+                order=int(kwargs.pop("order", 2)),
+                negative_samples=int(kwargs.pop("negative_samples", 5)),
+                lr=float(kwargs.pop("lr", 0.025)),
+                epochs=int(kwargs.pop("epochs", 5)),
+                seed=seed,
+            )
+        elif method_key == "metapath2vec":
+            model = MetaPath2VecEmbedding(
+                metapaths=list(kwargs.pop("metapaths", [])),
+                dimensions=dimensions,
+                walk_length=walk_length,
+                num_walks=num_walks,
+                window_size=window_size,
+                negative_samples=int(kwargs.pop("negative_samples", 5)),
+                epochs=int(kwargs.pop("epochs", 5)),
+                seed=seed,
+            )
+        elif method_key in {"multiplex_node2vec", "multiplex-node2vec"}:
+            model = MultiplexNode2Vec(
+                dimensions=dimensions,
+                walk_length=walk_length,
+                num_walks=num_walks,
+                p=float(kwargs.pop("p", 1.0)),
+                q=float(kwargs.pop("q", 1.0)),
+                window_size=window_size,
+                negative_samples=int(kwargs.pop("negative_samples", 5)),
+                workers=workers,
+                backend=backend,
+                layer_weight=float(kwargs.pop("layer_weight", 1.0)),
+                seed=seed,
+            )
+        elif method_key in {"supra_adjacency", "supra"}:
+            model = SupraAdjacencyEmbedding(
+                dimensions=dimensions,
+                gamma=float(kwargs.pop("gamma", 1.0)),
+                seed=seed,
+            )
+        elif method_key in {"layer_regularized", "layer-regularized"}:
+            model = LayerRegularizedEmbedding(
+                dimensions=dimensions,
+                alpha=float(kwargs.pop("alpha", 0.5)),
+                seed=seed,
+            )
+        else:
+            raise ValueError(
+                f"Unknown embedding method '{method}'. "
+                "Expected one of: node2vec, deepwalk, netmf, line, "
+                "metapath2vec, multiplex_node2vec, supra_adjacency, layer_regularized."
+            )
+
+        embedding = model.fit_transform(self)
+        if hasattr(self, "embedding"):
+            self.embedding = embedding
+        else:
+            setattr(self, "embedding", embedding)
+        return embedding
+
     def merge_with(self, target_px_object):
         """
         Merge two px objects.

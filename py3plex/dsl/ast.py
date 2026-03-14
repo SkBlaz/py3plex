@@ -728,6 +728,12 @@ class EmbeddingSpec:
             of layer names, e.g. ``[["author","paper","author"]]``).
         walk_length: Random walk length for MetaPath2Vec.
         num_walks: Number of walks per node for MetaPath2Vec.
+        p: Node2Vec return parameter.
+        q: Node2Vec in-out parameter.
+        window_size: Context window for walk-based embedding training.
+        negative_samples: Negative samples for walk-based embedding training.
+        workers: Worker count for embedding training.
+        order: LINE order (1 or 2).
     """
 
     method: str = "netmf"
@@ -747,6 +753,12 @@ class EmbeddingSpec:
     metapaths: Optional[List[List[str]]] = None
     walk_length: int = 80
     num_walks: int = 10
+    p: float = 1.0
+    q: float = 1.0
+    window_size: int = 10
+    negative_samples: int = 5
+    workers: int = 1
+    order: int = 2
 
 
 @dataclass

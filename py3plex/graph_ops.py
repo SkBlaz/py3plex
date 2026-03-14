@@ -489,6 +489,38 @@ class NodeFrame:
             new_data.append(new_item)
         return NodeFrame(multinet=self._multinet, data=new_data)
 
+    def embed(
+        self,
+        method: str = "node2vec",
+        dim: int = 64,
+        **kwargs: Any,
+    ) -> NodeFrame:
+        """Attach node embeddings as an ``embedding`` column.
+
+        Args:
+            method: Embedding method name.
+            dim: Embedding dimensionality.
+            **kwargs: Additional embedding backend parameters.
+
+        Returns:
+            A new NodeFrame with an ``embedding`` field per row.
+        """
+        embedding = self._multinet.embed(
+            method=method,
+            dimensions=dim,
+            **kwargs,
+        )
+        vectors = embedding.vectors
+        new_data: list[dict[str, Any]] = []
+        for item in self._data:
+            node_key = item.get("_node_tuple", (item.get("id"), item.get("layer")))
+            if node_key not in vectors:
+                node_key = item.get("id")
+            new_item = copy.copy(item)
+            new_item["embedding"] = vectors.get(node_key)
+            new_data.append(new_item)
+        return NodeFrame(multinet=self._multinet, data=new_data)
+
     def arrange(
         self,
         key: str | Callable[[dict[str, Any]], Any],
