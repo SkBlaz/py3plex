@@ -3238,6 +3238,7 @@ class QueryBuilder:
         self,
         method: str = "netmf",
         dim: int = 128,
+        dimensions: Optional[int] = None,
         multilayer: str = "supra",
         layers: Optional[List[str]] = None,
         window: int = 10,
@@ -3252,6 +3253,12 @@ class QueryBuilder:
         metapaths: Optional[List[List[str]]] = None,
         walk_length: int = 80,
         num_walks: int = 10,
+        p: float = 1.0,
+        q: float = 1.0,
+        window_size: int = 10,
+        negative_samples: int = 5,
+        workers: int = 1,
+        order: int = 2,
     ) -> "QueryBuilder":
         """Attach a node (or edge) embedding computation to this query.
 
@@ -3262,6 +3269,7 @@ class QueryBuilder:
             method: Embedding method.  ``"netmf"`` (default) or
                 ``"metapath2vec"``.
             dim: Embedding dimensionality.
+            dimensions: Optional alias for ``dim``.
             multilayer: How to aggregate layers before embedding.
                 ``"supra"`` (default) builds a supra-adjacency matrix;
                 ``"union"`` collapses all layers into one graph.
@@ -3313,6 +3321,9 @@ class QueryBuilder:
         """
         from py3plex.dsl.ast import EmbeddingSpec
 
+        if dimensions is not None:
+            dim = int(dimensions)
+
         self._select.embedding_spec = EmbeddingSpec(
             method=method,
             dim=dim,
@@ -3330,6 +3341,12 @@ class QueryBuilder:
             metapaths=metapaths,
             walk_length=walk_length,
             num_walks=num_walks,
+            p=p,
+            q=q,
+            window_size=window_size,
+            negative_samples=negative_samples,
+            workers=workers,
+            order=order,
         )
         return self
 

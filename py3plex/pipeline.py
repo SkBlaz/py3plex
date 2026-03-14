@@ -49,6 +49,7 @@ __all__ = [
     "FilterNodes",
     "SaveNetwork",
     "ComputeEmbedding",
+    "NodeEmbedding",
 ]
 
 
@@ -704,3 +705,53 @@ class ComputeEmbedding(PipelineStep):
 
         context["embedding"] = embedding
         return context
+
+
+class NodeEmbedding(PipelineStep):
+    """Compute node embeddings via ``multi_layer_network.embed``."""
+
+    def __init__(self, method: str = "node2vec", dimensions: int = 128, **kwargs):
+        self.method = method
+        self.dimensions = dimensions
+        self.kwargs = kwargs
+
+    def transform(self, data: Any) -> Any:
+        """Compute embeddings and attach them to pipeline context."""
+        is_network = hasattr(data, "get_nodes") and hasattr(data, "get_edges")
+        context: Dict[str, Any]
+        if is_network:
+            network = data
+            context = {"network": data}
+        elif isinstance(data, dict) and "network" in data:
+            network = data["network"]
+            context = dict(data)
+        else:
+            raise TypeError(
+                "NodeEmbedding expects an object with get_nodes/get_edges "
+                "methods or a dict with key 'network', "
+                f"got {type(data).__name__}"
+            )
+
+        embedding = network.embed(
+            method=self.method,
+            dimensions=self.dimensions,
+            **self.kwargs,
+        )
+        context["embedding"] = embedding
+        return context
+
+
+# Backward/forward compatibility shim for ``py3plex.pipeline.steps.embedding``.
+# The project currently exposes pipeline as a module (not a package), so we
+# register virtual submodules for import compatibility.
+import sys as _sys
+import types as _types
+
+_steps_mod_name = "py3plex.pipeline.steps"
+_embedding_mod_name = "py3plex.pipeline.steps.embedding"
+if _steps_mod_name not in _sys.modules:
+    _sys.modules[_steps_mod_name] = _types.ModuleType(_steps_mod_name)
+if _embedding_mod_name not in _sys.modules:
+    _embedding_mod = _types.ModuleType(_embedding_mod_name)
+    _embedding_mod.NodeEmbedding = NodeEmbedding
+    _sys.modules[_embedding_mod_name] = _embedding_mod

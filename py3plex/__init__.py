@@ -146,6 +146,7 @@ from py3plex.pipeline import (
     ComputeStats,
     FilterNodes,
     SaveNetwork,
+    NodeEmbedding,
 )
 
 # Config-driven workflows
@@ -284,6 +285,7 @@ __all__ = [
     "ComputeStats",
     "FilterNodes",
     "SaveNetwork",
+    "NodeEmbedding",
     # Workflows
     "WorkflowConfig",
     "WorkflowRunner",
