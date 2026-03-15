@@ -2144,11 +2144,27 @@ class multi_layer_network:
             **dict(kwargs),
         }
         try:
-            graph_hash = self.fingerprint() if hasattr(self, "fingerprint") else ""
+            graph_hash = self.fingerprint()
             if not isinstance(graph_hash, str):
                 graph_hash = json.dumps(graph_hash, sort_keys=True, default=str)
-        except Exception:
-            graph_hash = ""
+        except Exception as exc:
+            logger.warning("Failed to compute graph fingerprint for embedding cache: %s", exc)
+            node_snapshot = list(self.get_nodes())
+            layer_labels = sorted(
+                {
+                    str(node[1])
+                    for node in node_snapshot
+                    if isinstance(node, tuple) and len(node) >= 2
+                }
+            )
+            fallback_fp = {
+                "nodes": len(node_snapshot),
+                "edges": len(list(self.get_edges())),
+                "layers": layer_labels,
+            }
+            graph_hash = hashlib.sha256(
+                json.dumps(fallback_fp, sort_keys=True, default=str).encode()
+            ).hexdigest()[:16]
 
         cache_payload = {
             "graph_structure_hash": graph_hash,
@@ -2297,13 +2313,18 @@ class multi_layer_network:
         if cache_enabled and cache_path is not None:
             try:
                 embedding.to_parquet(str(cache_path))
-            except Exception:
+            except Exception as exc:
+                logger.warning("Failed to write parquet embedding cache %s: %s", cache_path, exc)
                 if fallback_cache_path is not None:
                     try:
                         embedding.save(str(fallback_cache_path))
                         embedding.meta["cache_path"] = str(fallback_cache_path)
-                    except Exception:
-                        pass
+                    except Exception as fallback_exc:
+                        logger.warning(
+                            "Failed to write fallback embedding cache %s: %s",
+                            fallback_cache_path,
+                            fallback_exc,
+                        )
         if hasattr(self, "embedding"):
             self.embedding = embedding
         else:

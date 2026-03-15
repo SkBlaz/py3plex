@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import json
+import logging
 import pathlib
 from datetime import datetime, timezone
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Protocol, Sequence, runtime_checkable
 
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 class BaseEmbedding(ABC):
@@ -80,8 +83,8 @@ class EmbeddingResult:
         elif hasattr(matrix, "numpy") and not isinstance(matrix, np.ndarray):
             try:
                 matrix = matrix.numpy()
-            except Exception:
-                pass
+            except (TypeError, ValueError, RuntimeError) as exc:
+                logger.debug("Embedding matrix .numpy() conversion failed: %s", exc)
         return np.asarray(matrix, dtype=np.float32)
 
     @property
@@ -193,6 +196,8 @@ class EmbeddingResult:
 
     def to_parquet(self, path: str) -> None:
         """Persist embeddings to parquet."""
+        if not str(path).lower().endswith(".parquet"):
+            raise ValueError("to_parquet() requires a '.parquet' output path.")
         self.save(path)
 
     def similarity(self, node_a: Any, node_b: Any, metric: str = "cosine") -> float:
@@ -268,9 +273,7 @@ class EmbeddingResult:
         if nodes is None:
             matrix = self.matrix
         else:
-            matrix = np.vstack([self.get_embedding(n) for n in nodes]).astype(
-                np.float32, copy=False
-            )
+            matrix = np.vstack([self.get_embedding(n) for n in nodes])
         if metric == "cosine":
             norms = np.linalg.norm(matrix, axis=1, keepdims=True)
             normalized = matrix / np.maximum(norms, 1e-12)
@@ -383,8 +386,11 @@ class EmbeddingResult:
                 self._vector_index = index
                 self._vector_index_backend = "hnswlib"
                 return self
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.debug(
+                    "hnswlib backend unavailable; falling back to other index backends: %s",
+                    exc,
+                )
         if method_key == "annoy":
             try:
                 from annoy import AnnoyIndex  # type: ignore
@@ -397,8 +403,11 @@ class EmbeddingResult:
                 self._vector_index = index
                 self._vector_index_backend = "annoy"
                 return self
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.debug(
+                    "annoy backend unavailable; falling back to other index backends: %s",
+                    exc,
+                )
         if method_key == "faiss":
             try:
                 import faiss  # type: ignore
@@ -411,8 +420,11 @@ class EmbeddingResult:
                 self._vector_index = index
                 self._vector_index_backend = "faiss"
                 return self
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.debug(
+                    "faiss backend unavailable; falling back to other index backends: %s",
+                    exc,
+                )
 
         from sklearn.neighbors import NearestNeighbors
 
@@ -427,7 +439,7 @@ class EmbeddingResult:
         """Attempt index-backed knn lookup."""
         if self._vector_index_backend is None:
             return None
-        q = self.get_embedding(node).astype(np.float32, copy=False)
+        q = self.get_embedding(node)
         n_candidates = max(int(k), 0) + 1
         if self._vector_index_backend == "hnswlib":
             labels, distances = self._vector_index.knn_query(q, k=n_candidates)
@@ -654,7 +666,12 @@ class EmbeddingResult:
         if network is None:
             node_count_match = True
         else:
-            node_count_match = len(self.item_ids) == len(list(network.get_nodes()))
+            if hasattr(network, "core_network"):
+                node_count_match = len(self.item_ids) == len(network.core_network.nodes())
+            elif hasattr(network, "get_nodes"):
+                node_count_match = len(self.item_ids) == sum(1 for _ in network.get_nodes())
+            else:
+                node_count_match = False
         layer_alignment = all(
             not isinstance(item, tuple) or len(item) == 2 for item in self.item_ids
         )
@@ -676,6 +693,10 @@ class EmbeddingResult:
     def reproduce(self, network: Any) -> "EmbeddingResult":
         """Replay embedding computation from stored metadata."""
         params = dict(self.meta.get("parameters", {}))
+        if not params:
+            raise ValueError(
+                "Embedding metadata does not contain reproduction parameters."
+            )
         method = params.pop("method", self.method)
         if not hasattr(network, "embed"):
             raise AttributeError("Network does not provide an embed() method.")

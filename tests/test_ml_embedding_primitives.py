@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import numpy as np
 
 from py3plex.core.multinet import multi_layer_network
@@ -195,9 +196,11 @@ def test_embedding_cache_and_reproduce(tmp_path):
     )
     assert emb1.meta["cache_hit"] is False
     assert emb2.meta["cache_hit"] is True
-    cache_files = list(tmp_path.glob("embedding_*.parquet")) + list(
-        tmp_path.glob("embedding_*.npz")
-    )
-    assert cache_files
+    parquet_files = list(tmp_path.glob("embedding_*.parquet"))
+    npz_files = list(tmp_path.glob("embedding_*.npz"))
+    if importlib.util.find_spec("pyarrow") is not None:
+        assert len(parquet_files) > 0
+    else:
+        assert len(npz_files) > 0
     replay = emb2.reproduce(net)
     np.testing.assert_allclose(replay.to_numpy(), emb1.to_numpy())
