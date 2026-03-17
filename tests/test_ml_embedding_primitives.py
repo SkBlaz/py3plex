@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import numpy as np
 
 from py3plex.core.multinet import multi_layer_network
@@ -125,3 +126,81 @@ def test_graph_ops_embed_column():
     frame = nodes(net).embed(method="node2vec", dim=8, walk_length=8, num_walks=2, seed=42)
     df = frame.to_pandas()
     assert "embedding" in df.columns
+
+
+def test_embedding_schema_metadata_and_info():
+    net = _toy_network()
+    emb = net.embed(method="node2vec", dimensions=8, walk_length=8, num_walks=2, seed=42)
+    df = emb.to_pandas()
+    assert {"node", "layer", "embedding", "embedding_dim", "method", "timestamp"}.issubset(
+        df.columns
+    )
+    assert set(df["embedding_dim"]) == {8}
+    assert set(df["method"]) == {"node2vec"}
+    info = emb.info()
+    assert info["method"] == "node2vec"
+    assert info["dimension"] == 8
+
+
+def test_embedding_utilities_similarity_matrix_subset_validate():
+    net = _toy_network()
+    emb = net.embed(method="node2vec", dimensions=8, walk_length=8, num_walks=2, seed=7)
+    nodes_subset = emb.nodes[:2]
+    subset = emb.subset(nodes_subset)
+    assert subset.to_numpy().shape[0] == 2
+    assert len(emb.flatten_nodes()) == emb.n_items
+    assert len(emb.expand_layers()) == emb.n_items
+    assert isinstance(emb.group_by_node(), dict)
+    assert isinstance(emb.group_by_layer(), dict)
+    sim = emb.similarity_matrix(nodes_subset)
+    assert sim.shape == (2, 2)
+    assert np.isfinite(emb.distance(nodes_subset[0], nodes_subset[1], metric="euclidean"))
+    checks = emb.validate(network=net)
+    assert checks["dimension_consistency"] is True
+    assert checks["node_count_match"] is True
+    assert checks["layer_alignment"] is True
+
+
+def test_embedding_normalize_reduce_and_index():
+    net = _toy_network()
+    emb = net.embed(method="node2vec", dimensions=8, walk_length=8, num_walks=2, seed=12)
+    normalized = emb.normalize()
+    norms = np.linalg.norm(normalized.to_numpy(), axis=1)
+    np.testing.assert_allclose(norms, np.ones_like(norms), atol=1e-5)
+    reduced = emb.reduce(method="pca", dim=2)
+    assert reduced.to_numpy().shape[1] == 2
+    emb.build_index(method="hnsw")
+    neighbors = emb.knn(emb.nodes[0], k=2)
+    assert len(neighbors) <= 2
+
+
+def test_embedding_cache_and_reproduce(tmp_path):
+    net = _toy_network()
+    emb1 = net.embed(
+        method="node2vec",
+        dimensions=8,
+        walk_length=8,
+        num_walks=2,
+        seed=123,
+        cache=True,
+        cache_dir=str(tmp_path),
+    )
+    emb2 = net.embed(
+        method="node2vec",
+        dimensions=8,
+        walk_length=8,
+        num_walks=2,
+        seed=123,
+        cache=True,
+        cache_dir=str(tmp_path),
+    )
+    assert emb1.meta["cache_hit"] is False
+    assert emb2.meta["cache_hit"] is True
+    parquet_files = list(tmp_path.glob("embedding_*.parquet"))
+    npz_files = list(tmp_path.glob("embedding_*.npz"))
+    if importlib.util.find_spec("pyarrow") is not None:
+        assert len(parquet_files) > 0
+    else:
+        assert len(npz_files) > 0
+    replay = emb2.reproduce(net)
+    np.testing.assert_allclose(replay.to_numpy(), emb1.to_numpy())

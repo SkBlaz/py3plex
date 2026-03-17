@@ -2,7 +2,11 @@
 
 import itertools
 import os
+import hashlib
+import json
+import pathlib
 from collections import defaultdict
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple, Union
 import matplotlib.pyplot as plt
 
@@ -2107,6 +2111,8 @@ class multi_layer_network:
         Returns:
             EmbeddingResult aligned with ``self.get_nodes()``.
         """
+        import py3plex
+
         from py3plex.ml.embedding import (
             DeepWalkEmbedding,
             LINEEmbedding,
@@ -2122,6 +2128,87 @@ class multi_layer_network:
         seed = kwargs.pop("seed", None)
         backend = kwargs.pop("backend", "numpy")
         window_size = kwargs.pop("window_size", context_size)
+        cache_enabled = bool(kwargs.pop("cache", False))
+        cache_dir = kwargs.pop("cache_dir", None)
+
+        embed_parameters = {
+            "method": method_key,
+            "dimensions": int(dimensions),
+            "walk_length": int(walk_length),
+            "num_walks": int(num_walks),
+            "context_size": int(context_size),
+            "window_size": int(window_size),
+            "workers": int(workers),
+            "seed": seed,
+            "backend": backend,
+            **dict(kwargs),
+        }
+        try:
+            graph_hash = self.fingerprint()
+            if not isinstance(graph_hash, str):
+                graph_hash = json.dumps(graph_hash, sort_keys=True, default=str)
+        except Exception as exc:
+            logger.warning("Failed to compute graph fingerprint for embedding cache: %s", exc)
+            node_snapshot = list(self.get_nodes())
+            layer_labels = sorted(
+                {
+                    str(node[1])
+                    for node in node_snapshot
+                    if isinstance(node, tuple) and len(node) >= 2
+                }
+            )
+            fallback_fp = {
+                "nodes": len(node_snapshot),
+                "edges": len(list(self.get_edges())),
+                "layers": layer_labels,
+            }
+            graph_hash = hashlib.sha256(
+                json.dumps(fallback_fp, sort_keys=True, default=str).encode()
+            ).hexdigest()[:16]
+
+        cache_payload = {
+            "graph_structure_hash": graph_hash,
+            "method": method_key,
+            "parameters": embed_parameters,
+            "version": py3plex.__version__,
+            "network_version": getattr(self, "network_version", None),
+        }
+        cache_hash = hashlib.sha256(
+            json.dumps(cache_payload, sort_keys=True, default=str).encode()
+        ).hexdigest()[:16]
+        cache_path = None
+        fallback_cache_path = None
+        if cache_enabled:
+            cache_root = pathlib.Path(cache_dir) if cache_dir else pathlib.Path.cwd()
+            cache_root.mkdir(parents=True, exist_ok=True)
+            cache_path = cache_root / f"embedding_{cache_hash}.parquet"
+            fallback_cache_path = cache_root / f"embedding_{cache_hash}.npz"
+            existing_cache_path = (
+                cache_path if cache_path.exists() else fallback_cache_path
+            )
+            if existing_cache_path.exists():
+                from py3plex.embeddings.base import EmbeddingResult
+
+                loaded = EmbeddingResult.load(str(existing_cache_path))
+                loaded.meta.update(
+                    {
+                        "method": method_key,
+                        "parameters": embed_parameters,
+                        "graph_hash": graph_hash,
+                        "creation_time": loaded.meta.get(
+                            "creation_time", datetime.now(timezone.utc).isoformat()
+                        ),
+                        "library_version": py3plex.__version__,
+                        "cache_key": cache_hash,
+                        "cache_path": str(existing_cache_path),
+                        "cache_hit": True,
+                    }
+                )
+                if hasattr(self, "embedding"):
+                    self.embedding = loaded
+                else:
+                    setattr(self, "embedding", loaded)
+                return loaded
 
         if method_key == "node2vec":
             model = Node2VecEmbedding(
@@ -2211,6 +2298,33 @@ class multi_layer_network:
             )
 
         embedding = model.fit_transform(self)
+        embedding.meta.update(
+            {
+                "method": method_key,
+                "parameters": embed_parameters,
+                "graph_hash": graph_hash,
+                "creation_time": datetime.now(timezone.utc).isoformat(),
+                "library_version": py3plex.__version__,
+                "cache_key": cache_hash if cache_enabled else None,
+                "cache_path": str(cache_path) if cache_path else None,
+                "cache_hit": False,
+            }
+        )
+        if cache_enabled and cache_path is not None:
+            try:
+                embedding.to_parquet(str(cache_path))
+            except Exception as exc:
+                logger.warning("Failed to write parquet embedding cache %s: %s", cache_path, exc)
+                if fallback_cache_path is not None:
+                    try:
+                        embedding.save(str(fallback_cache_path))
+                        embedding.meta["cache_path"] = str(fallback_cache_path)
+                    except Exception as fallback_exc:
+                        logger.warning(
+                            "Failed to write fallback embedding cache %s: %s",
+                            fallback_cache_path,
+                            fallback_exc,
+                        )
         if hasattr(self, "embedding"):
             self.embedding = embedding
         else:

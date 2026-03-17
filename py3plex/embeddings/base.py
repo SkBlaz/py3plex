@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import json
+import logging
 import pathlib
+from datetime import datetime, timezone
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Protocol, runtime_checkable
+from typing import Any, Dict, List, Optional, Protocol, Sequence, runtime_checkable
 
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 class BaseEmbedding(ABC):
@@ -51,6 +55,7 @@ class EmbeddingResult:
         method: str,
         meta: Optional[Dict[str, Any]] = None,
     ) -> None:
+        matrix = self._coerce_matrix(matrix)
         if matrix.ndim != 2:
             raise ValueError(
                 f"Embedding matrix must be 2-D, got shape {matrix.shape}"
@@ -59,11 +64,28 @@ class EmbeddingResult:
             raise ValueError(
                 f"item_ids length ({len(item_ids)}) must match matrix rows ({matrix.shape[0]})"
             )
-        self.matrix = matrix.astype(np.float32, copy=False)
+        self.matrix = np.ascontiguousarray(matrix, dtype=np.float32)
         self.item_ids = list(item_ids)
         self.method = method
         self.meta: Dict[str, Any] = meta or {}
+        self.meta.setdefault(
+            "creation_time", datetime.now(timezone.utc).isoformat()
+        )
         self._index: Dict[Any, int] = {nid: i for i, nid in enumerate(self.item_ids)}
+        self._vector_index: Any = None
+        self._vector_index_backend: Optional[str] = None
+
+    @staticmethod
+    def _coerce_matrix(matrix: Any) -> np.ndarray:
+        """Normalize embedding matrix to numpy float32."""
+        if hasattr(matrix, "detach") and hasattr(matrix, "cpu"):
+            matrix = matrix.detach().cpu().numpy()
+        elif hasattr(matrix, "numpy") and not isinstance(matrix, np.ndarray):
+            try:
+                matrix = matrix.numpy()
+            except (TypeError, ValueError, RuntimeError) as exc:
+                logger.debug("Embedding matrix .numpy() conversion failed: %s", exc)
+        return np.asarray(matrix, dtype=np.float32)
 
     @property
     def dim(self) -> int:
@@ -82,6 +104,18 @@ class EmbeddingResult:
     def nodes(self) -> List[Any]:
         """Alias for item identifiers."""
         return list(self.item_ids)
+
+    @property
+    def layers(self) -> List[Any]:
+        """Unique layer ids in stable order."""
+        seen = set()
+        ordered: List[Any] = []
+        for item in self.expand_layers():
+            layer = item[1]
+            if layer not in seen:
+                seen.add(layer)
+                ordered.append(layer)
+        return ordered
 
     @property
     def dimension(self) -> int:
@@ -108,13 +142,23 @@ class EmbeddingResult:
         """Convert embeddings to a pandas DataFrame."""
         import pandas as pd
 
+        timestamp = self.meta.get("creation_time")
         rows = []
         for nid, vec in zip(self.item_ids, self.matrix):
             if isinstance(nid, tuple) and len(nid) == 2:
                 node, layer = nid
             else:
                 node, layer = nid, None
-            rows.append({"node": node, "layer": layer, "embedding": vec})
+            rows.append(
+                {
+                    "node": node,
+                    "layer": layer,
+                    "embedding": vec,
+                    "embedding_dim": int(self.dim),
+                    "method": self.method,
+                    "timestamp": timestamp,
+                }
+            )
         return pd.DataFrame(rows)
 
     def to_arrow(self):
@@ -124,6 +168,10 @@ class EmbeddingResult:
         node_vals: List[Any] = []
         layer_vals: List[Any] = []
         emb_vals: List[List[float]] = []
+        dims: List[int] = []
+        methods: List[str] = []
+        timestamps: List[Optional[str]] = []
+        timestamp = self.meta.get("creation_time")
         for nid, vec in zip(self.item_ids, self.matrix):
             if isinstance(nid, tuple) and len(nid) == 2:
                 node, layer = nid
@@ -132,9 +180,25 @@ class EmbeddingResult:
             node_vals.append(node)
             layer_vals.append(layer)
             emb_vals.append(vec.tolist())
+            dims.append(int(self.dim))
+            methods.append(self.method)
+            timestamps.append(timestamp)
         return pa.table(
-            {"node": node_vals, "layer": layer_vals, "embedding": emb_vals}
+            {
+                "node": node_vals,
+                "layer": layer_vals,
+                "embedding": emb_vals,
+                "embedding_dim": dims,
+                "method": methods,
+                "timestamp": timestamps,
+            }
         )
+
+    def to_parquet(self, path: str) -> None:
+        """Persist embeddings to parquet."""
+        if not str(path).lower().endswith(".parquet"):
+            raise ValueError("to_parquet() requires a '.parquet' output path.")
+        self.save(path)
 
     def similarity(self, node_a: Any, node_b: Any, metric: str = "cosine") -> float:
         """Compute pairwise similarity/distance between two vectors."""
@@ -152,8 +216,16 @@ class EmbeddingResult:
             f"Unknown metric '{metric}'. Expected one of: cosine, dot, euclidean."
         )
 
+    def distance(self, node_a: Any, node_b: Any, metric: str = "euclidean") -> float:
+        """Distance convenience wrapper."""
+        return self.similarity(node_a, node_b, metric=metric)
+
     def knn(self, node: Any, k: int = 10, metric: str = "cosine") -> List[tuple]:
         """Return k nearest neighbors as (node_id, score)."""
+        if self._vector_index is not None and self._vector_index_backend is not None:
+            indexed = self._knn_from_index(node=node, k=k, metric=metric)
+            if indexed is not None:
+                return indexed
         target = self.get_embedding(node)
         if metric == "cosine":
             norms = np.linalg.norm(self.matrix, axis=1)
@@ -192,6 +264,33 @@ class EmbeddingResult:
         """Alias for :meth:`knn` with cosine similarity."""
         return self.knn(node=node, k=k, metric="cosine")
 
+    def similarity_matrix(
+        self,
+        nodes: Optional[Sequence[Any]] = None,
+        metric: str = "cosine",
+    ) -> np.ndarray:
+        """Compute pairwise similarity/distance matrix."""
+        if nodes is None:
+            matrix = self.matrix
+        else:
+            matrix = np.vstack([self.get_embedding(n) for n in nodes])
+        if metric == "cosine":
+            norms = np.linalg.norm(matrix, axis=1, keepdims=True)
+            normalized = matrix / np.maximum(norms, 1e-12)
+            return normalized @ normalized.T
+        if metric == "dot":
+            return matrix @ matrix.T
+        if metric == "euclidean":
+            diff = matrix[:, None, :] - matrix[None, :, :]
+            return np.linalg.norm(diff, axis=2)
+        raise ValueError(
+            f"Unknown metric '{metric}'. Expected one of: cosine, dot, euclidean."
+        )
+
+    def subset(self, nodes: Sequence[Any]) -> "EmbeddingResult":
+        """Return a subset of embeddings by id."""
+        return self.reorder(list(nodes))
+
     def cluster(self, method: str = "kmeans", k: int = 10) -> Dict[Any, int]:
         """Cluster embedding vectors and return node -> cluster mapping."""
         if self.n_items == 0:
@@ -217,6 +316,177 @@ class EmbeddingResult:
                 f"Unknown clustering method '{method}'. Expected 'kmeans' or 'spectral'."
             )
         return {nid: int(lbl) for nid, lbl in zip(self.item_ids, labels)}
+
+    def normalize(self, inplace: bool = False) -> "EmbeddingResult":
+        """L2-normalize all vectors."""
+        norms = np.linalg.norm(self.matrix, axis=1, keepdims=True)
+        normalized = self.matrix / np.maximum(norms, 1e-12)
+        if inplace:
+            self.matrix = np.ascontiguousarray(normalized, dtype=np.float32)
+            self._vector_index = None
+            self._vector_index_backend = None
+            return self
+        return EmbeddingResult(
+            matrix=normalized,
+            item_ids=self.item_ids,
+            method=self.method,
+            meta=dict(self.meta),
+        )
+
+    def reduce(self, method: str = "pca", dim: int = 2, **kwargs: Any) -> "EmbeddingResult":
+        """Reduce vectors to lower dimension."""
+        method = method.lower()
+        if method == "pca":
+            from sklearn.decomposition import PCA
+
+            reducer = PCA(n_components=dim, random_state=kwargs.get("seed", 0))
+            reduced = reducer.fit_transform(self.matrix)
+        elif method == "umap":
+            try:
+                import umap  # type: ignore
+            except ImportError as exc:
+                raise ImportError(
+                    "UMAP reduction requires `umap-learn` to be installed."
+                ) from exc
+            reducer = umap.UMAP(
+                n_components=dim,
+                random_state=kwargs.get("seed", 0),
+            )
+            reduced = reducer.fit_transform(self.matrix)
+        else:
+            raise ValueError(
+                f"Unknown reduction method '{method}'. Expected 'pca' or 'umap'."
+            )
+        meta = dict(self.meta)
+        meta["reduction"] = {"method": method, "dim": int(dim)}
+        return EmbeddingResult(
+            matrix=np.asarray(reduced, dtype=np.float32),
+            item_ids=self.item_ids,
+            method=self.method,
+            meta=meta,
+        )
+
+    def build_index(self, method: str = "hnsw", **kwargs: Any) -> "EmbeddingResult":
+        """Build optional ANN index for faster KNN lookup."""
+        method_key = method.lower()
+        self._vector_index = None
+        self._vector_index_backend = None
+        if method_key in {"hnsw", "hnswlib"}:
+            try:
+                import hnswlib  # type: ignore
+
+                index = hnswlib.Index(space="cosine", dim=self.dim)
+                index.init_index(
+                    max_elements=self.n_items,
+                    ef_construction=int(kwargs.get("ef_construction", 200)),
+                    M=int(kwargs.get("M", 16)),
+                )
+                index.add_items(self.matrix, np.arange(self.n_items))
+                index.set_ef(max(int(kwargs.get("ef", 50)), int(kwargs.get("k", 10)) + 1))
+                self._vector_index = index
+                self._vector_index_backend = "hnswlib"
+                return self
+            except Exception as exc:
+                logger.debug(
+                    "hnswlib backend unavailable; falling back to other index backends: %s",
+                    exc,
+                )
+        if method_key == "annoy":
+            try:
+                from annoy import AnnoyIndex  # type: ignore
+
+                metric = kwargs.get("metric", "angular")
+                index = AnnoyIndex(self.dim, metric)
+                for i, vec in enumerate(self.matrix):
+                    index.add_item(i, vec.tolist())
+                index.build(int(kwargs.get("n_trees", 10)))
+                self._vector_index = index
+                self._vector_index_backend = "annoy"
+                return self
+            except Exception as exc:
+                logger.debug(
+                    "annoy backend unavailable; falling back to other index backends: %s",
+                    exc,
+                )
+        if method_key == "faiss":
+            try:
+                import faiss  # type: ignore
+
+                index = faiss.IndexFlatIP(self.dim)
+                normalized = self.matrix / np.maximum(
+                    np.linalg.norm(self.matrix, axis=1, keepdims=True), 1e-12
+                )
+                index.add(normalized.astype(np.float32))
+                self._vector_index = index
+                self._vector_index_backend = "faiss"
+                return self
+            except Exception as exc:
+                logger.debug(
+                    "faiss backend unavailable; falling back to other index backends: %s",
+                    exc,
+                )
+
+        from sklearn.neighbors import NearestNeighbors
+
+        metric = kwargs.get("metric", "cosine")
+        index = NearestNeighbors(metric=metric)
+        index.fit(self.matrix)
+        self._vector_index = index
+        self._vector_index_backend = "sklearn"
+        return self
+
+    def _knn_from_index(self, node: Any, k: int, metric: str) -> Optional[List[tuple]]:
+        """Attempt index-backed knn lookup."""
+        if self._vector_index_backend is None:
+            return None
+        q = self.get_embedding(node)
+        n_candidates = max(int(k), 0) + 1
+        if self._vector_index_backend == "hnswlib":
+            labels, distances = self._vector_index.knn_query(q, k=n_candidates)
+            results: List[tuple] = []
+            for idx, dist in zip(labels[0], distances[0]):
+                item = self.item_ids[int(idx)]
+                if item == node:
+                    continue
+                score = float(1.0 - dist) if metric == "cosine" else float(dist)
+                results.append((item, score))
+            return results[: max(int(k), 0)]
+        if self._vector_index_backend == "annoy":
+            idxs, dists = self._vector_index.get_nns_by_vector(
+                q.tolist(), n_candidates, include_distances=True
+            )
+            results = []
+            for idx, dist in zip(idxs, dists):
+                item = self.item_ids[int(idx)]
+                if item == node:
+                    continue
+                results.append((item, float(dist)))
+            return results[: max(int(k), 0)]
+        if self._vector_index_backend == "faiss":
+            qn = q / max(float(np.linalg.norm(q)), 1e-12)
+            sims, idxs = self._vector_index.search(qn.reshape(1, -1), n_candidates)
+            results = []
+            for idx, sim in zip(idxs[0], sims[0]):
+                if idx < 0:
+                    continue
+                item = self.item_ids[int(idx)]
+                if item == node:
+                    continue
+                results.append((item, float(sim)))
+            return results[: max(int(k), 0)]
+        if self._vector_index_backend == "sklearn":
+            distances, idxs = self._vector_index.kneighbors(
+                q.reshape(1, -1), n_neighbors=n_candidates
+            )
+            results = []
+            for idx, dist in zip(idxs[0], distances[0]):
+                item = self.item_ids[int(idx)]
+                if item == node:
+                    continue
+                score = float(1.0 - dist) if metric == "cosine" else float(dist)
+                results.append((item, score))
+            return results[: max(int(k), 0)]
+        return None
 
     def reorder(self, ids: List[Any]) -> "EmbeddingResult":
         id_to_idx = {iid: i for i, iid in enumerate(self.item_ids)}
@@ -294,7 +564,13 @@ class EmbeddingResult:
                 for n, l in zip(data["node"], data["layer"])
             ]
             matrix = np.array(data["embedding"], dtype=np.float32)
-            return cls(matrix=matrix, item_ids=item_ids, method="loaded", meta={})
+            methods = data.get("method") or []
+            timestamps = data.get("timestamp") or []
+            method = str(methods[0]) if methods else "loaded"
+            meta: Dict[str, Any] = {}
+            if timestamps:
+                meta["creation_time"] = timestamps[0]
+            return cls(matrix=matrix, item_ids=item_ids, method=method, meta=meta)
         if suffix == ".arrow":
             import pyarrow.ipc as ipc
 
@@ -307,7 +583,13 @@ class EmbeddingResult:
                 for n, l in zip(data["node"], data["layer"])
             ]
             matrix = np.array(data["embedding"], dtype=np.float32)
-            return cls(matrix=matrix, item_ids=item_ids, method="loaded", meta={})
+            methods = data.get("method") or []
+            timestamps = data.get("timestamp") or []
+            method = str(methods[0]) if methods else "loaded"
+            meta = {}
+            if timestamps:
+                meta["creation_time"] = timestamps[0]
+            return cls(matrix=matrix, item_ids=item_ids, method=method, meta=meta)
         if suffix == ".npy":
             payload = np.load(str(src), allow_pickle=True).item()
             matrix = np.asarray(payload.get("matrix"), dtype=np.float32)
@@ -337,6 +619,88 @@ class EmbeddingResult:
         raise ValueError(
             f"Unsupported embedding format '{suffix}'. Expected parquet, arrow, or npz/npy."
         )
+
+    def flatten_nodes(self) -> List[Any]:
+        """Return base node identifiers without layer information."""
+        nodes: List[Any] = []
+        for item in self.item_ids:
+            if isinstance(item, tuple) and len(item) == 2:
+                nodes.append(item[0])
+            else:
+                nodes.append(item)
+        return nodes
+
+    def expand_layers(self) -> List[tuple]:
+        """Return identifiers in canonical ``(node, layer)`` form."""
+        expanded: List[tuple] = []
+        for item in self.item_ids:
+            if isinstance(item, tuple) and len(item) == 2:
+                expanded.append(item)
+            else:
+                expanded.append((item, None))
+        return expanded
+
+    def group_by_node(self) -> Dict[Any, List[Any]]:
+        """Group identifiers by base node id."""
+        grouped: Dict[Any, List[Any]] = {}
+        for item in self.item_ids:
+            node = item[0] if isinstance(item, tuple) and len(item) == 2 else item
+            grouped.setdefault(node, []).append(item)
+        return grouped
+
+    def group_by_layer(self) -> Dict[Any, List[Any]]:
+        """Group identifiers by layer id."""
+        grouped: Dict[Any, List[Any]] = {}
+        for item in self.item_ids:
+            layer = item[1] if isinstance(item, tuple) and len(item) == 2 else None
+            grouped.setdefault(layer, []).append(item)
+        return grouped
+
+    def validate(self, network: Optional[Any] = None) -> Dict[str, bool]:
+        """Validate embedding consistency checks."""
+        dimension_consistency = (
+            self.matrix.ndim == 2
+            and self.matrix.shape[1] > 0
+            and self.matrix.shape[0] == len(self.item_ids)
+        )
+        if network is None:
+            node_count_match = True
+        else:
+            if hasattr(network, "core_network"):
+                node_count_match = len(self.item_ids) == len(network.core_network.nodes())
+            elif hasattr(network, "get_nodes"):
+                node_count_match = len(self.item_ids) == sum(1 for _ in network.get_nodes())
+            else:
+                node_count_match = False
+        layer_alignment = all(
+            not isinstance(item, tuple) or len(item) == 2 for item in self.item_ids
+        )
+        return {
+            "dimension_consistency": bool(dimension_consistency),
+            "node_count_match": bool(node_count_match),
+            "layer_alignment": bool(layer_alignment),
+        }
+
+    def info(self) -> Dict[str, Any]:
+        """Return structured provenance metadata."""
+        return {
+            "method": self.method,
+            "dimension": int(self.dim),
+            "n_items": int(self.n_items),
+            "metadata": dict(self.meta),
+        }
+
+    def reproduce(self, network: Any) -> "EmbeddingResult":
+        """Replay embedding computation from stored metadata."""
+        params = dict(self.meta.get("parameters", {}))
+        if not params:
+            raise ValueError(
+                "Embedding metadata does not contain reproduction parameters."
+            )
+        method = params.pop("method", self.method)
+        if not hasattr(network, "embed"):
+            raise AttributeError("Network does not provide an embed() method.")
+        return network.embed(method=method, **params)
 
 
 @runtime_checkable
