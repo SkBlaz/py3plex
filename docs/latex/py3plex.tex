@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Mar 13, 2026}
+\date{Mar 18, 2026}
 \release{1.1.4}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -30599,6 +30599,58 @@ fill\_tmp\_with\_edges: Add these edges to layer graphs
 
 \end{fulllineitems}\end{savenotes}
 
+\index{embed() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{embed()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.core.multinet.multi_layer_network.embed}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{embed}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}node2vec\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{40}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{context\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{workers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{4}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ Any}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Learn node embeddings as a first\sphinxhyphen{}class ML primitive.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{method}} \textendash{} Embedding backend name.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{dimensions}} \textendash{} Embedding dimensionality.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{walk\_length}} \textendash{} Random\sphinxhyphen{}walk length for walk\sphinxhyphen{}based models.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{num\_walks}} \textendash{} Number of walks per node for walk\sphinxhyphen{}based models.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{context\_size}} \textendash{} Skipgram context window.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{workers}} \textendash{} Number of workers (reserved for backend implementations).
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{**kwargs}} \textendash{} Method\sphinxhyphen{}specific parameters.
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+EmbeddingResult aligned with \sphinxcode{\sphinxupquote{self.get\_nodes()}}.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 \index{execute\_query() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{execute\_query()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}}
 
 \begin{savenotes}\begin{fulllineitems}
@@ -52171,7 +52223,7 @@ Self for chaining
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{embed}}}
-{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}netmf\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dim}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multilayer}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}supra\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{approx}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}randomized\_svd\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{gamma}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{backend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}auto\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{cache}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{cache\_namespace}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}dsl\_embeddings\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{link\_op}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{metapaths}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{80}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}netmf\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dim}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multilayer}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}supra\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{approx}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}randomized\_svd\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{gamma}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{backend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}auto\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{cache}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{cache\_namespace}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}dsl\_embeddings\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{link\_op}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{metapaths}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{80}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{p}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{q}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{workers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{order}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -52190,6 +52242,10 @@ so that it operates on the induced subgraph of the selected items.
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{dim}} \textendash{} Embedding dimensionality.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{dimensions}} \textendash{} Optional alias for \sphinxcode{\sphinxupquote{dim}}.
 
 \item {} 
 \sphinxAtStartPar
