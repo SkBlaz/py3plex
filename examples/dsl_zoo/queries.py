@@ -1,4 +1,4 @@
-"""Legacy query zoo implementations used by tests and docs."""
+"""Canonical DSL query zoo implementations used by examples, tests, and documentation."""
 
 from __future__ import annotations
 

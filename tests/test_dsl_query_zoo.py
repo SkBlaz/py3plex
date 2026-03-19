@@ -12,13 +12,13 @@ import pytest
 import pandas as pd
 import numpy as np
 
-from examples.dsl_query_zoo.datasets import (
+from examples.dsl_zoo.datasets import (
     create_social_work_network,
     create_communication_network,
     create_transport_network,
     get_dataset,
 )
-from examples.dsl_query_zoo.queries import (
+from examples.dsl_zoo.queries import (
     query_basic_exploration,
     query_cross_layer_hubs,
     query_layer_similarity,

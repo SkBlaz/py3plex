@@ -45,15 +45,15 @@ The Query Zoo is organized around common multilayer analysis tasks:
 12. **Bootstrap Confidence Intervals** — Estimate uncertainty in centrality measures
 13. **Uncertainty-Aware Ranking** — Rank nodes considering variability across layers
 
-All examples use small, reproducible multilayer networks from the ``examples/dsl_query_zoo/datasets.py`` module with fixed seeds so you can match the outputs shown here.
+All examples use small, reproducible multilayer networks from the ``examples/dsl_zoo/datasets.py`` module with fixed seeds so you can match the outputs shown here.
 
 .. tip::
    **Running the Examples**
    
-   All query functions are available in ``examples/dsl_query_zoo/queries.py``. 
-   To run all queries and generate outputs::
+   All query functions are available in ``examples/dsl_zoo/queries.py``. 
+   To run the query zoo tests and generate validated outputs::
    
-       python examples/dsl_query_zoo/run_all.py
+       pytest tests/test_dsl_query_zoo.py -q
    
    Test the queries with::
    
@@ -71,7 +71,7 @@ All examples use small, reproducible multilayer networks from the ``examples/dsl
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_basic_exploration
    :language: python
 
@@ -122,7 +122,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_cross_layer_hubs
    :language: python
 
@@ -171,7 +171,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_layer_similarity
    :language: python
 
@@ -222,7 +222,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_community_structure
    :language: python
 
@@ -269,7 +269,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_multiplex_pagerank
    :language: python
 
@@ -316,7 +316,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_robustness_analysis
    :language: python
 
@@ -369,7 +369,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_advanced_centrality_comparison
    :language: python
 
@@ -415,7 +415,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_edge_grouping_and_coverage
    :language: python
 
@@ -489,7 +489,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_layer_algebra_filtering
    :language: python
 
@@ -536,7 +536,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_cross_layer_paths_with_algebra
    :language: python
 
@@ -579,7 +579,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_null_model_comparison
    :language: python
 
@@ -634,7 +634,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_bootstrap_confidence_intervals
    :language: python
 
@@ -686,7 +686,7 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_query_zoo/queries.py
+.. literalinclude:: ../../examples/dsl_zoo/queries.py
    :pyobject: query_uncertainty_aware_ranking
    :language: python
 
@@ -756,17 +756,16 @@ Getting Started
 
 2. **Run a single query**::
 
-       from examples.dsl_query_zoo.datasets import create_social_work_network
-       from examples.dsl_query_zoo.queries import query_basic_exploration
+       from examples.dsl_zoo.datasets import create_social_work_network
+       from examples.dsl_zoo.queries import query_basic_exploration
        
        net = create_social_work_network(seed=42)
        result = query_basic_exploration(net)
        print(result)
 
-3. **Run all queries**::
+3. **Run all queries (via tests)**::
 
-       cd examples/dsl_query_zoo
-       python run_all.py
+       pytest tests/test_dsl_query_zoo.py -q
 
 4. **Run tests**::
 
@@ -798,7 +797,7 @@ All queries are designed to work with any ``multi_layer_network`` object. To ada
 
 3. **Extend queries**:
 
-   All query functions are in ``examples/dsl_query_zoo/queries.py``. Copy, modify, and experiment!
+   All query functions are in ``examples/dsl_zoo/queries.py``. Copy, modify, and experiment!
 
 Datasets
 ~~~~~~~~
@@ -838,7 +837,7 @@ Further Reading
 
    Have an interesting multilayer query pattern? **Contribute it to the Query Zoo!**
    
-   1. Add your query function to ``examples/dsl_query_zoo/queries.py``
+   1. Add your query function to ``examples/dsl_zoo/queries.py``
    2. Add tests to ``tests/test_dsl_query_zoo.py``
    3. Update this documentation page
    4. Submit a pull request!

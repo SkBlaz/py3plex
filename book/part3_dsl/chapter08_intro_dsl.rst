@@ -259,7 +259,7 @@ Example:
 Your First Query
 ----------------
 
-Let's build a simple query step-by-step. See the complete examples in ``examples/network_analysis/`` and ``examples/dsl_query_zoo/``.
+Let's build a simple query step-by-step. See the complete examples in ``examples/network_analysis/`` and ``examples/dsl_zoo/``.
 
 **Example 1: Filter by layer**
 
@@ -302,7 +302,7 @@ Let's build a simple query step-by-step. See the complete examples in ``examples
     python examples/network_analysis/example_dsl_advanced.py
     
     # Query Zoo examples
-    python examples/dsl_query_zoo/run_all.py
+    pytest tests/test_dsl_query_zoo.py -q
 
 **Example 2: Filter by degree**
 

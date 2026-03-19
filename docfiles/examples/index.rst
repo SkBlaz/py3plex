@@ -14,7 +14,7 @@ Browse **170+ comprehensive examples** grouped by topic and learning progression
 1. **Start here:** ``getting_started/`` - Basics and 10-minute tutorial
 2. **Load data:** ``io_and_data/`` - I/O and data handling
 3. **Analyze:** ``network_analysis/`` - Statistics and metrics
-4. **Query:** ``dsl_query_zoo/`` - DSL examples collection
+4. **Query:** ``dsl_zoo/`` - DSL examples collection
 5. **Advanced:** ``advanced/``, ``communities/``, ``dynamics/``, ``temporal/``, etc.
 
 To run any example:
@@ -40,7 +40,7 @@ The examples are organized into comprehensive topic-based folders:
     ├── dynamics/              (3 files) - Dynamical processes
     ├── temporal/              (7 files) - Temporal networks
     ├── uncertainty/           (6 files) - Uncertainty quantification
-    ├── dsl_query_zoo/         - DSL query examples collection
+    ├── dsl_zoo/               - DSL query examples collection
     ├── workflows/             (2 files) - Config-driven workflows
     ├── pipelines/             (7 files) - Analysis pipelines
     ├── case_studies/          (4 files) - Real-world applications
