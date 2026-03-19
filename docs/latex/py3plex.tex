@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Mar 18, 2026}
+\date{Mar 19, 2026}
 \release{1.1.4}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -4369,18 +4369,18 @@ The Query Zoo is organized around common multilayer analysis tasks:
 \end{enumerate}
 
 \sphinxAtStartPar
-All examples use small, reproducible multilayer networks from the \sphinxcode{\sphinxupquote{examples/dsl\_query\_zoo/datasets.py}} module with fixed seeds so you can match the outputs shown here.
+All examples use small, reproducible multilayer networks from the \sphinxcode{\sphinxupquote{examples/dsl\_zoo/datasets.py}} module with fixed seeds so you can match the outputs shown here.
 
 \begin{sphinxadmonition}{tip}{Tip:}
 \sphinxAtStartPar
 \sphinxstylestrong{Running the Examples}
 
 \sphinxAtStartPar
-All query functions are available in \sphinxcode{\sphinxupquote{examples/dsl\_query\_zoo/queries.py}}.
-To run all queries and generate outputs:
+All query functions are available in \sphinxcode{\sphinxupquote{examples/dsl\_zoo/queries.py}}.
+To run the query zoo tests and generate validated outputs:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{n}{python} \PYG{n}{examples}\PYG{o}{/}\PYG{n}{dsl\PYGZus{}query\PYGZus{}zoo}\PYG{o}{/}\PYG{n}{run\PYGZus{}all}\PYG{o}{.}\PYG{n}{py}
+\PYG{n}{pytest} \PYG{n}{tests}\PYG{o}{/}\PYG{n}{test\PYGZus{}dsl\PYGZus{}query\PYGZus{}zoo}\PYG{o}{.}\PYG{n}{py} \PYG{o}{\PYGZhy{}}\PYG{n}{q}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -6828,8 +6828,8 @@ Practical decision\sphinxhyphen{}making with uncertainty
 \sphinxstylestrong{Run a single query}:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{examples}\PYG{n+nn}{.}\PYG{n+nn}{dsl\PYGZus{}query\PYGZus{}zoo}\PYG{n+nn}{.}\PYG{n+nn}{datasets}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{create\PYGZus{}social\PYGZus{}work\PYGZus{}network}
-\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{examples}\PYG{n+nn}{.}\PYG{n+nn}{dsl\PYGZus{}query\PYGZus{}zoo}\PYG{n+nn}{.}\PYG{n+nn}{queries}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{query\PYGZus{}basic\PYGZus{}exploration}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{examples}\PYG{n+nn}{.}\PYG{n+nn}{dsl\PYGZus{}zoo}\PYG{n+nn}{.}\PYG{n+nn}{datasets}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{create\PYGZus{}social\PYGZus{}work\PYGZus{}network}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{examples}\PYG{n+nn}{.}\PYG{n+nn}{dsl\PYGZus{}zoo}\PYG{n+nn}{.}\PYG{n+nn}{queries}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{query\PYGZus{}basic\PYGZus{}exploration}
 
 \PYG{n}{net} \PYG{o}{=} \PYG{n}{create\PYGZus{}social\PYGZus{}work\PYGZus{}network}\PYG{p}{(}\PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
 \PYG{n}{result} \PYG{o}{=} \PYG{n}{query\PYGZus{}basic\PYGZus{}exploration}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}
@@ -6838,11 +6838,10 @@ Practical decision\sphinxhyphen{}making with uncertainty
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Run all queries}:
+\sphinxstylestrong{Run all queries (via tests)}:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{n}{cd} \PYG{n}{examples}\PYG{o}{/}\PYG{n}{dsl\PYGZus{}query\PYGZus{}zoo}
-\PYG{n}{python} \PYG{n}{run\PYGZus{}all}\PYG{o}{.}\PYG{n}{py}
+\PYG{n}{pytest} \PYG{n}{tests}\PYG{o}{/}\PYG{n}{test\PYGZus{}dsl\PYGZus{}query\PYGZus{}zoo}\PYG{o}{.}\PYG{n}{py} \PYG{o}{\PYGZhy{}}\PYG{n}{q}
 \end{sphinxVerbatim}
 
 \item {} 
@@ -6900,7 +6899,7 @@ Centrality thresholds — Adjust percentile cutoffs as needed
 \sphinxstylestrong{Extend queries}:
 
 \sphinxAtStartPar
-All query functions are in \sphinxcode{\sphinxupquote{examples/dsl\_query\_zoo/queries.py}}. Copy, modify, and experiment!
+All query functions are in \sphinxcode{\sphinxupquote{examples/dsl\_zoo/queries.py}}. Copy, modify, and experiment!
 
 \end{enumerate}
 
@@ -6999,7 +6998,7 @@ Have an interesting multilayer query pattern? \sphinxstylestrong{Contribute it t
 \sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
 \item {} 
 \sphinxAtStartPar
-Add your query function to \sphinxcode{\sphinxupquote{examples/dsl\_query\_zoo/queries.py}}
+Add your query function to \sphinxcode{\sphinxupquote{examples/dsl\_zoo/queries.py}}
 
 \item {} 
 \sphinxAtStartPar
@@ -90861,7 +90860,7 @@ Browse \sphinxstylestrong{170+ comprehensive examples} grouped by topic and lear
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Query:} \sphinxcode{\sphinxupquote{dsl\_query\_zoo/}} \sphinxhyphen{} DSL examples collection
+\sphinxstylestrong{Query:} \sphinxcode{\sphinxupquote{dsl\_zoo/}} \sphinxhyphen{} DSL examples collection
 
 \item {} 
 \sphinxAtStartPar
@@ -90893,7 +90892,7 @@ examples/
 ├── dynamics/              (3 files) \PYGZhy{} Dynamical processes
 ├── temporal/              (7 files) \PYGZhy{} Temporal networks
 ├── uncertainty/           (6 files) \PYGZhy{} Uncertainty quantification
-├── dsl\PYGZus{}query\PYGZus{}zoo/         \PYGZhy{} DSL query examples collection
+├── dsl\PYGZus{}zoo/               \PYGZhy{} DSL query examples collection
 ├── workflows/             (2 files) \PYGZhy{} Config\PYGZhy{}driven workflows
 ├── pipelines/             (7 files) \PYGZhy{} Analysis pipelines
 ├── case\PYGZus{}studies/          (4 files) \PYGZhy{} Real\PYGZhy{}world applications

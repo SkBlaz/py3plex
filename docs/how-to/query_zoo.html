@@ -401,13 +401,13 @@ for your own analyses.</p>
 <li><p><strong>Bootstrap Confidence Intervals</strong> — Estimate uncertainty in centrality measures</p></li>
 <li><p><strong>Uncertainty-Aware Ranking</strong> — Rank nodes considering variability across layers</p></li>
 </ol>
-<p>All examples use small, reproducible multilayer networks from the <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/datasets.py</span></code> module with fixed seeds so you can match the outputs shown here.</p>
+<p>All examples use small, reproducible multilayer networks from the <code class="docutils literal notranslate"><span class="pre">examples/dsl_zoo/datasets.py</span></code> module with fixed seeds so you can match the outputs shown here.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p><strong>Running the Examples</strong></p>
-<p>All query functions are available in <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/queries.py</span></code>.
-To run all queries and generate outputs:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">examples</span><span class="o">/</span><span class="n">dsl_query_zoo</span><span class="o">/</span><span class="n">run_all</span><span class="o">.</span><span class="n">py</span>
+<p>All query functions are available in <code class="docutils literal notranslate"><span class="pre">examples/dsl_zoo/queries.py</span></code>.
+To run the query zoo tests and generate validated outputs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_dsl_query_zoo</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">q</span>
 </pre></div>
 </div>
 <p>Test the queries with:</p>
@@ -1711,8 +1711,8 @@ typically use 100-1000 samples for more robust statistics.</p>
 </div>
 </li>
 <li><p><strong>Run a single query</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">examples.dsl_query_zoo.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_social_work_network</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">examples.dsl_query_zoo.queries</span><span class="w"> </span><span class="kn">import</span> <span class="n">query_basic_exploration</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">examples.dsl_zoo.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_social_work_network</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">examples.dsl_zoo.queries</span><span class="w"> </span><span class="kn">import</span> <span class="n">query_basic_exploration</span>
 
 <span class="n">net</span> <span class="o">=</span> <span class="n">create_social_work_network</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">query_basic_exploration</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
@@ -1720,9 +1720,8 @@ typically use 100-1000 samples for more robust statistics.</p>
 </pre></div>
 </div>
 </li>
-<li><p><strong>Run all queries</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">examples</span><span class="o">/</span><span class="n">dsl_query_zoo</span>
-<span class="n">python</span> <span class="n">run_all</span><span class="o">.</span><span class="n">py</span>
+<li><p><strong>Run all queries (via tests)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="n">tests</span><span class="o">/</span><span class="n">test_dsl_query_zoo</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">q</span>
 </pre></div>
 </div>
 </li>
@@ -1757,7 +1756,7 @@ typically use 100-1000 samples for more robust statistics.</p>
 </ul>
 </li>
 <li><p><strong>Extend queries</strong>:</p>
-<p>All query functions are in <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/queries.py</span></code>. Copy, modify, and experiment!</p>
+<p>All query functions are in <code class="docutils literal notranslate"><span class="pre">examples/dsl_zoo/queries.py</span></code>. Copy, modify, and experiment!</p>
 </li>
 </ol>
 </section>
@@ -1802,7 +1801,7 @@ typically use 100-1000 samples for more robust statistics.</p>
 <p class="admonition-title">Contributing Queries</p>
 <p>Have an interesting multilayer query pattern? <strong>Contribute it to the Query Zoo!</strong></p>
 <ol class="arabic simple">
-<li><p>Add your query function to <code class="docutils literal notranslate"><span class="pre">examples/dsl_query_zoo/queries.py</span></code></p></li>
+<li><p>Add your query function to <code class="docutils literal notranslate"><span class="pre">examples/dsl_zoo/queries.py</span></code></p></li>
 <li><p>Add tests to <code class="docutils literal notranslate"><span class="pre">tests/test_dsl_query_zoo.py</span></code></p></li>
 <li><p>Update this documentation page</p></li>
 <li><p>Submit a pull request!</p></li>
