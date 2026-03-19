@@ -1,1 +1,1 @@
-"""Legacy DSL Query Zoo helpers kept for test and example compatibility."""
+"""Canonical DSL query zoo helpers used by examples, tests, and documentation."""

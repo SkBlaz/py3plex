@@ -1,4 +1,4 @@
-"""Toy datasets for the legacy DSL query zoo examples."""
+"""Toy datasets for DSL query zoo examples."""
 
 from __future__ import annotations
 

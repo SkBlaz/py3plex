@@ -27,6 +27,7 @@ def test_docs_updated_to_consolidated_folder():
     ]
 
     for file_path in files:
+        assert file_path.is_file(), f"Expected documentation file missing: {file_path}"
         content = file_path.read_text(encoding="utf-8")
         assert "examples/dsl_query_zoo" not in content
         assert "dsl_query_zoo/" not in content
