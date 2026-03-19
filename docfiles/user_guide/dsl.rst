@@ -2932,9 +2932,7 @@ Query Algebra provides:
 
 For more examples, see:
 
-- ``examples/dsl_query_zoo/query_algebra_basic.py``
-- ``examples/dsl_query_zoo/query_algebra_uncertainty.py``
-- ``examples/dsl_query_zoo/query_algebra_verification.py``
+- ``examples/dsl_zoo/``
 
 Semiring Algebra (S builder)
 -----------------------------
