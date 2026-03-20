@@ -153,7 +153,7 @@ Security Considerations
 * Multi-tenant environments
 * Sensitive data processing
 
-If you need Docker, reverse proxy configuration, or controlled-network deployment guidance, use Appendix B. Keep this chapter focused on local exploratory use.
+For Docker, reverse proxy configuration, or controlled-network deployment guidance, see Appendix B.
 
 Scalability Limits
 ~~~~~~~~~~~~~~~~~~

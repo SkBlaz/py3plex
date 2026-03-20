@@ -179,11 +179,11 @@ This chapter is presented as a **workflow template** rather than a completed emp
 4. Parameterized DSL query patterns for comparative runs
 5. A roadmap for geospatial extension once coordinate data is available
 
-To turn this into a completed case study, add a documented dataset source, fixed preprocessing scripts, pinned environment metadata, and reproducible result artifacts.
+Readers adapting this template to their own dataset should add a documented data source, fixed preprocessing scripts, pinned environment metadata, and reproducible result artifacts before treating conclusions as empirical findings.
 
 **Relevant resources:**
 
 * GTFS (General Transit Feed Specification) for public transit data
 * OpenStreetMap for walking/cycling networks
 * ``examples/dsl_zoo/`` for DSL patterns
-* ``examples/io_and_data/`` for network building and data loading patterns
+* ``examples/network_analysis/`` for network building and data loading patterns

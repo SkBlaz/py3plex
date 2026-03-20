@@ -27,7 +27,7 @@ Features with strong backward-compatibility guarantees:
 * **Join operations** — ``.join(right, on=..., how=...)`` with documented join types
 * **Graph pattern matching** — ``Q.pattern()`` for motif-style matching
 
-**Scope statement:** These APIs are intended to remain stable for the workflows described here; verify behavior against your pinned version when reproducing prior analyses.
+**Scope statement:** For the documented workflows, these APIs are expected to remain backward compatible within 1.x releases, with deprecation notice before incompatible changes.
 
 Interface Selection Guide (Core vs Alternatives)
 -------------------------------------------------
