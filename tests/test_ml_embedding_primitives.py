@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import numpy as np
+import pytest
 
 from py3plex.core.multinet import multi_layer_network
 from py3plex.dsl import Q
@@ -133,7 +134,6 @@ def test_dsl_embed_integration_dimensions_alias():
 
 
 def test_dsl_embed_edges_link_op_recorded_in_spec():
-    net = _toy_network()
     builder = (
         Q.edges()
         .embed(
@@ -145,7 +145,7 @@ def test_dsl_embed_edges_link_op_recorded_in_spec():
             seed=42,
         )
     )
-    spec = builder._select.embedding_spec
+    spec = builder.to_ast().select.embedding_spec
     assert spec is not None
     assert spec.link_op == "l1"
     assert spec.dim == 8
@@ -154,11 +154,10 @@ def test_dsl_embed_edges_link_op_recorded_in_spec():
 def test_dsl_embed_to_numpy_invalid_kind_raises():
     net = _toy_network()
     result = Q.nodes().embed("node2vec", dim=8, walk_length=8, num_walks=2, seed=42).execute(net)
-    try:
+    with pytest.raises(
+        ValueError, match="Currently only 'embedding' is supported"
+    ):
         result.to_numpy("not-supported")
-        assert False, "Expected ValueError for unsupported kind"
-    except ValueError as exc:
-        assert "Unsupported kind" in str(exc)
 
 
 def test_dsl_embed_to_pandas_expand_embeddings_prefix():
