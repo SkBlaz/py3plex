@@ -489,7 +489,48 @@ Combined node ranking and classification utilities.
 Embeddings and Wrappers
 -----------------------
 
-Utilities for training embeddings and wrapper scripts.
+Embedding primitives and wrapper scripts for training node representations.
+
+Core Embedding APIs
+~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: py3plex.ml.embedding.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.ml.embedding.trainer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.ml.embedding.node2vec
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.ml.embedding.deepwalk
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.ml.embedding.netmf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.ml.embedding.line
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.ml.embedding.metapath2vec
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Wrapper Entry Points
+~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: py3plex.wrappers.train_node2vec_embedding
    :members:
