@@ -154,10 +154,10 @@ class TestPedagogicalErrorMessages:
     
     def test_error_includes_corrected_example(self, sample_network):
         """Test that errors include corrected query examples."""
-        # This is implementation-dependent
-        # Just verify errors are informative
+        # Builder where() autocompute semantics may yield empty result instead of error.
+        # Use compute() with an intentionally invalid metric to exercise pedagogical error text.
         try:
-            Q.nodes().where(nonexistent_field__gt=5).execute(sample_network)
+            Q.nodes().compute("invalid_measure").execute(sample_network)
             pytest.fail("Should have raised error")
         except Exception as e:
             error_msg = str(e)

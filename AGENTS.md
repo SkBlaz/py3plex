@@ -539,7 +539,7 @@ DSL v2 MUST satisfy the following design requirements:
 - `sensitivity_result`: `Optional[SensitivityResult]` - Sensitivity analysis results if requested
 
 **Export Methods**:
-- `to_pandas(expand_uncertainty=False, ci_level=0.95, expand_explanations=False)` -> `pd.DataFrame`
+- `to_pandas(expand_uncertainty=False, expand_explanations=False)` -> `pd.DataFrame`
 - `to_networkx()` -> `nx.Graph` or `nx.MultiGraph`
 - `to_arrow()` -> `pa.Table`
 - `to_json()` -> `str` (JSON string)
@@ -2152,7 +2152,7 @@ All UQ results MUST be dictionaries with the following structure:
 
 #### 10.4 UQ in DataFrame Export
 
-When calling `to_pandas(expand_uncertainty=True, ci_level=0.95)`:
+When calling `to_pandas(expand_uncertainty=True)`:
 - Each UQ column MUST expand to multiple columns:
   - `{col}`: Point estimate (mean)
   - `{col}_std`: Standard deviation
@@ -2582,11 +2582,10 @@ Temporal queries MUST work with `TemporalMultiLayerNetwork` instances that suppo
 
 #### 12.2 Export Methods
 
-##### `to_pandas(expand_uncertainty=False, ci_level=0.95, expand_explanations=False) -> pd.DataFrame`
+##### `to_pandas(expand_uncertainty=False, expand_explanations=False) -> pd.DataFrame`
 
 **Parameters**:
 - `expand_uncertainty` (bool, default=False): Expand UQ results to multiple columns
-- `ci_level` (float, default=0.95): Confidence interval level for expansion
 - `expand_explanations` (bool, default=False): Expand explanation dicts to columns
 
 **Behavior**:
@@ -2937,7 +2936,7 @@ result = (
 # }
 
 # Export to DataFrame with expanded columns
-df = result.to_pandas(expand_uncertainty=True, ci_level=0.95)
+df = result.to_pandas(expand_uncertainty=True)
 # Columns: node, layer, betweenness_centrality, betweenness_centrality_std,
 #          betweenness_centrality_ci95_low, betweenness_centrality_ci95_high,
 #          betweenness_centrality_ci95_width
@@ -8683,7 +8682,7 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 ### Test Organization
 
 **Test Suite Statistics**:
-- **Total test files**: 538 test_*.py files (552 total Python files in tests/)
+- **Total test files**: 539 test_*.py files (553 total Python files in tests/)
 - **DSL test files**: 76 files covering DSL v2, legacy DSL, and related features
 - **Verification test files**: 10 files with formal correctness guarantees
 - **Property-based test files**: 113 files in `tests/property/` using Hypothesis
@@ -8827,7 +8826,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 **Version**: py3plex 1.1.4  
 **Python Support**: 3.8+  
 **Repository Size**: ~171K lines of code  
-**Test Coverage**: 8,942 tests across 538 test files (~14.7% statement coverage)  
+**Test Coverage**: 8,942 tests across 539 test files (~14.7% statement coverage)  
 **Key Modules**: 459 Python files across core, algorithms, DSL, and utilities  
 
 ### Major Subsystems
@@ -8911,7 +8910,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 ### Test Infrastructure
 
 **Test Organization**:
-- **538 test files** with **8,942 individual tests**
+- **539 test files** with **8,942 individual tests**
 - **83+ verification tests** across specialized modules (provenance, differential, metamorphic, determinism) — 10 files in `tests/verification/`
 - **210+ new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization, UQ propagation)
 - **113 property-based test files** using Hypothesis in `tests/property/`
@@ -9427,7 +9426,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 ### Test Suite
 
-**Test Files** (538 files, 8,942 tests):
+**Test Files** (539 files, 8,942 tests):
 
 **DSL Tests**:
 - `tests/test_dsl_v2.py` - DSL v2 core functionality
@@ -10052,7 +10051,7 @@ All successful tool responses include:
     "ok": true,
     "tool": "tool_name",
     "version": {
-      "py3plex": "1.1.2",
+      "py3plex": "1.1.4",
       "mcp_server": "1.0.0"
     },
     "timestamp": 1673456789.123,
@@ -10659,10 +10658,10 @@ Recommended areas for future test coverage:
 
 **Embedding Primitive Update** (March 2026): Added first-class embedding API under `py3plex/ml/embedding/` (BaseEmbedding, Node2Vec, DeepWalk, NetMF, LINE, MetaPath2Vec, multiplex variants, trainer/utilities, similarity/evaluation helpers), unified `multi_layer_network.embed(...)` entry point, graph_ops `.embed(...)`, DSL embedding method compatibility, and pipeline `NodeEmbedding` step.
 
-**v1.2 Update** (March 2026): Repository expanded with 8 new infrastructure packages (`algebra`, `embeddings`, `experiments`, `meta`, `optimizer`, `out_of_core`, `runtime`, `centrality`) and major DSL subsystem additions (`dsl/lint/`, `dsl/program/`, `dsl/executors/`). Test suite grown to 8,942 tests across 538 test files. Property-based test suite stable at 113 files; added `test_io_metamorphic_roundtrip.py`, `test_meta_properties.py`, `test_versatility_metamorphic.py` to property suite. Embeddings now include MetaPath2Vec (`py3plex/embeddings/metapath2vec.py`) with dedicated coverage in `tests/test_metapath2vec.py`, and examples include `examples/advanced/example_metapath2vec.py`. Total of 267 example scripts, 459 Python modules in py3plex, ~171K LOC.
+**v1.2 Update** (March 2026): Repository expanded with 8 new infrastructure packages (`algebra`, `embeddings`, `experiments`, `meta`, `optimizer`, `out_of_core`, `runtime`, `centrality`) and major DSL subsystem additions (`dsl/lint/`, `dsl/program/`, `dsl/executors/`). Test suite grown to 8,942 tests across 539 test files. Property-based test suite stable at 113 files; added `test_io_metamorphic_roundtrip.py`, `test_meta_properties.py`, `test_versatility_metamorphic.py` to property suite. Embeddings now include MetaPath2Vec (`py3plex/embeddings/metapath2vec.py`) with dedicated coverage in `tests/test_metapath2vec.py`, and examples include `examples/advanced/example_metapath2vec.py`. Total of 267 example scripts, 459 Python modules in py3plex, ~171K LOC.
 
 **v1.1.3 Update** (February 2026): Repository state documentation updated to reflect current statistics: 8,000+ tests across 537 test files (~14.7% coverage), 446 Python modules in py3plex, ~168K total lines of code, and 264 example scripts. Property-based test suite significantly expanded from 13 to 113 files. Test coverage maintained at ~14.7% through ongoing test improvements. Version 1.1.3 includes continued enhancements to the comprehensive AI agent documentation (AGENTS.md).
 
 **v1.1+ UQ Propagation Update** (January 2026): Implemented first-class uncertainty propagation semantics with `mode="propagate"` option in `.uq()`. This enables quantification of selection stability (p_present, p_selected, rank_uq) when queries include filtering, ordering, and selection operations. The propagate mode executes the full query end-to-end per replicate, capturing how uncertain metric values affect which items appear in final results. Aggregation now uses UQAlgebra to preserve uncertainty through grouping operations instead of silently dropping it. All changes are backward compatible (default mode="summarize_only"). New test module: tests/test_dsl_uq_propagation.py (7 deterministic tests).
 
-**March 2026 Statistics Update**: AGENTS.md refreshed with verified repository counts — 538 test files (552 total Python files in tests/), 8,942 individual tests, 113 property-based test files, 459 Python modules in py3plex/, 267 example scripts, ~171K lines of code (~14.7% statement coverage).
+**March 2026 Statistics Update**: AGENTS.md refreshed with verified repository counts — 539 test files (553 total Python files in tests/), 8,942 individual tests, 113 property-based test files, 459 Python modules in py3plex/, 267 example scripts, ~171K lines of code (~14.7% statement coverage).
