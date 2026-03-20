@@ -6,6 +6,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 def test_main_docs_index_includes_embeddings_section_entry():
     index_path = REPO_ROOT / "docfiles" / "index.rst"
+    assert index_path.exists()
     content = index_path.read_text(encoding="utf-8")
 
     assert "Part VI: Examples, Recipes & Embeddings" in content
@@ -15,6 +16,7 @@ def test_main_docs_index_includes_embeddings_section_entry():
 
 def test_api_index_documents_core_embedding_modules():
     api_index_path = REPO_ROOT / "docfiles" / "reference" / "api_index.rst"
+    assert api_index_path.exists()
     content = api_index_path.read_text(encoding="utf-8")
 
     expected_modules = [
@@ -28,4 +30,4 @@ def test_api_index_documents_core_embedding_modules():
     ]
 
     for module in expected_modules:
-        assert module in content
+        assert module in content, f"Module {module} not found in API index"
