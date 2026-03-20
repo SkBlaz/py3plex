@@ -51,7 +51,7 @@ Building the Image
     docker build --build-arg PYTHON_VERSION=3.11 -t py3plex:3.11 .
     
     # Build with version tag matching book release
-    docker build -t py3plex:1.1.3 .
+    docker build -t py3plex:1.1.4 .
 
 Running Containers
 ~~~~~~~~~~~~~~~~~~
