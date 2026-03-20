@@ -141,7 +141,7 @@ def test_golden_path_2_uncertainty_aware_centrality(sample_multilayer_network):
     assert "pagerank" in result.attributes
     
     # Get confidence intervals (AGENTS.md example)
-    df = result.to_pandas(expand_uncertainty=True, ci_level=0.95)
+    df = result.to_pandas(expand_uncertainty=True)
     
     # Validate UQ columns exist
     assert len(df) > 0
