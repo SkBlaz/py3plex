@@ -1,7 +1,7 @@
 Appendix B: Docker, Docker Compose, and Deployment
 ==================================================
 
-This appendix provides complete Docker configurations and deployment instructions for py3plex, including the GUI.
+This appendix provides Docker configurations and deployment instructions for py3plex, including controlled-network deployment notes for the GUI.
 
 Dockerfile Reference
 --------------------
@@ -62,10 +62,10 @@ Running Containers
     docker run --rm py3plex:latest --version
     
     # Run analysis script with uv
-    docker run --rm py3plex:latest uv run examples/00_quickstart/01_load_and_query.py
+    docker run --rm py3plex:latest uv run examples/getting_started/01_basic_query.py
     
     # Or using python directly
-    docker run --rm py3plex:latest python examples/00_quickstart/01_load_and_query.py
+    docker run --rm py3plex:latest python examples/getting_started/01_basic_query.py
     
     # Mount data directory
     docker run --rm -v $(pwd)/data:/data py3plex:latest python analysis.py
@@ -83,8 +83,8 @@ Docker Compose
    If you have an older Docker version, you may need to use the legacy ``docker-compose`` command instead.
    The configuration file is always named ``docker-compose.yml`` regardless of which command you use.
 
-GUI Deployment
-~~~~~~~~~~~~~~
+GUI Deployment (Experimental)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
 
@@ -137,14 +137,14 @@ Running with Docker Compose
     docker compose up -d --build
 
 Controlled Environment Deployment
-----------------------------------
+---------------------------------
 
 .. warning::
    
    The GUI is experimental and not designed for public internet deployment.
-   These configurations are provided for deployment in controlled, trusted
-   environments (e.g., internal lab networks, behind VPN). They improve
-   security but do not make the GUI suitable for untrusted public access.
+   The configurations below are for controlled, trusted environments
+   (for example, an internal lab network or VPN). They reduce risk but do not
+   convert the GUI into a public-facing hardened service.
 
 Security Hardening (Trusted Networks Only)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

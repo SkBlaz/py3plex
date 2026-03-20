@@ -3,14 +3,14 @@
 The Py3plex GUI (Overview)
 =======================================
 
-The py3plex GUI is a web-based interface for interactive multilayer network exploration. It provides point-and-click access to py3plex features without requiring programming. **For detailed deployment configurations and production setup, see Appendix B.**
+The py3plex GUI is a web-based interface for interactive multilayer network exploration. It provides point-and-click access to py3plex features without requiring programming. **For detailed deployment configurations, see Appendix B.**
 
 .. admonition:: Status: Experimental
    :class: warning
 
    The py3plex GUI is **experimental** and designed for **local use only**.
-   It is not hardened for public internet deployment. Use for exploration and
-   learning, not production analysis.
+   It is not hardened for public internet deployment. Use it for exploration,
+   demos, and teaching—not as a primary production analysis interface.
 
 What is the Py3plex GUI?
 -------------------------
@@ -24,36 +24,6 @@ The GUI is a FastAPI + SvelteKit web application that provides:
 * **Export results** — Download analysis outputs as CSV/JSON
 
 **Target users:** Researchers learning py3plex, educators demonstrating concepts, non-programmers exploring networks.
-
-Architecture
-------------
-
-Technology Stack
-~~~~~~~~~~~~~~~~
-
-* **Backend:** FastAPI (Python) — Fast, async HTTP server
-* **Frontend:** SvelteKit (JavaScript) — Reactive UI framework
-* **Visualization:** D3.js (static), Plotly (interactive)
-* **API:** RESTful HTTP endpoints for network operations
-* **Storage:** Local filesystem for uploads (no database)
-
-**Component structure:**
-
-.. code-block:: text
-
-    gui/
-    ├── api/              # FastAPI backend
-    │   ├── app.py        # Main server
-    │   ├── routes/       # API endpoints
-    │   └── models/       # Data models
-    ├── frontend/         # SvelteKit app
-    │   ├── src/
-    │   │   ├── routes/   # Pages
-    │   │   └── lib/      # Components
-    │   └── static/       # Assets
-    └── uploads/          # Temporary file storage
-
-**For detailed architecture documentation, see:** ``docfiles/gui/gui_architecture.rst``
 
 Running Locally
 ---------------
@@ -71,33 +41,6 @@ Install py3plex with GUI dependencies:
     # Or from source
     cd py3plex
     pip install -e '.[gui]'
-
-Quickstart with Docker Compose
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The recommended way to run the GUI locally is using Docker Compose:
-
-.. code-block:: bash
-
-    # Navigate to GUI directory
-    cd gui
-    
-    # Start all services (API, frontend, Redis, worker)
-    docker compose up -d
-    
-    # Access the GUI at http://localhost:8080
-    # API available at http://localhost:8000
-    # Flower (task monitor) at http://localhost:5555
-
-**Services started:**
-
-* **API:** FastAPI backend on port 8000 (uvicorn server) - internal
-* **Frontend:** SvelteKit dev server on port 5173 - internal
-* **Nginx:** Reverse proxy on port 8080 - **access GUI here**
-* **Redis:** Task queue backend on port 6379 - internal
-* **Worker:** Celery worker for background tasks - internal
-
-**Access the GUI at http://localhost:8080** - Nginx routes requests to the appropriate backend services.
 
 Manual Development Setup
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -210,7 +153,7 @@ Security Considerations
 * Multi-tenant environments
 * Sensitive data processing
 
-**If you must deploy beyond localhost:** The GUI requires significant security hardening. See Appendix B for technical details on authentication, TLS, and reverse proxy configuration. However, note that even with these measures, the GUI is not designed as a production-grade web service and should only be deployed in controlled, trusted environments.
+If you need Docker, reverse proxy configuration, or controlled-network deployment guidance, use Appendix B. Keep this chapter focused on local exploratory use.
 
 Scalability Limits
 ~~~~~~~~~~~~~~~~~~
@@ -229,7 +172,7 @@ Performance degrades with network size:
 * Export to CSV and analyze programmatically
 
 When to Use the GUI vs CLI
----------------------------
+--------------------------
 
 **Use GUI for:**
 
@@ -246,23 +189,10 @@ When to Use the GUI vs CLI
 * **Performance-critical tasks** — Maximum speed and control
 * **Reproducibility** — Version-controlled scripts
 
-Summary
--------
+Closing Note
+------------
 
-The py3plex GUI provides:
-
-* **Interactive exploration** without requiring programming skills
-* **Visual network rendering** with D3.js and Plotly
-* **Query interface** for executing DSL queries via forms
-* **Pre-built workflows** for common analyses
-* **Local deployment** for individual researchers and small teams
-
-**Key limitations:**
-
-* **Experimental status** — Not production-ready
-* **Security** — Local use only, no public deployment
-* **Performance** — Limited to small/medium networks (<5,000 nodes)
-* **Features** — Advanced capabilities require CLI/library
+Use the GUI as a local exploratory front-end. For reproducible or large-scale workflows, prefer scripts, CLI, and pinned environments.
 
 **For deployment details and security hardening, see Appendix B.**
 **For GUI API reference, see:** ``docfiles/gui/gui_api_reference.rst``

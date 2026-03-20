@@ -3,6 +3,16 @@ Reproducible Environments
 
 Reproducibility is fundamental to scientific computing. This chapter covers practices for creating consistent, reproducible analysis environments using py3plex. **For detailed Docker configurations and deployment recipes, see Appendix B.**
 
+Scope and Verification Boundaries
+---------------------------------
+
+This chapter describes reproducibility practices, not a guarantee that all historical scripts in the repository will run unchanged forever. Reproducibility depends on:
+
+* pinned dependencies,
+* archived input data,
+* explicit random seeds, and
+* preserved execution context (platform, Python version, py3plex version).
+
 Reproducibility Principles
 ---------------------------
 
@@ -302,4 +312,4 @@ Summary
 * See Appendix B for Dockerfile templates and docker-compose configurations
 * See Appendix A for repository structure best practices
 
-**Next chapter:** Overview of the py3plex GUI for visual exploration
+**Next chapter:** Overview of the py3plex GUI for local exploratory workflows

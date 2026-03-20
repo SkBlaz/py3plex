@@ -5,7 +5,7 @@ Case Study 1 — Social Multiplex Network
    :class: note
 
    This case study provides a complete workflow template for social multiplex network 
-   analysis. The structure and code patterns are production-ready and can be adapted 
+   analysis. The structure and code patterns can be adapted
    to your own datasets. Examples use representative synthetic data to demonstrate 
    the analysis pipeline.
 
@@ -251,7 +251,7 @@ Analyze how user importance varies across platforms:
 Step 5: Visualization
 ~~~~~~~~~~~~~~~~~~~~~
 
-Create publication-ready visualizations:
+Create analysis visuals and export draft figures:
 
 .. code-block:: python
 
@@ -338,9 +338,9 @@ This analysis workflow is based on the examples in the repository. To reproduce 
     pip install -e .
     
     # Run relevant examples
-    uv run examples/05_communities/02_multilayer_detection.py
-    uv run examples/03_dsl_v2/03_grouping_aggregation.py
-    uv run examples/06_dynamics/02_multilayer_epidemic.py
+    uv run examples/network_analysis/example_community_detection.py
+    uv run examples/network_analysis/example_dsl_builder_api.py
+    uv run examples/advanced/example_multiplex_dynamics.py
 
 Data Availability
 ~~~~~~~~~~~~~~~~~

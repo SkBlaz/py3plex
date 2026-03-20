@@ -3,7 +3,16 @@
 Visualization and Exploration
 ========================================
 
-Multilayer networks present unique visualization challenges: how do you clearly show multiple relationship types while preserving the overall structure? This chapter covers py3plex's visualization capabilities, from quick exploratory plots to publication-ready figures.
+Multilayer networks present unique visualization challenges: how do you clearly show multiple relationship types while preserving the overall structure? This chapter focuses on practical plotting workflows, with emphasis on interpreting output and adjusting plots for your data.
+
+What You Will Learn
+-------------------
+
+By the end of this chapter, you will be able to:
+
+1. Pick a visualization mode based on network size and analysis goal.
+2. Read visual artifacts critically (layer overlap, occlusion, misleading hubs).
+3. Produce exportable figures and identify where manual styling is still required.
 
 Overview
 --------
@@ -209,6 +218,35 @@ Py3plex provides several color palette options:
 
 **Recommendation:** Use ``colorblind_safe`` or ``wong`` palettes for publications and presentations to ensure accessibility for all viewers, including those with color blindness or other color vision deficiencies.
 
+Output-Driven Workflow
+----------------------
+
+Use the following sequence when generating figures for analysis notes or papers:
+
+1. **Render a baseline figure** with balanced mode.
+2. **Check readability** (label collisions, hidden inter-layer edges, overplotted hubs).
+3. **Adjust one variable at a time** (node size, alpha, labels, layout shape).
+4. **Re-export and compare** before/after versions.
+
+.. code-block:: python
+
+    # 1) Baseline render
+    draw_multilayer_default(network.get_layers(), display=True, labels=True)
+
+    # 2) Export candidate figure
+    draw_multilayer_default(
+        network.get_layers(),
+        node_size=8,
+        labels=False,
+        alphalevel=0.2,
+        background_shape="circle",
+        display=False
+    )
+    import matplotlib.pyplot as plt
+    plt.savefig("figure_candidate.png", dpi=300, bbox_inches="tight")
+
+Treat exported figures as analysis artifacts that usually need dataset-specific styling before publication.
+
 Matrix Visualizations
 ---------------------
 
@@ -298,20 +336,12 @@ Visualization performance depends heavily on network size:
 3. Disable labels: ``labels=False, node_labels=False``
 4. Consider sampling: visualize only high-degree nodes or a random subset
 
-Summary
--------
+Closing Note
+------------
 
-Key visualization capabilities in py3plex:
+Visualization in py3plex is strongest as an exploratory and diagnostic tool. For final publication figures, expect to iterate on styling, annotation, and layout outside the first default render.
 
-* **Three preset modes** (minimal, balanced, dense) for different network scales
-* **Flexible layouts** (circular, rectangular) for different structures
-* **Auto-scaling** features adapt to network properties
-* **Matrix visualizations** show supra-adjacency structure
-* **Layer-specific views** enable detailed exploration
-
-Choose visualization settings based on your network size and purpose. For quick exploration, use defaults. For publications, use dense mode with custom colors and layouts.
-
-**Next chapter:** Core algorithms for multilayer analysis (community detection, centrality, dynamics)
+**Next chapter:** :ref:`algorithms-chapter`
 
 References
 ----------

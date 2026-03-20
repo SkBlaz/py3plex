@@ -56,4 +56,3 @@ Practical Multilayer Network Analysis with Py3plex
    :caption: References
 
    bibliography
-   citation

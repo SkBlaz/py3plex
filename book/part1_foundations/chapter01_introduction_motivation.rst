@@ -99,7 +99,7 @@ A SQL-like DSL (Domain-Specific Language) for expressing complex network analyse
 
 **4. Visualization for Multilayer Networks**
 
-Publication-ready visualizations that show layer structure and cross-layer connections:
+Visualizations that show layer structure and cross-layer connections:
 
 .. code-block:: python
 
@@ -109,7 +109,7 @@ Publication-ready visualizations that show layer structure and cross-layer conne
         layout_style="force_directed_3d"
     )
 
-**5. Production-Ready Infrastructure**
+**5. Research and Development Infrastructure**
 
 * **High-performance I/O** with Arrow/Parquet support for large networks
 * **NetworkX compatibility** for interoperability with the broader Python ecosystem
@@ -195,28 +195,14 @@ How This Book Is Organized
 Each chapter includes:
 
 * **Conceptual explanations** with mathematical foundations where needed
-* **Code examples** that are runnable and tested
+* **Code examples** intended to be runnable in the documented environment
 * **Practical tips** based on real usage patterns
 * **References** for deeper study
 
-Summary
--------
+Closing Perspective
+-------------------
 
-Multilayer networks provide a natural and expressive way to model systems with multiple types of relationships. By preserving the distinct nature of different layers, we can:
-
-* Analyze structure more accurately
-* Compute meaningful centralities and communities
-* Model dynamics more realistically
-* Make better predictions and interventions
-
-**py3plex** makes multilayer network analysis accessible and practical, with a focus on:
-
-* Expressive data structures
-* Specialized algorithms
-* A powerful query language
-* Production-ready tools
-
-The following chapters will show you how to use these capabilities effectively.
+The rest of this book is organized around one practical question: *how do you turn multilayer semantics into defensible analytical decisions?* The next chapters move from definitions to implementation details, with explicit caveats where methods are approximate, data dependent, or computationally expensive.
 
 Further Reading
 ---------------

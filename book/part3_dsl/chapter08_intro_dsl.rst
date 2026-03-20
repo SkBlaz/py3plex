@@ -3,7 +3,7 @@
 Introduction to the Py3plex DSL
 ==========================================
 
-This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like query language for expressing multilayer network analyses concisely. The DSL is a **major first-class feature** that sets py3plex apart from other network libraries.
+This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like query language for expressing multilayer network analyses concisely. The focus here is the core workflow every reader should master before moving to advanced features.
 
 .. admonition:: DSL at a Glance
    :class: dsl-example
@@ -17,7 +17,7 @@ This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like q
        # Simple: Find high-degree nodes
        result = Q.nodes().where(degree__gt=5).execute(network)
 
-       # Powerful: Multilayer analysis with export
+        # Multilayer analysis with export
        result = (
            Q.nodes()
             .from_layers(L["social"] + L["work"])
@@ -31,7 +31,7 @@ This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like q
        # Export to CSV
        result.to_pandas().to_csv("top_influencers.csv", index=False)
 
-   Express complex analyses in a few readable lines!
+    Express common multilayer analyses in readable, composable steps.
 
 Why a DSL for Networks?
 -----------------------
@@ -100,137 +100,9 @@ Py3plex provides two DSL interfaces:
 
 This chapter focuses on the **Builder API (v2)** as it provides a better development experience. The string DSL is covered briefly for reference.
 
-Which Interface When? — The Decision Guide
--------------------------------------------
+.. note::
 
-Py3plex provides **four primary interfaces** for network analysis. This opinionated guide helps you choose the right one for your task.
-
-.. list-table:: Interface Decision Matrix
-   :header-rows: 1
-   :widths: 20 20 30 30
-
-   * - **Interface**
-     - **Best For**
-     - **Use When...**
-     - **Avoid When...**
-   * - **DSL v2 (Q, L, UQ)**
-     - Exploratory analysis, research notebooks, reproducible workflows
-     - • Complex multilayer queries
-       
-       • Need uncertainty quantification
-       
-       • Want provenance tracking
-       
-       • Building reusable query pipelines
-     - • Simple NetworkX operations suffice
-       
-       • Performance-critical loops
-       
-       • Non-multilayer graphs
-   * - **graph_ops (dplyr)**
-     - Data frame–style manipulation, interactive exploration
-     - • Familiar with R's dplyr
-       
-       • Need data frame output
-       
-       • Iterative filtering/mutation
-       
-       • Working with node/edge attributes
-     - • Need multilayer layer algebra
-       
-       • Want uncertainty analysis
-       
-       • Building production pipelines
-   * - **Pipeline API**
-     - Production workflows, benchmarking, ML integration
-     - • Sklearn-style fit/transform needed
-       
-       • Batch processing networks
-       
-       • Comparing algorithms
-       
-       • Building reproducible experiments
-     - • One-off analyses
-       
-       • Interactive exploration
-       
-       • Complex query logic
-   * - **CLI Tool**
-     - Quick analysis, scripting, CI/CD, non-Python users
-     - • No Python coding needed
-       
-       • Shell script integration
-       
-       • Quick statistics/visualization
-       
-       • Testing network files
-     - • Complex custom logic
-       
-       • Interactive workflows
-       
-       • Advanced UQ/provenance
-
-**Typical User Personas:**
-
-* **Research Scientist**: DSL v2 → reproducible queries with UQ and provenance
-* **Data Analyst**: graph_ops → familiar dplyr-style data manipulation
-* **ML Engineer**: Pipeline API → sklearn-compatible workflows
-* **DevOps/Analyst**: CLI → quick stats and visualization in scripts
-
-**Decision Heuristics:**
-
-1. **Start with DSL v2 (Q)** if working with multilayer networks and need any of:
-   
-   - Layer filtering (``L["social"] + L["work"]``)
-   - Uncertainty quantification (``uq()``)
-   - Grouping (``per_layer()``, ``per_layer_pair()``)
-   - Provenance tracking
-
-2. **Use graph_ops** if:
-   
-   - Your workflow is "select → filter → mutate → export to CSV"
-   - You're comfortable with dplyr and want similar ergonomics
-   - You don't need multilayer-specific operations
-
-3. **Use Pipeline API** if:
-   
-   - You're building sklearn-style workflows (``fit/transform``)
-   - Benchmarking multiple algorithms systematically
-   - Need reproducible experiment configs
-
-4. **Use CLI** if:
-   
-   - You're not writing Python code
-   - Scripting quick analyses in bash/shell
-   - Need to process multiple network files
-
-**Common Anti-Patterns:**
-
-* ❌ Using string DSL (v1) for new code → **Use DSL v2 builder API instead**
-* ❌ Using DSL for simple single-layer NetworkX operations → **Use NetworkX directly**
-* ❌ Using graph_ops for multilayer grouping → **Use DSL v2's per_layer() instead**
-* ❌ Building custom sklearn pipelines → **Use Pipeline API's built-in steps**
-
-**Interface Interoperability:**
-
-All interfaces work with the same ``multi_layer_network`` objects:
-
-.. code-block:: python
-
-    from py3plex.core import multinet
-    from py3plex.dsl import Q, L
-    from py3plex.graph_ops import nodes
-    
-    net = multinet.multi_layer_network()
-    # ... load data ...
-    
-    # DSL v2
-    result = Q.nodes().from_layers(L["social"]).execute(net)
-    
-    # graph_ops (on same network)
-    df = nodes(net, layers=["social"]).to_pandas()
-    
-    # Both work on the same network object
+   Interface trade-offs (DSL vs graph_ops vs pipeline vs CLI) are covered in :ref:`limitations-stability-chapter` to keep this chapter focused on core DSL fluency.
 
 Basic Query Structure
 ---------------------
@@ -319,20 +191,20 @@ Let's build a simple query step-by-step. See the complete examples in ``examples
 
 **Example 3: Compute centrality**
 
-See ``examples/02_basic_queries/04_compute_centrality.py``:
+See ``examples/network_analysis/example_dsl_builder_api.py``:
 
 .. code-block:: bash
 
     # Using uv
-    uv run examples/02_basic_queries/04_compute_centrality.py
+    uv run examples/network_analysis/example_dsl_builder_api.py
     
     # Or using python
-    python examples/02_basic_queries/04_compute_centrality.py
+    python examples/network_analysis/example_dsl_builder_api.py
 
 Layer Filtering
 ---------------
 
-The DSL provides powerful layer algebra operations. See ``examples/03_dsl_v2/02_layer_algebra.py`` for complete examples.
+The DSL provides layer algebra operations. See ``examples/network_analysis/example_dsl_layer_algebra.py`` for complete examples.
 
 .. admonition:: DSL Layer Algebra
    :class: dsl-info
@@ -362,10 +234,10 @@ The DSL provides powerful layer algebra operations. See ``examples/03_dsl_v2/02_
 .. code-block:: bash
 
     # Using uv
-    uv run examples/03_dsl_v2/02_layer_algebra.py
+    uv run examples/network_analysis/example_dsl_layer_algebra.py
     
     # Or using python
-    python examples/03_dsl_v2/02_layer_algebra.py
+    python examples/network_analysis/example_dsl_layer_algebra.py
 
 Simple Layer Selection
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -593,7 +465,7 @@ To Pandas
 String DSL Syntax (Reference)
 ------------------------------
 
-For completeness, here's the string DSL syntax. See ``examples/02_basic_queries/01_legacy_string_dsl.py`` for a complete example.
+For completeness, here's the string DSL syntax. See ``examples/network_analysis/example_dsl_queries.py`` for a complete example.
 
 **Basic queries:**
 
@@ -619,10 +491,10 @@ For completeness, here's the string DSL syntax. See ``examples/02_basic_queries/
 .. code-block:: bash
 
     # Using uv
-    uv run examples/02_basic_queries/01_legacy_string_dsl.py
+    uv run examples/network_analysis/example_dsl_queries.py
     
     # Or using python
-    python examples/02_basic_queries/01_legacy_string_dsl.py
+    python examples/network_analysis/example_dsl_queries.py
 
 **Operators:**
 
@@ -732,30 +604,15 @@ Pattern 3: Conditional Export
     )
     result.to_pandas().to_csv("high_degree_nodes.csv", index=False)
 
-Summary
--------
+Closing Note
+------------
 
-This chapter introduced the py3plex DSL:
-
-1. **Motivation** — Declarative queries replace explicit loops
-2. **Builder API** — Python-native with type hints (recommended)
-3. **Query structure** — Target, layers, conditions, measures
-4. **Layer algebra** — Union, difference, intersection operations
-5. **Results** — Iteration, measures, pandas export
-
-**Key takeaways:**
-
-* Use **Builder API** for type safety and autocompletion
-* **Chain methods** to build complex queries incrementally
-* **Layer algebra** enables powerful layer filtering
-* **Compute measures** in a single call instead of manual loops
-
-The next chapter covers the EXPLAIN mode for understanding query execution and performance.
+At this point, you should be able to read and write core DSL queries without guessing their execution intent. The next chapter focuses on explain plans, parameterization, and diagnostic tooling for debugging and reuse.
 
 Further Reading
 ---------------
 
 * The Builder API and Explain Plans (Chapter 9)
 * Advanced Queries and Workflows (Chapter 10)
-* ``examples/02_basic_queries/`` — Basic query examples
-* ``examples/03_dsl_v2/`` — Advanced DSL v2 examples
+* ``examples/dsl_zoo/`` — Focused query patterns
+* ``examples/network_analysis/`` — End-to-end DSL workflows
