@@ -13,6 +13,15 @@ import py3plex as p3
 DEFAULT_SEED = 42
 
 
+def _safe_layer_names(net) -> list:
+    """Return layer names without triggering visualization layout codepaths."""
+    layers = set()
+    for node in net.core_network.nodes():
+        if isinstance(node, tuple) and len(node) >= 2:
+            layers.add(node[1])
+    return sorted(layers)
+
+
 def list_available_datasets() -> None:
     """Print bundled dataset names and descriptions."""
     print("=" * 60)
@@ -32,8 +41,7 @@ def load_real_world() -> None:
     print(f"Network: {net}")
     print(f"Nodes: {len(list(net.get_nodes()))}")
     print(f"Edges: {len(list(net.get_edges()))}")
-    layer_names = net.get_layers()
-    layers = layer_names[0] if isinstance(layer_names, tuple) else layer_names
+    layers = _safe_layer_names(net)
     print(f"Layers ({len(layers)}): {layers}")
     print()
 
@@ -47,8 +55,7 @@ def load_synthetic() -> None:
     print(f"Network: {net}")
     print(f"Nodes: {len(list(net.get_nodes()))}")
     print(f"Edges: {len(list(net.get_edges()))}")
-    layer_names = net.get_layers()
-    layers = layer_names[0] if isinstance(layer_names, tuple) else layer_names
+    layers = _safe_layer_names(net)
     print(f"Layers ({len(layers)}): {layers}")
     print()
 
@@ -81,8 +88,7 @@ def generate_random_examples() -> None:
     print(f"Network: {net}")
     print(f"Nodes: {len(list(net.get_nodes()))}")
     print(f"Edges: {len(list(net.get_edges()))}")
-    layer_names = net.get_layers()
-    layers = layer_names[0] if isinstance(layer_names, tuple) else layer_names
+    layers = _safe_layer_names(net)
     print(f"Layers ({len(layers)}): {layers}")
     print()
 
@@ -93,8 +99,7 @@ def generate_random_examples() -> None:
     print(f"Network: {net}")
     print(f"Nodes: {len(list(net.get_nodes()))}")
     print(f"Edges: {len(list(net.get_edges()))}")
-    layer_names = net.get_layers()
-    layers = layer_names[0] if isinstance(layer_names, tuple) else layer_names
+    layers = _safe_layer_names(net)
     print(f"Layers ({len(layers)}): {layers}")
     print("Layer types: friendship (dense), work (clustered), family (small cliques)")
     print()

@@ -65,6 +65,12 @@ def run_example(example_path: Path, timeout: int = 30) -> Tuple[bool, str, str]:
             'TQDM_DISABLE': '1',
             'PYTHONWARNINGS': 'ignore',
         }
+        existing_pythonpath = env.get("PYTHONPATH", "")
+        env["PYTHONPATH"] = (
+            f"{REPO_ROOT}{subprocess.os.pathsep}{existing_pythonpath}"
+            if existing_pythonpath
+            else str(REPO_ROOT)
+        )
         
         result = subprocess.run(
             [sys.executable, str(example_path)],
@@ -101,6 +107,13 @@ def save_output(example_name: str, stdout: str, stderr: str) -> None:
     if stderr:
         error_file = OUTPUTS_DIR / f"{example_name}.err"
         error_file.write_text(stderr, encoding='utf-8')
+
+
+def save_skipped_output(example_name: str, reason: str) -> None:
+    """Save placeholder output for a skipped example."""
+    OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+    output_file = OUTPUTS_DIR / f"{example_name}.txt"
+    output_file.write_text(f"SKIPPED: {reason}\n", encoding="utf-8")
 
 
 def generate_manifest(results: Dict[str, Dict]) -> None:
@@ -164,10 +177,13 @@ def main():
         skip, skip_reason = should_skip(example_path)
         if skip:
             print(f"Skipping {example_name} ({skip_reason})")
+            save_skipped_output(example_name, skip_reason)
             results[example_name] = {
                 "success": True,
                 "skipped": True,
                 "skip_reason": skip_reason,
+                "output_file": f"{example_name}.txt",
+                "has_stderr": False,
             }
             print()
             continue

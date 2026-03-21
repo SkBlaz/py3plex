@@ -1,0 +1,185 @@
+
+============================================================
+py3plex v1.1+ Ergonomics Features Demonstration
+============================================================
+
+This script demonstrates ergonomics features without
+creating any new markdown documentation files.
+
+============================================================
+Demo 1: Interactive Query Building with .hint()
+============================================================
+
+1. Start with basic node query:
+
+============================================================
+[HINT] Query Builder Hints
+============================================================
+
+[STATE] Current query state:
+  (empty query - start building!)
+
+[TIP] Suggested next steps:
+
+1.   -> .from_layers(L["social"])  # Filter to specific layers
+    Example: L["social"] + L["work"] for multiple layers
+
+2.   -> .where(degree__gt=3)  # Filter nodes/edges by attributes
+    Example: .where(layer="social", degree__gt=5)
+
+3.   -> .compute("degree", "betweenness_centrality")  # Compute metrics
+    Available: degree, betweenness_centrality, pagerank, clustering, ...
+
+4.   -> .execute(network)  # Execute the query and get results
+
+============================================================
+[TIP] Tip: Chain methods together for complex queries!
+   Example: Q.nodes().where(...).compute(...).order_by(...).limit(...).execute(net)
+============================================================
+
+
+2. Add layer selection and check hints:
+
+============================================================
+[HINT] Query Builder Hints
+============================================================
+
+[STATE] Current query state:
+  ✓ Layers selected
+
+[TIP] Suggested next steps:
+
+1.   -> .where(degree__gt=3)  # Filter nodes/edges by attributes
+    Example: .where(layer="social", degree__gt=5)
+
+2.   -> .compute("degree", "betweenness_centrality")  # Compute metrics
+    Available: degree, betweenness_centrality, pagerank, clustering, ...
+
+3.   -> .per_layer()  # Group results by layer for per-layer analysis
+    Then use: .top_k(), .aggregate(), .coverage()
+
+4.   -> .execute(network)  # Execute the query and get results
+
+============================================================
+[TIP] Tip: Chain methods together for complex queries!
+   Example: Q.nodes().where(...).compute(...).order_by(...).limit(...).execute(net)
+============================================================
+
+
+3. Build complete query with hints:
+
+============================================================
+[HINT] Query Builder Hints
+============================================================
+
+[STATE] Current query state:
+  ✓ Layers selected
+
+[TIP] Suggested next steps:
+
+1.   -> .where(degree__gt=3)  # Filter nodes/edges by attributes
+    Example: .where(layer="social", degree__gt=5)
+
+2.   -> .compute("degree", "betweenness_centrality")  # Compute metrics
+    Available: degree, betweenness_centrality, pagerank, clustering, ...
+
+3.   -> .per_layer()  # Group results by layer for per-layer analysis
+    Then use: .top_k(), .aggregate(), .coverage()
+
+4.   -> .execute(network)  # Execute the query and get results
+
+============================================================
+[TIP] Tip: Chain methods together for complex queries!
+   Example: Q.nodes().where(...).compute(...).order_by(...).limit(...).execute(net)
+============================================================
+
+
+============================================================
+[HINT] Query Builder Hints
+============================================================
+
+[STATE] Current query state:
+  ✓ Layers selected
+  ✓ Computing: degree
+
+[TIP] Suggested next steps:
+
+1.   -> .where(degree__gt=3)  # Filter nodes/edges by attributes
+    Example: .where(layer="social", degree__gt=5)
+
+2.   -> .per_layer()  # Group results by layer for per-layer analysis
+    Then use: .top_k(), .aggregate(), .coverage()
+
+3.   -> .uq(method="bootstrap", n_samples=100)  # Add uncertainty quantification
+    Methods: bootstrap, perturbation, seed, stratified_perturbation
+
+4.   -> .order_by("-degree")  # Sort results (use '-' for descending)
+    Example: .order_by("-betweenness_centrality", "node_id")
+
+5.   -> .explain()  # Add explanatory context (community, neighbors, layers)
+    Options: neighbors_top=5, include_community=True
+
+6.   -> .execute(network)  # Execute the query and get results
+
+============================================================
+[TIP] Tip: Chain methods together for complex queries!
+   Example: Q.nodes().where(...).compute(...).order_by(...).limit(...).execute(net)
+============================================================
+
+
+Query executed successfully, got 4 results
+
+============================================================
+Demo 2: Enhanced QueryResult Introspection
+============================================================
+
+QueryResult representation shows full context:
+QueryResult(
+  target='nodes'
+  count=2
+  attributes=['degree', 'betweenness_centrality']
+  provenance='unknown'
+)
+
+Target: nodes
+Count: 2
+Computed metrics: set()
+
+============================================================
+Demo 3: Pedagogical Error Messages
+============================================================
+
+1. Unknown metric error:
+Error caught: Unknown measure 'unknownmetric'.
+Known measures: betweenness, betweenness_centrality, closeness, closeness_centrality, clustering, clustering_coefficient, communities, community, degree, degree_centrality, edge_betweenness, edge_betweenness_centrality, eigenvector, eigenvector_centrality, pagerank, triangles
+
+Note: Error message includes suggestions and examples
+
+2. Unknown layer error:
+
+============================================================
+Demo 4: Performance and Semantic Warnings
+============================================================
+
+1. Multilayer context (may show warnings):
+Computed degree for 8 node replicas
+
+2. Suppress warnings:
+Query executed without warnings: 8 results
+
+============================================================
+Demo 5: Multilayer Semantics Awareness
+============================================================
+
+1. Understanding node replicas:
+Total node replicas: 8
+Physical nodes: 4
+Physical node names: ['Alice', 'Bob', 'Charlie', 'David']
+
+2. Per-layer operations:
+Computed per-layer metrics
+Grouping mode: unknown
+
+============================================================
+All demonstrations completed successfully!
+============================================================

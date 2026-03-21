@@ -176,6 +176,7 @@ def test_individual_example(example_file):
             **subprocess.os.environ,
             'TQDM_DISABLE': '1',
             'PYTHONWARNINGS': 'ignore',
+            'PYTHONPATH': str(REPO_ROOT),
         },
     )
     
