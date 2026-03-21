@@ -171,25 +171,19 @@ Demonstrate advanced DSL patterns:
 Summary
 -------
 
-This case study (when completed) will demonstrate:
+This chapter is presented as a **workflow template** rather than a completed empirical case study. It demonstrates:
 
-1. **Temporal multilayer networks** — Time-varying structure
-2. **Resilience analysis** — Impact of layer removal
-3. **Multi-modal routing** — Path finding across layers
-4. **Large-scale DSL queries** — Advanced query patterns
-5. **Geospatial visualization** — Map-based network rendering
+1. Temporal multilayer network framing
+2. Resilience analysis through layer-removal scenarios
+3. Multi-modal routing analysis
+4. Parameterized DSL query patterns for comparative runs
+5. A roadmap for geospatial extension once coordinate data is available
 
-**To complete:**
-
-1. Obtain transportation dataset (GTFS format, OpenStreetMap)
-2. Construct multilayer representation
-3. Implement temporal slicing
-4. Run resilience experiments
-5. Visualize with geospatial coordinates
+Readers adapting this template to their own dataset should add a documented data source, fixed preprocessing scripts, pinned environment metadata, and reproducible result artifacts before treating conclusions as empirical findings.
 
 **Relevant resources:**
 
 * GTFS (General Transit Feed Specification) for public transit data
 * OpenStreetMap for walking/cycling networks
-* ``examples/03_dsl_v2/`` for DSL patterns
-* ``examples/01_network_construction/`` for network building patterns
+* ``examples/dsl_zoo/`` for DSL patterns
+* ``examples/network_analysis/`` for network building and data loading patterns

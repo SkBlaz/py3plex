@@ -11,7 +11,7 @@ This book covers:
 * Mathematical foundations of multilayer networks
 * The py3plex library architecture and design philosophy
 * Hands-on examples and workflows for real network analysis
-* **A powerful SQL-like DSL for network queries**
+* A SQL-like DSL for network queries
 * Production deployment and reproducibility practices
 
 .. admonition:: DSL Feature Highlight
@@ -58,7 +58,7 @@ Readers should be familiar with:
 About the Software
 ------------------
 
-**py3plex** (version 1.x) is an open-source Python library for multilayer and multiplex network analysis. It provides:
+**py3plex** (version 1.1.4) is an open-source Python library for multilayer and multiplex network analysis. It provides:
 
 * Native support for multilayer network structures
 * 17+ specialized algorithms for multilayer analysis
@@ -66,7 +66,7 @@ About the Software
 * NetworkX compatibility and interoperability
 * High-performance I/O with Arrow/Parquet support
 
-The library is actively maintained and tested on Python 3.8+.
+The library targets Python 3.8+ for runtime compatibility.
 
 How to Use This Book
 --------------------
@@ -86,7 +86,7 @@ How to Use This Book
 Code Examples
 ~~~~~~~~~~~~~
 
-All code examples in this book are runnable and tested. Examples use consistent naming and follow modern Python conventions. File paths reference the accompanying GitHub repository:
+Examples in this book are intended to be runnable in the documented environment. Compatibility may vary across platforms and project revisions, so treat outputs as representative unless a section explicitly reports validated benchmark results. File paths reference the accompanying GitHub repository:
 
     https://github.com/SkBlaz/py3plex
 
@@ -97,7 +97,7 @@ Conventions
 * **Mathematical notation** follows standard network science conventions
 * **Feature status** is clearly marked:
   
-  * **Stable** - Production-ready with guarantees
+  * **Stable** - Intended to be stable for the workflows described in this book
   * **Experimental** - Functional but may change
   * **Planned** - Future features (mentioned only briefly)
 
@@ -127,5 +127,4 @@ License
 The py3plex library is released under the MIT License. This book's content is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
 
 .. note::
-   **Version Information:** This is version 1.0 (2025) of the book, covering py3plex 1.x with Python 3.8+ support.
-
+   **Version Information:** This book edition is version 1.1.4 (2025), aligned with py3plex 1.1.4 and Python 3.8+ runtime support.

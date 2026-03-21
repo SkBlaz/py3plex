@@ -5,7 +5,7 @@ Case Study 2 — Biological Multilayer Network
    :class: note
 
    This case study demonstrates a complete workflow for biological multilayer network 
-   analysis. The methodology and code patterns are production-ready and applicable to 
+   analysis. The methodology and code patterns are applicable to
    real datasets. Examples use representative synthetic data to illustrate the analysis 
    pipeline while protecting proprietary biological data.
 
@@ -96,7 +96,7 @@ Analyze structural properties of each interaction layer:
         print(f"{layer}: avg degree = {df['degree'].mean():.2f}, "
               f"avg clustering = {df['clustering'].mean():.3f}")
 
-**Expected patterns:**
+**Illustrative pattern expectations (template guidance):**
 
 * Protein interaction: High clustering (modules)
 * Regulation: Lower clustering (hierarchical)
@@ -194,13 +194,13 @@ Simulate what-if scenarios: node removal, layer removal:
     reduction = (baseline_outbreak - intervened_outbreak) / baseline_outbreak
     print(f"Outbreak reduced by {reduction:.1%} after removing hub")
 
-Key Findings (Template)
-------------------------
+Key Findings (Worked Template)
+------------------------------
 
 Spreading Patterns
 ~~~~~~~~~~~~~~~~~~
 
-**Expected observation:** Cascade dynamics depend on layer structure
+**Illustrative interpretation:** Cascade dynamics often depend on layer structure
 
 * **Protein interaction layer:** Slow, localized spreading (high clustering)
 * **Regulatory layer:** Fast, global spreading (low clustering, directed)
@@ -211,7 +211,7 @@ Spreading Patterns
 Layer Interactions
 ~~~~~~~~~~~~~~~~~~
 
-**Expected observation:** Cross-layer hub genes
+**Illustrative interpretation:** Cross-layer hub genes may emerge
 
 * Genes highly central in both protein interaction and regulation
 * These genes are critical: removing them has amplified impact
@@ -220,7 +220,7 @@ Layer Interactions
 Summary
 -------
 
-This case study template demonstrates:
+This chapter is a **worked template** rather than a completed empirical study. It demonstrates:
 
 1. **Biological network loading** with proper directionality
 2. **Layer-specific topology** analysis
@@ -228,17 +228,11 @@ This case study template demonstrates:
 4. **Intervention analysis** (what-if scenarios)
 5. **Cross-layer hub identification**
 
-**To complete this case study:**
-
-1. Obtain biological multiplex dataset (e.g., STRING + RegulonDB + KEGG)
-2. Add gene annotations (GO terms, pathways)
-3. Run analysis pipeline
-4. Validate findings against known biology
-5. Visualize with annotations
+For a completed empirical study, replace the synthetic placeholders with a curated dataset, explicit validation criteria, and externally checkable outputs.
 
 **Relevant examples:**
 
-* ``examples/06_dynamics/01_sis_epidemic.py`` — SIS dynamics
-* ``examples/06_dynamics/02_multilayer_epidemic.py`` — Multilayer epidemic
-* ``examples/02_basic_queries/04_compute_centrality.py`` — Centrality analysis
+* ``examples/advanced/sis_dynamics.py`` — SIS dynamics
+* ``examples/advanced/example_multiplex_dynamics.py`` — Multilayer epidemic-style simulation
+* ``examples/network_analysis/example_dsl_builder_api.py`` — Centrality analysis
 * ``docfiles/sir_epidemic_simulator.rst`` — SIR documentation

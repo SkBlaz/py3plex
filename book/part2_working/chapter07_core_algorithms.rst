@@ -3,7 +3,7 @@
 Core Algorithms: Communities, Centrality, Dynamics
 =============================================================
 
-This chapter covers py3plex's three major algorithm families for multilayer network analysis: community detection, centrality measures, and dynamics/spreading processes.
+This chapter covers py3plex's three major algorithm families for multilayer network analysis: community detection, centrality measures, and dynamics/spreading processes. It also states assumptions and caveats so results are interpreted within method limits.
 
 .. admonition:: DSL Tip: Streamline Algorithm Workflows
    :class: dsl-info
@@ -47,7 +47,17 @@ py3plex provides three major algorithm families for analyzing multilayer network
 
 3. **Dynamics and Processes** — Simulate epidemic spread (SIR, SIS), random walks, and diffusion processes that leverage multilayer connectivity patterns.
 
-These algorithms account for both intra-layer (within-layer) and inter-layer (cross-layer) connections, revealing insights that single-layer analysis misses.
+These algorithms can account for both intra-layer (within-layer) and inter-layer (cross-layer) connections, but this depends on the selected method and representation.
+
+Assumptions and Caveats
+-----------------------
+
+Before applying any algorithm in this chapter, check the following:
+
+1. **Graph representation:** some workflows operate on a supra-graph approximation rather than a solver with explicit multilayer coupling terms.
+2. **Metric cost:** global path-based metrics (especially betweenness) can become impractical on large graphs.
+3. **Model fit:** epidemic and diffusion models are stylized abstractions; parameter sensitivity should be explored, not assumed away.
+4. **Result transferability:** conclusions from one layer configuration or one seed do not automatically generalize.
 
 Community Detection
 -------------------
@@ -96,43 +106,43 @@ Where:
 Algorithms Available
 ~~~~~~~~~~~~~~~~~~~~
 
-py3plex supports several community detection algorithms. See ``examples/05_communities/`` for complete examples:
+py3plex supports several community detection algorithms. See ``examples/network_analysis/`` for complete examples:
 
 **Example 1: Single-Layer Louvain**
 
-See ``examples/05_communities/01_louvain_single.py``:
+See ``examples/network_analysis/example_community_detection.py``:
 
 .. code-block:: bash
 
     # Using uv
-    uv run examples/05_communities/01_louvain_single.py
+    uv run examples/network_analysis/example_community_detection.py
     
     # Or using python
-    python examples/05_communities/01_louvain_single.py
+    python examples/network_analysis/example_community_detection.py
 
 **Example 2: Multilayer Detection**
 
-See ``examples/05_communities/02_multilayer_detection.py``:
+See ``examples/network_analysis/example_multiplex_community_detection.py``:
 
 .. code-block:: bash
 
     # Using uv
-    uv run examples/05_communities/02_multilayer_detection.py
+    uv run examples/network_analysis/example_multiplex_community_detection.py
     
     # Or using python
-    python examples/05_communities/02_multilayer_detection.py
+    python examples/network_analysis/example_multiplex_community_detection.py
 
 **Example 3: AutoCommunity Detection**
 
-See ``examples/05_communities/03_auto_community.py``:
+See ``examples/network_analysis/example_auto_select_basic.py``:
 
 .. code-block:: bash
 
     # Using uv
-    uv run examples/05_communities/03_auto_community.py
+    uv run examples/network_analysis/example_auto_select_basic.py
     
     # Or using python
-    python examples/05_communities/03_auto_community.py
+    python examples/network_analysis/example_auto_select_basic.py
 
 **Available algorithms:**
 
@@ -434,45 +444,45 @@ All algorithms integrate with the py3plex DSL for concise, expressive workflows.
 Uncertainty Quantification
 --------------------------
 
-Py3plex provides tools for quantifying uncertainty in network analysis through bootstrap sampling and null model comparisons. See ``examples/07_uncertainty/`` for complete examples.
+Py3plex provides tools for quantifying uncertainty in network analysis through bootstrap sampling and null model comparisons. See ``examples/network_analysis/`` for complete examples.
 
 **Example 1: UQ-Enabled Centrality**
 
-See ``examples/07_uncertainty/01_uq_centrality.py``:
+See ``examples/network_analysis/example_dsl_uq_ergonomics.py``:
 
 .. code-block:: bash
 
     # Using uv
-    uv run examples/07_uncertainty/01_uq_centrality.py
+    uv run examples/network_analysis/example_dsl_uq_ergonomics.py
     
     # Or using python
-    python examples/07_uncertainty/01_uq_centrality.py
+    python examples/network_analysis/example_dsl_uq_ergonomics.py
 
 **Example 2: Bootstrap Sampling**
 
-See ``examples/07_uncertainty/02_bootstrap.py``:
+See ``examples/network_analysis/example_dsl_uncertainty_bootstrap_nullmodel.py``:
 
 .. code-block:: bash
 
     # Using uv
-    uv run examples/07_uncertainty/02_bootstrap.py
+    uv run examples/network_analysis/example_dsl_uncertainty_bootstrap_nullmodel.py
     
     # Or using python
-    python examples/07_uncertainty/02_bootstrap.py
+    python examples/network_analysis/example_dsl_uncertainty_bootstrap_nullmodel.py
 
 **Example 3: UQ vs Deterministic Comparison**
 
-See ``examples/07_uncertainty/03_comparison.py``:
+See ``examples/network_analysis/example_selection_uq_topk.py``:
 
 .. code-block:: bash
 
     # Using uv
-    uv run examples/07_uncertainty/03_comparison.py
+    uv run examples/network_analysis/example_selection_uq_topk.py
     
     # Or using python
-    python examples/07_uncertainty/03_comparison.py
+    python examples/network_analysis/example_selection_uq_topk.py
 
-These tools help assess the robustness of network metrics and determine whether observed patterns are statistically significant.
+These tools help assess sensitivity and uncertainty in observed network metrics; they do not by themselves establish causal claims.
 
 .. seealso::
 

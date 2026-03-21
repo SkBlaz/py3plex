@@ -3,6 +3,28 @@ Bibliography
 
 This section provides references for further reading on multilayer networks and py3plex.
 
+How to Cite This Book
+---------------------
+
+Use the following citation for this manuscript edition:
+
+.. code-block:: text
+
+    Škrlj, B. (2025). Practical Multilayer Network Analysis with Py3plex (Version 1.1.4).
+    https://github.com/SkBlaz/py3plex
+
+BibTeX:
+
+.. code-block:: bibtex
+
+    @book{Skrlj2025book,
+      author = {Škrlj, Blaž},
+      title = {Practical Multilayer Network Analysis with Py3plex},
+      year = {2025},
+      version = {1.1.4},
+      url = {https://github.com/SkBlaz/py3plex}
+    }
+
 Core References
 ---------------
 

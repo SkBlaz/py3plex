@@ -3,7 +3,7 @@
 Testing and Validation
 ===================================
 
-py3plex uses a comprehensive testing strategy to ensure correctness across algorithms, data structures, and the DSL. This chapter provides a high-level overview of testing philosophy and organization. **For detailed validation scripts and test code, see Appendix C.**
+py3plex uses a broad testing strategy to check correctness across algorithms, data structures, and the DSL. This chapter provides a high-level overview of what is validated and what still requires reader-side verification. **For detailed validation scripts and test code, see Appendix C.**
 
 Testing Philosophy
 ------------------
@@ -39,9 +39,9 @@ The test suite is organized by module and functionality:
     ├── test_community*.py            # Community detection
     ├── test_io*.py                   # I/O and serialization
     ├── test_uncertainty*.py          # Uncertainty quantification
-    └── property/                     # Property-based tests (planned)
+    └── property/                     # Property-based tests
 
-**Current coverage:** ~85% code coverage across core modules.
+Coverage is uneven across modules. Confirm current coverage in your own checkout before citing any specific percentages.
 
 Key Validation Strategies
 --------------------------
@@ -133,7 +133,7 @@ Using Makefile
 Continuous Integration
 ----------------------
 
-py3plex uses GitHub Actions for automated testing on every commit and pull request.
+py3plex uses GitHub Actions for automated testing on pull requests and branch updates.
 
 GitHub Actions
 ~~~~~~~~~~~~~~
@@ -146,24 +146,17 @@ The CI pipeline tests across:
 
 **Build status:** Tests must pass on all platforms before merging.
 
-**Coverage requirements:** New code should maintain or improve coverage (target: 85%+).
+**Coverage expectations:** New code should maintain or improve practical confidence in touched areas.
 
 .. admonition:: CI Configuration
    :class: note
 
    The GitHub Actions workflow files are located in ``.github/workflows/`` in the repository. Key workflows include ``test.yml`` (main test suite), ``lint.yml`` (code quality checks), and ``docs.yml`` (documentation builds).
 
-Summary
--------
+Closing Note
+------------
 
-py3plex testing ensures correctness through:
-
-1. **Comprehensive test suite** — 200+ tests across core functionality
-2. **Multiple validation strategies** — Conservation laws, property tests, reference runs
-3. **Continuous integration** — Automated testing on all platforms
-4. **High coverage** — 85%+ code coverage
-
-Testing is an ongoing priority. Contributions that add tests for uncovered code or validate edge cases are especially welcome.
+Treat testing claims in this book as workflow guidance, not blanket guarantees. For any critical study, record the exact test commands, environment details, and commit hash used for your own run.
 
 **For detailed test scripts and validation examples, see Appendix C.**
 

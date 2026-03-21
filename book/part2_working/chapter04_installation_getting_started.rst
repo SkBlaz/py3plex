@@ -3,7 +3,7 @@
 Installation and Getting Started
 ===========================================
 
-This chapter covers installing py3plex and running your first multilayer network analysis. We provide a minimal quickstart example followed by installation details for different use cases.
+This chapter covers installing py3plex and running your first multilayer network analysis. It presents one recommended path first, then lists alternatives for contributors and containerized workflows.
 
 .. admonition:: DSL Quick Start
    :class: dsl-example
@@ -33,8 +33,8 @@ This chapter covers installing py3plex and running your first multilayer network
 
    DSL makes network analysis intuitive from day one!
 
-Quick Install
--------------
+Recommended Installation Path
+-----------------------------
 
 For most users, installation is straightforward:
 
@@ -44,7 +44,15 @@ For most users, installation is straightforward:
 
 This installs py3plex with core dependencies (NetworkX, NumPy, SciPy, pandas, matplotlib).
 
-**Using uv (recommended for development):**
+**Environment recommendation:** create a fresh virtual environment before installing.
+
+.. code-block:: bash
+
+    python3 -m venv py3plex-env
+    source py3plex-env/bin/activate  # Linux/macOS
+    # py3plex-env\Scripts\activate   # Windows
+
+**Using uv (optional):**
 
 `uv <https://github.com/astral-sh/uv>`_ is a fast Python package installer and resolver. To use uv:
 
@@ -56,7 +64,8 @@ This installs py3plex with core dependencies (NetworkX, NumPy, SciPy, pandas, ma
     # Install py3plex with uv
     uv pip install py3plex
 
-**Verify installation:**
+Verification Command
+~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -180,10 +189,10 @@ Use SQL-like queries to explore the network:
 
 **See also:** ``examples/network_analysis/example_dsl_builder_api.py`` for complete DSL examples.
 
-The DSL (covered in Part III) provides a powerful way to filter, compute, and analyze multilayer networks without writing explicit loops.
+The DSL (covered in Part III) provides a concise way to filter, compute, and analyze multilayer networks without writing explicit loops.
 
-Installation Options
---------------------
+Alternative Installation Paths (Use Only If Needed)
+---------------------------------------------------
 
 Development Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -254,21 +263,7 @@ Py3plex supports optional feature sets:
     # Install multiple extras
     pip install py3plex[infomap,viz,algos,arrow]
 
-Virtual Environments
-~~~~~~~~~~~~~~~~~~~~
-
-We strongly recommend using virtual environments:
-
-**Using venv:**
-
-.. code-block:: bash
-
-    python3 -m venv py3plex-env
-    source py3plex-env/bin/activate  # Linux/macOS
-    # py3plex-env\Scripts\activate   # Windows
-    pip install py3plex
-
-**Using conda:**
+**Conda alternative:**
 
 .. code-block:: bash
 
@@ -453,36 +448,25 @@ Now that you have py3plex installed and understand the basics:
 
 **For immediate exploration:**
 
-Browse the ``examples/`` directory in the repository for working examples covering various use cases:
+Browse the ``examples/`` directory in the repository for current workflows:
 
-* ``examples/00_quickstart/`` — Getting started (3 examples)
-* ``examples/01_network_construction/`` — Building networks (3 examples)
-* ``examples/02_basic_queries/`` — Basic DSL queries (4 examples)
-* ``examples/03_dsl_v2/`` — Advanced DSL (4 examples)
-* ``examples/04_graph_ops/`` — Data manipulation (3 examples)
-* ``examples/05_communities/`` — Community detection (3 examples)
-* ``examples/06_dynamics/`` — Network dynamics (3 examples)
-* ``examples/07_uncertainty/`` — Uncertainty quantification (3 examples)
+* ``examples/getting_started/`` — first-run examples
+* ``examples/network_analysis/`` — DSL, algorithms, and analysis patterns
+* ``examples/dsl_zoo/`` — focused DSL query patterns
+* ``examples/io_and_data/`` — loading and conversion workflows
+* ``examples/visualization/`` — plotting and rendering examples
 
 **Run any example:**
 
 .. code-block:: bash
 
     # Using uv (recommended)
-    uv run examples/00_quickstart/01_load_and_query.py
+    uv run examples/getting_started/01_basic_query.py
     
     # Or using python
-    python examples/00_quickstart/01_load_and_query.py
+    python examples/getting_started/01_basic_query.py
 
-Summary
--------
+Closing Note
+------------
 
-This chapter covered:
-
-1. **Quick install** — ``pip install py3plex``
-2. **Hello World** — Create a multilayer network in 30 seconds
-3. **Basic analysis** — Statistics, visualization, and DSL queries
-4. **Installation options** — Development, Docker, optional dependencies
-5. **Key concepts** — Node-layer pairs, NetworkX compatibility, input formats
-
-With py3plex installed, you're ready to analyze multilayer networks. The next chapter covers loading real data and representing complex multilayer structures.
+If the recommended path worked, continue directly to :ref:`data-loading-chapter`. Return to alternative paths only when you need editable installs, optional extras, or containerized execution.

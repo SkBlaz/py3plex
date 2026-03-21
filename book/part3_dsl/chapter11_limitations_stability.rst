@@ -1,7 +1,9 @@
+.. _limitations-stability-chapter:
+
 Limitations and Stability Guarantees
 ================================================
 
-*This chapter explicitly marks feature status for user confidence*
+*This chapter scopes feature status to the workflows documented in this book.*
 
 DSL Feature Status
 ------------------
@@ -12,7 +14,7 @@ Stable APIs
 Features with strong backward-compatibility guarantees:
 
 * **Node queries** — ``Q.nodes()`` with filtering and measures
-* **Edge queries** — ``Q.edges()`` with full parity to node queries, including
+* **Edge queries** — ``Q.edges()`` with substantial coverage of node-query workflows, including
   ``per_layer_pair()``, ``aggregate()``, ``where()``, and all export formats
 * **Layer algebra** — Union, difference, intersection operations
 * **Core measures** — degree, betweenness, closeness, pagerank
@@ -22,11 +24,40 @@ Features with strong backward-compatibility guarantees:
   ``quantile``, and ``count``
 * **Temporal queries** — ``Q.edges().at(t)``, ``.during(t0, t1)``,
   ``.before(t)``, ``.after(t)``, ``.window(size, step)``
-* **Join operations** — ``.join(right, on=..., how=...)`` with ``inner``,
-  ``left``, ``right``, ``outer``, ``semi``, and ``anti`` join types
-* **Graph pattern matching** — ``Q.pattern()`` with node/edge motif DSL
+* **Join operations** — ``.join(right, on=..., how=...)`` with documented join types
+* **Graph pattern matching** — ``Q.pattern()`` for motif-style matching
 
-**Guarantee:** Stable APIs will not break in minor version updates (1.x → 1.y).
+**Scope statement:** For the documented workflows, these APIs are expected to remain backward compatible within 1.x releases, with deprecation notice before incompatible changes.
+
+Interface Selection Guide (Core vs Alternatives)
+-------------------------------------------------
+
+Use this chapter-level guide to choose the right interface once you already understand core DSL syntax.
+
+.. list-table:: Interface Decision Matrix
+   :header-rows: 1
+   :widths: 20 25 25 30
+
+   * - **Interface**
+     - **Best For**
+     - **Use When**
+     - **Avoid When**
+   * - **DSL v2 (Q, L, UQ)**
+     - Multilayer querying and reproducible analysis scripts
+     - Layer algebra, grouped summaries, provenance, UQ
+     - You only need simple single-layer NetworkX operations
+   * - **graph_ops**
+     - Data-frame style exploration
+     - You want quick filter/mutate/export cycles
+     - You need multilayer-specific query semantics
+   * - **Pipeline API**
+     - Repeatable multi-step workflows
+     - You need fit/transform-style orchestration
+     - You are doing one-off exploratory queries
+   * - **CLI**
+     - Scripted batch tasks and quick checks
+     - You need shell-based automation
+     - You need complex custom branching logic
 
 Experimental Features
 ~~~~~~~~~~~~~~~~~~~~~
@@ -167,7 +198,7 @@ Semantic Versioning
 py3plex follows semantic versioning (MAJOR.MINOR.PATCH):
 
 * **MAJOR** (1.x → 2.x) — Breaking changes possible
-* **MINOR** (1.1 → 1.2) — New features, stable API unchanged
+* **MINOR** (1.1 → 1.2) — New features; existing documented APIs are intended to remain compatible
 * **PATCH** (1.1.1 → 1.1.2) — Bug fixes only
 
 Deprecation Policy
@@ -194,9 +225,9 @@ Migration guides are published in the ``docs/migration/`` directory and linked f
 Summary
 -------
 
-**Stable and production-ready:**
+**Intended stable workflows in this book:**
 
-* Node and edge queries with filtering and full feature parity
+* Node and edge queries with filtering and broad feature coverage
 * Core centrality measures
 * Layer algebra
 * Aggregations (mean, sum, min, max, std, var, median, quantile, count)
@@ -210,7 +241,7 @@ Summary
 * Experimental features (nested subqueries) may change
 * Large network performance depends on query structure
 
-The DSL prioritizes transparency about feature status and limitations. Users should feel confident relying on stable APIs while being aware of experimental features and performance boundaries.
+The DSL prioritizes transparent status reporting. Use stable workflows with version pinning, and treat experimental features as opt-in.
 
 .. seealso::
 

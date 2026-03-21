@@ -9,7 +9,7 @@ complex query patterns, and workflow integration.
 DSL-Based Dynamics Simulation
 ------------------------------
 
-The py3plex DSL includes a powerful framework for declarative dynamics
+The py3plex DSL includes a framework for declarative dynamics
 simulation on multilayer networks. This section demonstrates how to use
 the dynamics DSL for epidemic modeling, random walks, and other dynamical
 processes.
@@ -292,7 +292,7 @@ The ``SimulationResult`` object provides rich analysis capabilities:
 .. admonition:: Status: Dynamics DSL
    :class: note
 
-   The builder API (``D.process()``) is under active development and may change in future releases. The core dynamics classes (``SIRDynamics``, ``SISDynamics``, ``RandomWalkDynamics``) are stable and production-ready.
+   The builder API (``D.process()``) is under active development and may change in future releases. The core dynamics classes (``SIRDynamics``, ``SISDynamics``, ``RandomWalkDynamics``) are intended to be stable for the workflows shown in this book.
 
 Complex Query Patterns
 -----------------------
@@ -576,10 +576,10 @@ The ``graph_ops`` module provides dplyr-style operations (inspired by R's dplyr 
          .to_networkx()
          .execute(network)
     )
-    uv run examples/04_graph_ops/03_subgraph.py
+    uv run examples/network_analysis/example_dsl_dplyr_operations.py
     
     # Or using python
-    python examples/04_graph_ops/03_subgraph.py
+    python examples/network_analysis/example_dsl_dplyr_operations.py
 
 **Supported export formats:**
 
@@ -1160,39 +1160,17 @@ Create fully reproducible analysis results with provenance tracking:
 * Environment info (py3plex version, Python version)
 * Optionally: Full result data
 
-Summary
--------
+Closing Note
+------------
 
-This chapter covered:
-
-1. **DSL-based dynamics simulation** — Declarative framework for SIS, SIR, and Random Walk
-2. **Mathematical formalism** — Formal definitions of epidemic models
-3. **Multilayer coupling** — Simulating dynamics across network layers
-4. **Query integration** — Using Q.nodes() for targeted initial conditions
-5. **Parameter comparison** — Systematic exploration of parameter space
-6. **Result analysis** — Rich result objects with pandas export and plotting
-7. **Field expressions (F)** — Type-safe boolean conditions with operator overloading
-8. **Semiring algebra (S)** — Path queries and closure operations with semiring semantics
-9. **Compositional UQ** — Uncertainty quantification for aggregates and rankings
-10. **Alternative APIs** — Dplyr-style, sklearn-style, and config-driven workflows
-
-**Key takeaways:**
-
-* The dynamics DSL follows the same design philosophy as the query DSL
-* Simulations are fully declarative and composable
-* Integration with query DSL enables sophisticated initial condition specification
-* F expressions provide type-safe filtering with natural Python operators
-* S builder enables semiring-based path analysis across layers
-* Compositional UQ propagates uncertainty through complex query pipelines
-* Results are analysis-ready with pandas, xarray, and plotting support
-* Choose API style based on your workflow needs: DSL (query-focused), graph_ops (data munging), pipeline (reproducibility), workflows (configuration)
+Use this chapter as a reference layer after you can already write and interpret core queries. If a workflow here feels heavy, return to Chapters 8–9, then reintroduce one advanced feature at a time (for example: first parameterization, then UQ, then semiring paths).
 
 Further Reading
 ---------------
 
 * Introduction to the Py3plex DSL (Chapter 8)
 * The Builder API and Explain Plans (Chapter 9)
-* ``examples/03_dsl_v2/`` — Advanced DSL examples
-* ``examples/04_graph_ops/`` — Data manipulation examples
-* ``examples/06_dynamics/`` — Dynamics simulation examples
+* ``examples/dsl_zoo/`` — Focused advanced query patterns
+* ``examples/network_analysis/`` — Advanced DSL and graph-ops workflows
+* ``examples/advanced/`` — Dynamics and process examples
 * ``docfiles/sir_epidemic_simulator.rst`` — SIR multiplex simulator documentation
