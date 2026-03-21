@@ -1,2 +1,0 @@
-2026-03-21 14:44:44 - py3plex.dsl_legacy - INFO - Executing DSL query: SELECT nodes WHERE degree > 10
-2026-03-21 14:44:44 - py3plex.dsl_legacy - INFO - Query returned 220 nodes

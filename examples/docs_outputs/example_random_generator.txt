@@ -1,9 +1,0 @@
-Generating random multilayer Erdos-Renyi network...
-Parameters:
-  - Number of nodes: 200
-  - Number of layers: 6
-  - Edge probability: 0.09
-  - Directed: True
-
-Network generated successfully!
-Running in non-interactive mode - skipping visualization
