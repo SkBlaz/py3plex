@@ -1,0 +1,237 @@
+"""Tests for predictive and reduction first-class DSL extensions."""
+
+import pytest
+
+from py3plex.core import multinet
+from py3plex.dsl import Q, PredictStmt, ReduceStmt
+from py3plex.dsl.errors import PredictionTaskError, SplitStrategyError, LayerReductionError
+
+
+@pytest.fixture
+def multilayer_network_sample():
+    net = multinet.multi_layer_network(directed=False)
+    nodes = []
+    for n in ["A", "B", "C", "D", "E"]:
+        for layer_name in ["work", "leisure"]:
+            nodes.append({"source": n, "type": layer_name})
+    net.add_nodes(nodes)
+    net.add_edges(
+        [
+            {"source": "A", "target": "B", "source_type": "work", "target_type": "work", "t": 1},
+            {"source": "B", "target": "C", "source_type": "work", "target_type": "work", "t": 2},
+            {"source": "C", "target": "D", "source_type": "work", "target_type": "work", "t": 3},
+            {"source": "A", "target": "C", "source_type": "leisure", "target_type": "leisure", "t": 1},
+            {"source": "C", "target": "E", "source_type": "leisure", "target_type": "leisure", "t": 4},
+            {"source": "B", "target": "D", "source_type": "leisure", "target_type": "leisure", "t": 5},
+        ]
+    )
+    return net
+
+
+def test_predict_builder_to_ast_compiles():
+    builder = (
+        Q.predict.links()
+        .random_holdout(0.2, seed=42)
+        .model("common_neighbors")
+        .eval(["roc_auc", "ap"])
+    )
+    ast = builder.to_ast()
+    assert isinstance(ast, PredictStmt)
+    assert ast.spec.model.name == "common_neighbors"
+    assert ast.spec.split.strategy == "random_holdout"
+
+
+def test_predict_compact_form_alias_works():
+    builder = Q.predict.links().temporal_holdout(0.2).model("node2vec").eval(["roc_auc", "ap"])
+    ast = builder.to_ast()
+    assert ast.spec.split.strategy == "temporal_holdout"
+    assert ast.spec.model.name == "node2vec"
+    assert ast.spec.eval.metrics == ["roc_auc", "ap"]
+
+
+def test_reduce_builder_to_ast_compiles():
+    builder = Q.reduce.layers(method="hierarchical_js").target_k(2).distance("js_divergence")
+    ast = builder.to_ast()
+    assert isinstance(ast, ReduceStmt)
+    assert ast.spec.method == "hierarchical_js"
+    assert ast.spec.target_k == 2
+
+
+def test_reduce_builder_method_chaining_form():
+    ast = Q.reduce.layers().method("hierarchical_js").target_k(5).to_ast()
+    assert ast.spec.method == "hierarchical_js"
+    assert ast.spec.target_k == 5
+
+
+def test_predict_links_heuristic_executes(multilayer_network_sample):
+    res = (
+        Q.predict.links()
+        .scope(layers=["work", "leisure"])
+        .random_holdout(0.34, seed=7)
+        .model("common_neighbors")
+        .negative_sampling(strategy="uniform", ratio=1.0, seed=7)
+        .evaluate(metrics=["roc_auc", "average_precision", "precision@2"])
+        .execute(multilayer_network_sample)
+    )
+    assert "roc_auc" in res.metrics
+    assert "average_precision" in res.metrics
+    assert isinstance(res.to_dict(), dict)
+    assert res.is_replayable
+    replay = res.replay()
+    assert replay.metrics["roc_auc"] == pytest.approx(res.metrics["roc_auc"])
+    assert replay.provenance["split"] == res.provenance["split"]
+    assert "class_balance_test" in res.meta["split"]
+
+
+def test_predict_links_node2vec_temporal_holdout_executes(multilayer_network_sample):
+    res = (
+        Q.predict.links()
+        .scope(layers=["work", "leisure"])
+        .temporal_holdout(0.33)
+        .model("node2vec", dim=16, walk_len=20, num_walks=5, seed=11)
+        .edge_features("hadamard")
+        .classifier("logreg", C=1.0)
+        .negative_sampling(strategy="uniform", ratio=1.0, seed=11)
+        .eval(["roc_auc", "ap"])
+        .execute(multilayer_network_sample)
+    )
+    assert "roc_auc" in res.metrics
+    assert "ap" in res.metrics
+    assert res.provenance is not None
+    assert res.provenance["split"]["strategy"] == "temporal_holdout"
+    cutoff = res.provenance["split"]["cutoff_time"]
+    if cutoff is not None:
+        test_positive_times = [
+            rec["edge_time"]
+            for rec in res.meta.get("split_records", [])
+            if rec.get("partition") == "test" and rec.get("label") == 1
+        ]
+        train_positive_times = [
+            rec["edge_time"]
+            for rec in res.meta.get("split_records", [])
+            if rec.get("partition") == "train" and rec.get("label") == 1
+        ]
+        if test_positive_times and train_positive_times:
+            assert min(test_positive_times) >= max(train_positive_times)
+
+
+def test_predict_links_by_layer_holdout_executes(multilayer_network_sample):
+    res = (
+        Q.predict.links()
+        .scope(layers=["work", "leisure"])
+        .by_layer_holdout(test_frac=0.5, seed=19)
+        .model("jaccard")
+        .negative_sampling(strategy="uniform", ratio=1.0, seed=19)
+        .eval(["roc_auc"])
+        .execute(multilayer_network_sample)
+    )
+    assert "roc_auc" in res.metrics
+    assert res.provenance["split"]["strategy"] == "by_layer_holdout"
+
+
+def test_predict_by_layer_holdout_meta_counts(multilayer_network_sample):
+    res = (
+        Q.predict.links()
+        .scope(layers=["work", "leisure"])
+        .by_layer_holdout(test_frac=0.5, seed=3)
+        .model("jaccard")
+        .negative_sampling(strategy="uniform", ratio=1.0, seed=3)
+        .eval(["roc_auc"])
+        .execute(multilayer_network_sample)
+    )
+    split_meta = res.meta["split"]
+    assert split_meta["train_pos"] >= 1
+    assert split_meta["test_pos"] >= 1
+    assert split_meta["train_neg"] >= 1
+    assert split_meta["test_neg"] >= 1
+
+
+def test_predict_seed_determinism(multilayer_network_sample):
+    q = (
+        Q.predict.links()
+        .scope(layers=["work", "leisure"])
+        .random_holdout(0.34, seed=21)
+        .model("common_neighbors")
+        .negative_sampling(strategy="uniform", ratio=1.0, seed=21)
+        .eval(["roc_auc", "average_precision"])
+    )
+    r1 = q.execute(multilayer_network_sample)
+    r2 = q.execute(multilayer_network_sample)
+    assert r1.metrics["roc_auc"] == pytest.approx(r2.metrics["roc_auc"])
+    assert r1.metrics["average_precision"] == pytest.approx(r2.metrics["average_precision"])
+    assert r1.provenance["split"] == r2.provenance["split"]
+    assert r1.provenance["negative_sampling"] == r2.provenance["negative_sampling"]
+
+
+def test_reduce_layers_hierarchical_executes(multilayer_network_sample):
+    res = (
+        Q.reduce.layers(method="hierarchical_js")
+        .target_k(1)
+        .distance("js_divergence")
+        .aggregate("sum")
+        .execute(multilayer_network_sample)
+    )
+    assert res.network is not None
+    assert len(res.layer_mapping) == 2
+    assert res.meta["original_layers"] == 2
+    assert res.meta["reduced_layers"] == 1
+
+
+def test_reduce_layers_other_methods(multilayer_network_sample):
+    r1 = Q.reduce.layers(method="von_neumann_entropy").target_k(2).execute(multilayer_network_sample)
+    r2 = Q.reduce.layers(method="strata_sbm").target_k(2).execute(multilayer_network_sample)
+    assert r1.meta["method"] == "von_neumann_entropy"
+    assert r2.meta["method"] == "strata_sbm"
+    assert r1.provenance.get("approximation") is True
+    assert r2.provenance.get("approximation") is True
+    assert r1.provenance is not None
+    assert r2.provenance is not None
+
+
+def test_reduce_result_replayable(multilayer_network_sample):
+    res = Q.reduce.layers(method="hierarchical_js").target_k(1).execute(multilayer_network_sample)
+    replay = res.replay()
+    assert replay.layer_mapping == res.layer_mapping
+    assert replay.provenance["method"] == res.provenance["method"]
+
+
+def test_predict_unknown_metric_raises(multilayer_network_sample):
+    with pytest.raises(PredictionTaskError):
+        (
+            Q.predict.links()
+            .scope(layers=["work", "leisure"])
+            .random_holdout(0.5, seed=1)
+            .model("jaccard")
+            .eval(["not_a_metric"])
+            .execute(multilayer_network_sample)
+        )
+
+
+def test_predict_temporal_holdout_requires_time():
+    net = multinet.multi_layer_network(directed=False)
+    net.add_nodes(
+        [
+            {"source": "A", "type": "x"},
+            {"source": "B", "type": "x"},
+            {"source": "C", "type": "x"},
+        ]
+    )
+    net.add_edges(
+        [
+            {"source": "A", "target": "B", "source_type": "x", "target_type": "x"},
+            {"source": "B", "target": "C", "source_type": "x", "target_type": "x"},
+        ]
+    )
+    with pytest.raises(SplitStrategyError):
+        (
+            Q.predict.links()
+            .temporal_holdout(0.5)
+            .model("common_neighbors")
+            .eval(["roc_auc"])
+            .execute(net)
+        )
+
+
+def test_reduce_target_k_must_be_positive(multilayer_network_sample):
+    with pytest.raises(LayerReductionError):
+        Q.reduce.layers(method="hierarchical_js").target_k(0).execute(multilayer_network_sample)

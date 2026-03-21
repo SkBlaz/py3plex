@@ -186,6 +186,26 @@ class DslExecutionError(DslError):
         super().__init__(full_message, **kwargs)
 
 
+class PredictionTaskError(DslExecutionError):
+    """Raised when predictive task DSL execution fails."""
+
+
+class SplitStrategyError(PredictionTaskError):
+    """Raised for invalid or failed predictive split strategies."""
+
+
+class NegativeSamplingError(PredictionTaskError):
+    """Raised for negative sampling failures in predictive tasks."""
+
+
+class ReductionMethodError(DslExecutionError):
+    """Raised when an unknown or invalid reduction method is requested."""
+
+
+class LayerReductionError(DslExecutionError):
+    """Raised when layer reduction execution fails."""
+
+
 class UnknownAttributeError(DslError):
     """Exception raised when an unknown attribute is referenced.
     
@@ -653,4 +673,3 @@ class ASTIllegalPlacementError(ASTValidationError):
         if suggestion:
             message += f"\nSuggestion: {suggestion}"
         super().__init__(message)
-

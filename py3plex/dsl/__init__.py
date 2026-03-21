@@ -106,6 +106,16 @@ from .ast import (
     SemiringClosureStmt,
     SemiringFixedPointStmt,
     SemiringStmt,
+    PredictStmt,
+    LinkPredictionSpec,
+    SplitSpec,
+    NegativeSamplingSpec,
+    ModelSpec,
+    EdgeFeatureSpec,
+    EvalSpec,
+    ReduceStmt,
+    LayerReductionSpec,
+    DistanceSpec,
     # Benchmark AST nodes
     BenchmarkNode,
     BenchmarkAlgorithmSpec,
@@ -141,6 +151,8 @@ from .builder import (
     CounterexampleBuilder,
     # Claim learning builder
     ClaimLearnerBuilder,
+    LinkPredictionBuilder,
+    LayerReductionBuilder,
 )
 
 from .benchmark import (
@@ -190,6 +202,8 @@ from .communities import (
 )
 
 from .result import QueryResult
+from .predictive import PredictionResult
+from .reduction import LayerReductionResult
 
 from .executor import execute_ast
 from .export import export_result, save_to_parquet, load_from_parquet
@@ -209,6 +223,11 @@ from .errors import (
     InvalidJoinKeyError,
     ComputedFieldMisuseError,
     InvalidGroupAggregateError,
+    PredictionTaskError,
+    SplitStrategyError,
+    NegativeSamplingError,
+    ReductionMethodError,
+    LayerReductionError,
 )
 
 # Import UQ resolution and validation
@@ -349,6 +368,16 @@ __all__ = [
     "SemiringClosureStmt",
     "SemiringFixedPointStmt",
     "SemiringStmt",
+    "PredictStmt",
+    "LinkPredictionSpec",
+    "SplitSpec",
+    "NegativeSamplingSpec",
+    "ModelSpec",
+    "EdgeFeatureSpec",
+    "EvalSpec",
+    "ReduceStmt",
+    "LayerReductionSpec",
+    "DistanceSpec",
     # Benchmark AST
     "BenchmarkNode",
     "BenchmarkAlgorithmSpec",
@@ -384,6 +413,8 @@ __all__ = [
     "CounterexampleBuilder",
     # Claim Learning Builder
     "ClaimLearnerBuilder",
+    "LinkPredictionBuilder",
+    "LayerReductionBuilder",
     # Benchmark Builder
     "B",
     "CommunityBenchmarkBuilder",
@@ -419,6 +450,8 @@ __all__ = [
     "compute_community_metric",
     # Result
     "QueryResult",
+    "PredictionResult",
+    "LayerReductionResult",
     "export_result",
     "save_to_parquet",
     "load_from_parquet",
@@ -439,6 +472,11 @@ __all__ = [
     "InvalidJoinKeyError",
     "ComputedFieldMisuseError",
     "InvalidGroupAggregateError",
+    "PredictionTaskError",
+    "SplitStrategyError",
+    "NegativeSamplingError",
+    "ReductionMethodError",
+    "LayerReductionError",
     # UQ Resolution
     "ResolvedUQConfig",
     "UQResolutionError",

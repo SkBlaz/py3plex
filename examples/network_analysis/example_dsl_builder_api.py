@@ -30,6 +30,11 @@ print("=" * 80)
 print("DSL V2 PYTHON BUILDER API EXAMPLES")
 print("=" * 80)
 
+print("\n[0] Golden Path: Predictive and Reduction DSL")
+print("-" * 80)
+print('Code: Q.predict.links().random_holdout(...).model("common_neighbors").eval(["roc_auc"])')
+print('Code: Q.reduce.layers(method="hierarchical_js").target_k(2)')
+
 # Create a sample multilayer network
 print("\n[1] Creating sample multilayer network...")
 print("-" * 80)

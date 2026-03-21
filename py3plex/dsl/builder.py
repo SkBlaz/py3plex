@@ -54,6 +54,16 @@ from .ast import (
     UQConfig,
     CounterfactualSpec,
     SensitivitySpec,
+    PredictStmt,
+    LinkPredictionSpec,
+    SplitSpec,
+    NegativeSamplingSpec,
+    ModelSpec,
+    EdgeFeatureSpec,
+    EvalSpec,
+    ReduceStmt,
+    LayerReductionSpec,
+    DistanceSpec,
 )
 from .result import QueryResult
 
@@ -5374,7 +5384,6 @@ class UQ:
 # Builder API for DSL Extensions
 # ==============================================================================
 
-
 class CompareBuilder:
     """Builder for COMPARE statements.
 
@@ -6595,6 +6604,180 @@ class S:
     def closure() -> SemiringClosureBuilder:
         """Create a semiring closure query builder."""
         return SemiringClosureBuilder()
+
+
+# ============================================================================
+# Predictive Tasks DSL
+# ============================================================================
+
+
+class LinkPredictionBuilder:
+    """Builder for predictive link prediction workflows."""
+
+    def __init__(self):
+        self._stmt = PredictStmt(task="links", spec=LinkPredictionSpec())
+
+    def scope(self, layers: Optional[Any] = None, **kwargs) -> "LinkPredictionBuilder":
+        if layers is not None:
+            self._stmt.spec.layers_expr = layers
+        self._stmt.spec.scope.update(kwargs)
+        return self
+
+    def split(self, strategy: str = "random_holdout", **kwargs) -> "LinkPredictionBuilder":
+        self._stmt.spec.split = SplitSpec(
+            strategy=strategy,
+            test_frac=float(kwargs.pop("test_frac", self._stmt.spec.split.test_frac)),
+            seed=kwargs.pop("seed", self._stmt.spec.split.seed),
+            params=kwargs,
+        )
+        return self
+
+    def random_holdout(self, test_frac: float = 0.2, seed: Optional[int] = None) -> "LinkPredictionBuilder":
+        return self.split("random_holdout", test_frac=test_frac, seed=seed)
+
+    def temporal_holdout(self, test_frac: float = 0.2) -> "LinkPredictionBuilder":
+        return self.split("temporal_holdout", test_frac=test_frac)
+
+    def by_layer_holdout(self, test_frac: float = 0.2, seed: Optional[int] = None) -> "LinkPredictionBuilder":
+        return self.split("by_layer_holdout", test_frac=test_frac, seed=seed)
+
+    def negative_sampling(
+        self, strategy: str = "uniform", ratio: float = 1.0, seed: Optional[int] = None, **kwargs
+    ) -> "LinkPredictionBuilder":
+        self._stmt.spec.negative_sampling = NegativeSamplingSpec(
+            strategy=strategy, ratio=float(ratio), seed=seed, params=kwargs
+        )
+        return self
+
+    def model(self, name: str, **kwargs) -> "LinkPredictionBuilder":
+        self._stmt.spec.model = ModelSpec(name=name, params=kwargs)
+        return self
+
+    def edge_features(self, kind: str = "hadamard", **kwargs) -> "LinkPredictionBuilder":
+        self._stmt.spec.edge_features = EdgeFeatureSpec(kind=kind, params=kwargs)
+        return self
+
+    def classifier(self, name: str = "logreg", **kwargs) -> "LinkPredictionBuilder":
+        self._stmt.spec.classifier = ModelSpec(name=name, params=kwargs)
+        return self
+
+    def evaluate(self, metrics: List[str]) -> "LinkPredictionBuilder":
+        self._stmt.spec.eval = EvalSpec(metrics=list(metrics))
+        return self
+
+    def eval(self, metrics: List[str]) -> "LinkPredictionBuilder":
+        return self.evaluate(metrics)
+
+    def top_k(self, k: int) -> "LinkPredictionBuilder":
+        self._stmt.spec.top_k = int(k)
+        return self
+
+    def uq(
+        self,
+        method: str = "bootstrap",
+        n_samples: int = 50,
+        ci: float = 0.95,
+        seed: Optional[int] = None,
+        **kwargs,
+    ) -> "LinkPredictionBuilder":
+        self._stmt.spec.uq_config = UQConfig(
+            method=method, n_samples=n_samples, ci=ci, seed=seed, kwargs=kwargs
+        )
+        return self
+
+    def seed(self, seed: int) -> "LinkPredictionBuilder":
+        self._stmt.spec.seed = int(seed)
+        if self._stmt.spec.split.seed is None:
+            self._stmt.spec.split.seed = int(seed)
+        if self._stmt.spec.negative_sampling.seed is None:
+            self._stmt.spec.negative_sampling.seed = int(seed)
+        return self
+
+    def execute(self, network: Any):
+        from .predictive import execute_predict_stmt
+
+        return execute_predict_stmt(network, self._stmt)
+
+    def to_ast(self) -> PredictStmt:
+        return self._stmt
+
+
+class _PredictNamespace:
+    """Namespace for predictive tasks (Q.predict.*)."""
+
+    @staticmethod
+    def links() -> LinkPredictionBuilder:
+        return LinkPredictionBuilder()
+
+
+# ============================================================================
+# Layer Reduction DSL
+# ============================================================================
+
+
+class LayerReductionBuilder:
+    """Builder for multilayer layer reduction workflows."""
+
+    def __init__(self, method: Optional[str] = None):
+        spec = LayerReductionSpec(method=method or "hierarchical_js", target_k=1)
+        self._stmt = ReduceStmt(target="layers", spec=spec)
+
+    def method(self, name: str) -> "LayerReductionBuilder":
+        self._stmt.spec.method = name
+        return self
+
+    def target_k(self, k: int) -> "LayerReductionBuilder":
+        self._stmt.spec.target_k = int(k)
+        return self
+
+    def distance(self, name: str, **kwargs) -> "LayerReductionBuilder":
+        self._stmt.spec.distance = DistanceSpec(name=name, params=kwargs)
+        return self
+
+    def criterion(self, name: str) -> "LayerReductionBuilder":
+        self._stmt.spec.criterion = name
+        return self
+
+    def min_similarity(self, x: float) -> "LayerReductionBuilder":
+        self._stmt.spec.min_similarity = float(x)
+        return self
+
+    def preserve_interlayer(self, keep: bool = True) -> "LayerReductionBuilder":
+        self._stmt.spec.preserve_interlayer = bool(keep)
+        return self
+
+    def aggregate(self, mode: str) -> "LayerReductionBuilder":
+        self._stmt.spec.aggregate = mode
+        return self
+
+    def report(self, level: str = "full") -> "LayerReductionBuilder":
+        self._stmt.spec.report_level = level
+        return self
+
+    def seed(self, seed: int) -> "LayerReductionBuilder":
+        self._stmt.spec.seed = int(seed)
+        return self
+
+    def execute(self, network: Any):
+        from .reduction import execute_reduce_stmt
+
+        return execute_reduce_stmt(network, self._stmt)
+
+    def to_ast(self) -> ReduceStmt:
+        return self._stmt
+
+
+class _ReduceNamespace:
+    """Namespace for reduction tasks (Q.reduce.*)."""
+
+    @staticmethod
+    def layers(method: Optional[str] = None) -> LayerReductionBuilder:
+        return LayerReductionBuilder(method=method)
+
+
+# Attach first-class task namespaces after class definitions.
+Q.predict = _PredictNamespace()
+Q.reduce = _ReduceNamespace()
 
 
 # ============================================================================

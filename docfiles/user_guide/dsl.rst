@@ -209,6 +209,110 @@ Here's a complete working example using the modern Builder API::
 
    **Legacy String DSL**: The original string-based DSL using ``execute_query()`` and ``format_result()`` is still available for backward compatibility but is **not recommended for new code**. See the "String DSL (Legacy)" section below for details.
 
+Predictive Tasks DSL (Link Prediction)
+--------------------------------------
+
+DSL v2 includes a first-class predictive workflow builder for link prediction:
+
+.. code-block:: python
+
+    from py3plex.dsl import Q, L
+
+    lp = (
+        Q.predict.links()
+         .scope(layers=L["work"] + L["leisure"])
+         .split(strategy="temporal_holdout", test_frac=0.2)
+         .model("node2vec", dim=64, walk_len=40, num_walks=8, seed=42)
+         .edge_features("hadamard")
+         .classifier("logreg", C=1.0)
+         .negative_sampling(strategy="uniform", ratio=1.0, seed=42)
+         .evaluate(metrics=["roc_auc", "average_precision", "precision@100"])
+         .execute(network)
+    )
+
+    print(lp.metrics)
+    print(lp.report())
+    df = lp.to_pandas()
+
+Compact form is supported:
+
+.. code-block:: python
+
+    Q.predict.links().temporal_holdout(0.2).model("node2vec").eval(["roc_auc", "ap"])
+
+Supported split strategies:
+
+- ``random_holdout`` (default)
+- ``temporal_holdout`` (requires temporal edge attributes)
+- ``by_layer_holdout`` (stratified by layer pair)
+
+Supported models:
+
+- Heuristics: ``common_neighbors``, ``jaccard``, ``adamic_adar``, ``preferential_attachment``
+- Embedding pipeline: ``node2vec`` + edge operators (``hadamard``, ``l1``, ``l2``, ``concat``)
+
+Supported metrics:
+
+- ``roc_auc``
+- ``average_precision`` (alias: ``ap``)
+- ``precision@k`` and ``recall@k`` (e.g. ``precision@100``)
+- ``mean_average_precision`` (alias: ``map``)
+
+Semantics and pitfalls:
+
+- If no layer scope is provided, prediction runs across all layers and emits a warning.
+- Temporal holdout prevents future-edge leakage by sorting edges by time and splitting chronologically.
+- Negative sampling defaults to same-layer negatives unless interlayer prediction is explicitly enabled via scope.
+- Large candidate spaces and severe class imbalance are surfaced through warnings in result metadata.
+
+Layer Reduction DSL
+-------------------
+
+DSL v2 also includes first-class multilayer reduction:
+
+.. code-block:: python
+
+    reduction = (
+        Q.reduce.layers(method="von_neumann_entropy")
+         .target_k(3)
+         .distance("js_divergence")
+         .execute(network)
+    )
+
+    reduced_network = reduction.network
+    mapping = reduction.layer_mapping
+    print(reduction.report())
+
+Alternative forms:
+
+.. code-block:: python
+
+    Q.reduce.layers(method="strata_sbm").target_k(4).execute(network)
+    Q.reduce.layers().method("hierarchical_js").target_k(5).execute(network)
+
+Reduction methods:
+
+- ``hierarchical_js`` (hierarchical clustering baseline)
+- ``von_neumann_entropy`` (v1 entropy-informed approximation)
+- ``strata_sbm`` (v1 lightweight SBM-signature approximation)
+
+Distance options:
+
+- ``js_divergence``
+- ``spectral_distance``
+- ``edge_overlap`` (converted to distance)
+- ``degree_distribution_js``
+
+Reduced-layer semantics in py3plex:
+
+- Node replicas ``(node, layer)`` are remapped to ``(node, reduced_layer)`` via ``layer_mapping``.
+- Intra-layer and interlayer edges are re-aggregated according to ``aggregate`` mode:
+  - ``sum`` (default)
+  - ``mean``
+  - ``binary_or``
+- Interlayer edges are preserved by default (``preserve_interlayer=True``) and can be dropped explicitly.
+- Result provenance captures method, distance, target_k, aggregation mode, and approximation warnings.
+
 Query Components
 ----------------
 
