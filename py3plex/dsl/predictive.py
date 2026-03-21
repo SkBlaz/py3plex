@@ -6,11 +6,10 @@ This module implements first-class link prediction workflows for DSL v2.
 from __future__ import annotations
 
 import copy
-import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Sequence, Tuple
 
 import networkx as nx
 import numpy as np
@@ -21,12 +20,7 @@ from py3plex.core.multinet import multi_layer_network
 from py3plex.ml.embedding.node2vec import Node2VecEmbedding
 
 from .ast import (
-    EvalSpec,
-    LinkPredictionSpec,
-    ModelSpec,
-    NegativeSamplingSpec,
     PredictStmt,
-    SplitSpec,
 )
 from .errors import (
     NegativeSamplingError,
@@ -39,13 +33,13 @@ logger = logging.getLogger(__name__)
 EdgeKey = Tuple[Tuple[Any, Any], Tuple[Any, Any]]
 
 
-def _canonical_edge(u: Tuple[Any, Any], v: Tuple[Any, Any], directed: bool) -> EdgeKey:
+def _canonical_edge(u: tuple[Any, Any], v: tuple[Any, Any], directed: bool) -> EdgeKey:
     if directed:
         return (u, v)
     return (u, v) if str(u) <= str(v) else (v, u)
 
 
-def _extract_edge_tuple(edge: Tuple[Any, ...]) -> Tuple[Tuple[Any, Any], Tuple[Any, Any], Dict[str, Any]]:
+def _extract_edge_tuple(edge: tuple[Any, ...]) -> tuple[tuple[Any, Any], tuple[Any, Any], dict[str, Any]]:
     if len(edge) >= 4 and isinstance(edge[-1], dict):  # multiplex path with key
         return edge[0], edge[1], edge[-1]
     if len(edge) >= 3 and isinstance(edge[-1], dict):
@@ -74,21 +68,21 @@ def _js_divergence(p: np.ndarray, q: np.ndarray, eps: float = 1e-12) -> float:
 @dataclass
 class _PredictRegistryEntry:
     name: str
-    aliases: Tuple[str, ...]
+    aliases: tuple[str, ...]
     deterministic: bool
     impl: Any
-    capabilities: Dict[str, Any] = field(default_factory=dict)
+    capabilities: dict[str, Any] = field(default_factory=dict)
 
 
-SPLIT_REGISTRY: Dict[str, _PredictRegistryEntry] = {}
-NEGATIVE_SAMPLER_REGISTRY: Dict[str, _PredictRegistryEntry] = {}
-MODEL_REGISTRY: Dict[str, _PredictRegistryEntry] = {}
-EDGE_FEATURE_REGISTRY: Dict[str, _PredictRegistryEntry] = {}
-CLASSIFIER_REGISTRY: Dict[str, _PredictRegistryEntry] = {}
-EVALUATOR_REGISTRY: Dict[str, _PredictRegistryEntry] = {}
+SPLIT_REGISTRY: dict[str, _PredictRegistryEntry] = {}
+NEGATIVE_SAMPLER_REGISTRY: dict[str, _PredictRegistryEntry] = {}
+MODEL_REGISTRY: dict[str, _PredictRegistryEntry] = {}
+EDGE_FEATURE_REGISTRY: dict[str, _PredictRegistryEntry] = {}
+CLASSIFIER_REGISTRY: dict[str, _PredictRegistryEntry] = {}
+EVALUATOR_REGISTRY: dict[str, _PredictRegistryEntry] = {}
 
 
-def _register(registry: Dict[str, _PredictRegistryEntry], entry: _PredictRegistryEntry) -> None:
+def _register(registry: dict[str, _PredictRegistryEntry], entry: _PredictRegistryEntry) -> None:
     registry[entry.name] = entry
     for alias in entry.aliases:
         registry[alias] = entry
@@ -99,10 +93,10 @@ class PredictionResult:
 
     def __init__(
         self,
-        metrics: Dict[str, float],
-        predictions: List[Dict[str, Any]],
-        meta: Optional[Dict[str, Any]] = None,
-        replay_fn: Optional[Callable[[], "PredictionResult"]] = None,
+        metrics: dict[str, float],
+        predictions: list[dict[str, Any]],
+        meta: dict[str, Any] | None = None,
+        replay_fn: Callable[[], PredictionResult] | None = None,
     ):
         self.metrics = metrics
         self.predictions = predictions
@@ -110,14 +104,14 @@ class PredictionResult:
         self._replay_fn = replay_fn
 
     @property
-    def provenance(self) -> Optional[Dict[str, Any]]:
+    def provenance(self) -> dict[str, Any] | None:
         return self.meta.get("provenance")
 
     @property
     def is_replayable(self) -> bool:
         return self._replay_fn is not None
 
-    def replay(self) -> "PredictionResult":
+    def replay(self) -> PredictionResult:
         if not self._replay_fn:
             raise PredictionTaskError("Prediction result is not replayable.")
         return self._replay_fn()
@@ -127,7 +121,7 @@ class PredictionResult:
 
         return pd.DataFrame(self.predictions)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "metrics": dict(self.metrics),
             "predictions": list(self.predictions),
@@ -152,20 +146,32 @@ class PredictionResult:
         )
 
 
-def _resolve_scope_layers(network: Any, layers_expr: Any) -> Optional[set]:
+def _resolve_scope_layers(network: Any, layers_expr: Any) -> set | None:
     if layers_expr is None:
         return None
     if hasattr(layers_expr, "resolve"):
         return set(layers_expr.resolve(network))
     if hasattr(layers_expr, "terms"):
-        return {term.name for term in layers_expr.terms}
+        all_layers = {layer for _, layer in network.get_nodes()}
+        if not layers_expr.terms:
+            return set()
+        current = {layers_expr.terms[0].name}
+        for op, term in zip(layers_expr.ops, layers_expr.terms[1:]):
+            rhs = {term.name}
+            if op == "+":
+                current = current | rhs
+            elif op == "-":
+                current = current - rhs
+            elif op == "&":
+                current = current & rhs
+        return current & all_layers
     if isinstance(layers_expr, (list, tuple, set)):
         return set(layers_expr)
     return {str(layers_expr)}
 
 
-def _iter_scoped_edges(network: Any, allowed_layers: Optional[set]) -> List[Tuple[EdgeKey, Dict[str, Any]]]:
-    out: List[Tuple[EdgeKey, Dict[str, Any]]] = []
+def _iter_scoped_edges(network: Any, allowed_layers: set | None) -> list[tuple[EdgeKey, dict[str, Any]]]:
+    out: list[tuple[EdgeKey, dict[str, Any]]] = []
     directed = bool(getattr(network, "directed", False))
     for raw in network.get_edges(data=True):
         u, v, data = _extract_edge_tuple(raw)
@@ -175,7 +181,7 @@ def _iter_scoped_edges(network: Any, allowed_layers: Optional[set]) -> List[Tupl
     return out
 
 
-def _extract_edge_time(data: Dict[str, Any]) -> Optional[float]:
+def _extract_edge_time(data: dict[str, Any]) -> float | None:
     if "t_start" in data:
         return _to_numpy_scalar(data["t_start"])
     if "t" in data:
@@ -186,10 +192,10 @@ def _extract_edge_time(data: Dict[str, Any]) -> Optional[float]:
 
 
 def _split_random_holdout(
-    positives: List[Tuple[EdgeKey, Dict[str, Any]]],
+    positives: list[tuple[EdgeKey, dict[str, Any]]],
     test_frac: float,
-    seed: Optional[int],
-) -> Tuple[List[EdgeKey], List[EdgeKey], Dict[str, Any]]:
+    seed: int | None,
+) -> tuple[list[EdgeKey], list[EdgeKey], dict[str, Any]]:
     if not positives:
         return [], [], {"strategy": "random_holdout", "test_frac": test_frac}
     rng = np.random.default_rng(seed)
@@ -203,10 +209,10 @@ def _split_random_holdout(
 
 
 def _split_temporal_holdout(
-    positives: List[Tuple[EdgeKey, Dict[str, Any]]],
+    positives: list[tuple[EdgeKey, dict[str, Any]]],
     test_frac: float,
-) -> Tuple[List[EdgeKey], List[EdgeKey], Dict[str, Any]]:
-    timed: List[Tuple[EdgeKey, float]] = []
+) -> tuple[list[EdgeKey], list[EdgeKey], dict[str, Any]]:
+    timed: list[tuple[EdgeKey, float]] = []
     for edge, data in positives:
         t = _extract_edge_time(data)
         if t is None:
@@ -226,20 +232,52 @@ def _split_temporal_holdout(
     }
 
 
+def _split_by_layer_holdout(
+    positives: list[tuple[EdgeKey, dict[str, Any]]],
+    test_frac: float,
+    seed: int | None,
+) -> tuple[list[EdgeKey], list[EdgeKey], dict[str, Any]]:
+    rng = np.random.default_rng(seed)
+    by_layer: dict[tuple[Any, Any], list[EdgeKey]] = {}
+    for edge, _ in positives:
+        pair = (edge[0][1], edge[1][1])
+        by_layer.setdefault(pair, []).append(edge)
+    train: list[EdgeKey] = []
+    test: list[EdgeKey] = []
+    for _, edges in sorted(by_layer.items(), key=lambda kv: str(kv[0])):
+        idx = np.arange(len(edges))
+        rng.shuffle(idx)
+        n_test = max(1, int(round(len(edges) * test_frac))) if len(edges) > 1 else 0
+        tset = set(idx[:n_test].tolist())
+        for i, e in enumerate(edges):
+            if i in tset:
+                test.append(e)
+            else:
+                train.append(e)
+    if not test and train:
+        test.append(train.pop())
+    return train, test, {
+        "strategy": "by_layer_holdout",
+        "test_frac": test_frac,
+        "seed": seed,
+        "n_layer_pairs": len(by_layer),
+    }
+
+
 def _sample_negative_edges(
     graph: nx.Graph,
-    candidate_nodes: Sequence[Tuple[Any, Any]],
+    candidate_nodes: Sequence[tuple[Any, Any]],
     num_needed: int,
     directed: bool,
     same_layer_only: bool,
     rng: np.random.Generator,
-    forbidden: Optional[set] = None,
-) -> List[EdgeKey]:
+    forbidden: set | None = None,
+) -> list[EdgeKey]:
     forbidden = forbidden or set()
     nodes = list(candidate_nodes)
     if len(nodes) < 2:
         return []
-    sampled: List[EdgeKey] = []
+    sampled: list[EdgeKey] = []
     seen = set(forbidden)
     max_trials = max(1000, num_needed * 30)
     trials = 0
@@ -313,7 +351,7 @@ def _edge_feature_composer(kind: str) -> Callable[[np.ndarray, np.ndarray], np.n
     )
 
 
-def _compute_metric(metric: str, y_true: np.ndarray, y_score: np.ndarray, k: Optional[int] = None) -> float:
+def _compute_metric(metric: str, y_true: np.ndarray, y_score: np.ndarray, k: int | None = None) -> float:
     m = metric.lower()
     if m in ("ap", "average_precision"):
         return float(average_precision_score(y_true, y_score))
@@ -343,8 +381,8 @@ def _compute_metric(metric: str, y_true: np.ndarray, y_score: np.ndarray, k: Opt
 
 def _build_train_network(
     original_network: Any,
-    train_edges: List[EdgeKey],
-    scope_layers: Optional[set],
+    train_edges: list[EdgeKey],
+    scope_layers: set | None,
 ) -> multi_layer_network:
     directed = bool(getattr(original_network, "directed", False))
     train_net = multi_layer_network(network_type="multilayer", directed=directed)
@@ -390,6 +428,10 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
 
     if spec.split.strategy == "temporal_holdout":
         train_pos, test_pos, split_meta = _split_temporal_holdout(scoped_edges, spec.split.test_frac)
+    elif spec.split.strategy == "by_layer_holdout":
+        train_pos, test_pos, split_meta = _split_by_layer_holdout(
+            scoped_edges, spec.split.test_frac, spec.split.seed
+        )
     else:
         train_pos, test_pos, split_meta = _split_random_holdout(
             scoped_edges, spec.split.test_frac, spec.split.seed
@@ -435,7 +477,7 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
         raise NegativeSamplingError("Failed to sample enough negative edges.")
 
     model_name = spec.model.name.lower()
-    model_meta: Dict[str, Any] = {"model": model_name, "params": dict(spec.model.params)}
+    model_meta: dict[str, Any] = {"model": model_name, "params": dict(spec.model.params)}
 
     if model_name == "node2vec":
         embed = Node2VecEmbedding(
@@ -487,7 +529,7 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
         y_true = np.asarray([1] * len(test_pos) + [0] * len(test_neg))
         scores = np.asarray([scorer(e) for e in test_edges], dtype=float)
 
-    metrics: Dict[str, float] = {}
+    metrics: dict[str, float] = {}
     for m in spec.eval.metrics:
         metrics[m] = _compute_metric(m, y_true, scores, k=spec.top_k)
 
@@ -525,7 +567,7 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
     else:
         per_layer = {}
 
-    warnings: List[str] = []
+    warnings: list[str] = []
     if scope_layers is None:
         warnings.append("No explicit layer scope provided; predicting across all layers.")
     if spec.split.strategy == "temporal_holdout":
@@ -589,6 +631,10 @@ def _register_defaults() -> None:
         _PredictRegistryEntry("temporal_holdout", ("temporal",), True, _split_temporal_holdout),
     )
     _register(
+        SPLIT_REGISTRY,
+        _PredictRegistryEntry("by_layer_holdout", ("layer_holdout",), True, _split_by_layer_holdout),
+    )
+    _register(
         NEGATIVE_SAMPLER_REGISTRY,
         _PredictRegistryEntry("uniform", ("random",), True, _sample_negative_edges),
     )
@@ -624,4 +670,3 @@ def _register_defaults() -> None:
 
 
 _register_defaults()
-

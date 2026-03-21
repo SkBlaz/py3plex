@@ -4538,9 +4538,6 @@ class Q:
         >>> Q.trajectories("sim_result").at(50)  # Query trajectories
     """
 
-    predict = _PredictNamespace()
-    reduce = _ReduceNamespace()
-
     @staticmethod
     def nodes(autocompute: bool = True) -> QueryBuilder:
         """Create a query builder for nodes.
@@ -5386,7 +5383,6 @@ class UQ:
 # ==============================================================================
 # Builder API for DSL Extensions
 # ==============================================================================
-
 
 class CompareBuilder:
     """Builder for COMPARE statements.
@@ -6777,6 +6773,11 @@ class _ReduceNamespace:
     @staticmethod
     def layers(method: Optional[str] = None) -> LayerReductionBuilder:
         return LayerReductionBuilder(method=method)
+
+
+# Attach first-class task namespaces after class definitions.
+Q.predict = _PredictNamespace()
+Q.reduce = _ReduceNamespace()
 
 
 # ============================================================================

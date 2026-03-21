@@ -5,7 +5,7 @@ from __future__ import annotations
 import copy
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Callable
 
 import numpy as np
 from scipy.cluster.hierarchy import fcluster, linkage
@@ -14,24 +14,24 @@ from scipy.spatial.distance import squareform
 from py3plex.core.multinet import multi_layer_network
 from py3plex.algorithms.statistics import multilayer_statistics as mls
 
-from .ast import DistanceSpec, LayerReductionSpec, ReduceStmt
+from .ast import LayerReductionSpec, ReduceStmt
 from .errors import LayerReductionError, ReductionMethodError
 
 
 @dataclass
 class _ReductionRegistryEntry:
     name: str
-    aliases: Tuple[str, ...]
+    aliases: tuple[str, ...]
     deterministic: bool
     impl: Any
-    capabilities: Dict[str, Any] = field(default_factory=dict)
+    capabilities: dict[str, Any] = field(default_factory=dict)
 
 
-DISTANCE_REGISTRY: Dict[str, _ReductionRegistryEntry] = {}
-REDUCTION_REGISTRY: Dict[str, _ReductionRegistryEntry] = {}
+DISTANCE_REGISTRY: dict[str, _ReductionRegistryEntry] = {}
+REDUCTION_REGISTRY: dict[str, _ReductionRegistryEntry] = {}
 
 
-def _register(registry: Dict[str, _ReductionRegistryEntry], entry: _ReductionRegistryEntry) -> None:
+def _register(registry: dict[str, _ReductionRegistryEntry], entry: _ReductionRegistryEntry) -> None:
     registry[entry.name] = entry
     for alias in entry.aliases:
         registry[alias] = entry
@@ -43,12 +43,12 @@ class LayerReductionResult:
     def __init__(
         self,
         network: multi_layer_network,
-        layer_mapping: Dict[str, str],
-        merge_tree: Optional[List[Any]] = None,
-        loss_curve: Optional[List[Dict[str, Any]]] = None,
-        similarity_matrix: Optional[np.ndarray] = None,
-        meta: Optional[Dict[str, Any]] = None,
-        replay_fn: Optional[Callable[[], "LayerReductionResult"]] = None,
+        layer_mapping: dict[str, str],
+        merge_tree: list[Any] | None = None,
+        loss_curve: list[dict[str, Any]] | None = None,
+        similarity_matrix: np.ndarray | None = None,
+        meta: dict[str, Any] | None = None,
+        replay_fn: Callable[[], LayerReductionResult] | None = None,
     ):
         self.network = network
         self.layer_mapping = layer_mapping
@@ -59,19 +59,19 @@ class LayerReductionResult:
         self._replay_fn = replay_fn
 
     @property
-    def provenance(self) -> Optional[Dict[str, Any]]:
+    def provenance(self) -> dict[str, Any] | None:
         return self.meta.get("provenance")
 
     @property
     def is_replayable(self) -> bool:
         return self._replay_fn is not None
 
-    def replay(self) -> "LayerReductionResult":
+    def replay(self) -> LayerReductionResult:
         if not self._replay_fn:
             raise LayerReductionError("Layer reduction result is not replayable.")
         return self._replay_fn()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "layer_mapping": dict(self.layer_mapping),
             "loss_curve": list(self.loss_curve),
@@ -109,7 +109,7 @@ class LayerReductionResult:
         )
 
 
-def _layer_names(network: Any) -> List[str]:
+def _layer_names(network: Any) -> list[str]:
     return sorted({layer for _, layer in network.get_nodes()})
 
 
@@ -177,7 +177,7 @@ def _distance_degree_distribution_js(network: Any, layer_i: str, layer_j: str) -
     return _distance_js_divergence(network, layer_i, layer_j)
 
 
-def _compute_distance_matrix(network: Any, layers: List[str], distance_name: str) -> np.ndarray:
+def _compute_distance_matrix(network: Any, layers: list[str], distance_name: str) -> np.ndarray:
     if distance_name not in DISTANCE_REGISTRY:
         raise ReductionMethodError(f"Unknown distance '{distance_name}'.")
     n = len(layers)
@@ -193,7 +193,7 @@ def _compute_distance_matrix(network: Any, layers: List[str], distance_name: str
     return mat
 
 
-def _cluster_layers(distance_matrix: np.ndarray, target_k: int, seed: Optional[int] = None) -> np.ndarray:
+def _cluster_layers(distance_matrix: np.ndarray, target_k: int, seed: int | None = None) -> np.ndarray:
     if distance_matrix.shape[0] <= 1:
         return np.ones((distance_matrix.shape[0],), dtype=int)
     condensed = squareform(distance_matrix, checks=False)
@@ -204,7 +204,7 @@ def _cluster_layers(distance_matrix: np.ndarray, target_k: int, seed: Optional[i
 
 def _merge_network(
     network: Any,
-    layer_mapping: Dict[str, str],
+    layer_mapping: dict[str, str],
     aggregate: str = "sum",
     preserve_interlayer: bool = True,
 ) -> multi_layer_network:
@@ -217,8 +217,8 @@ def _merge_network(
     if node_set:
         reduced.add_nodes([{"source": n, "type": l} for n, l in sorted(node_set, key=lambda x: str(x))])
 
-    edge_acc: Dict[Tuple[Tuple[Any, str], Tuple[Any, str]], float] = {}
-    edge_count: Dict[Tuple[Tuple[Any, str], Tuple[Any, str]], int] = {}
+    edge_acc: dict[tuple[tuple[Any, str], tuple[Any, str]], float] = {}
+    edge_count: dict[tuple[tuple[Any, str], tuple[Any, str]], int] = {}
     for raw in network.get_edges(data=True):
         if len(raw) < 2:
             continue

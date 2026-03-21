@@ -48,6 +48,8 @@ from py3plex.dsl import (
     ParameterMissingError,
     # Registry
     measure_registry,
+    PredictStmt,
+    ReduceStmt,
 )
 
 
@@ -193,6 +195,21 @@ class TestBuilderAPI:
         builder = Q.edges()
         assert isinstance(builder, QueryBuilder)
         assert builder._select.target == Target.EDGES
+
+    def test_q_predict_links_builder_exists(self):
+        """Test Q.predict.links() factory."""
+        builder = Q.predict.links()
+        ast = builder.to_ast()
+        assert isinstance(ast, PredictStmt)
+        assert ast.task == "links"
+
+    def test_q_reduce_layers_builder_exists(self):
+        """Test Q.reduce.layers() factory."""
+        builder = Q.reduce.layers(method="hierarchical_js").target_k(2)
+        ast = builder.to_ast()
+        assert isinstance(ast, ReduceStmt)
+        assert ast.spec.method == "hierarchical_js"
+        assert ast.spec.target_k == 2
 
     def test_where_equality(self, sample_network):
         """Test where with simple equality."""
