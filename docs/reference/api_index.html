@@ -617,9 +617,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#embeddings-and-wrappers">Embeddings and Wrappers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary"><code class="docutils literal notranslate"><span class="pre">call_node2vec_binary()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.train_node2vec_embedding.learn_embedding"><code class="docutils literal notranslate"><span class="pre">learn_embedding()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.train_node2vec_embedding.n2v_embedding"><code class="docutils literal notranslate"><span class="pre">n2v_embedding()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-py3plex.ml.embedding.base">Core Embedding APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-py3plex.wrappers.train_node2vec_embedding">Wrapper Entry Points</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#network-motifs-and-patterns">Network Motifs and Patterns</a></li>
@@ -697,9 +696,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration &amp; Environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
+<p class="caption" role="heading"><span class="caption-text">Examples, Recipes &amp; Embeddings</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/random_walks_embeddings.html">Random Walk Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/case_studies.html">Use Cases &amp; Case Studies</a></li>
 </ul>
@@ -32282,8 +32282,504 @@ This normalization is required for PageRank-style random walk algorithms.</p>
 </section>
 <section id="embeddings-and-wrappers">
 <h2>Embeddings and Wrappers<a class="headerlink" href="#embeddings-and-wrappers" title="Link to this heading"></a></h2>
-<p>Utilities for training embeddings and wrapper scripts.</p>
-<dl class="py function" id="module-py3plex.wrappers.train_node2vec_embedding">
+<p>Embedding primitives and wrapper scripts for training node representations.</p>
+<section id="module-py3plex.ml.embedding.base">
+<span id="core-embedding-apis"></span><h3>Core Embedding APIs<a class="headerlink" href="#module-py3plex.ml.embedding.base" title="Link to this heading"></a></h3>
+<p>Base embedding interfaces.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.BaseEmbedding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.base.</span></span><span class="sig-name descname"><span class="pre">BaseEmbedding</span></span><a class="headerlink" href="#py3plex.ml.embedding.base.BaseEmbedding" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base interface for first-class embedding models.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.BaseEmbedding.fit">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.BaseEmbedding" title="py3plex.embeddings.base.BaseEmbedding"><span class="pre">BaseEmbedding</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.BaseEmbedding.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit embedding model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.BaseEmbedding.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.BaseEmbedding.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit and transform in one call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.BaseEmbedding.get_embedding">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.BaseEmbedding.get_embedding" title="Link to this definition"></a></dt>
+<dd><p>Get vector for a single node.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.BaseEmbedding.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'base'</span></em><a class="headerlink" href="#py3plex.ml.embedding.base.BaseEmbedding.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.BaseEmbedding.to_numpy">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.BaseEmbedding.to_numpy" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to NumPy matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.BaseEmbedding.to_pandas">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.base.BaseEmbedding.to_pandas" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.BaseEmbedding.transform">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.BaseEmbedding.transform" title="Link to this definition"></a></dt>
+<dd><p>Transform nodes into embedding vectors.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.base.</span></span><span class="sig-name descname"><span class="pre">EmbeddingResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container for node or edge embedding vectors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.build_index">
+<span class="sig-name descname"><span class="pre">build_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hnsw'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.build_index" title="Link to this definition"></a></dt>
+<dd><p>Build optional ANN index for faster KNN lookup.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'kmeans'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.cluster" title="Link to this definition"></a></dt>
+<dd><p>Cluster embedding vectors and return node -&gt; cluster mapping.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.dim">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.dim" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.dimension">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dimension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.dimension" title="Link to this definition"></a></dt>
+<dd><p>Alias for embedding dimensionality.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.distance">
+<span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'euclidean'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.distance" title="Link to this definition"></a></dt>
+<dd><p>Distance convenience wrapper.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.expand_layers">
+<span class="sig-name descname"><span class="pre">expand_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.expand_layers" title="Link to this definition"></a></dt>
+<dd><p>Return identifiers in canonical <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> form.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.flatten_nodes">
+<span class="sig-name descname"><span class="pre">flatten_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.flatten_nodes" title="Link to this definition"></a></dt>
+<dd><p>Return base node identifiers without layer information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.get_embedding">
+<span class="sig-name descname"><span class="pre">get_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.get_embedding" title="Link to this definition"></a></dt>
+<dd><p>Get vector for item id.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.group_by_layer">
+<span class="sig-name descname"><span class="pre">group_by_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.group_by_layer" title="Link to this definition"></a></dt>
+<dd><p>Group identifiers by layer id.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.group_by_node">
+<span class="sig-name descname"><span class="pre">group_by_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.group_by_node" title="Link to this definition"></a></dt>
+<dd><p>Group identifiers by base node id.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.info" title="Link to this definition"></a></dt>
+<dd><p>Return structured provenance metadata.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.knn">
+<span class="sig-name descname"><span class="pre">knn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cosine'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.knn" title="Link to this definition"></a></dt>
+<dd><p>Return k nearest neighbors as (node_id, score).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.layers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">layers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.layers" title="Link to this definition"></a></dt>
+<dd><p>Unique layer ids in stable order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.load" title="Link to this definition"></a></dt>
+<dd><p>Load persisted embedding result.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.most_similar">
+<span class="sig-name descname"><span class="pre">most_similar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.most_similar" title="Link to this definition"></a></dt>
+<dd><p>Alias for <a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult.knn" title="py3plex.ml.embedding.base.EmbeddingResult.knn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">knn()</span></code></a> with cosine similarity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.n_items">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_items</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.n_items" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.nodes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.nodes" title="Link to this definition"></a></dt>
+<dd><p>Alias for item identifiers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.normalize">
+<span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.normalize" title="Link to this definition"></a></dt>
+<dd><p>L2-normalize all vectors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.norms">
+<span class="sig-name descname"><span class="pre">norms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.norms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.reduce">
+<span class="sig-name descname"><span class="pre">reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pca'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.reduce" title="Link to this definition"></a></dt>
+<dd><p>Reduce vectors to lower dimension.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.reorder">
+<span class="sig-name descname"><span class="pre">reorder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.reorder" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.reproduce">
+<span class="sig-name descname"><span class="pre">reproduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.reproduce" title="Link to this definition"></a></dt>
+<dd><p>Replay embedding computation from stored metadata.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.save" title="Link to this definition"></a></dt>
+<dd><p>Persist embedding result to parquet/arrow/npz.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.similarity">
+<span class="sig-name descname"><span class="pre">similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cosine'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.similarity" title="Link to this definition"></a></dt>
+<dd><p>Compute pairwise similarity/distance between two vectors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.similarity_matrix">
+<span class="sig-name descname"><span class="pre">similarity_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cosine'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.similarity_matrix" title="Link to this definition"></a></dt>
+<dd><p>Compute pairwise similarity/distance matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.subset">
+<span class="sig-name descname"><span class="pre">subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.subset" title="Link to this definition"></a></dt>
+<dd><p>Return a subset of embeddings by id.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.to_arrow">
+<span class="sig-name descname"><span class="pre">to_arrow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.to_arrow" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to an Arrow table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.to_numpy">
+<span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.to_numpy" title="Link to this definition"></a></dt>
+<dd><p>Return embedding matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.to_pandas" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to a pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.to_parquet">
+<span class="sig-name descname"><span class="pre">to_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.to_parquet" title="Link to this definition"></a></dt>
+<dd><p>Persist embeddings to parquet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.validate" title="Link to this definition"></a></dt>
+<dd><p>Validate embedding consistency checks.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.base.EmbeddingResult.vectors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vectors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#py3plex.ml.embedding.base.EmbeddingResult.vectors" title="Link to this definition"></a></dt>
+<dd><p>Dictionary mapping item id -&gt; embedding vector.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-py3plex.ml.embedding.trainer">Reusable embedding training utilities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.trainer.EmbeddingTrainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.trainer.</span></span><span class="sig-name descname"><span class="pre">EmbeddingTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'numpy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.trainer.EmbeddingTrainer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility class for random-walk + skipgram-style training.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.trainer.EmbeddingTrainer.generate_walks">
+<span class="sig-name descname"><span class="pre">generate_walks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">walk_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_walks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">biased</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.trainer.EmbeddingTrainer.generate_walks" title="Link to this definition"></a></dt>
+<dd><p>Generate random walks over graph nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.trainer.EmbeddingTrainer.optimize_embeddings">
+<span class="sig-name descname"><span class="pre">optimize_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">walk_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_walks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">biased</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'skipgram'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.trainer.EmbeddingTrainer.optimize_embeddings" title="Link to this definition"></a></dt>
+<dd><p>End-to-end train embeddings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.trainer.EmbeddingTrainer.train_skipgram">
+<span class="sig-name descname"><span class="pre">train_skipgram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'skipgram'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.trainer.EmbeddingTrainer.train_skipgram" title="Link to this definition"></a></dt>
+<dd><p>Train a lightweight skipgram proxy via co-occurrence + SVD.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.trainer.generate_walks">
+<span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.trainer.</span></span><span class="sig-name descname"><span class="pre">generate_walks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.ml.embedding.trainer.generate_walks" title="Link to this definition"></a></dt>
+<dd><p>Functional helper around <a class="reference internal" href="#py3plex.ml.embedding.trainer.EmbeddingTrainer.generate_walks" title="py3plex.ml.embedding.trainer.EmbeddingTrainer.generate_walks"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingTrainer.generate_walks</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.trainer.train_skipgram">
+<span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.trainer.</span></span><span class="sig-name descname"><span class="pre">train_skipgram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">walks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.trainer.train_skipgram" title="Link to this definition"></a></dt>
+<dd><p>Functional helper around <a class="reference internal" href="#py3plex.ml.embedding.trainer.EmbeddingTrainer.train_skipgram" title="py3plex.ml.embedding.trainer.EmbeddingTrainer.train_skipgram"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbeddingTrainer.train_skipgram</span></code></a>.</p>
+</dd></dl>
+
+<p id="module-py3plex.ml.embedding.node2vec">Node2Vec embedding model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.node2vec.Node2VecEmbedding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.node2vec.</span></span><span class="sig-name descname"><span class="pre">Node2VecEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">walk_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_walks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'numpy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.ml.embedding.base.BaseEmbedding" title="py3plex.embeddings.base.BaseEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEmbedding</span></code></a></p>
+<p>Biased random-walk node embedding.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.node2vec.Node2VecEmbedding.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding" title="py3plex.ml.embedding.node2vec.Node2VecEmbedding"><span class="pre">Node2VecEmbedding</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit embedding model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.node2vec.Node2VecEmbedding.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit and transform in one call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.node2vec.Node2VecEmbedding.get_embedding">
+<span class="sig-name descname"><span class="pre">get_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding.get_embedding" title="Link to this definition"></a></dt>
+<dd><p>Get vector for a single node.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.node2vec.Node2VecEmbedding.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'node2vec'</span></em><a class="headerlink" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.node2vec.Node2VecEmbedding.to_numpy">
+<span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding.to_numpy" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to NumPy matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.node2vec.Node2VecEmbedding.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding.to_pandas" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.node2vec.Node2VecEmbedding.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding.transform" title="Link to this definition"></a></dt>
+<dd><p>Transform nodes into embedding vectors.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-py3plex.ml.embedding.deepwalk">DeepWalk embedding model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.deepwalk.DeepWalkEmbedding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.deepwalk.</span></span><span class="sig-name descname"><span class="pre">DeepWalkEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">walk_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_walks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'numpy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.deepwalk.DeepWalkEmbedding" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.ml.embedding.node2vec.Node2VecEmbedding" title="py3plex.ml.embedding.node2vec.Node2VecEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node2VecEmbedding</span></code></a></p>
+<p>DeepWalk implementation as an unbiased Node2Vec variant.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.deepwalk.DeepWalkEmbedding.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'deepwalk'</span></em><a class="headerlink" href="#py3plex.ml.embedding.deepwalk.DeepWalkEmbedding.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<p id="module-py3plex.ml.embedding.netmf">NetMF embedding wrapper.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.netmf.NetMFEmbedding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.netmf.</span></span><span class="sig-name descname"><span class="pre">NetMFEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multilayer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'supra'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'randomized_svd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.netmf.NetMFEmbedding" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.ml.embedding.base.BaseEmbedding" title="py3plex.embeddings.base.BaseEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEmbedding</span></code></a></p>
+<p>Spectral DeepWalk approximation using NetMF.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.netmf.NetMFEmbedding.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.netmf.NetMFEmbedding" title="py3plex.ml.embedding.netmf.NetMFEmbedding"><span class="pre">NetMFEmbedding</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.netmf.NetMFEmbedding.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit embedding model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.netmf.NetMFEmbedding.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.netmf.NetMFEmbedding.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit and transform in one call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.netmf.NetMFEmbedding.get_embedding">
+<span class="sig-name descname"><span class="pre">get_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.netmf.NetMFEmbedding.get_embedding" title="Link to this definition"></a></dt>
+<dd><p>Get vector for a single node.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.netmf.NetMFEmbedding.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'netmf'</span></em><a class="headerlink" href="#py3plex.ml.embedding.netmf.NetMFEmbedding.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.netmf.NetMFEmbedding.to_numpy">
+<span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.netmf.NetMFEmbedding.to_numpy" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to NumPy matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.netmf.NetMFEmbedding.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.netmf.NetMFEmbedding.to_pandas" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.netmf.NetMFEmbedding.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.netmf.NetMFEmbedding.transform" title="Link to this definition"></a></dt>
+<dd><p>Transform nodes into embedding vectors.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-py3plex.ml.embedding.line">LINE embedding model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.line.LINEEmbedding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.line.</span></span><span class="sig-name descname"><span class="pre">LINEEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.025</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.line.LINEEmbedding" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.ml.embedding.base.BaseEmbedding" title="py3plex.embeddings.base.BaseEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEmbedding</span></code></a></p>
+<p>Lightweight LINE approximation via sparse adjacency factorization.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.line.LINEEmbedding.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.line.LINEEmbedding" title="py3plex.ml.embedding.line.LINEEmbedding"><span class="pre">LINEEmbedding</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.line.LINEEmbedding.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit embedding model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.line.LINEEmbedding.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.line.LINEEmbedding.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit and transform in one call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.line.LINEEmbedding.get_embedding">
+<span class="sig-name descname"><span class="pre">get_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.line.LINEEmbedding.get_embedding" title="Link to this definition"></a></dt>
+<dd><p>Get vector for a single node.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.line.LINEEmbedding.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'line'</span></em><a class="headerlink" href="#py3plex.ml.embedding.line.LINEEmbedding.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.line.LINEEmbedding.to_numpy">
+<span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.line.LINEEmbedding.to_numpy" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to NumPy matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.line.LINEEmbedding.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.line.LINEEmbedding.to_pandas" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.line.LINEEmbedding.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.line.LINEEmbedding.transform" title="Link to this definition"></a></dt>
+<dd><p>Transform nodes into embedding vectors.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-py3plex.ml.embedding.metapath2vec">MetaPath2Vec embedding wrapper.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.ml.embedding.metapath2vec.</span></span><span class="sig-name descname"><span class="pre">MetaPath2VecEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metapaths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">walk_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_walks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.ml.embedding.base.BaseEmbedding" title="py3plex.embeddings.base.BaseEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEmbedding</span></code></a></p>
+<p>Meta-path guided embedding for multilayer networks.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding" title="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding"><span class="pre">MetaPath2VecEmbedding</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit embedding model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit and transform in one call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.get_embedding">
+<span class="sig-name descname"><span class="pre">get_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.get_embedding" title="Link to this definition"></a></dt>
+<dd><p>Get vector for a single node.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'metapath2vec'</span></em><a class="headerlink" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.to_numpy">
+<span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.to_numpy" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to NumPy matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.to_pandas" title="Link to this definition"></a></dt>
+<dd><p>Convert embeddings to pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.ml.embedding.base.EmbeddingResult" title="py3plex.embeddings.base.EmbeddingResult"><span class="pre">EmbeddingResult</span></a></span></span><a class="headerlink" href="#py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.transform" title="Link to this definition"></a></dt>
+<dd><p>Transform nodes into embedding vectors.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-py3plex.wrappers.train_node2vec_embedding">
+<span id="wrapper-entry-points"></span><h3>Wrapper Entry Points<a class="headerlink" href="#module-py3plex.wrappers.train_node2vec_embedding" title="Link to this heading"></a></h3>
+<dl class="py function">
 <dt class="sig sig-object py" id="py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary">
 <span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.train_node2vec_embedding.</span></span><span class="sig-name descname"><span class="pre">call_node2vec_binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary" title="Link to this definition"></a></dt>
 <dd><p>Call the Node2Vec C++ binary with specified parameters.</p>
@@ -32354,6 +32850,7 @@ This normalization is required for PageRank-style random walk algorithms.</p>
 </dl>
 </dd></dl>
 
+</section>
 </section>
 <section id="network-motifs-and-patterns">
 <h2>Network Motifs and Patterns<a class="headerlink" href="#network-motifs-and-patterns" title="Link to this heading"></a></h2>

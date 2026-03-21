@@ -2273,147 +2273,242 @@
 \indexentry{normalize\_exp() (in module py3plex.algorithms.network\_classification)@\spxentry{normalize\_exp()}\spxextra{in module py3plex.algorithms.network\_classification}|hyperpage}{811}
 \indexentry{normalize\_initial\_matrix\_freq() (in module py3plex.algorithms.network\_classification)@\spxentry{normalize\_initial\_matrix\_freq()}\spxextra{in module py3plex.algorithms.network\_classification}|hyperpage}{811}
 \indexentry{validate\_label\_propagation() (in module py3plex.algorithms.network\_classification)@\spxentry{validate\_label\_propagation()}\spxextra{in module py3plex.algorithms.network\_classification}|hyperpage}{811}
-\indexentry{module@\spxentry{module}!py3plex.wrappers.train\_node2vec\_embedding@\spxentry{py3plex.wrappers.train\_node2vec\_embedding}|hyperpage}{812}
-\indexentry{py3plex.wrappers.train\_node2vec\_embedding@\spxentry{py3plex.wrappers.train\_node2vec\_embedding}!module@\spxentry{module}|hyperpage}{812}
-\indexentry{call\_node2vec\_binary() (in module py3plex.wrappers.train\_node2vec\_embedding)@\spxentry{call\_node2vec\_binary()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}|hyperpage}{812}
-\indexentry{learn\_embedding() (in module py3plex.wrappers.train\_node2vec\_embedding)@\spxentry{learn\_embedding()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}|hyperpage}{813}
-\indexentry{n2v\_embedding() (in module py3plex.wrappers.train\_node2vec\_embedding)@\spxentry{n2v\_embedding()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}|hyperpage}{814}
-\indexentry{module@\spxentry{module}!py3plex.core.HINMINE.dataStructures@\spxentry{py3plex.core.HINMINE.dataStructures}|hyperpage}{815}
-\indexentry{py3plex.core.HINMINE.dataStructures@\spxentry{py3plex.core.HINMINE.dataStructures}!module@\spxentry{module}|hyperpage}{815}
-\indexentry{Class (class in py3plex.core.HINMINE.dataStructures)@\spxentry{Class}\spxextra{class in py3plex.core.HINMINE.dataStructures}|hyperpage}{815}
-\indexentry{HeterogeneousInformationNetwork (class in py3plex.core.HINMINE.dataStructures)@\spxentry{HeterogeneousInformationNetwork}\spxextra{class in py3plex.core.HINMINE.dataStructures}|hyperpage}{815}
-\indexentry{add\_label() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{add\_label()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{calculate\_decomposition\_candidates() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{calculate\_decomposition\_candidates()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{calculate\_schema() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{calculate\_schema()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{create\_label\_matrix() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{create\_label\_matrix()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{decompose\_from\_iterator() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{decompose\_from\_iterator()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{midpoint\_generator() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{midpoint\_generator()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{process\_network() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{process\_network()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{split\_to\_indices() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{split\_to\_indices()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{split\_to\_parts() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{split\_to\_parts()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{815}
-\indexentry{module@\spxentry{module}!py3plex.cli@\spxentry{py3plex.cli}|hyperpage}{815}
-\indexentry{py3plex.cli@\spxentry{py3plex.cli}!module@\spxentry{module}|hyperpage}{815}
-\indexentry{cmd\_aggregate() (in module py3plex.cli)@\spxentry{cmd\_aggregate()}\spxextra{in module py3plex.cli}|hyperpage}{815}
-\indexentry{cmd\_capabilities() (in module py3plex.cli)@\spxentry{cmd\_capabilities()}\spxextra{in module py3plex.cli}|hyperpage}{815}
-\indexentry{cmd\_centrality() (in module py3plex.cli)@\spxentry{cmd\_centrality()}\spxextra{in module py3plex.cli}|hyperpage}{815}
-\indexentry{cmd\_check() (in module py3plex.cli)@\spxentry{cmd\_check()}\spxextra{in module py3plex.cli}|hyperpage}{816}
-\indexentry{cmd\_community() (in module py3plex.cli)@\spxentry{cmd\_community()}\spxextra{in module py3plex.cli}|hyperpage}{816}
-\indexentry{cmd\_convert() (in module py3plex.cli)@\spxentry{cmd\_convert()}\spxextra{in module py3plex.cli}|hyperpage}{816}
-\indexentry{cmd\_create() (in module py3plex.cli)@\spxentry{cmd\_create()}\spxextra{in module py3plex.cli}|hyperpage}{816}
-\indexentry{cmd\_dsl\_lint() (in module py3plex.cli)@\spxentry{cmd\_dsl\_lint()}\spxextra{in module py3plex.cli}|hyperpage}{816}
-\indexentry{cmd\_help() (in module py3plex.cli)@\spxentry{cmd\_help()}\spxextra{in module py3plex.cli}|hyperpage}{816}
-\indexentry{cmd\_load() (in module py3plex.cli)@\spxentry{cmd\_load()}\spxextra{in module py3plex.cli}|hyperpage}{816}
-\indexentry{cmd\_query() (in module py3plex.cli)@\spxentry{cmd\_query()}\spxextra{in module py3plex.cli}|hyperpage}{817}
-\indexentry{cmd\_quickstart() (in module py3plex.cli)@\spxentry{cmd\_quickstart()}\spxextra{in module py3plex.cli}|hyperpage}{817}
-\indexentry{cmd\_run\_config() (in module py3plex.cli)@\spxentry{cmd\_run\_config()}\spxextra{in module py3plex.cli}|hyperpage}{817}
-\indexentry{cmd\_selftest() (in module py3plex.cli)@\spxentry{cmd\_selftest()}\spxextra{in module py3plex.cli}|hyperpage}{817}
-\indexentry{cmd\_stats() (in module py3plex.cli)@\spxentry{cmd\_stats()}\spxextra{in module py3plex.cli}|hyperpage}{817}
-\indexentry{cmd\_tutorial() (in module py3plex.cli)@\spxentry{cmd\_tutorial()}\spxextra{in module py3plex.cli}|hyperpage}{817}
-\indexentry{cmd\_visualize() (in module py3plex.cli)@\spxentry{cmd\_visualize()}\spxextra{in module py3plex.cli}|hyperpage}{817}
-\indexentry{create\_parser() (in module py3plex.cli)@\spxentry{create\_parser()}\spxextra{in module py3plex.cli}|hyperpage}{818}
-\indexentry{main() (in module py3plex.cli)@\spxentry{main()}\spxextra{in module py3plex.cli}|hyperpage}{818}
-\indexentry{module@\spxentry{module}!py3plex.validation@\spxentry{py3plex.validation}|hyperpage}{818}
-\indexentry{py3plex.validation@\spxentry{py3plex.validation}!module@\spxentry{module}|hyperpage}{818}
-\indexentry{validate\_csv\_columns() (in module py3plex.validation)@\spxentry{validate\_csv\_columns()}\spxextra{in module py3plex.validation}|hyperpage}{818}
-\indexentry{validate\_edgelist\_format() (in module py3plex.validation)@\spxentry{validate\_edgelist\_format()}\spxextra{in module py3plex.validation}|hyperpage}{818}
-\indexentry{validate\_file\_exists() (in module py3plex.validation)@\spxentry{validate\_file\_exists()}\spxextra{in module py3plex.validation}|hyperpage}{819}
-\indexentry{validate\_input\_type() (in module py3plex.validation)@\spxentry{validate\_input\_type()}\spxextra{in module py3plex.validation}|hyperpage}{819}
-\indexentry{validate\_multiedgelist\_format() (in module py3plex.validation)@\spxentry{validate\_multiedgelist\_format()}\spxextra{in module py3plex.validation}|hyperpage}{819}
-\indexentry{validate\_network\_data() (in module py3plex.validation)@\spxentry{validate\_network\_data()}\spxextra{in module py3plex.validation}|hyperpage}{819}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.learners.learner@\spxentry{py3plex.algorithms.hedwig.learners.learner}|hyperpage}{820}
-\indexentry{py3plex.algorithms.hedwig.learners.learner@\spxentry{py3plex.algorithms.hedwig.learners.learner}!module@\spxentry{module}|hyperpage}{820}
-\indexentry{Learner (class in py3plex.algorithms.hedwig.learners.learner)@\spxentry{Learner}\spxextra{class in py3plex.algorithms.hedwig.learners.learner}|hyperpage}{820}
-\indexentry{Default (py3plex.algorithms.hedwig.learners.learner.Learner attribute)@\spxentry{Default}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}|hyperpage}{820}
-\indexentry{Improvement (py3plex.algorithms.hedwig.learners.learner.Learner attribute)@\spxentry{Improvement}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}|hyperpage}{820}
-\indexentry{Similarity (py3plex.algorithms.hedwig.learners.learner.Learner attribute)@\spxentry{Similarity}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}|hyperpage}{820}
-\indexentry{can\_specialize() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{can\_specialize()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{extend() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{extend()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{extend\_replace\_worst() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{extend\_replace\_worst()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{extend\_with\_similarity() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{extend\_with\_similarity()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{get\_subclasses() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{get\_superclasses() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{get\_superclasses()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{group\_score() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{group\_score()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{induce() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{is\_implicit\_root() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{is\_implicit\_root()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{820}
-\indexentry{non\_redundant() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{non\_redundant()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{821}
-\indexentry{specialize() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{specialize()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{821}
-\indexentry{specialize\_add\_relation() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{specialize\_add\_relation()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{821}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.learners.bottomup@\spxentry{py3plex.algorithms.hedwig.learners.bottomup}|hyperpage}{821}
-\indexentry{py3plex.algorithms.hedwig.learners.bottomup@\spxentry{py3plex.algorithms.hedwig.learners.bottomup}!module@\spxentry{module}|hyperpage}{821}
-\indexentry{BottomUpLearner (class in py3plex.algorithms.hedwig.learners.bottomup)@\spxentry{BottomUpLearner}\spxextra{class in py3plex.algorithms.hedwig.learners.bottomup}|hyperpage}{821}
-\indexentry{Default (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute)@\spxentry{Default}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}|hyperpage}{821}
-\indexentry{Improvement (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute)@\spxentry{Improvement}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}|hyperpage}{821}
-\indexentry{Similarity (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute)@\spxentry{Similarity}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}|hyperpage}{821}
-\indexentry{bottom\_clause() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{bottom\_clause()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{821}
-\indexentry{get\_subclasses() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{821}
-\indexentry{get\_superclasses() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{get\_superclasses()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{821}
-\indexentry{induce() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{821}
-\indexentry{is\_implicit\_root() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{is\_implicit\_root()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{821}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.learners.optimal@\spxentry{py3plex.algorithms.hedwig.learners.optimal}|hyperpage}{821}
-\indexentry{py3plex.algorithms.hedwig.learners.optimal@\spxentry{py3plex.algorithms.hedwig.learners.optimal}!module@\spxentry{module}|hyperpage}{821}
-\indexentry{OptimalLearner (class in py3plex.algorithms.hedwig.learners.optimal)@\spxentry{OptimalLearner}\spxextra{class in py3plex.algorithms.hedwig.learners.optimal}|hyperpage}{821}
-\indexentry{induce() (py3plex.algorithms.hedwig.learners.optimal.OptimalLearner method)@\spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.optimal.OptimalLearner method}|hyperpage}{821}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.stats.scorefunctions@\spxentry{py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{py3plex.algorithms.hedwig.stats.scorefunctions@\spxentry{py3plex.algorithms.hedwig.stats.scorefunctions}!module@\spxentry{module}|hyperpage}{822}
-\indexentry{chisq() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{chisq()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{enrichment\_score() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{enrichment\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{interesting() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{interesting()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{kaplan\_meier\_AUC() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{kaplan\_meier\_AUC()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{leverage() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{leverage()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{lift() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{lift()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{precision() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{precision()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{t\_score() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{t\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{wracc() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{wracc()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{z\_score() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{z\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{822}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.stats.validate@\spxentry{py3plex.algorithms.hedwig.stats.validate}|hyperpage}{822}
-\indexentry{py3plex.algorithms.hedwig.stats.validate@\spxentry{py3plex.algorithms.hedwig.stats.validate}!module@\spxentry{module}|hyperpage}{822}
-\indexentry{Validate (class in py3plex.algorithms.hedwig.stats.validate)@\spxentry{Validate}\spxextra{class in py3plex.algorithms.hedwig.stats.validate}|hyperpage}{822}
-\indexentry{test() (py3plex.algorithms.hedwig.stats.validate.Validate method)@\spxentry{test()}\spxextra{py3plex.algorithms.hedwig.stats.validate.Validate method}|hyperpage}{822}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.core.converters@\spxentry{py3plex.algorithms.hedwig.core.converters}|hyperpage}{822}
-\indexentry{py3plex.algorithms.hedwig.core.converters@\spxentry{py3plex.algorithms.hedwig.core.converters}!module@\spxentry{module}|hyperpage}{822}
-\indexentry{convert\_mapping\_to\_rdf() (in module py3plex.algorithms.hedwig.core.converters)@\spxentry{convert\_mapping\_to\_rdf()}\spxextra{in module py3plex.algorithms.hedwig.core.converters}|hyperpage}{822}
-\indexentry{obo2n3() (in module py3plex.algorithms.hedwig.core.converters)@\spxentry{obo2n3()}\spxextra{in module py3plex.algorithms.hedwig.core.converters}|hyperpage}{822}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.core.kb@\spxentry{py3plex.algorithms.hedwig.core.kb}|hyperpage}{822}
-\indexentry{py3plex.algorithms.hedwig.core.kb@\spxentry{py3plex.algorithms.hedwig.core.kb}!module@\spxentry{module}|hyperpage}{822}
-\indexentry{ExperimentKB (class in py3plex.algorithms.hedwig.core.kb)@\spxentry{ExperimentKB}\spxextra{class in py3plex.algorithms.hedwig.core.kb}|hyperpage}{822}
-\indexentry{add\_sub\_class() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{add\_sub\_class()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{bits\_to\_indices() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{bits\_to\_indices()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_domains() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_domains()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_empty\_domain() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_empty\_domain()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_examples() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_examples()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_full\_domain() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_full\_domain()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_members() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_reverse\_members() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_reverse\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_root() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_root()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_score() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_score()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{get\_subclasses() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{indices\_to\_bits() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{indices\_to\_bits()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{is\_discrete\_target() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{is\_discrete\_target()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{n\_examples() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{n\_examples()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{n\_members() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{n\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{super\_classes() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{super\_classes()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{823}
-\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.core.settings@\spxentry{py3plex.algorithms.hedwig.core.settings}|hyperpage}{823}
-\indexentry{py3plex.algorithms.hedwig.core.settings@\spxentry{py3plex.algorithms.hedwig.core.settings}!module@\spxentry{module}|hyperpage}{823}
-\indexentry{Defaults (class in py3plex.algorithms.hedwig.core.settings)@\spxentry{Defaults}\spxextra{class in py3plex.algorithms.hedwig.core.settings}|hyperpage}{823}
-\indexentry{ADJUST (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{ADJUST}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{823}
-\indexentry{ALPHA (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{ALPHA}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{823}
-\indexentry{BEAM\_SIZE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{BEAM\_SIZE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{COVERED (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{COVERED}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{DEPTH (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{DEPTH}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{FDR\_Q (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{FDR\_Q}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{FORMAT (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{FORMAT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{LEARNER (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{LEARNER}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{LEAVES (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{LEAVES}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{MODE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{MODE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{NEGATIONS (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{NEGATIONS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{NO\_CACHE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{NO\_CACHE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{OPTIMAL\_SUBCLASS (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{OPTIMAL\_SUBCLASS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{OUTPUT (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{OUTPUT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{SCORE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{SCORE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{SUPPORT (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{SUPPORT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{TARGET (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{TARGET}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{URIS (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{URIS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{VERBOSE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{VERBOSE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{824}
-\indexentry{module@\spxentry{module}!py3plex.visualization.sankey@\spxentry{py3plex.visualization.sankey}|hyperpage}{824}
-\indexentry{py3plex.visualization.sankey@\spxentry{py3plex.visualization.sankey}!module@\spxentry{module}|hyperpage}{824}
-\indexentry{draw\_multilayer\_sankey() (in module py3plex.visualization.sankey)@\spxentry{draw\_multilayer\_sankey()}\spxextra{in module py3plex.visualization.sankey}|hyperpage}{824}
+\indexentry{module@\spxentry{module}!py3plex.ml.embedding.base@\spxentry{py3plex.ml.embedding.base}|hyperpage}{812}
+\indexentry{py3plex.ml.embedding.base@\spxentry{py3plex.ml.embedding.base}!module@\spxentry{module}|hyperpage}{812}
+\indexentry{BaseEmbedding (class in py3plex.ml.embedding.base)@\spxentry{BaseEmbedding}\spxextra{class in py3plex.ml.embedding.base}|hyperpage}{812}
+\indexentry{fit() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}|hyperpage}{812}
+\indexentry{fit\_transform() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}|hyperpage}{813}
+\indexentry{get\_embedding() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}|hyperpage}{813}
+\indexentry{name (py3plex.ml.embedding.base.BaseEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.base.BaseEmbedding attribute}|hyperpage}{813}
+\indexentry{to\_numpy() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}|hyperpage}{813}
+\indexentry{to\_pandas() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}|hyperpage}{813}
+\indexentry{transform() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}|hyperpage}{813}
+\indexentry{EmbeddingResult (class in py3plex.ml.embedding.base)@\spxentry{EmbeddingResult}\spxextra{class in py3plex.ml.embedding.base}|hyperpage}{813}
+\indexentry{build\_index() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{build\_index()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{cluster() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{cluster()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{dim (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{dim}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}|hyperpage}{813}
+\indexentry{dimension (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{dimension}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}|hyperpage}{813}
+\indexentry{distance() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{distance()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{expand\_layers() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{expand\_layers()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{flatten\_nodes() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{flatten\_nodes()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{get\_embedding() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{group\_by\_layer() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{group\_by\_layer()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{group\_by\_node() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{group\_by\_node()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{info() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{info()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{knn() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{knn()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{813}
+\indexentry{layers (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{layers}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}|hyperpage}{814}
+\indexentry{load() (py3plex.ml.embedding.base.EmbeddingResult class method)@\spxentry{load()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult class method}|hyperpage}{814}
+\indexentry{most\_similar() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{most\_similar()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{n\_items (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{n\_items}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}|hyperpage}{814}
+\indexentry{nodes (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{nodes}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}|hyperpage}{814}
+\indexentry{normalize() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{normalize()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{norms() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{norms()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{reduce() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{reduce()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{reorder() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{reorder()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{reproduce() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{reproduce()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{save() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{save()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{similarity() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{similarity()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{similarity\_matrix() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{similarity\_matrix()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{subset() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{subset()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{to\_arrow() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{to\_arrow()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{to\_numpy() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{to\_pandas() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{to\_parquet() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{to\_parquet()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{validate() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{validate()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}|hyperpage}{814}
+\indexentry{vectors (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{vectors}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}|hyperpage}{814}
+\indexentry{module@\spxentry{module}!py3plex.ml.embedding.trainer@\spxentry{py3plex.ml.embedding.trainer}|hyperpage}{815}
+\indexentry{py3plex.ml.embedding.trainer@\spxentry{py3plex.ml.embedding.trainer}!module@\spxentry{module}|hyperpage}{815}
+\indexentry{EmbeddingTrainer (class in py3plex.ml.embedding.trainer)@\spxentry{EmbeddingTrainer}\spxextra{class in py3plex.ml.embedding.trainer}|hyperpage}{815}
+\indexentry{generate\_walks() (py3plex.ml.embedding.trainer.EmbeddingTrainer method)@\spxentry{generate\_walks()}\spxextra{py3plex.ml.embedding.trainer.EmbeddingTrainer method}|hyperpage}{815}
+\indexentry{optimize\_embeddings() (py3plex.ml.embedding.trainer.EmbeddingTrainer method)@\spxentry{optimize\_embeddings()}\spxextra{py3plex.ml.embedding.trainer.EmbeddingTrainer method}|hyperpage}{815}
+\indexentry{train\_skipgram() (py3plex.ml.embedding.trainer.EmbeddingTrainer method)@\spxentry{train\_skipgram()}\spxextra{py3plex.ml.embedding.trainer.EmbeddingTrainer method}|hyperpage}{815}
+\indexentry{generate\_walks() (in module py3plex.ml.embedding.trainer)@\spxentry{generate\_walks()}\spxextra{in module py3plex.ml.embedding.trainer}|hyperpage}{815}
+\indexentry{train\_skipgram() (in module py3plex.ml.embedding.trainer)@\spxentry{train\_skipgram()}\spxextra{in module py3plex.ml.embedding.trainer}|hyperpage}{815}
+\indexentry{module@\spxentry{module}!py3plex.ml.embedding.node2vec@\spxentry{py3plex.ml.embedding.node2vec}|hyperpage}{815}
+\indexentry{py3plex.ml.embedding.node2vec@\spxentry{py3plex.ml.embedding.node2vec}!module@\spxentry{module}|hyperpage}{815}
+\indexentry{Node2VecEmbedding (class in py3plex.ml.embedding.node2vec)@\spxentry{Node2VecEmbedding}\spxextra{class in py3plex.ml.embedding.node2vec}|hyperpage}{815}
+\indexentry{fit() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}|hyperpage}{815}
+\indexentry{fit\_transform() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}|hyperpage}{815}
+\indexentry{get\_embedding() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}|hyperpage}{815}
+\indexentry{name (py3plex.ml.embedding.node2vec.Node2VecEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding attribute}|hyperpage}{816}
+\indexentry{to\_numpy() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}|hyperpage}{816}
+\indexentry{to\_pandas() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}|hyperpage}{816}
+\indexentry{transform() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}|hyperpage}{816}
+\indexentry{module@\spxentry{module}!py3plex.ml.embedding.deepwalk@\spxentry{py3plex.ml.embedding.deepwalk}|hyperpage}{816}
+\indexentry{py3plex.ml.embedding.deepwalk@\spxentry{py3plex.ml.embedding.deepwalk}!module@\spxentry{module}|hyperpage}{816}
+\indexentry{DeepWalkEmbedding (class in py3plex.ml.embedding.deepwalk)@\spxentry{DeepWalkEmbedding}\spxextra{class in py3plex.ml.embedding.deepwalk}|hyperpage}{816}
+\indexentry{name (py3plex.ml.embedding.deepwalk.DeepWalkEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.deepwalk.DeepWalkEmbedding attribute}|hyperpage}{816}
+\indexentry{module@\spxentry{module}!py3plex.ml.embedding.netmf@\spxentry{py3plex.ml.embedding.netmf}|hyperpage}{816}
+\indexentry{py3plex.ml.embedding.netmf@\spxentry{py3plex.ml.embedding.netmf}!module@\spxentry{module}|hyperpage}{816}
+\indexentry{NetMFEmbedding (class in py3plex.ml.embedding.netmf)@\spxentry{NetMFEmbedding}\spxextra{class in py3plex.ml.embedding.netmf}|hyperpage}{816}
+\indexentry{fit() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}|hyperpage}{816}
+\indexentry{fit\_transform() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}|hyperpage}{816}
+\indexentry{get\_embedding() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}|hyperpage}{816}
+\indexentry{name (py3plex.ml.embedding.netmf.NetMFEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding attribute}|hyperpage}{816}
+\indexentry{to\_numpy() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}|hyperpage}{816}
+\indexentry{to\_pandas() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}|hyperpage}{816}
+\indexentry{transform() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}|hyperpage}{816}
+\indexentry{module@\spxentry{module}!py3plex.ml.embedding.line@\spxentry{py3plex.ml.embedding.line}|hyperpage}{817}
+\indexentry{py3plex.ml.embedding.line@\spxentry{py3plex.ml.embedding.line}!module@\spxentry{module}|hyperpage}{817}
+\indexentry{LINEEmbedding (class in py3plex.ml.embedding.line)@\spxentry{LINEEmbedding}\spxextra{class in py3plex.ml.embedding.line}|hyperpage}{817}
+\indexentry{fit() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}|hyperpage}{817}
+\indexentry{fit\_transform() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}|hyperpage}{817}
+\indexentry{get\_embedding() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}|hyperpage}{817}
+\indexentry{name (py3plex.ml.embedding.line.LINEEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.line.LINEEmbedding attribute}|hyperpage}{817}
+\indexentry{to\_numpy() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}|hyperpage}{817}
+\indexentry{to\_pandas() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}|hyperpage}{817}
+\indexentry{transform() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}|hyperpage}{817}
+\indexentry{module@\spxentry{module}!py3plex.ml.embedding.metapath2vec@\spxentry{py3plex.ml.embedding.metapath2vec}|hyperpage}{817}
+\indexentry{py3plex.ml.embedding.metapath2vec@\spxentry{py3plex.ml.embedding.metapath2vec}!module@\spxentry{module}|hyperpage}{817}
+\indexentry{MetaPath2VecEmbedding (class in py3plex.ml.embedding.metapath2vec)@\spxentry{MetaPath2VecEmbedding}\spxextra{class in py3plex.ml.embedding.metapath2vec}|hyperpage}{817}
+\indexentry{fit() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}|hyperpage}{817}
+\indexentry{fit\_transform() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}|hyperpage}{817}
+\indexentry{get\_embedding() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}|hyperpage}{817}
+\indexentry{name (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding attribute}|hyperpage}{818}
+\indexentry{to\_numpy() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}|hyperpage}{818}
+\indexentry{to\_pandas() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}|hyperpage}{818}
+\indexentry{transform() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}|hyperpage}{818}
+\indexentry{module@\spxentry{module}!py3plex.wrappers.train\_node2vec\_embedding@\spxentry{py3plex.wrappers.train\_node2vec\_embedding}|hyperpage}{818}
+\indexentry{py3plex.wrappers.train\_node2vec\_embedding@\spxentry{py3plex.wrappers.train\_node2vec\_embedding}!module@\spxentry{module}|hyperpage}{818}
+\indexentry{call\_node2vec\_binary() (in module py3plex.wrappers.train\_node2vec\_embedding)@\spxentry{call\_node2vec\_binary()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}|hyperpage}{818}
+\indexentry{learn\_embedding() (in module py3plex.wrappers.train\_node2vec\_embedding)@\spxentry{learn\_embedding()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}|hyperpage}{818}
+\indexentry{n2v\_embedding() (in module py3plex.wrappers.train\_node2vec\_embedding)@\spxentry{n2v\_embedding()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}|hyperpage}{819}
+\indexentry{module@\spxentry{module}!py3plex.core.HINMINE.dataStructures@\spxentry{py3plex.core.HINMINE.dataStructures}|hyperpage}{820}
+\indexentry{py3plex.core.HINMINE.dataStructures@\spxentry{py3plex.core.HINMINE.dataStructures}!module@\spxentry{module}|hyperpage}{820}
+\indexentry{Class (class in py3plex.core.HINMINE.dataStructures)@\spxentry{Class}\spxextra{class in py3plex.core.HINMINE.dataStructures}|hyperpage}{820}
+\indexentry{HeterogeneousInformationNetwork (class in py3plex.core.HINMINE.dataStructures)@\spxentry{HeterogeneousInformationNetwork}\spxextra{class in py3plex.core.HINMINE.dataStructures}|hyperpage}{820}
+\indexentry{add\_label() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{add\_label()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{calculate\_decomposition\_candidates() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{calculate\_decomposition\_candidates()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{calculate\_schema() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{calculate\_schema()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{create\_label\_matrix() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{create\_label\_matrix()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{decompose\_from\_iterator() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{decompose\_from\_iterator()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{midpoint\_generator() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{midpoint\_generator()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{process\_network() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{process\_network()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{split\_to\_indices() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{split\_to\_indices()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{split\_to\_parts() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)@\spxentry{split\_to\_parts()}\spxextra{py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method}|hyperpage}{820}
+\indexentry{module@\spxentry{module}!py3plex.cli@\spxentry{py3plex.cli}|hyperpage}{820}
+\indexentry{py3plex.cli@\spxentry{py3plex.cli}!module@\spxentry{module}|hyperpage}{820}
+\indexentry{cmd\_aggregate() (in module py3plex.cli)@\spxentry{cmd\_aggregate()}\spxextra{in module py3plex.cli}|hyperpage}{820}
+\indexentry{cmd\_capabilities() (in module py3plex.cli)@\spxentry{cmd\_capabilities()}\spxextra{in module py3plex.cli}|hyperpage}{821}
+\indexentry{cmd\_centrality() (in module py3plex.cli)@\spxentry{cmd\_centrality()}\spxextra{in module py3plex.cli}|hyperpage}{821}
+\indexentry{cmd\_check() (in module py3plex.cli)@\spxentry{cmd\_check()}\spxextra{in module py3plex.cli}|hyperpage}{821}
+\indexentry{cmd\_community() (in module py3plex.cli)@\spxentry{cmd\_community()}\spxextra{in module py3plex.cli}|hyperpage}{821}
+\indexentry{cmd\_convert() (in module py3plex.cli)@\spxentry{cmd\_convert()}\spxextra{in module py3plex.cli}|hyperpage}{821}
+\indexentry{cmd\_create() (in module py3plex.cli)@\spxentry{cmd\_create()}\spxextra{in module py3plex.cli}|hyperpage}{821}
+\indexentry{cmd\_dsl\_lint() (in module py3plex.cli)@\spxentry{cmd\_dsl\_lint()}\spxextra{in module py3plex.cli}|hyperpage}{821}
+\indexentry{cmd\_help() (in module py3plex.cli)@\spxentry{cmd\_help()}\spxextra{in module py3plex.cli}|hyperpage}{822}
+\indexentry{cmd\_load() (in module py3plex.cli)@\spxentry{cmd\_load()}\spxextra{in module py3plex.cli}|hyperpage}{822}
+\indexentry{cmd\_query() (in module py3plex.cli)@\spxentry{cmd\_query()}\spxextra{in module py3plex.cli}|hyperpage}{822}
+\indexentry{cmd\_quickstart() (in module py3plex.cli)@\spxentry{cmd\_quickstart()}\spxextra{in module py3plex.cli}|hyperpage}{822}
+\indexentry{cmd\_run\_config() (in module py3plex.cli)@\spxentry{cmd\_run\_config()}\spxextra{in module py3plex.cli}|hyperpage}{822}
+\indexentry{cmd\_selftest() (in module py3plex.cli)@\spxentry{cmd\_selftest()}\spxextra{in module py3plex.cli}|hyperpage}{822}
+\indexentry{cmd\_stats() (in module py3plex.cli)@\spxentry{cmd\_stats()}\spxextra{in module py3plex.cli}|hyperpage}{822}
+\indexentry{cmd\_tutorial() (in module py3plex.cli)@\spxentry{cmd\_tutorial()}\spxextra{in module py3plex.cli}|hyperpage}{823}
+\indexentry{cmd\_visualize() (in module py3plex.cli)@\spxentry{cmd\_visualize()}\spxextra{in module py3plex.cli}|hyperpage}{823}
+\indexentry{create\_parser() (in module py3plex.cli)@\spxentry{create\_parser()}\spxextra{in module py3plex.cli}|hyperpage}{823}
+\indexentry{main() (in module py3plex.cli)@\spxentry{main()}\spxextra{in module py3plex.cli}|hyperpage}{823}
+\indexentry{module@\spxentry{module}!py3plex.validation@\spxentry{py3plex.validation}|hyperpage}{823}
+\indexentry{py3plex.validation@\spxentry{py3plex.validation}!module@\spxentry{module}|hyperpage}{823}
+\indexentry{validate\_csv\_columns() (in module py3plex.validation)@\spxentry{validate\_csv\_columns()}\spxextra{in module py3plex.validation}|hyperpage}{823}
+\indexentry{validate\_edgelist\_format() (in module py3plex.validation)@\spxentry{validate\_edgelist\_format()}\spxextra{in module py3plex.validation}|hyperpage}{824}
+\indexentry{validate\_file\_exists() (in module py3plex.validation)@\spxentry{validate\_file\_exists()}\spxextra{in module py3plex.validation}|hyperpage}{824}
+\indexentry{validate\_input\_type() (in module py3plex.validation)@\spxentry{validate\_input\_type()}\spxextra{in module py3plex.validation}|hyperpage}{824}
+\indexentry{validate\_multiedgelist\_format() (in module py3plex.validation)@\spxentry{validate\_multiedgelist\_format()}\spxextra{in module py3plex.validation}|hyperpage}{824}
+\indexentry{validate\_network\_data() (in module py3plex.validation)@\spxentry{validate\_network\_data()}\spxextra{in module py3plex.validation}|hyperpage}{825}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.learners.learner@\spxentry{py3plex.algorithms.hedwig.learners.learner}|hyperpage}{825}
+\indexentry{py3plex.algorithms.hedwig.learners.learner@\spxentry{py3plex.algorithms.hedwig.learners.learner}!module@\spxentry{module}|hyperpage}{825}
+\indexentry{Learner (class in py3plex.algorithms.hedwig.learners.learner)@\spxentry{Learner}\spxextra{class in py3plex.algorithms.hedwig.learners.learner}|hyperpage}{825}
+\indexentry{Default (py3plex.algorithms.hedwig.learners.learner.Learner attribute)@\spxentry{Default}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}|hyperpage}{825}
+\indexentry{Improvement (py3plex.algorithms.hedwig.learners.learner.Learner attribute)@\spxentry{Improvement}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}|hyperpage}{825}
+\indexentry{Similarity (py3plex.algorithms.hedwig.learners.learner.Learner attribute)@\spxentry{Similarity}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner attribute}|hyperpage}{825}
+\indexentry{can\_specialize() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{can\_specialize()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{825}
+\indexentry{extend() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{extend()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{extend\_replace\_worst() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{extend\_replace\_worst()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{extend\_with\_similarity() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{extend\_with\_similarity()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{get\_subclasses() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{get\_superclasses() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{get\_superclasses()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{group\_score() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{group\_score()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{induce() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{is\_implicit\_root() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{is\_implicit\_root()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{non\_redundant() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{non\_redundant()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{specialize() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{specialize()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{specialize\_add\_relation() (py3plex.algorithms.hedwig.learners.learner.Learner method)@\spxentry{specialize\_add\_relation()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}|hyperpage}{826}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.learners.bottomup@\spxentry{py3plex.algorithms.hedwig.learners.bottomup}|hyperpage}{826}
+\indexentry{py3plex.algorithms.hedwig.learners.bottomup@\spxentry{py3plex.algorithms.hedwig.learners.bottomup}!module@\spxentry{module}|hyperpage}{826}
+\indexentry{BottomUpLearner (class in py3plex.algorithms.hedwig.learners.bottomup)@\spxentry{BottomUpLearner}\spxextra{class in py3plex.algorithms.hedwig.learners.bottomup}|hyperpage}{826}
+\indexentry{Default (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute)@\spxentry{Default}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}|hyperpage}{826}
+\indexentry{Improvement (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute)@\spxentry{Improvement}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}|hyperpage}{826}
+\indexentry{Similarity (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute)@\spxentry{Similarity}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner attribute}|hyperpage}{826}
+\indexentry{bottom\_clause() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{bottom\_clause()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{826}
+\indexentry{get\_subclasses() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{826}
+\indexentry{get\_superclasses() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{get\_superclasses()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{826}
+\indexentry{induce() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{826}
+\indexentry{is\_implicit\_root() (py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method)@\spxentry{is\_implicit\_root()}\spxextra{py3plex.algorithms.hedwig.learners.bottomup.BottomUpLearner method}|hyperpage}{826}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.learners.optimal@\spxentry{py3plex.algorithms.hedwig.learners.optimal}|hyperpage}{827}
+\indexentry{py3plex.algorithms.hedwig.learners.optimal@\spxentry{py3plex.algorithms.hedwig.learners.optimal}!module@\spxentry{module}|hyperpage}{827}
+\indexentry{OptimalLearner (class in py3plex.algorithms.hedwig.learners.optimal)@\spxentry{OptimalLearner}\spxextra{class in py3plex.algorithms.hedwig.learners.optimal}|hyperpage}{827}
+\indexentry{induce() (py3plex.algorithms.hedwig.learners.optimal.OptimalLearner method)@\spxentry{induce()}\spxextra{py3plex.algorithms.hedwig.learners.optimal.OptimalLearner method}|hyperpage}{827}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.stats.scorefunctions@\spxentry{py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{py3plex.algorithms.hedwig.stats.scorefunctions@\spxentry{py3plex.algorithms.hedwig.stats.scorefunctions}!module@\spxentry{module}|hyperpage}{827}
+\indexentry{chisq() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{chisq()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{enrichment\_score() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{enrichment\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{interesting() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{interesting()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{kaplan\_meier\_AUC() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{kaplan\_meier\_AUC()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{leverage() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{leverage()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{lift() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{lift()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{precision() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{precision()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{t\_score() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{t\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{wracc() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{wracc()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{z\_score() (in module py3plex.algorithms.hedwig.stats.scorefunctions)@\spxentry{z\_score()}\spxextra{in module py3plex.algorithms.hedwig.stats.scorefunctions}|hyperpage}{827}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.stats.validate@\spxentry{py3plex.algorithms.hedwig.stats.validate}|hyperpage}{827}
+\indexentry{py3plex.algorithms.hedwig.stats.validate@\spxentry{py3plex.algorithms.hedwig.stats.validate}!module@\spxentry{module}|hyperpage}{827}
+\indexentry{Validate (class in py3plex.algorithms.hedwig.stats.validate)@\spxentry{Validate}\spxextra{class in py3plex.algorithms.hedwig.stats.validate}|hyperpage}{827}
+\indexentry{test() (py3plex.algorithms.hedwig.stats.validate.Validate method)@\spxentry{test()}\spxextra{py3plex.algorithms.hedwig.stats.validate.Validate method}|hyperpage}{827}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.core.converters@\spxentry{py3plex.algorithms.hedwig.core.converters}|hyperpage}{828}
+\indexentry{py3plex.algorithms.hedwig.core.converters@\spxentry{py3plex.algorithms.hedwig.core.converters}!module@\spxentry{module}|hyperpage}{828}
+\indexentry{convert\_mapping\_to\_rdf() (in module py3plex.algorithms.hedwig.core.converters)@\spxentry{convert\_mapping\_to\_rdf()}\spxextra{in module py3plex.algorithms.hedwig.core.converters}|hyperpage}{828}
+\indexentry{obo2n3() (in module py3plex.algorithms.hedwig.core.converters)@\spxentry{obo2n3()}\spxextra{in module py3plex.algorithms.hedwig.core.converters}|hyperpage}{828}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.core.kb@\spxentry{py3plex.algorithms.hedwig.core.kb}|hyperpage}{828}
+\indexentry{py3plex.algorithms.hedwig.core.kb@\spxentry{py3plex.algorithms.hedwig.core.kb}!module@\spxentry{module}|hyperpage}{828}
+\indexentry{ExperimentKB (class in py3plex.algorithms.hedwig.core.kb)@\spxentry{ExperimentKB}\spxextra{class in py3plex.algorithms.hedwig.core.kb}|hyperpage}{828}
+\indexentry{add\_sub\_class() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{add\_sub\_class()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{bits\_to\_indices() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{bits\_to\_indices()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_domains() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_domains()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_empty\_domain() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_empty\_domain()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_examples() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_examples()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_full\_domain() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_full\_domain()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_members() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_reverse\_members() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_reverse\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_root() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_root()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_score() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_score()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{get\_subclasses() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{get\_subclasses()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{indices\_to\_bits() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{indices\_to\_bits()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{828}
+\indexentry{is\_discrete\_target() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{is\_discrete\_target()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{829}
+\indexentry{n\_examples() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{n\_examples()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{829}
+\indexentry{n\_members() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{n\_members()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{829}
+\indexentry{super\_classes() (py3plex.algorithms.hedwig.core.kb.ExperimentKB method)@\spxentry{super\_classes()}\spxextra{py3plex.algorithms.hedwig.core.kb.ExperimentKB method}|hyperpage}{829}
+\indexentry{module@\spxentry{module}!py3plex.algorithms.hedwig.core.settings@\spxentry{py3plex.algorithms.hedwig.core.settings}|hyperpage}{829}
+\indexentry{py3plex.algorithms.hedwig.core.settings@\spxentry{py3plex.algorithms.hedwig.core.settings}!module@\spxentry{module}|hyperpage}{829}
+\indexentry{Defaults (class in py3plex.algorithms.hedwig.core.settings)@\spxentry{Defaults}\spxextra{class in py3plex.algorithms.hedwig.core.settings}|hyperpage}{829}
+\indexentry{ADJUST (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{ADJUST}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{ALPHA (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{ALPHA}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{BEAM\_SIZE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{BEAM\_SIZE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{COVERED (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{COVERED}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{DEPTH (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{DEPTH}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{FDR\_Q (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{FDR\_Q}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{FORMAT (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{FORMAT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{LEARNER (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{LEARNER}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{LEAVES (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{LEAVES}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{MODE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{MODE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{NEGATIONS (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{NEGATIONS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{NO\_CACHE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{NO\_CACHE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{OPTIMAL\_SUBCLASS (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{OPTIMAL\_SUBCLASS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{OUTPUT (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{OUTPUT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{SCORE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{SCORE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{SUPPORT (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{SUPPORT}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{TARGET (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{TARGET}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{URIS (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{URIS}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{VERBOSE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)@\spxentry{VERBOSE}\spxextra{py3plex.algorithms.hedwig.core.settings.Defaults attribute}|hyperpage}{829}
+\indexentry{module@\spxentry{module}!py3plex.visualization.sankey@\spxentry{py3plex.visualization.sankey}|hyperpage}{830}
+\indexentry{py3plex.visualization.sankey@\spxentry{py3plex.visualization.sankey}!module@\spxentry{module}|hyperpage}{830}
+\indexentry{draw\_multilayer\_sankey() (in module py3plex.visualization.sankey)@\spxentry{draw\_multilayer\_sankey()}\spxextra{in module py3plex.visualization.sankey}|hyperpage}{830}

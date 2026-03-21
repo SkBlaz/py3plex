@@ -19,7 +19,9 @@
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Analysis Recipes &amp; Workflows" href="recipes_and_workflows.html" />
+    <link rel="prev" title="Examples &amp; Recipes" href="../examples/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -90,9 +92,84 @@
 <li class="toctree-l1"><a class="reference internal" href="../reference/api_index.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/configuration.html">Configuration &amp; Environment</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Examples &amp; Recipes</span></p>
-<ul>
+<p class="caption" role="heading"><span class="caption-text">Examples, Recipes &amp; Embeddings</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples &amp; Recipes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Random Walk Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-random-walk">Basic Random Walk</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-example">Simple Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#weighted-graphs">Weighted Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#directed-graphs">Directed Graphs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#node2vec-biased-random-walk">Node2Vec Biased Random Walk</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exploring-vs-backtracking">Exploring vs Backtracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-walk-generation">Multiple Walk Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generate-walks-from-all-nodes">Generate Walks from All Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-from-specific-nodes">Generate from Specific Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node2vec-style-walks">Node2Vec-Style Walks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edge-sequences">Edge Sequences</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multilayer-network-walks">Multilayer Network Walks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#layer-constrained-walks">Layer-Constrained Walks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cross-layer-transitions">Cross-Layer Transitions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reproducibility">Reproducibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fixed-seed">Fixed Seed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#different-seeds">Different Seeds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-reproducibility">Batch Reproducibility</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-tips">Performance Tips</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#large-graphs">Large Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#correctness-validation">Correctness Validation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#uniformity-test">Uniformity Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conservation-test">Conservation Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bias-consistency-test">Bias Consistency Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edge-weight-test">Edge Weight Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-embedding-workflow">Complete Embedding Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-prepare-the-network">Step 1: Prepare the Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-generate-random-walks">Step 2: Generate Random Walks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-train-embedding-model">Step 3: Train Embedding Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-extract-and-use-embeddings">Step 4: Extract and Use Embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-5-downstream-tasks">Step 5: Downstream Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-6-save-and-load-embeddings">Step 6: Save and Load Embeddings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parameter-tuning-guide">Parameter Tuning Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#walk-length-guidelines">Walk Length Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#number-of-walks-guidelines">Number of Walks Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#p-and-q-parameter-effects">P and Q Parameter Effects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-failure-modes">Common Failure Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#disconnected-graph">Disconnected Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#highly-skewed-degree-distribution">Highly Skewed Degree Distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#isolated-nodes">Isolated Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#very-small-graph">Very Small Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-issues-with-large-graphs">Memory Issues with Large Graphs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="recipes_and_workflows.html">Analysis Recipes &amp; Workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="case_studies.html">Use Cases &amp; Case Studies</a></li>
 </ul>
@@ -1183,7 +1260,10 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../examples/index.html" class="btn btn-neutral float-left" title="Examples &amp; Recipes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="recipes_and_workflows.html" class="btn btn-neutral float-right" title="Analysis Recipes &amp; Workflows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

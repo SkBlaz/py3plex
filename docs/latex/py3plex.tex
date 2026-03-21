@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Mar 20, 2026}
+\date{Mar 21, 2026}
 \release{1.1.4}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -24508,7 +24508,7 @@ See {\hyperref[\detokenize{deployment/performance_scalability::doc}]{\sphinxcros
 
 \item {} 
 \sphinxAtStartPar
-\DUrole{xref}{\DUrole{std}{\DUrole{std-doc}{../user\_guide/random\_walks\_embeddings}}} \sphinxhyphen{} Embeddings and walks
+{\hyperref[\detokenize{user_guide/random_walks_embeddings::doc}]{\sphinxcrossref{\DUrole{doc}{Random Walk Algorithms}}}} \sphinxhyphen{} Embeddings and walks
 
 \item {} 
 \sphinxAtStartPar
@@ -88001,8 +88001,1218 @@ DataFrame with validation results
 \subsubsection{Embeddings and Wrappers}
 \label{\detokenize{reference/api_index:embeddings-and-wrappers}}
 \sphinxAtStartPar
-Utilities for training embeddings and wrapper scripts.
-\index{module@\spxentry{module}!py3plex.wrappers.train\_node2vec\_embedding@\spxentry{py3plex.wrappers.train\_node2vec\_embedding}}\index{py3plex.wrappers.train\_node2vec\_embedding@\spxentry{py3plex.wrappers.train\_node2vec\_embedding}!module@\spxentry{module}}\index{call\_node2vec\_binary() (in module py3plex.wrappers.train\_node2vec\_embedding)@\spxentry{call\_node2vec\_binary()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.wrappers.train_node2vec_embedding}}
+Embedding primitives and wrapper scripts for training node representations.
+
+
+\paragraph{Core Embedding APIs}
+\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.base}}\label{\detokenize{reference/api_index:core-embedding-apis}}\index{module@\spxentry{module}!py3plex.ml.embedding.base@\spxentry{py3plex.ml.embedding.base}}\index{py3plex.ml.embedding.base@\spxentry{py3plex.ml.embedding.base}!module@\spxentry{module}}
+\sphinxAtStartPar
+Base embedding interfaces.
+\index{BaseEmbedding (class in py3plex.ml.embedding.base)@\spxentry{BaseEmbedding}\spxextra{class in py3plex.ml.embedding.base}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.base.}}\sphinxbfcode{\sphinxupquote{BaseEmbedding}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{ABC}}
+
+\sphinxAtStartPar
+Base interface for first\sphinxhyphen{}class embedding models.
+\index{fit() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{abstract\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding}]{\sphinxcrossref{BaseEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{fit\_transform() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding.fit_transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit\_transform}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit and transform in one call.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{get\_embedding() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding.get_embedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{abstract\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{get\_embedding}}}
+{\sphinxparam{\DUrole{n}{node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get vector for a single node.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.base.BaseEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.base.BaseEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}base\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_numpy() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding.to_numpy}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{abstract\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{to\_numpy}}}
+{}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to NumPy matrix.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_pandas() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding.to_pandas}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{abstract\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{to\_pandas}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to pandas DataFrame.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{transform() (py3plex.ml.embedding.base.BaseEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.base.BaseEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding.transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{abstract\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{transform}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Transform nodes into embedding vectors.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{EmbeddingResult (class in py3plex.ml.embedding.base)@\spxentry{EmbeddingResult}\spxextra{class in py3plex.ml.embedding.base}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.base.}}\sphinxbfcode{\sphinxupquote{EmbeddingResult}}}
+{\sphinxparam{\DUrole{n}{matrix}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{item\_ids}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{meta}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Container for node or edge embedding vectors.
+\index{build\_index() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{build\_index()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.build_index}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{build\_index}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}hnsw\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Build optional ANN index for faster KNN lookup.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{cluster() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{cluster()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.cluster}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{cluster}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}kmeans\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{k}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Cluster embedding vectors and return node \sphinxhyphen{}\textgreater{} cluster mapping.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{dim (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{dim}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.dim}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{dim}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{dimension (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{dimension}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.dimension}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{dimension}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Alias for embedding dimensionality.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{distance() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{distance()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.distance}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{distance}}}
+{\sphinxparam{\DUrole{n}{node\_a}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_b}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{metric}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}euclidean\textquotesingle{}}}}
+{{ $\rightarrow$ float}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Distance convenience wrapper.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{expand\_layers() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{expand\_layers()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.expand_layers}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{expand\_layers}}}
+{}
+{{ $\rightarrow$ List\DUrole{p}{{[}}tuple\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return identifiers in canonical \sphinxcode{\sphinxupquote{(node, layer)}} form.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{flatten\_nodes() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{flatten\_nodes()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.flatten_nodes}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{flatten\_nodes}}}
+{}
+{{ $\rightarrow$ List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return base node identifiers without layer information.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{get\_embedding() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.get_embedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{get\_embedding}}}
+{\sphinxparam{\DUrole{n}{item}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get vector for item id.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{group\_by\_layer() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{group\_by\_layer()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.group_by_layer}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{group\_by\_layer}}}
+{}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Group identifiers by layer id.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{group\_by\_node() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{group\_by\_node()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.group_by_node}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{group\_by\_node}}}
+{}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Group identifiers by base node id.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{info() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{info()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.info}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{info}}}
+{}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return structured provenance metadata.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{knn() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{knn()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.knn}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{knn}}}
+{\sphinxparam{\DUrole{n}{node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{k}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{metric}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}cosine\textquotesingle{}}}}
+{{ $\rightarrow$ List\DUrole{p}{{[}}tuple\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return k nearest neighbors as (node\_id, score).
+
+\end{fulllineitems}\end{savenotes}
+
+\index{layers (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{layers}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.layers}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{layers}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Unique layer ids in stable order.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{load() (py3plex.ml.embedding.base.EmbeddingResult class method)@\spxentry{load()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult class method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.load}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{classmethod\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{load}}}
+{\sphinxparam{\DUrole{n}{path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Load persisted embedding result.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{most\_similar() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{most\_similar()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.most_similar}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{most\_similar}}}
+{\sphinxparam{\DUrole{n}{node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{k}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}}
+{{ $\rightarrow$ List\DUrole{p}{{[}}tuple\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Alias for {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.knn}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{knn()}}}}} with cosine similarity.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{n\_items (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{n\_items}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.n_items}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{n\_items}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{nodes (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{nodes}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.nodes}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{nodes}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Alias for item identifiers.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{normalize() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{normalize()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.normalize}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{normalize}}}
+{\sphinxparam{\DUrole{n}{inplace}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+L2\sphinxhyphen{}normalize all vectors.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{norms() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{norms()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.norms}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{norms}}}
+{}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{reduce() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{reduce()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.reduce}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{reduce}}}
+{\sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}pca\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dim}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Reduce vectors to lower dimension.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{reorder() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{reorder()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.reorder}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{reorder}}}
+{\sphinxparam{\DUrole{n}{ids}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{reproduce() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{reproduce()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.reproduce}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{reproduce}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Replay embedding computation from stored metadata.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{save() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{save()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.save}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{save}}}
+{\sphinxparam{\DUrole{n}{path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Persist embedding result to parquet/arrow/npz.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{similarity() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{similarity()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.similarity}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{similarity}}}
+{\sphinxparam{\DUrole{n}{node\_a}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_b}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{metric}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}cosine\textquotesingle{}}}}
+{{ $\rightarrow$ float}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compute pairwise similarity/distance between two vectors.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{similarity\_matrix() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{similarity\_matrix()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.similarity_matrix}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{similarity\_matrix}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{metric}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}cosine\textquotesingle{}}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compute pairwise similarity/distance matrix.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{subset() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{subset()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.subset}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{subset}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return a subset of embeddings by id.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_arrow() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{to\_arrow()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.to_arrow}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_arrow}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to an Arrow table.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_numpy() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.to_numpy}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_numpy}}}
+{}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return embedding matrix.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_pandas() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.to_pandas}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_pandas}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to a pandas DataFrame.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_parquet() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{to\_parquet()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.to_parquet}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_parquet}}}
+{\sphinxparam{\DUrole{n}{path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Persist embeddings to parquet.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{validate() (py3plex.ml.embedding.base.EmbeddingResult method)@\spxentry{validate()}\spxextra{py3plex.ml.embedding.base.EmbeddingResult method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.validate}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{validate}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }bool\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Validate embedding consistency checks.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{vectors (py3plex.ml.embedding.base.EmbeddingResult property)@\spxentry{vectors}\spxextra{py3plex.ml.embedding.base.EmbeddingResult property}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult.vectors}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{property\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{vectors}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }ndarray\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Dictionary mapping item id \sphinxhyphen{}\textgreater{} embedding vector.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{module@\spxentry{module}!py3plex.ml.embedding.trainer@\spxentry{py3plex.ml.embedding.trainer}}\index{py3plex.ml.embedding.trainer@\spxentry{py3plex.ml.embedding.trainer}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.trainer}}
+\sphinxAtStartPar
+Reusable embedding training utilities.
+\index{EmbeddingTrainer (class in py3plex.ml.embedding.trainer)@\spxentry{EmbeddingTrainer}\spxextra{class in py3plex.ml.embedding.trainer}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.trainer.EmbeddingTrainer}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.trainer.}}\sphinxbfcode{\sphinxupquote{EmbeddingTrainer}}}
+{\sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{backend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}numpy\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Utility class for random\sphinxhyphen{}walk + skipgram\sphinxhyphen{}style training.
+\index{generate\_walks() (py3plex.ml.embedding.trainer.EmbeddingTrainer method)@\spxentry{generate\_walks()}\spxextra{py3plex.ml.embedding.trainer.EmbeddingTrainer method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.trainer.EmbeddingTrainer.generate_walks}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{generate\_walks}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{40}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{p}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{q}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{biased}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}}
+{{ $\rightarrow$ List\DUrole{p}{{[}}List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Generate random walks over graph nodes.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{optimize\_embeddings() (py3plex.ml.embedding.trainer.EmbeddingTrainer method)@\spxentry{optimize\_embeddings()}\spxextra{py3plex.ml.embedding.trainer.EmbeddingTrainer method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.trainer.EmbeddingTrainer.optimize_embeddings}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{optimize\_embeddings}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{40}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{p}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{q}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{biased}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{item\_ids}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}skipgram\textquotesingle{}}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+End\sphinxhyphen{}to\sphinxhyphen{}end train embeddings.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{train\_skipgram() (py3plex.ml.embedding.trainer.EmbeddingTrainer method)@\spxentry{train\_skipgram()}\spxextra{py3plex.ml.embedding.trainer.EmbeddingTrainer method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.trainer.EmbeddingTrainer.train_skipgram}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{train\_skipgram}}}
+{\sphinxparam{\DUrole{n}{walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}Sequence\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{o}{*}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{method}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}skipgram\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{item\_ids}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Train a lightweight skipgram proxy via co\sphinxhyphen{}occurrence + SVD.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{generate\_walks() (in module py3plex.ml.embedding.trainer)@\spxentry{generate\_walks()}\spxextra{in module py3plex.ml.embedding.trainer}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.trainer.generate_walks}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.trainer.}}\sphinxbfcode{\sphinxupquote{generate\_walks}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{{ $\rightarrow$ List\DUrole{p}{{[}}List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Functional helper around {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.trainer.EmbeddingTrainer.generate_walks}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{EmbeddingTrainer.generate\_walks}}}}}.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{train\_skipgram() (in module py3plex.ml.embedding.trainer)@\spxentry{train\_skipgram()}\spxextra{in module py3plex.ml.embedding.trainer}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.trainer.train_skipgram}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.trainer.}}\sphinxbfcode{\sphinxupquote{train\_skipgram}}}
+{\sphinxparam{\DUrole{n}{walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}Sequence\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Functional helper around {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.trainer.EmbeddingTrainer.train_skipgram}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{EmbeddingTrainer.train\_skipgram}}}}}.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{module@\spxentry{module}!py3plex.ml.embedding.node2vec@\spxentry{py3plex.ml.embedding.node2vec}}\index{py3plex.ml.embedding.node2vec@\spxentry{py3plex.ml.embedding.node2vec}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.node2vec}}
+\sphinxAtStartPar
+Node2Vec embedding model.
+\index{Node2VecEmbedding (class in py3plex.ml.embedding.node2vec)@\spxentry{Node2VecEmbedding}\spxextra{class in py3plex.ml.embedding.node2vec}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.node2vec.}}\sphinxbfcode{\sphinxupquote{Node2VecEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{80}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{p}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{q}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{workers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{backend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}numpy\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseEmbedding}}}}}
+
+\sphinxAtStartPar
+Biased random\sphinxhyphen{}walk node embedding.
+\index{fit() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding}]{\sphinxcrossref{Node2VecEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{fit\_transform() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding.fit_transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit\_transform}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit and transform in one call.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{get\_embedding() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding.get_embedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{get\_embedding}}}
+{\sphinxparam{\DUrole{n}{node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get vector for a single node.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.node2vec.Node2VecEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}node2vec\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_numpy() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding.to_numpy}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_numpy}}}
+{}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to NumPy matrix.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_pandas() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding.to_pandas}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_pandas}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to pandas DataFrame.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{transform() (py3plex.ml.embedding.node2vec.Node2VecEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.node2vec.Node2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding.transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{transform}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Transform nodes into embedding vectors.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{module@\spxentry{module}!py3plex.ml.embedding.deepwalk@\spxentry{py3plex.ml.embedding.deepwalk}}\index{py3plex.ml.embedding.deepwalk@\spxentry{py3plex.ml.embedding.deepwalk}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.deepwalk}}
+\sphinxAtStartPar
+DeepWalk embedding model.
+\index{DeepWalkEmbedding (class in py3plex.ml.embedding.deepwalk)@\spxentry{DeepWalkEmbedding}\spxextra{class in py3plex.ml.embedding.deepwalk}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.deepwalk.DeepWalkEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.deepwalk.}}\sphinxbfcode{\sphinxupquote{DeepWalkEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{80}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{workers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{backend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}numpy\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.node2vec.Node2VecEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{Node2VecEmbedding}}}}}
+
+\sphinxAtStartPar
+DeepWalk implementation as an unbiased Node2Vec variant.
+\index{name (py3plex.ml.embedding.deepwalk.DeepWalkEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.deepwalk.DeepWalkEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.deepwalk.DeepWalkEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}deepwalk\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{module@\spxentry{module}!py3plex.ml.embedding.netmf@\spxentry{py3plex.ml.embedding.netmf}}\index{py3plex.ml.embedding.netmf@\spxentry{py3plex.ml.embedding.netmf}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.netmf}}
+\sphinxAtStartPar
+NetMF embedding wrapper.
+\index{NetMFEmbedding (class in py3plex.ml.embedding.netmf)@\spxentry{NetMFEmbedding}\spxextra{class in py3plex.ml.embedding.netmf}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.netmf.}}\sphinxbfcode{\sphinxupquote{NetMFEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multilayer}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}supra\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{gamma}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{approx}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}randomized\_svd\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseEmbedding}}}}}
+
+\sphinxAtStartPar
+Spectral DeepWalk approximation using NetMF.
+\index{fit() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding}]{\sphinxcrossref{NetMFEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{fit\_transform() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding.fit_transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit\_transform}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit and transform in one call.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{get\_embedding() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding.get_embedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{get\_embedding}}}
+{\sphinxparam{\DUrole{n}{node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get vector for a single node.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.netmf.NetMFEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}netmf\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_numpy() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding.to_numpy}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_numpy}}}
+{}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to NumPy matrix.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_pandas() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding.to_pandas}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_pandas}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to pandas DataFrame.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{transform() (py3plex.ml.embedding.netmf.NetMFEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.netmf.NetMFEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding.transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{transform}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Transform nodes into embedding vectors.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{module@\spxentry{module}!py3plex.ml.embedding.line@\spxentry{py3plex.ml.embedding.line}}\index{py3plex.ml.embedding.line@\spxentry{py3plex.ml.embedding.line}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.line}}
+\sphinxAtStartPar
+LINE embedding model.
+\index{LINEEmbedding (class in py3plex.ml.embedding.line)@\spxentry{LINEEmbedding}\spxextra{class in py3plex.ml.embedding.line}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.line.}}\sphinxbfcode{\sphinxupquote{LINEEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{order}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{lr}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.025}}\sphinxparamcomma \sphinxparam{\DUrole{n}{epochs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseEmbedding}}}}}
+
+\sphinxAtStartPar
+Lightweight LINE approximation via sparse adjacency factorization.
+\index{fit() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding}]{\sphinxcrossref{LINEEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{fit\_transform() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding.fit_transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit\_transform}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit and transform in one call.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{get\_embedding() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding.get_embedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{get\_embedding}}}
+{\sphinxparam{\DUrole{n}{node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get vector for a single node.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.line.LINEEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.line.LINEEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}line\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_numpy() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding.to_numpy}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_numpy}}}
+{}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to NumPy matrix.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_pandas() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding.to_pandas}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_pandas}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to pandas DataFrame.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{transform() (py3plex.ml.embedding.line.LINEEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.line.LINEEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.line.LINEEmbedding.transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{transform}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Transform nodes into embedding vectors.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{module@\spxentry{module}!py3plex.ml.embedding.metapath2vec@\spxentry{py3plex.ml.embedding.metapath2vec}}\index{py3plex.ml.embedding.metapath2vec@\spxentry{py3plex.ml.embedding.metapath2vec}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.metapath2vec}}
+\sphinxAtStartPar
+MetaPath2Vec embedding wrapper.
+\index{MetaPath2VecEmbedding (class in py3plex.ml.embedding.metapath2vec)@\spxentry{MetaPath2VecEmbedding}\spxextra{class in py3plex.ml.embedding.metapath2vec}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.metapath2vec.}}\sphinxbfcode{\sphinxupquote{MetaPath2VecEmbedding}}}
+{\sphinxparam{\DUrole{n}{metapaths}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{40}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{epochs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseEmbedding}}}}}
+
+\sphinxAtStartPar
+Meta\sphinxhyphen{}path guided embedding for multilayer networks.
+\index{fit() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding}]{\sphinxcrossref{MetaPath2VecEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{fit\_transform() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.fit_transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit\_transform}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit and transform in one call.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{get\_embedding() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.get_embedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{get\_embedding}}}
+{\sphinxparam{\DUrole{n}{node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get vector for a single node.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}metapath2vec\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_numpy() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.to_numpy}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_numpy}}}
+{}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to NumPy matrix.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_pandas() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.to_pandas}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_pandas}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to pandas DataFrame.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{transform() (py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.metapath2vec.MetaPath2VecEmbedding.transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{transform}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Transform nodes into embedding vectors.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+
+
+\paragraph{Wrapper Entry Points}
+\label{\detokenize{reference/api_index:module-py3plex.wrappers.train_node2vec_embedding}}\label{\detokenize{reference/api_index:wrapper-entry-points}}\index{module@\spxentry{module}!py3plex.wrappers.train\_node2vec\_embedding@\spxentry{py3plex.wrappers.train\_node2vec\_embedding}}\index{py3plex.wrappers.train\_node2vec\_embedding@\spxentry{py3plex.wrappers.train\_node2vec\_embedding}!module@\spxentry{module}}\index{call\_node2vec\_binary() (in module py3plex.wrappers.train\_node2vec\_embedding)@\spxentry{call\_node2vec\_binary()}\spxextra{in module py3plex.wrappers.train\_node2vec\_embedding}}
 
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary}}
@@ -90808,10 +92018,10 @@ See {\hyperref[\detokenize{project/benchmarking::doc}]{\sphinxcrossref{\DUrole{d
 
 
 
-\section{Part VI: Examples \& Recipes}
-\label{\detokenize{index:part-vi-examples-recipes}}
+\section{Part VI: Examples, Recipes \& Embeddings}
+\label{\detokenize{index:part-vi-examples-recipes-embeddings}}
 \sphinxAtStartPar
-Complete working examples and analysis recipes.
+Complete working examples, analysis recipes, and embedding workflows.
 
 \sphinxstepscope
 
@@ -91222,6 +92432,1386 @@ Examples README: \sphinxurl{https://github.com/SkBlaz/py3plex/tree/master/exampl
 Submit examples: \sphinxurl{https://github.com/SkBlaz/py3plex/pulls}
 
 \end{itemize}
+
+\sphinxstepscope
+
+
+\subsection{Random Walk Algorithms}
+\label{\detokenize{user_guide/random_walks_embeddings:random-walk-algorithms}}\label{\detokenize{user_guide/random_walks_embeddings::doc}}
+\sphinxAtStartPar
+Py3plex provides comprehensive random walk primitives for graph\sphinxhyphen{}based algorithms,
+including Node2Vec, DeepWalk, and diffusion processes. These implementations support
+weighted, directed, and multilayer networks with deterministic reproducibility.
+
+
+\subsubsection{Overview}
+\label{\detokenize{user_guide/random_walks_embeddings:overview}}
+\sphinxAtStartPar
+Random walks are fundamental building blocks for many graph algorithms:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Node2Vec}: Learn node embeddings using biased random walks
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{DeepWalk}: Generate node embeddings through uniform random walks
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Personalized PageRank}: Compute node importance via random walks with restart
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Diffusion processes}: Model information or disease propagation
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Community detection}: Identify network structure through walk patterns
+
+\end{itemize}
+
+
+\paragraph{Key Features}
+\label{\detokenize{user_guide/random_walks_embeddings:key-features}}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+{[}OK{]} Basic random walks with proper edge weight handling
+
+\item {} 
+\sphinxAtStartPar
+{[}OK{]} Second\sphinxhyphen{}order (biased) random walks following Node2Vec logic
+
+\item {} 
+\sphinxAtStartPar
+{[}OK{]} Multiple simultaneous walks with deterministic seeding
+
+\item {} 
+\sphinxAtStartPar
+{[}OK{]} Support for directed, weighted, and multigraphs
+
+\item {} 
+\sphinxAtStartPar
+{[}OK{]} Multilayer network\sphinxhyphen{}aware walks with layer constraints
+
+\item {} 
+\sphinxAtStartPar
+{[}OK{]} Efficient sparse adjacency matrix handling
+
+\item {} 
+\sphinxAtStartPar
+{[}OK{]} Comprehensive test suite validating correctness properties
+
+\end{itemize}
+
+
+\subsubsection{Basic Random Walk}
+\label{\detokenize{user_guide/random_walks_embeddings:basic-random-walk}}
+\sphinxAtStartPar
+The basic random walk samples the next node proportionally to normalized edge weights.
+
+
+\paragraph{Simple Example}
+\label{\detokenize{user_guide/random_walks_embeddings:simple-example}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Create a simple graph}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Perform a random walk}
+\PYG{n}{walk} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{start\PYGZus{}node}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}  \PYG{c+c1}{\PYGZsh{} for reproducibility}
+\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Walk: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{walk}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Length: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} 11 nodes (includes start)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Weighted Graphs}
+\label{\detokenize{user_guide/random_walks_embeddings:weighted-graphs}}
+\sphinxAtStartPar
+Edge weights are automatically used when \sphinxcode{\sphinxupquote{weighted=True}} (default):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Create weighted graph}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{Graph}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{G}\PYG{o}{.}\PYG{n}{add\PYGZus{}weighted\PYGZus{}edges\PYGZus{}from}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mf}{10.0}\PYG{p}{)}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} high weight \PYGZhy{}\PYGZgt{} more likely}
+    \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{)}\PYG{p}{,}   \PYG{c+c1}{\PYGZsh{} low weight \PYGZhy{}\PYGZgt{} less likely}
+    \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mf}{5.0}\PYG{p}{)}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Weighted walk (respects edge weights)}
+\PYG{n}{walk} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{weighted}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Unweighted walk (uniform transitions)}
+\PYG{n}{walk\PYGZus{}uniform} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{weighted}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Directed Graphs}
+\label{\detokenize{user_guide/random_walks_embeddings:directed-graphs}}
+\sphinxAtStartPar
+Directed edges are handled correctly:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}
+
+\PYG{c+c1}{\PYGZsh{} Create directed graph}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{DiGraph}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{G}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges\PYGZus{}from}\PYG{p}{(}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Walk respects edge direction}
+\PYG{n}{walk} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Verify all transitions follow directed edges}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{assert} \PYG{n}{G}\PYG{o}{.}\PYG{n}{has\PYGZus{}edge}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{p}{,} \PYG{n}{walk}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Node2Vec Biased Random Walk}
+\label{\detokenize{user_guide/random_walks_embeddings:node2vec-biased-random-walk}}
+\sphinxAtStartPar
+Second\sphinxhyphen{}order random walks with return parameter \sphinxcode{\sphinxupquote{p}} and in\sphinxhyphen{}out parameter \sphinxcode{\sphinxupquote{q}}
+following the Node2Vec algorithm (Grover \& Leskovec, 2016).
+
+
+\paragraph{Parameters}
+\label{\detokenize{user_guide/random_walks_embeddings:parameters}}
+\sphinxAtStartPar
+When transitioning from node \sphinxcode{\sphinxupquote{t \(\rightarrow\) v \(\rightarrow\) x}}, the probability of choosing \sphinxcode{\sphinxupquote{x}} is biased:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{If x == t} (return to previous): \sphinxcode{\sphinxupquote{weight / p}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{If x is neighbor of t} (stay close): \sphinxcode{\sphinxupquote{weight / 1}}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{If x is not neighbor of t} (explore): \sphinxcode{\sphinxupquote{weight / q}}
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Parameter Effects:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{p \textgreater{} 1}: Less likely to return to previous node (explore forward)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{p \textless{} 1}: More likely to return (backtrack)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{q \textgreater{} 1}: Less likely to explore distant nodes (stay local, BFS\sphinxhyphen{}like)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{q \textless{} 1}: More likely to explore distant nodes (venture far, DFS\sphinxhyphen{}like)
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{p = q = 1}: Equivalent to basic random walk
+
+\end{itemize}
+
+
+\paragraph{Basic Usage}
+\label{\detokenize{user_guide/random_walks_embeddings:basic-usage}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{node2vec\PYGZus{}walk}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Balanced walk (p=1, q=1)}
+\PYG{n}{walk\PYGZus{}balanced} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} BFS\PYGZhy{}like walk (stay local)}
+\PYG{n}{walk\PYGZus{}bfs} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{2.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} DFS\PYGZhy{}like walk (explore outward)}
+\PYG{n}{walk\PYGZus{}dfs} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Exploring vs Backtracking}
+\label{\detokenize{user_guide/random_walks_embeddings:exploring-vs-backtracking}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{node2vec\PYGZus{}walk}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Triangle graph}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{Graph}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{G}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges\PYGZus{}from}\PYG{p}{(}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Low p, high q: tends to backtrack}
+\PYG{n}{walk\PYGZus{}backtrack} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{10.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} High p, low q: tends to explore outward}
+\PYG{n}{walk\PYGZus{}explore} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{10.0}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Count backtracking patterns}
+\PYG{n}{backtracks} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walk\PYGZus{}backtrack}\PYG{p}{)}\PYG{p}{)}
+                 \PYG{k}{if} \PYG{n}{walk\PYGZus{}backtrack}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{==} \PYG{n}{walk\PYGZus{}backtrack}\PYG{p}{[}\PYG{n}{i}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Backtracks: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{backtracks}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Multiple Walk Generation}
+\label{\detokenize{user_guide/random_walks_embeddings:multiple-walk-generation}}
+\sphinxAtStartPar
+Generate multiple walks efficiently with deterministic seeding.
+
+
+\paragraph{Generate Walks from All Nodes}
+\label{\detokenize{user_guide/random_walks_embeddings:generate-walks-from-all-nodes}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{generate\PYGZus{}walks}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Generate 10 walks from each node}
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Total walks: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walks}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} 340 (34 nodes × 10 walks)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{First walk: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{walks}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Generate from Specific Nodes}
+\label{\detokenize{user_guide/random_walks_embeddings:generate-from-specific-nodes}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{generate\PYGZus{}walks}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Generate walks only from nodes 0, 1, 2}
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{15}\PYG{p}{,}
+    \PYG{n}{start\PYGZus{}nodes}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Total walks: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walks}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} 15 (3 nodes × 5 walks)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Node2Vec\sphinxhyphen{}Style Walks}
+\label{\detokenize{user_guide/random_walks_embeddings:node2vec-style-walks}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{generate\PYGZus{}walks}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Generate biased walks with p=0.5, q=2.0}
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,}
+    \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{0.5}\PYG{p}{,}
+    \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{2.0}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Edge Sequences}
+\label{\detokenize{user_guide/random_walks_embeddings:edge-sequences}}
+\sphinxAtStartPar
+Return walks as edge sequences instead of node sequences:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{generate\PYGZus{}walks}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Generate edge sequences}
+\PYG{n}{edge\PYGZus{}walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{return\PYGZus{}edges}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} First walk is a list of edges}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{edge\PYGZus{}walks}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} [(0, 3), (3, 2), (2, 1), ...]}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Multilayer Network Walks}
+\label{\detokenize{user_guide/random_walks_embeddings:multilayer-network-walks}}
+\sphinxAtStartPar
+Perform random walks on multilayer networks with layer constraints.
+
+
+\paragraph{Layer\sphinxhyphen{}Constrained Walks}
+\label{\detokenize{user_guide/random_walks_embeddings:layer-constrained-walks}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{layer\PYGZus{}specific\PYGZus{}random\PYGZus{}walk}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+
+\PYG{c+c1}{\PYGZsh{} Create multilayer network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}layer}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}layer}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{biological}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{B}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{C}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{biological}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{B}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{biological}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{(}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{B}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{(}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{B}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{C}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{(}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{biological}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{B}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{biological}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Walk constrained to social layer}
+\PYG{n}{walk} \PYG{o}{=} \PYG{n}{layer\PYGZus{}specific\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{p}{,}
+    \PYG{n}{start\PYGZus{}node}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A\PYGZhy{}\PYGZhy{}\PYGZhy{}social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{cross\PYGZus{}layer\PYGZus{}prob}\PYG{o}{=}\PYG{l+m+mf}{0.0}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} never cross layers}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} All nodes in walk are in social layer}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Cross\sphinxhyphen{}Layer Transitions}
+\label{\detokenize{user_guide/random_walks_embeddings:cross-layer-transitions}}
+\sphinxAtStartPar
+Allow occasional transitions between layers:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{layer\PYGZus{}specific\PYGZus{}random\PYGZus{}walk}
+
+\PYG{c+c1}{\PYGZsh{} Same network as above}
+
+\PYG{c+c1}{\PYGZsh{} Walk with 10\PYGZpc{} probability of crossing layers}
+\PYG{n}{walk} \PYG{o}{=} \PYG{n}{layer\PYGZus{}specific\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}
+    \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{p}{,}
+    \PYG{n}{start\PYGZus{}node}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A\PYGZhy{}\PYGZhy{}\PYGZhy{}social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,}
+    \PYG{n}{layer}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{cross\PYGZus{}layer\PYGZus{}prob}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} 10\PYGZpc{} chance to cross}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} May contain nodes from both layers}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Reproducibility}
+\label{\detokenize{user_guide/random_walks_embeddings:reproducibility}}
+\sphinxAtStartPar
+All walk functions support deterministic seeding for reproducibility.
+
+
+\paragraph{Fixed Seed}
+\label{\detokenize{user_guide/random_walks_embeddings:fixed-seed}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Same seed produces identical walks}
+\PYG{n}{walk1} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{walk2} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{k}{assert} \PYG{n}{walk1} \PYG{o}{==} \PYG{n}{walk2}  \PYG{c+c1}{\PYGZsh{} Identical}
+\end{sphinxVerbatim}
+
+
+\paragraph{Different Seeds}
+\label{\detokenize{user_guide/random_walks_embeddings:different-seeds}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Different seeds produce different walks}
+\PYG{n}{walk1} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{walk2} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{123}\PYG{p}{)}
+
+\PYG{k}{assert} \PYG{n}{walk1} \PYG{o}{!=} \PYG{n}{walk2}  \PYG{c+c1}{\PYGZsh{} Different}
+\end{sphinxVerbatim}
+
+
+\paragraph{Batch Reproducibility}
+\label{\detokenize{user_guide/random_walks_embeddings:batch-reproducibility}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{generate\PYGZus{}walks}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Same seed produces identical walk sets}
+\PYG{n}{walks1} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{walks2} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{k}{assert} \PYG{n}{walks1} \PYG{o}{==} \PYG{n}{walks2}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Performance Tips}
+\label{\detokenize{user_guide/random_walks_embeddings:performance-tips}}
+
+\paragraph{Large Graphs}
+\label{\detokenize{user_guide/random_walks_embeddings:large-graphs}}
+\sphinxAtStartPar
+For large sparse graphs (\textgreater{}100k nodes), use basic walks for better performance:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{generate\PYGZus{}walks}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Large sparse graph}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{erdos\PYGZus{}renyi\PYGZus{}graph}\PYG{p}{(}\PYG{l+m+mi}{100000}\PYG{p}{,} \PYG{l+m+mf}{0.0001}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Use basic walk (p=1, q=1) for speed}
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,}
+    \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} No bias = faster}
+    \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Parallel Processing}
+\label{\detokenize{user_guide/random_walks_embeddings:parallel-processing}}
+\sphinxAtStartPar
+For generating many walks, consider parallel processing:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{generate\PYGZus{}walks}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{multiprocessing}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Pool}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{generate\PYGZus{}batch}\PYG{p}{(}\PYG{n}{seed}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{return} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{n}{seed}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Generate walks in parallel}
+\PYG{k}{with} \PYG{n}{Pool}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{)} \PYG{k}{as} \PYG{n}{pool}\PYG{p}{:}
+    \PYG{n}{batch\PYGZus{}walks} \PYG{o}{=} \PYG{n}{pool}\PYG{o}{.}\PYG{n}{map}\PYG{p}{(}\PYG{n}{generate\PYGZus{}batch}\PYG{p}{,} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Flatten results}
+\PYG{n}{all\PYGZus{}walks} \PYG{o}{=} \PYG{p}{[}\PYG{n}{walk} \PYG{k}{for} \PYG{n}{batch} \PYG{o+ow}{in} \PYG{n}{batch\PYGZus{}walks} \PYG{k}{for} \PYG{n}{walk} \PYG{o+ow}{in} \PYG{n}{batch}\PYG{p}{]}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Correctness Validation}
+\label{\detokenize{user_guide/random_walks_embeddings:correctness-validation}}
+\sphinxAtStartPar
+The implementation has been validated against the following properties:
+
+
+\paragraph{Uniformity Test}
+\label{\detokenize{user_guide/random_walks_embeddings:uniformity-test}}
+\sphinxAtStartPar
+On unweighted regular graphs, transition probabilities are uniform:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{collections}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Counter}
+
+\PYG{c+c1}{\PYGZsh{} Complete graph (regular)}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{complete\PYGZus{}graph}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Count visits to neighbors from node 0}
+\PYG{n}{visits} \PYG{o}{=} \PYG{n}{Counter}\PYG{p}{(}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{10000}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{walk} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{weighted}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{n}{i}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{1}\PYG{p}{:}
+        \PYG{n}{visits}\PYG{p}{[}\PYG{n}{walk}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{]} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+
+\PYG{c+c1}{\PYGZsh{} All neighbors should be visited roughly equally}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{visits}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} Expected: \PYGZti{}1111 visits to each of 9 neighbors}
+\end{sphinxVerbatim}
+
+
+\paragraph{Conservation Test}
+\label{\detokenize{user_guide/random_walks_embeddings:conservation-test}}
+\sphinxAtStartPar
+Sum of transition probabilities equals 1.0 (within machine epsilon):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{karate\PYGZus{}club\PYGZus{}graph}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} For each node, verify probability conservation}
+\PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{G}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{neighbors} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{G}\PYG{o}{.}\PYG{n}{neighbors}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{neighbors}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{:}
+        \PYG{n}{weights} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{n}{G}\PYG{p}{[}\PYG{n}{node}\PYG{p}{]}\PYG{p}{[}\PYG{n}{n}\PYG{p}{]}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{weight}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{)} \PYG{k}{for} \PYG{n}{n} \PYG{o+ow}{in} \PYG{n}{neighbors}\PYG{p}{]}\PYG{p}{)}
+        \PYG{n}{probs} \PYG{o}{=} \PYG{n}{weights} \PYG{o}{/} \PYG{n}{weights}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
+        \PYG{k}{assert} \PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{probs}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{l+m+mf}{1.0}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{1e\PYGZhy{}10}  \PYG{c+c1}{\PYGZsh{} Machine epsilon}
+\end{sphinxVerbatim}
+
+
+\paragraph{Bias Consistency Test}
+\label{\detokenize{user_guide/random_walks_embeddings:bias-consistency-test}}
+\sphinxAtStartPar
+Node2Vec parameters p and q produce expected biases:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{node2vec\PYGZus{}walk}
+
+\PYG{c+c1}{\PYGZsh{} Triangle graph}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{Graph}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{G}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges\PYGZus{}from}\PYG{p}{(}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Low p should encourage backtracking}
+\PYG{n}{backtracks\PYGZus{}low\PYGZus{}p} \PYG{o}{=} \PYG{l+m+mi}{0}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{1000}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{walk} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{0.1}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{n}{i}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n}{walk}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{==} \PYG{n}{walk}\PYG{p}{[}\PYG{n}{j}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{:}
+            \PYG{n}{backtracks\PYGZus{}low\PYGZus{}p} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+
+\PYG{c+c1}{\PYGZsh{} High p should discourage backtracking}
+\PYG{n}{backtracks\PYGZus{}high\PYGZus{}p} \PYG{o}{=} \PYG{l+m+mi}{0}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{1000}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{walk} \PYG{o}{=} \PYG{n}{node2vec\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{10.0}\PYG{p}{,} \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{n}{i}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n}{walk}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{==} \PYG{n}{walk}\PYG{p}{[}\PYG{n}{j}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{:}
+            \PYG{n}{backtracks\PYGZus{}high\PYGZus{}p} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+
+\PYG{k}{assert} \PYG{n}{backtracks\PYGZus{}low\PYGZus{}p} \PYG{o}{\PYGZgt{}} \PYG{n}{backtracks\PYGZus{}high\PYGZus{}p} \PYG{o}{*} \PYG{l+m+mi}{2}  \PYG{c+c1}{\PYGZsh{} Significantly more}
+\end{sphinxVerbatim}
+
+
+\paragraph{Edge Weight Test}
+\label{\detokenize{user_guide/random_walks_embeddings:edge-weight-test}}
+\sphinxAtStartPar
+Visit frequency matches edge weight ratios:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{collections}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Counter}
+
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{Graph}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{G}\PYG{o}{.}\PYG{n}{add\PYGZus{}weighted\PYGZus{}edges\PYGZus{}from}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mf}{2.0}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{,} \PYG{l+m+mf}{3.0}\PYG{p}{)}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{n}{visits} \PYG{o}{=} \PYG{n}{Counter}\PYG{p}{(}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{10000}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{walk} \PYG{o}{=} \PYG{n}{basic\PYGZus{}random\PYGZus{}walk}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{weighted}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{n}{i}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walk}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{1}\PYG{p}{:}
+        \PYG{n}{visits}\PYG{p}{[}\PYG{n}{walk}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{]} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+
+\PYG{c+c1}{\PYGZsh{} Expected ratio: 1:2:3}
+\PYG{n}{total} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{visits}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{ratios} \PYG{o}{=} \PYG{p}{[}\PYG{n}{visits}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{/}\PYG{n}{total}\PYG{p}{,} \PYG{n}{visits}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{o}{/}\PYG{n}{total}\PYG{p}{,} \PYG{n}{visits}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{o}{/}\PYG{n}{total}\PYG{p}{]}
+\PYG{n}{expected} \PYG{o}{=} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{/}\PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{o}{/}\PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{o}{/}\PYG{l+m+mi}{6}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZsh{} Within 5\PYGZpc{} tolerance}
+\PYG{k}{for} \PYG{n}{obs}\PYG{p}{,} \PYG{n}{exp} \PYG{o+ow}{in} \PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{ratios}\PYG{p}{,} \PYG{n}{expected}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{assert} \PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{obs} \PYG{o}{\PYGZhy{}} \PYG{n}{exp}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{0.05}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Complete Embedding Workflow}
+\label{\detokenize{user_guide/random_walks_embeddings:complete-embedding-workflow}}
+\sphinxAtStartPar
+This section provides a complete, end\sphinxhyphen{}to\sphinxhyphen{}end workflow for generating node embeddings from a multilayer network and using them for downstream machine learning tasks.
+
+
+\paragraph{Step 1: Prepare the Network}
+\label{\detokenize{user_guide/random_walks_embeddings:step-1-prepare-the-network}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{c+c1}{\PYGZsh{} Set random seed for reproducibility}
+\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{seed}\PYG{p}{(}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Load your multilayer network}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{load\PYGZus{}network}\PYG{p}{(}
+    \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{your\PYGZus{}network.multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiedgelist}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Verify the network}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Get the core NetworkX graph}
+\PYG{n}{G} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}
+\end{sphinxVerbatim}
+
+
+\paragraph{Step 2: Generate Random Walks}
+\label{\detokenize{user_guide/random_walks_embeddings:step-2-generate-random-walks}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{general}\PYG{n+nn}{.}\PYG{n+nn}{walkers}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{generate\PYGZus{}walks}
+
+\PYG{c+c1}{\PYGZsh{} Generate walks with Node2Vec\PYGZhy{}style biased sampling}
+\PYG{c+c1}{\PYGZsh{} Recommended starting parameters}
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}       \PYG{c+c1}{\PYGZsh{} 10 walks per node (more = better embeddings, slower)}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{80}\PYG{p}{,}     \PYG{c+c1}{\PYGZsh{} 80 steps per walk (adjust based on graph diameter)}
+    \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,}              \PYG{c+c1}{\PYGZsh{} Return parameter (1.0 = balanced)}
+    \PYG{n}{q}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,}              \PYG{c+c1}{\PYGZsh{} In\PYGZhy{}out parameter (1.0 = balanced)}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}             \PYG{c+c1}{\PYGZsh{} For reproducibility}
+\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Generated }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{walks}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ walks}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Sample walk: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{walks}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{10}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{...}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} First 10 nodes of first walk}
+\end{sphinxVerbatim}
+
+
+\paragraph{Step 3: Train Embedding Model}
+\label{\detokenize{user_guide/random_walks_embeddings:step-3-train-embedding-model}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Requires gensim: pip install gensim}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{gensim}\PYG{n+nn}{.}\PYG{n+nn}{models}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Word2Vec}
+
+\PYG{c+c1}{\PYGZsh{} Convert walks to strings (Word2Vec expects string tokens)}
+\PYG{n}{walks\PYGZus{}str} \PYG{o}{=} \PYG{p}{[}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)} \PYG{k}{for} \PYG{n}{node} \PYG{o+ow}{in} \PYG{n}{walk}\PYG{p}{]} \PYG{k}{for} \PYG{n}{walk} \PYG{o+ow}{in} \PYG{n}{walks}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZsh{} Train the embedding model}
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{Word2Vec}\PYG{p}{(}
+    \PYG{n}{walks\PYGZus{}str}\PYG{p}{,}
+    \PYG{n}{vector\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mi}{128}\PYG{p}{,}    \PYG{c+c1}{\PYGZsh{} Embedding dimension (64\PYGZhy{}256 typical)}
+    \PYG{n}{window}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{,}           \PYG{c+c1}{\PYGZsh{} Context window size}
+    \PYG{n}{min\PYGZus{}count}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}        \PYG{c+c1}{\PYGZsh{} Include nodes that appear at least once}
+    \PYG{n}{sg}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}               \PYG{c+c1}{\PYGZsh{} Use skip\PYGZhy{}gram (1) vs CBOW (0)}
+    \PYG{n}{workers}\PYG{o}{=}\PYG{l+m+mi}{4}\PYG{p}{,}          \PYG{c+c1}{\PYGZsh{} Parallel training threads}
+    \PYG{n}{epochs}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{,}           \PYG{c+c1}{\PYGZsh{} Training epochs}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}             \PYG{c+c1}{\PYGZsh{} Reproducibility}
+\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Trained embeddings for }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Embedding dimension: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{o}{.}\PYG{n}{vector\PYGZus{}size}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Step 4: Extract and Use Embeddings}
+\label{\detokenize{user_guide/random_walks_embeddings:step-4-extract-and-use-embeddings}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{c+c1}{\PYGZsh{} Get all node IDs}
+\PYG{n}{node\PYGZus{}ids} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{o}{.}\PYG{n}{index\PYGZus{}to\PYGZus{}key}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Create embedding matrix}
+\PYG{n}{embeddings} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{p}{[}\PYG{n}{node\PYGZus{}id}\PYG{p}{]} \PYG{k}{for} \PYG{n}{node\PYGZus{}id} \PYG{o+ow}{in} \PYG{n}{node\PYGZus{}ids}\PYG{p}{]}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Embedding matrix shape: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{embeddings}\PYG{o}{.}\PYG{n}{shape}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Get embedding for a specific node}
+\PYG{n}{sample\PYGZus{}node} \PYG{o}{=} \PYG{n}{node\PYGZus{}ids}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+\PYG{n}{node\PYGZus{}embedding} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{p}{[}\PYG{n}{sample\PYGZus{}node}\PYG{p}{]}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Embedding for }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{sample\PYGZus{}node}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node\PYGZus{}embedding}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{5}\PYG{p}{]}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{... (dim=}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{node\PYGZus{}embedding}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Find similar nodes}
+\PYG{n}{similar\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{o}{.}\PYG{n}{most\PYGZus{}similar}\PYG{p}{(}\PYG{n}{sample\PYGZus{}node}\PYG{p}{,} \PYG{n}{topn}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{Most similar to }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{sample\PYGZus{}node}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{node}\PYG{p}{,} \PYG{n}{similarity} \PYG{o+ow}{in} \PYG{n}{similar\PYGZus{}nodes}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{node}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{similarity}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Step 5: Downstream Tasks}
+\label{\detokenize{user_guide/random_walks_embeddings:step-5-downstream-tasks}}
+\sphinxAtStartPar
+\sphinxstylestrong{Node Clustering:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sklearn}\PYG{n+nn}{.}\PYG{n+nn}{cluster}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{KMeans}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{c+c1}{\PYGZsh{} Cluster nodes based on embeddings}
+\PYG{n}{n\PYGZus{}clusters} \PYG{o}{=} \PYG{l+m+mi}{5}
+\PYG{n}{kmeans} \PYG{o}{=} \PYG{n}{KMeans}\PYG{p}{(}\PYG{n}{n\PYGZus{}clusters}\PYG{o}{=}\PYG{n}{n\PYGZus{}clusters}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{clusters} \PYG{o}{=} \PYG{n}{kmeans}\PYG{o}{.}\PYG{n}{fit\PYGZus{}predict}\PYG{p}{(}\PYG{n}{embeddings}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Assign clusters to nodes}
+\PYG{n}{node\PYGZus{}clusters} \PYG{o}{=} \PYG{n+nb}{dict}\PYG{p}{(}\PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{node\PYGZus{}ids}\PYG{p}{,} \PYG{n}{clusters}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Cluster distribution:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{collections}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Counter}
+\PYG{k}{for} \PYG{n}{cluster}\PYG{p}{,} \PYG{n}{count} \PYG{o+ow}{in} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{Counter}\PYG{p}{(}\PYG{n}{clusters}\PYG{p}{)}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  Cluster }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{cluster}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{count}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Node Classification:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sklearn}\PYG{n+nn}{.}\PYG{n+nn}{model\PYGZus{}selection}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{train\PYGZus{}test\PYGZus{}split}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sklearn}\PYG{n+nn}{.}\PYG{n+nn}{ensemble}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{RandomForestClassifier}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sklearn}\PYG{n+nn}{.}\PYG{n+nn}{metrics}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{accuracy\PYGZus{}score}\PYG{p}{,} \PYG{n}{classification\PYGZus{}report}
+
+\PYG{c+c1}{\PYGZsh{} Assume you have labels for nodes}
+\PYG{c+c1}{\PYGZsh{} labels = \PYGZob{}node\PYGZus{}id: label for node\PYGZus{}id, label in your\PYGZus{}label\PYGZus{}data\PYGZcb{}}
+
+\PYG{c+c1}{\PYGZsh{} For demonstration, create synthetic labels based on layer}
+\PYG{n}{labels} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}
+\PYG{k}{for} \PYG{n}{node\PYGZus{}id} \PYG{o+ow}{in} \PYG{n}{node\PYGZus{}ids}\PYG{p}{:}
+    \PYG{c+c1}{\PYGZsh{} Extract layer from node\PYGZhy{}layer tuple string representation}
+    \PYG{c+c1}{\PYGZsh{} Adjust this based on your actual node ID format}
+    \PYG{k}{if} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer1}\PYG{l+s+s1}{\PYGZsq{}} \PYG{o+ow}{in} \PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{node\PYGZus{}id}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{labels}\PYG{p}{[}\PYG{n}{node\PYGZus{}id}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{k}{elif} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{layer2}\PYG{l+s+s1}{\PYGZsq{}} \PYG{o+ow}{in} \PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{node\PYGZus{}id}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{labels}\PYG{p}{[}\PYG{n}{node\PYGZus{}id}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{1}
+    \PYG{k}{else}\PYG{p}{:}
+        \PYG{n}{labels}\PYG{p}{[}\PYG{n}{node\PYGZus{}id}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{2}
+
+\PYG{c+c1}{\PYGZsh{} Prepare data}
+\PYG{n}{X} \PYG{o}{=} \PYG{n}{embeddings}
+\PYG{n}{y} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{n}{labels}\PYG{p}{[}\PYG{n}{node\PYGZus{}id}\PYG{p}{]} \PYG{k}{for} \PYG{n}{node\PYGZus{}id} \PYG{o+ow}{in} \PYG{n}{node\PYGZus{}ids}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Train/test split}
+\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{y\PYGZus{}train}\PYG{p}{,} \PYG{n}{y\PYGZus{}test} \PYG{o}{=} \PYG{n}{train\PYGZus{}test\PYGZus{}split}\PYG{p}{(}
+    \PYG{n}{X}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{test\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Train classifier}
+\PYG{n}{clf} \PYG{o}{=} \PYG{n}{RandomForestClassifier}\PYG{p}{(}\PYG{n}{n\PYGZus{}estimators}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{clf}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{y\PYGZus{}train}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Evaluate}
+\PYG{n}{y\PYGZus{}pred} \PYG{o}{=} \PYG{n}{clf}\PYG{o}{.}\PYG{n}{predict}\PYG{p}{(}\PYG{n}{X\PYGZus{}test}\PYG{p}{)}
+\PYG{n}{accuracy} \PYG{o}{=} \PYG{n}{accuracy\PYGZus{}score}\PYG{p}{(}\PYG{n}{y\PYGZus{}test}\PYG{p}{,} \PYG{n}{y\PYGZus{}pred}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Classification accuracy: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{accuracy}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Link Prediction:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{sklearn}\PYG{n+nn}{.}\PYG{n+nn}{linear\PYGZus{}model}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{LogisticRegression}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{edge\PYGZus{}embedding}\PYG{p}{(}\PYG{n}{node1}\PYG{p}{,} \PYG{n}{node2}\PYG{p}{,} \PYG{n}{method}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{hadamard}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Compute edge embedding from node embeddings.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{emb1} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{node1}\PYG{p}{)}\PYG{p}{]}
+    \PYG{n}{emb2} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{node2}\PYG{p}{)}\PYG{p}{]}
+
+    \PYG{k}{if} \PYG{n}{method} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{hadamard}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{emb1} \PYG{o}{*} \PYG{n}{emb2}
+    \PYG{k}{elif} \PYG{n}{method} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{average}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:}
+        \PYG{k}{return} \PYG{p}{(}\PYG{n}{emb1} \PYG{o}{+} \PYG{n}{emb2}\PYG{p}{)} \PYG{o}{/} \PYG{l+m+mi}{2}
+    \PYG{k}{elif} \PYG{n}{method} \PYG{o}{==} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{concat}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{np}\PYG{o}{.}\PYG{n}{concatenate}\PYG{p}{(}\PYG{p}{[}\PYG{n}{emb1}\PYG{p}{,} \PYG{n}{emb2}\PYG{p}{]}\PYG{p}{)}
+    \PYG{k}{else}\PYG{p}{:}
+        \PYG{k}{raise} \PYG{n+ne}{ValueError}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Unknown method: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{method}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Get existing edges (positive examples)}
+\PYG{n}{existing\PYGZus{}edges} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{G}\PYG{o}{.}\PYG{n}{edges}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{100}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} Sample for demo}
+
+\PYG{c+c1}{\PYGZsh{} Generate negative examples (non\PYGZhy{}edges)}
+\PYG{n}{nodes} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{G}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{negative\PYGZus{}edges} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+\PYG{k}{while} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{negative\PYGZus{}edges}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{existing\PYGZus{}edges}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{n1} \PYG{o}{=} \PYG{n}{nodes}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{randint}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{nodes}\PYG{p}{)}\PYG{p}{)}\PYG{p}{]}
+    \PYG{n}{n2} \PYG{o}{=} \PYG{n}{nodes}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{randint}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{nodes}\PYG{p}{)}\PYG{p}{)}\PYG{p}{]}
+    \PYG{k}{if} \PYG{n}{n1} \PYG{o}{!=} \PYG{n}{n2} \PYG{o+ow}{and} \PYG{o+ow}{not} \PYG{n}{G}\PYG{o}{.}\PYG{n}{has\PYGZus{}edge}\PYG{p}{(}\PYG{n}{n1}\PYG{p}{,} \PYG{n}{n2}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{negative\PYGZus{}edges}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{(}\PYG{n}{n1}\PYG{p}{,} \PYG{n}{n2}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Create training data}
+\PYG{n}{X\PYGZus{}edges} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+\PYG{n}{y\PYGZus{}edges} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+
+\PYG{k}{for} \PYG{n}{edge} \PYG{o+ow}{in} \PYG{n}{existing\PYGZus{}edges}\PYG{p}{:}
+    \PYG{k}{try}\PYG{p}{:}
+        \PYG{n}{X\PYGZus{}edges}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{edge\PYGZus{}embedding}\PYG{p}{(}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{y\PYGZus{}edges}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Positive}
+    \PYG{k}{except} \PYG{n+ne}{KeyError}\PYG{p}{:}
+        \PYG{k}{pass}  \PYG{c+c1}{\PYGZsh{} Skip if node not in vocabulary}
+
+\PYG{k}{for} \PYG{n}{edge} \PYG{o+ow}{in} \PYG{n}{negative\PYGZus{}edges}\PYG{p}{:}
+    \PYG{k}{try}\PYG{p}{:}
+        \PYG{n}{X\PYGZus{}edges}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{edge\PYGZus{}embedding}\PYG{p}{(}\PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{edge}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{y\PYGZus{}edges}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Negative}
+    \PYG{k}{except} \PYG{n+ne}{KeyError}\PYG{p}{:}
+        \PYG{k}{pass}
+
+\PYG{n}{X\PYGZus{}edges} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{X\PYGZus{}edges}\PYG{p}{)}
+\PYG{n}{y\PYGZus{}edges} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{y\PYGZus{}edges}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Train link prediction model}
+\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{y\PYGZus{}train}\PYG{p}{,} \PYG{n}{y\PYGZus{}test} \PYG{o}{=} \PYG{n}{train\PYGZus{}test\PYGZus{}split}\PYG{p}{(}
+    \PYG{n}{X\PYGZus{}edges}\PYG{p}{,} \PYG{n}{y\PYGZus{}edges}\PYG{p}{,} \PYG{n}{test\PYGZus{}size}\PYG{o}{=}\PYG{l+m+mf}{0.2}\PYG{p}{,} \PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+
+\PYG{n}{clf} \PYG{o}{=} \PYG{n}{LogisticRegression}\PYG{p}{(}\PYG{n}{random\PYGZus{}state}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+\PYG{n}{clf}\PYG{o}{.}\PYG{n}{fit}\PYG{p}{(}\PYG{n}{X\PYGZus{}train}\PYG{p}{,} \PYG{n}{y\PYGZus{}train}\PYG{p}{)}
+
+\PYG{n}{accuracy} \PYG{o}{=} \PYG{n}{clf}\PYG{o}{.}\PYG{n}{score}\PYG{p}{(}\PYG{n}{X\PYGZus{}test}\PYG{p}{,} \PYG{n}{y\PYGZus{}test}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Link prediction accuracy: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{accuracy}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Step 6: Save and Load Embeddings}
+\label{\detokenize{user_guide/random_walks_embeddings:step-6-save-and-load-embeddings}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Save embeddings in Word2Vec format}
+\PYG{n}{model}\PYG{o}{.}\PYG{n}{wv}\PYG{o}{.}\PYG{n}{save\PYGZus{}word2vec\PYGZus{}format}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node\PYGZus{}embeddings.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{binary}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Embeddings saved to node\PYGZus{}embeddings.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Save as NumPy arrays (for sklearn compatibility)}
+\PYG{n}{np}\PYG{o}{.}\PYG{n}{save}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{embedding\PYGZus{}matrix.npy}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{embeddings}\PYG{p}{)}
+\PYG{n}{np}\PYG{o}{.}\PYG{n}{save}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node\PYGZus{}ids.npy}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{node\PYGZus{}ids}\PYG{p}{)}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Embeddings saved as NumPy arrays}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Load embeddings later}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{gensim}\PYG{n+nn}{.}\PYG{n+nn}{models}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{KeyedVectors}
+\PYG{n}{loaded\PYGZus{}embeddings} \PYG{o}{=} \PYG{n}{KeyedVectors}\PYG{o}{.}\PYG{n}{load\PYGZus{}word2vec\PYGZus{}format}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{node\PYGZus{}embeddings.txt}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Loaded embeddings for }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{loaded\PYGZus{}embeddings}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Parameter Tuning Guide}
+\label{\detokenize{user_guide/random_walks_embeddings:parameter-tuning-guide}}
+
+\paragraph{Walk Length Guidelines}
+\label{\detokenize{user_guide/random_walks_embeddings:walk-length-guidelines}}
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{20}{100}\X{20}{100}\X{30}{100}\X{30}{100}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Network Size
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+walk\_length
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Reasoning
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Trade\sphinxhyphen{}off
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+Small (\textless{}1K nodes)
+&
+\sphinxAtStartPar
+40\sphinxhyphen{}80
+&
+\sphinxAtStartPar
+Shorter walks sufficient
+&
+\sphinxAtStartPar
+Speed vs coverage
+\\
+\sphinxhline
+\sphinxAtStartPar
+Medium (1K\sphinxhyphen{}10K)
+&
+\sphinxAtStartPar
+80\sphinxhyphen{}120
+&
+\sphinxAtStartPar
+Standard choice
+&
+\sphinxAtStartPar
+Balanced
+\\
+\sphinxhline
+\sphinxAtStartPar
+Large (\textgreater{}10K)
+&
+\sphinxAtStartPar
+80\sphinxhyphen{}100
+&
+\sphinxAtStartPar
+Longer walks costly
+&
+\sphinxAtStartPar
+Memory/time vs quality
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Rule of thumb:} \sphinxcode{\sphinxupquote{walk\_length}} should be at least 2\sphinxhyphen{}3× the network diameter.
+
+
+\paragraph{Number of Walks Guidelines}
+\label{\detokenize{user_guide/random_walks_embeddings:number-of-walks-guidelines}}
+
+\begin{savenotes}\sphinxattablestart
+\sphinxthistablewithglobalstyle
+\centering
+\begin{tabular}[t]{\X{20}{100}\X{20}{100}\X{30}{100}\X{30}{100}}
+\sphinxtoprule
+\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Task
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+num\_walks
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Reasoning
+&\sphinxstyletheadfamily 
+\sphinxAtStartPar
+Trade\sphinxhyphen{}off
+\\
+\sphinxmidrule
+\sphinxtableatstartofbodyhook
+\sphinxAtStartPar
+Exploration
+&
+\sphinxAtStartPar
+5\sphinxhyphen{}10
+&
+\sphinxAtStartPar
+Quick results
+&
+\sphinxAtStartPar
+Speed vs quality
+\\
+\sphinxhline
+\sphinxAtStartPar
+Standard
+&
+\sphinxAtStartPar
+10\sphinxhyphen{}20
+&
+\sphinxAtStartPar
+Good balance
+&
+\sphinxAtStartPar
+Recommended
+\\
+\sphinxhline
+\sphinxAtStartPar
+High\sphinxhyphen{}quality
+&
+\sphinxAtStartPar
+20\sphinxhyphen{}50
+&
+\sphinxAtStartPar
+Better embeddings
+&
+\sphinxAtStartPar
+Time vs quality
+\\
+\sphinxhline
+\sphinxAtStartPar
+Research
+&
+\sphinxAtStartPar
+50\sphinxhyphen{}100
+&
+\sphinxAtStartPar
+Maximum quality
+&
+\sphinxAtStartPar
+Very slow
+\\
+\sphinxbottomrule
+\end{tabular}
+\sphinxtableafterendhook\par
+\sphinxattableend\end{savenotes}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Rule of thumb:} More walks = better embeddings, but with diminishing returns after \textasciitilde{}20.
+
+
+\paragraph{P and Q Parameter Effects}
+\label{\detokenize{user_guide/random_walks_embeddings:p-and-q-parameter-effects}}
+\sphinxAtStartPar
+The p and q parameters control the walk’s exploration behavior:
+
+\sphinxAtStartPar
+\sphinxstylestrong{Return parameter p:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{p \textless{} 1:} More likely to backtrack (return to previous node)
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use when: Local structure is important; you want to capture tight clusters
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{p = 1:} Balanced (equivalent to basic random walk for backtracking)
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use when: No prior about network structure
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{p \textgreater{} 1:} Less likely to backtrack (move forward)
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use when: You want walks to explore broadly
+
+\end{itemize}
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{In\sphinxhyphen{}out parameter q:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{q \textless{} 1:} More likely to explore distant nodes (DFS\sphinxhyphen{}like)
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use when: You want to capture global structure, find communities
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{q = 1:} Balanced exploration
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use when: No prior about network structure
+
+\end{itemize}
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{q \textgreater{} 1:} More likely to stay in local neighborhood (BFS\sphinxhyphen{}like)
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Use when: You want to capture local structure, homophily
+
+\end{itemize}
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Common presets:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Local/homophily\PYGZhy{}focused (similar to BFS)}
+\PYG{n}{p}\PYG{p}{,} \PYG{n}{q} \PYG{o}{=} \PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{l+m+mf}{2.0}
+
+\PYG{c+c1}{\PYGZsh{} Global/structural (similar to DFS)}
+\PYG{n}{p}\PYG{p}{,} \PYG{n}{q} \PYG{o}{=} \PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{l+m+mf}{0.5}
+
+\PYG{c+c1}{\PYGZsh{} Balanced (DeepWalk\PYGZhy{}like)}
+\PYG{n}{p}\PYG{p}{,} \PYG{n}{q} \PYG{o}{=} \PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{l+m+mf}{1.0}
+
+\PYG{c+c1}{\PYGZsh{} Strong local focus}
+\PYG{n}{p}\PYG{p}{,} \PYG{n}{q} \PYG{o}{=} \PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{l+m+mf}{2.0}
+
+\PYG{c+c1}{\PYGZsh{} Strong exploration}
+\PYG{n}{p}\PYG{p}{,} \PYG{n}{q} \PYG{o}{=} \PYG{l+m+mf}{2.0}\PYG{p}{,} \PYG{l+m+mf}{0.5}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Common Failure Modes}
+\label{\detokenize{user_guide/random_walks_embeddings:common-failure-modes}}
+
+\paragraph{Disconnected Graph}
+\label{\detokenize{user_guide/random_walks_embeddings:disconnected-graph}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Walk gets stuck or terminates early because node has no neighbors.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Symptoms:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Walks shorter than expected
+
+\item {} 
+\sphinxAtStartPar
+Some nodes never appear in walks
+
+\item {} 
+\sphinxAtStartPar
+Embeddings missing for some nodes
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solutions:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{networkx}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{} Check connectivity}
+\PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{is\PYGZus{}connected}\PYG{p}{(}\PYG{n}{G}\PYG{o}{.}\PYG{n}{to\PYGZus{}undirected}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Graph is disconnected!}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} Option 1: Use largest connected component}
+    \PYG{n}{largest\PYGZus{}cc} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{nx}\PYG{o}{.}\PYG{n}{connected\PYGZus{}components}\PYG{p}{(}\PYG{n}{G}\PYG{o}{.}\PYG{n}{to\PYGZus{}undirected}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{n+nb}{len}\PYG{p}{)}
+    \PYG{n}{G\PYGZus{}connected} \PYG{o}{=} \PYG{n}{G}\PYG{o}{.}\PYG{n}{subgraph}\PYG{p}{(}\PYG{n}{largest\PYGZus{}cc}\PYG{p}{)}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{(}\PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} Option 2: Add small random edges to connect components}
+    \PYG{c+c1}{\PYGZsh{} (use with caution \PYGZhy{} changes graph structure)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Highly Skewed Degree Distribution}
+\label{\detokenize{user_guide/random_walks_embeddings:highly-skewed-degree-distribution}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} High\sphinxhyphen{}degree hub nodes dominate walks; low\sphinxhyphen{}degree nodes underrepresented.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Symptoms:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Most walks pass through the same few nodes
+
+\item {} 
+\sphinxAtStartPar
+Embeddings for peripheral nodes are poor quality
+
+\item {} 
+\sphinxAtStartPar
+Similarity to hub nodes is overestimated
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solutions:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Option 1: Use more walks per node}
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}\PYG{n}{G}\PYG{p}{,} \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{30}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{80}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Option 2: Add node\PYGZhy{}specific walks for low\PYGZhy{}degree nodes}
+\PYG{n}{low\PYGZus{}degree\PYGZus{}nodes} \PYG{o}{=} \PYG{p}{[}\PYG{n}{n} \PYG{k}{for} \PYG{n}{n} \PYG{o+ow}{in} \PYG{n}{G}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)} \PYG{k}{if} \PYG{n}{G}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{5}\PYG{p}{]}
+\PYG{n}{extra\PYGZus{}walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}
+    \PYG{n}{G}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{80}\PYG{p}{,}
+    \PYG{n}{start\PYGZus{}nodes}\PYG{o}{=}\PYG{n}{low\PYGZus{}degree\PYGZus{}nodes}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}
+\PYG{p}{)}
+\PYG{n}{walks}\PYG{o}{.}\PYG{n}{extend}\PYG{p}{(}\PYG{n}{extra\PYGZus{}walks}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Option 3: Use weighted walks that downweight high\PYGZhy{}degree nodes}
+\PYG{c+c1}{\PYGZsh{} (requires custom implementation)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Isolated Nodes}
+\label{\detokenize{user_guide/random_walks_embeddings:isolated-nodes}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Nodes with degree 0 cannot be walked from.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Symptoms:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+KeyError when looking up embeddings
+
+\item {} 
+\sphinxAtStartPar
+Missing nodes in similarity queries
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solutions:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Remove isolated nodes before generating walks}
+\PYG{n}{isolated} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{nx}\PYG{o}{.}\PYG{n}{isolates}\PYG{p}{(}\PYG{n}{G}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{G\PYGZus{}filtered} \PYG{o}{=} \PYG{n}{G}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{G\PYGZus{}filtered}\PYG{o}{.}\PYG{n}{remove\PYGZus{}nodes\PYGZus{}from}\PYG{p}{(}\PYG{n}{isolated}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Generate walks on filtered graph}
+\PYG{n}{walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}\PYG{n}{G\PYGZus{}filtered}\PYG{p}{,} \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{80}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Handle isolated nodes separately (e.g., assign zero embedding)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Very Small Graph}
+\label{\detokenize{user_guide/random_walks_embeddings:very-small-graph}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} With few nodes, walks become repetitive quickly.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Symptoms:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Walks cycle through the same nodes repeatedly
+
+\item {} 
+\sphinxAtStartPar
+All nodes have similar embeddings
+
+\item {} 
+\sphinxAtStartPar
+Poor discriminative power
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solutions:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Use shorter walks for small graphs}
+\PYG{k}{if} \PYG{n}{G}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{100}\PYG{p}{:}
+    \PYG{n}{walk\PYGZus{}length} \PYG{o}{=} \PYG{n+nb}{min}\PYG{p}{(}\PYG{l+m+mi}{40}\PYG{p}{,} \PYG{n}{G}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)} \PYG{o}{*} \PYG{l+m+mi}{2}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Use fewer walks (avoid redundancy)}
+\PYG{n}{num\PYGZus{}walks} \PYG{o}{=} \PYG{n+nb}{min}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{n}{G}\PYG{o}{.}\PYG{n}{number\PYGZus{}of\PYGZus{}nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Consider direct matrix\PYGZhy{}based methods for very small graphs}
+\PYG{c+c1}{\PYGZsh{} (spectral embeddings, Laplacian eigenvectors)}
+\end{sphinxVerbatim}
+
+
+\paragraph{Memory Issues with Large Graphs}
+\label{\detokenize{user_guide/random_walks_embeddings:memory-issues-with-large-graphs}}
+\sphinxAtStartPar
+\sphinxstylestrong{Problem:} Storing all walks in memory causes OOM errors.
+
+\sphinxAtStartPar
+\sphinxstylestrong{Symptoms:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+MemoryError during walk generation
+
+\item {} 
+\sphinxAtStartPar
+System becomes unresponsive
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Solutions:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Option 1: Generate walks in batches}
+\PYG{n}{all\PYGZus{}walks} \PYG{o}{=} \PYG{p}{[}\PYG{p}{]}
+\PYG{n}{nodes} \PYG{o}{=} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{G}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\PYG{n}{batch\PYGZus{}size} \PYG{o}{=} \PYG{l+m+mi}{1000}
+
+\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{nodes}\PYG{p}{)}\PYG{p}{,} \PYG{n}{batch\PYGZus{}size}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{batch\PYGZus{}nodes} \PYG{o}{=} \PYG{n}{nodes}\PYG{p}{[}\PYG{n}{i}\PYG{p}{:}\PYG{n}{i}\PYG{o}{+}\PYG{n}{batch\PYGZus{}size}\PYG{p}{]}
+    \PYG{n}{batch\PYGZus{}walks} \PYG{o}{=} \PYG{n}{generate\PYGZus{}walks}\PYG{p}{(}
+        \PYG{n}{G}\PYG{p}{,}
+        \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+        \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{80}\PYG{p}{,}
+        \PYG{n}{start\PYGZus{}nodes}\PYG{o}{=}\PYG{n}{batch\PYGZus{}nodes}\PYG{p}{,}
+        \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{o}{+}\PYG{n}{i}
+    \PYG{p}{)}
+    \PYG{n}{all\PYGZus{}walks}\PYG{o}{.}\PYG{n}{extend}\PYG{p}{(}\PYG{n}{batch\PYGZus{}walks}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Processed }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{o}{+}\PYG{n}{batch\PYGZus{}size}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{/}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{nodes}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Option 2: Stream walks directly to Word2Vec}
+\PYG{c+c1}{\PYGZsh{} (requires custom iterator implementation)}
+
+\PYG{c+c1}{\PYGZsh{} Option 3: Use disk\PYGZhy{}based storage}
+\PYG{c+c1}{\PYGZsh{} Write walks to file, then load for training}
+\end{sphinxVerbatim}
+
+
+\subsubsection{References}
+\label{\detokenize{user_guide/random_walks_embeddings:references}}\begin{description}
+\sphinxlineitem{\sphinxstylestrong{Node2Vec:}}
+\sphinxAtStartPar
+Grover, A., \& Leskovec, J. (2016). node2vec: Scalable feature learning for networks.
+\sphinxstyleemphasis{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, 855\sphinxhyphen{}864.
+\sphinxurl{https://doi.org/10.1145/2939672.2939754}
+
+\sphinxlineitem{\sphinxstylestrong{DeepWalk:}}
+\sphinxAtStartPar
+Perozzi, B., Al\sphinxhyphen{}Rfou, R., \& Skiena, S. (2014). DeepWalk: Online learning of social representations.
+\sphinxstyleemphasis{Proceedings of the 20th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, 701\sphinxhyphen{}710.
+\sphinxurl{https://doi.org/10.1145/2623330.2623732}
+
+\sphinxlineitem{\sphinxstylestrong{Random Walks on Graphs:}}
+\sphinxAtStartPar
+Lovász, L. (1993). Random walks on graphs: A survey.
+\sphinxstyleemphasis{Combinatorics, Paul Erdős is Eighty}, 2, 1\sphinxhyphen{}46.
+
+\end{description}
+
+
+\subsubsection{API Reference}
+\label{\detokenize{user_guide/random_walks_embeddings:api-reference}}
+\sphinxAtStartPar
+See {\hyperref[\detokenize{reference/api_index:module-py3plex.algorithms.general.walkers}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{py3plex.algorithms.general.walkers}}}}} for complete API documentation.
+
+
+\subsubsection{Examples}
+\label{\detokenize{user_guide/random_walks_embeddings:examples}}
+\sphinxAtStartPar
+Complete examples can be found in:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{examples/advanced/example\_random\_walks.py}} \sphinxhyphen{} Basic usage examples
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{tests/test\_random\_walks.py}} \sphinxhyphen{} Comprehensive test suite
+
+\end{itemize}
+
+\sphinxAtStartPar
+Repository: \sphinxurl{https://github.com/SkBlaz/py3plex}
 
 \sphinxstepscope
 
@@ -102945,6 +105535,13 @@ If you use py3plex in your research, please cite:
 \item\relax\sphinxstyleindexentry{py3plex.exceptions}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.exceptions}}
 \item\relax\sphinxstyleindexentry{py3plex.io.api}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.io.api}}
 \item\relax\sphinxstyleindexentry{py3plex.logging\_config}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.logging_config}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.base}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.base}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.deepwalk}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.deepwalk}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.line}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.line}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.metapath2vec}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.metapath2vec}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.netmf}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.netmf}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.node2vec}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.node2vec}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.trainer}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.trainer}}
 \item\relax\sphinxstyleindexentry{py3plex.multinet.aggregation}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.multinet.aggregation}}
 \item\relax\sphinxstyleindexentry{py3plex.profiling}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.profiling}}
 \item\relax\sphinxstyleindexentry{py3plex.uncertainty}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.uncertainty}}

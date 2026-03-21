@@ -208,16 +208,17 @@ Complete reference documentation for APIs and DSL syntax.
 
 ----
 
-Part VI: Examples & Recipes
-----------------------------
+Part VI: Examples, Recipes & Embeddings
+----------------------------------------
 
-Complete working examples and analysis recipes.
+Complete working examples, analysis recipes, and embedding workflows.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Examples & Recipes
+   :caption: Examples, Recipes & Embeddings
 
    examples/index
+   user_guide/random_walks_embeddings
    user_guide/recipes_and_workflows
    user_guide/case_studies
 
