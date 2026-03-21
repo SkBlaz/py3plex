@@ -1,1 +1,0 @@
-SKIPPED: SKIP_CI: true - This is a documentation file showing JSON examples, not executable code
