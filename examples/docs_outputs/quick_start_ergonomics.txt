@@ -40,6 +40,16 @@ OK Using ergonomic helper:
       metrics=['degree', 'betweenness_centrality'],
       top_k=5
   )
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 OK Analysis complete: 5 nodes analyzed
   Network: 8 nodes, 5 edges, 3 layers
@@ -84,6 +94,16 @@ OK Using ergonomic helper:
 ============================================================
 NETWORK SUMMARY
 ============================================================
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 Structure:
   • Nodes (replicas): 8
@@ -93,7 +113,7 @@ Structure:
 
 Layers:
   • ['social', 'work']: 0 nodes, 0 intra-layer edges
-  • [<networkx.classes.multigraph.MultiGraph object at 0x7f0197e75430>, <networkx.classes.multigraph.MultiGraph object at 0x7f01971d6d50>]: 0 nodes, 0 intra-layer edges
+  • [<networkx.classes.multigraph.MultiGraph object at 0x7f4d818d6f60>, <networkx.classes.multigraph.MultiGraph object at 0x7f4d8130b9e0>]: 0 nodes, 0 intra-layer edges
   • defaultdict(<class 'list'>, {}): 0 nodes, 0 intra-layer edges
 ============================================================
 

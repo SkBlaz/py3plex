@@ -1,10 +1,2 @@
-2026-03-21 14:44:55 - py3plex.visualization.layout_algorithms - ERROR - Error: name 'ForceAtlas2' is not defined
-2026-03-21 14:44:55 - py3plex.visualization.layout_algorithms - WARNING - Using standard layout algorithm, fa2 not present on the system.
-2026-03-21 14:44:55 - py3plex.visualization.layout_algorithms - ERROR - Error: name 'ForceAtlas2' is not defined
-2026-03-21 14:44:55 - py3plex.visualization.layout_algorithms - WARNING - Using standard layout algorithm, fa2 not present on the system.
-2026-03-21 14:44:55 - py3plex.core.converters - INFO - Finished with layout..
-2026-03-21 14:44:55 - py3plex.visualization.layout_algorithms - ERROR - Error: name 'ForceAtlas2' is not defined
-2026-03-21 14:44:55 - py3plex.visualization.layout_algorithms - WARNING - Using standard layout algorithm, fa2 not present on the system.
-2026-03-21 14:44:55 - py3plex.visualization.layout_algorithms - ERROR - Error: name 'ForceAtlas2' is not defined
-2026-03-21 14:44:55 - py3plex.visualization.layout_algorithms - WARNING - Using standard layout algorithm, fa2 not present on the system.
-2026-03-21 14:44:55 - py3plex.core.converters - INFO - Finished with layout..
+2026-03-21 15:11:33 - py3plex.core.converters - INFO - Finished with layout..
+2026-03-21 15:11:33 - py3plex.core.converters - INFO - Finished with layout..
