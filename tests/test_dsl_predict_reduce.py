@@ -11,8 +11,8 @@ def multilayer_network_sample():
     net = multinet.multi_layer_network(directed=False)
     nodes = []
     for n in ["A", "B", "C", "D", "E"]:
-        for layer in ["work", "leisure"]:
-            nodes.append({"source": n, "type": layer})
+        for layer_name in ["work", "leisure"]:
+            nodes.append({"source": n, "type": layer_name})
     net.add_nodes(nodes)
     net.add_edges(
         [
@@ -84,7 +84,18 @@ def test_predict_links_node2vec_temporal_holdout_executes(multilayer_network_sam
     assert res.provenance["split"]["strategy"] == "temporal_holdout"
     cutoff = res.provenance["split"]["cutoff_time"]
     if cutoff is not None:
-        assert cutoff >= 1.0
+        test_positive_times = [
+            rec["edge_time"]
+            for rec in res.meta.get("split_records", [])
+            if rec.get("partition") == "test" and rec.get("label") == 1
+        ]
+        train_positive_times = [
+            rec["edge_time"]
+            for rec in res.meta.get("split_records", [])
+            if rec.get("partition") == "train" and rec.get("label") == 1
+        ]
+        if test_positive_times and train_positive_times:
+            assert min(test_positive_times) >= max(train_positive_times)
 
 
 def test_predict_links_by_layer_holdout_executes(multilayer_network_sample):

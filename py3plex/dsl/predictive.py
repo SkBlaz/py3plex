@@ -578,6 +578,25 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
     if len(test_edges) > 200000:
         warnings.append("Large candidate edge space may be expensive.")
 
+    split_records: list[dict[str, Any]] = []
+    timed_lookup = {edge: _extract_edge_time(data) for edge, data in scoped_edges}
+    for e in train_pos:
+        split_records.append(
+            {"partition": "train", "label": 1, "edge": e, "edge_time": timed_lookup.get(e)}
+        )
+    for e in test_pos:
+        split_records.append(
+            {"partition": "test", "label": 1, "edge": e, "edge_time": timed_lookup.get(e)}
+        )
+    for e in train_neg:
+        split_records.append(
+            {"partition": "train", "label": 0, "edge": e, "edge_time": timed_lookup.get(e)}
+        )
+    for e in test_neg:
+        split_records.append(
+            {"partition": "test", "label": 0, "edge": e, "edge_time": timed_lookup.get(e)}
+        )
+
     provenance = {
         "engine": "dsl_v2_predict_links",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
@@ -611,6 +630,7 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
         },
         "per_layer_metrics": per_layer,
         "warnings": warnings,
+        "split_records": split_records,
         "provenance": provenance,
         "query_ast": stmt,
     }

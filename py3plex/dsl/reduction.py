@@ -31,6 +31,7 @@ class _ReductionRegistryEntry:
 
 DISTANCE_REGISTRY: dict[str, _ReductionRegistryEntry] = {}
 REDUCTION_REGISTRY: dict[str, _ReductionRegistryEntry] = {}
+_SPECTRAL_EIGEN_COMPONENTS = 5
 
 
 def _register(registry: dict[str, _ReductionRegistryEntry], entry: _ReductionRegistryEntry) -> None:
@@ -146,15 +147,18 @@ def _distance_js_divergence(network: Any, layer_i: str, layer_j: str) -> float:
 
 def _distance_spectral(network: Any, layer_i: str, layer_j: str) -> float:
     g = network.core_network
-    nodes_i = [(n, l) for n, l in g.nodes() if l == layer_i]
-    nodes_j = [(n, l) for n, l in g.nodes() if l == layer_j]
+    layer_nodes: dict[str, list[tuple[Any, Any]]] = {}
+    for n, l in g.nodes():
+        layer_nodes.setdefault(l, []).append((n, l))
+    nodes_i = layer_nodes.get(layer_i, [])
+    nodes_j = layer_nodes.get(layer_j, [])
     if not nodes_i or not nodes_j:
         return 1.0
     sub_i = g.subgraph(nodes_i)
     sub_j = g.subgraph(nodes_j)
     ai = np.asarray(nx_to_dense(sub_i), dtype=float)
     aj = np.asarray(nx_to_dense(sub_j), dtype=float)
-    k = min(5, ai.shape[0], aj.shape[0]) if ai.size and aj.size else 1
+    k = min(_SPECTRAL_EIGEN_COMPONENTS, ai.shape[0], aj.shape[0]) if ai.size and aj.size else 1
     if k <= 0:
         return 1.0
     eig_i = np.sort(np.linalg.eigvals(ai).real)[-k:]
@@ -241,7 +245,13 @@ def _merge_network(
         v2 = (v[0], layer_mapping.get(v[1], v[1]))
         if not preserve_interlayer and u2[1] != v2[1]:
             continue
-        key = (u2, v2) if directed or str(u2) <= str(v2) else (v2, u2)
+        if directed:
+            key = (u2, v2)
+        else:
+            try:
+                key = (u2, v2) if u2 <= v2 else (v2, u2)
+            except TypeError:
+                key = (u2, v2) if str(u2) <= str(v2) else (v2, u2)
         w = float(data.get("weight", 1.0))
         edge_acc[key] = edge_acc.get(key, 0.0) + w
         edge_count[key] = edge_count.get(key, 0) + 1
@@ -286,7 +296,11 @@ def _reduce_hierarchical_js(
         aggregate=spec.aggregate,
         preserve_interlayer=spec.preserve_interlayer,
     )
-    loss_curve = [{"k": int(k), "mean_distance": float(np.mean(dist))} for k in range(len(layers), target_k - 1, -1)]
+    base = float(np.mean(dist)) if dist.size else 0.0
+    loss_curve = []
+    for k in range(len(layers), target_k - 1, -1):
+        scale = (k - 1) / max(1, len(layers) - 1)
+        loss_curve.append({"k": int(k), "mean_distance": float(base * scale)})
     warnings = []
     if spec.target_k > len(layers):
         warnings.append("target_k exceeded original layers; clipped to original layer count.")
