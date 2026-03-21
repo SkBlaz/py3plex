@@ -251,3 +251,69 @@ def test_embedding_cache_and_reproduce(tmp_path):
         assert len(npz_files) > 0
     replay = emb2.reproduce(net)
     np.testing.assert_allclose(replay.to_numpy(), emb1.to_numpy())
+
+
+def test_line_embedding_order_variants():
+    net = _toy_network()
+    emb_order1 = net.embed(method="line", dimensions=6, order=1, seed=42)
+    emb_order2 = net.embed(method="line", dimensions=6, order=2, seed=42)
+    assert emb_order1.to_numpy().shape[1] == 6
+    assert emb_order2.to_numpy().shape[1] == 6
+    assert emb_order1.meta["order"] == 1
+    assert emb_order2.meta["order"] == 2
+    assert not np.allclose(emb_order1.to_numpy(), emb_order2.to_numpy())
+
+
+def test_metapath2vec_embedding_via_network_embed():
+    net = _toy_network()
+    emb = net.embed(
+        method="metapath2vec",
+        dimensions=4,
+        walk_length=6,
+        num_walks=2,
+        metapaths=[["social", "social"], ["work", "work"]],
+        seed=42,
+    )
+    assert emb.to_numpy().shape == (len(list(net.get_nodes())), 4)
+    assert emb.method == "metapath2vec"
+
+
+def test_embedding_vectors_getitem_and_norms():
+    net = _toy_network()
+    emb = net.embed(method="node2vec", dimensions=8, walk_length=8, num_walks=2, seed=9)
+    vectors = emb.vectors
+    assert len(vectors) == emb.n_items
+    first = emb.nodes[0]
+    np.testing.assert_array_equal(vectors[first], emb[first])
+    np.testing.assert_allclose(emb.norms(), np.linalg.norm(emb.to_numpy(), axis=1))
+
+
+def test_embedding_similarity_metrics_dot_and_euclidean():
+    net = _toy_network()
+    emb = net.embed(method="node2vec", dimensions=8, walk_length=8, num_walks=2, seed=13)
+    node_a, node_b = emb.nodes[0], emb.nodes[1]
+    dot = emb.similarity(node_a, node_b, metric="dot")
+    euc = emb.similarity(node_a, node_b, metric="euclidean")
+    assert np.isfinite(dot)
+    assert np.isfinite(euc)
+    assert euc >= 0
+
+
+def test_embedding_build_index_sklearn_backend():
+    net = _toy_network()
+    emb = net.embed(method="node2vec", dimensions=8, walk_length=8, num_walks=2, seed=21)
+    emb.build_index(method="sklearn", metric="cosine")
+    assert emb._vector_index_backend == "sklearn"
+    neighbors = emb.knn(emb.nodes[0], k=2)
+    assert len(neighbors) <= 2
+
+
+def test_embedding_result_save_load_npz(tmp_path):
+    net = _toy_network()
+    emb = net.embed(method="node2vec", dimensions=6, walk_length=8, num_walks=2, seed=4)
+    out_path = tmp_path / "embedding.npz"
+    emb.save(str(out_path))
+    loaded = type(emb).load(str(out_path))
+    np.testing.assert_allclose(loaded.to_numpy(), emb.to_numpy())
+    assert loaded.nodes == emb.nodes
+    assert loaded.method == emb.method
