@@ -1,7 +1,7 @@
 Reproducible Environments and Replayable Analysis
 ==================================================
 
-Reproducibility is an analytical requirement: independent reviewers must be able to re-run your workflow and inspect the same assumptions.
+Reproducibility is an analytical requirement: independent reviewers must be able to re-run your workflow and verify the assumptions made and parameters used in the analysis.
 
 For basic environment setup commands, see Chapter 4. For container/deployment detail, see Appendix B.
 

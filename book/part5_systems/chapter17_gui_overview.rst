@@ -3,7 +3,7 @@
 GUI Overview: Where It Helps, Where It Does Not
 ================================================
 
-The py3plex GUI is a convenience interface for interactive exploration. It is useful for rapid inspection and teaching workflows, but it should not be treated as a replacement for versioned analytical scripts.
+The py3plex GUI is a convenience interface for interactive exploration, useful for rapid inspection and teaching workflows. It should not replace versioned analytical scripts.
 
 .. admonition:: Status: Experimental
    :class: warning

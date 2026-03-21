@@ -4,7 +4,7 @@ Case Study 3 — Transportation Network: Resilience Under Layer Disruption
 .. admonition:: workflow template
    :class: note
 
-   This chapter provides a workflow template for transportation multilayer analysis with an emphasis on contestable assumptions and resilience interpretation.
+   This chapter provides a workflow template for transportation multilayer analysis with an emphasis on assumptions subject to scrutiny and resilience interpretation.
 
 Readers adapting this template should document transfer-cost assumptions, temporal aggregation choices, and missing-data handling before interpreting ranking outputs.
 
@@ -23,7 +23,7 @@ Layers:
 * ``bike``
 * ``walk_transfer``
 
-Contestable choice: transfer edges are modeled with fixed penalty weights. In practice, transfer costs vary by time, congestion, and accessibility.
+Simplifying assumption: transfer edges are modeled with fixed penalty weights, though in practice transfer costs vary by time, congestion, and accessibility.
 
 Naive Baseline
 --------------
@@ -53,7 +53,7 @@ Then run a disruption scenario by removing or down-weighting one layer and recom
 Why Multilayer Changed the Conclusion
 -------------------------------------
 
-Flattened analysis overemphasized metro-core stations. The multilayer disruption comparison identified secondary interchange nodes that become dominant under bus or metro degradation.
+Flattened analysis prioritized metro-core stations because it did not account for mode-specific dependency. The multilayer disruption comparison identified secondary interchange nodes that become dominant under bus or metro degradation.
 
 Fragile Assumptions
 -------------------

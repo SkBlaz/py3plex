@@ -3,7 +3,7 @@
 Testing and Validation as Methodological Controls
 =================================================
 
-Testing is not only software hygiene. In analytical pipelines, tests are controls against silent methodological drift.
+Testing is not only software hygiene. In analytical pipelines, tests are controls against silent methodological drift (such as changes in representation or approximation defaults that alter results).
 
 Validation Layers
 -----------------
