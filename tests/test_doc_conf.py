@@ -1,6 +1,7 @@
 import importlib.util
 import os
 import sys
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,12 @@ import pytest
 
 DOC_CONF_PATH = Path(__file__).resolve().parent.parent / "docfiles" / "conf.py"
 DOC_DIR = DOC_CONF_PATH.parent
+PYPROJECT_PATH = DOC_DIR.parent / "pyproject.toml"
+
+
+def _project_version() -> str:
+    data = tomllib.loads(PYPROJECT_PATH.read_text(encoding="utf-8"))
+    return data["project"]["version"]
 
 
 @pytest.fixture
@@ -51,9 +58,10 @@ def test_conf_inserts_py3plex_path_first(load_doc_conf):
 
 def test_conf_exposes_metadata_and_html_options(load_doc_conf):
     conf = load_doc_conf()
+    project_version = _project_version()
 
     assert conf.project == "py3plex"
-    assert conf.version == conf.release == "1.1.2"
+    assert conf.version == conf.release == project_version
     assert conf.author == "Blaž Škrlj"
     assert conf.language == "en"
 
