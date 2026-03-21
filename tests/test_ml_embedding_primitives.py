@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import numpy as np
+import pytest
 
 from py3plex.core.multinet import multi_layer_network
 from py3plex.dsl import Q
@@ -119,6 +120,52 @@ def test_dsl_embed_integration_node2vec():
     result = Q.nodes().embed("node2vec", dim=8, walk_length=8, num_walks=2, seed=42).execute(net)
     mat = result.to_numpy("embedding")
     assert mat.shape[1] == 8
+
+
+def test_dsl_embed_integration_dimensions_alias():
+    net = _toy_network()
+    result = (
+        Q.nodes()
+        .embed("node2vec", dimensions=6, walk_length=8, num_walks=2, seed=42)
+        .execute(net)
+    )
+    mat = result.to_numpy("embedding")
+    assert mat.shape[1] == 6
+
+
+def test_dsl_embed_edges_link_op_recorded_in_spec():
+    builder = (
+        Q.edges()
+        .embed(
+            "node2vec",
+            dim=8,
+            walk_length=8,
+            num_walks=2,
+            link_op="l1",
+            seed=42,
+        )
+    )
+    spec = builder.to_ast().select.embedding_spec
+    assert spec is not None
+    assert spec.link_op == "l1"
+    assert spec.dim == 8
+
+
+def test_dsl_embed_to_numpy_invalid_kind_raises():
+    net = _toy_network()
+    result = Q.nodes().embed("node2vec", dim=8, walk_length=8, num_walks=2, seed=42).execute(net)
+    with pytest.raises(
+        ValueError, match="Currently only 'embedding' is supported"
+    ):
+        result.to_numpy("not-supported")
+
+
+def test_dsl_embed_to_pandas_expand_embeddings_prefix():
+    net = _toy_network()
+    result = Q.nodes().embed("node2vec", dim=4, walk_length=8, num_walks=2, seed=42).execute(net)
+    df = result.to_pandas(expand_embeddings=True, embedding_prefix="vec_")
+    expected_cols = {f"vec_{i}" for i in range(4)}
+    assert expected_cols.issubset(df.columns)
 
 
 def test_graph_ops_embed_column():
