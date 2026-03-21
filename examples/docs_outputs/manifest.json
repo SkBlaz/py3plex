@@ -1,0 +1,89 @@
+{
+  "examples": {
+    "01_basic_query": {
+      "has_stderr": false,
+      "output_file": "01_basic_query.txt",
+      "success": true
+    },
+    "02_community_detection": {
+      "has_stderr": false,
+      "output_file": "02_community_detection.txt",
+      "success": true
+    },
+    "dsl_patterns_quick_reference": {
+      "has_stderr": false,
+      "output_file": "dsl_patterns_quick_reference.txt",
+      "success": true
+    },
+    "example_datasets": {
+      "has_stderr": true,
+      "output_file": "example_datasets.txt",
+      "success": true
+    },
+    "example_ergonomics_demo": {
+      "has_stderr": false,
+      "output_file": "example_ergonomics_demo.txt",
+      "success": true
+    },
+    "example_multilayer_functionality": {
+      "has_stderr": false,
+      "output_file": "example_multilayer_functionality.txt",
+      "skip_reason": "SKIP_CI: external_deps - Requires specific dataset files",
+      "skipped": true,
+      "success": true
+    },
+    "example_networkx_wrapper": {
+      "has_stderr": false,
+      "output_file": "example_networkx_wrapper.txt",
+      "success": true
+    },
+    "example_networkx_wrapper_kwargs": {
+      "has_stderr": false,
+      "output_file": "example_networkx_wrapper_kwargs.txt",
+      "success": true
+    },
+    "example_nx_wrapper": {
+      "has_stderr": false,
+      "output_file": "example_nx_wrapper.txt",
+      "skip_reason": "SKIP_CI: slow - Betweenness centrality on 300-node network may take more than 10 seconds",
+      "skipped": true,
+      "success": true
+    },
+    "example_random_generator": {
+      "has_stderr": false,
+      "output_file": "example_random_generator.txt",
+      "success": true
+    },
+    "example_random_generators_advanced": {
+      "has_stderr": false,
+      "output_file": "example_random_generators_advanced.txt",
+      "success": true
+    },
+    "mcp_quickstart": {
+      "has_stderr": false,
+      "output_file": "mcp_quickstart.txt",
+      "skip_reason": "SKIP_CI: true - This is a documentation file showing JSON examples, not executable code",
+      "skipped": true,
+      "success": true
+    },
+    "quick_start_ergonomics": {
+      "has_stderr": true,
+      "output_file": "quick_start_ergonomics.txt",
+      "success": true
+    },
+    "tutorial_10min": {
+      "has_stderr": false,
+      "output_file": "tutorial_10min.txt",
+      "skip_reason": "SKIP_CI: slow - This tutorial takes more than 10 seconds to complete",
+      "skipped": true,
+      "success": true
+    },
+    "user_journey_simulation": {
+      "has_stderr": false,
+      "output_file": "user_journey_simulation.txt",
+      "success": true
+    }
+  },
+  "generated": "CI",
+  "version": "1.0"
+}
