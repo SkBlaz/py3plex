@@ -233,10 +233,16 @@
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.QueryBuilder.after">after() (py3plex.dsl.QueryBuilder method)</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.aggregate">aggregate (py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
       <li><a href="reference/api_index.html#py3plex.dsl.StageType.AGGREGATE">AGGREGATE (py3plex.dsl.StageType attribute)</a>
 </li>
-      <li><a href="reference/api_index.html#py3plex.dsl.QueryBuilder.aggregate">aggregate() (py3plex.dsl.QueryBuilder method)</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.aggregate">aggregate() (py3plex.dsl.LayerReductionBuilder method)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.QueryBuilder.aggregate">(py3plex.dsl.QueryBuilder method)</a>
 </li>
+      </ul></li>
       <li><a href="reference/api_index.html#py3plex.algorithms.centrality_toolkit.aggregate_centrality_across_layers">aggregate_centrality_across_layers() (in module py3plex.algorithms.centrality_toolkit)</a>
 </li>
       <li><a href="apidocs.html#py3plex.core.multinet.multi_layer_network.aggregate_edges">aggregate_edges() (py3plex.core.multinet.multi_layer_network method)</a>, <a href="reference/api_index.html#py3plex.core.multinet.multi_layer_network.aggregate_edges">[1]</a>
@@ -548,6 +554,8 @@
         <li><a href="plugin_system.html#discover_plugins">discover_plugins()</a>
 </li>
       </ul></li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.by_layer_holdout">by_layer_holdout() (py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -647,6 +655,10 @@
       <li><a href="reference/api_index.html#py3plex.dsl.ClaimLearnerBuilder">ClaimLearnerBuilder (class in py3plex.dsl)</a>
 </li>
       <li><a href="apidocs.html#py3plex.core.HINMINE.dataStructures.Class">Class (class in py3plex.core.HINMINE.dataStructures)</a>, <a href="reference/api_index.html#py3plex.core.HINMINE.dataStructures.Class">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.classifier">classifier (py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.classifier">classifier() (py3plex.dsl.LinkPredictionBuilder method)</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.core.example.Example.ClassLabeled">ClassLabeled (py3plex.algorithms.hedwig.core.example.Example attribute)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.core.example.Example.ClassLabeled">[1]</a>
 </li>
@@ -960,6 +972,10 @@
 </li>
       <li><a href="reference/compat.html#id15">created_by (py3plex.compat.GraphMeta attribute)</a>, <a href="reference/compat.html#py3plex.compat.GraphMeta.created_by">[1]</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.criterion">criterion (py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.criterion">criterion() (py3plex.dsl.LayerReductionBuilder method)</a>
+</li>
       <li><a href="reference/api_index.html#id159">cross_layer (py3plex.dsl.PathStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.PathStmt.cross_layer">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.statistics.multilayer_statistics.cross_layer_mutual_information">cross_layer_mutual_information() (in module py3plex.algorithms.statistics.multilayer_statistics)</a>, <a href="reference/api_index.html#py3plex.algorithms.statistics.multilayer_statistics.cross_layer_mutual_information">[1]</a>
@@ -1120,8 +1136,6 @@
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.Diagnostic">Diagnostic (class in py3plex.dsl)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/api_index.html#py3plex.dsl.DslError.diagnostic">diagnostic (py3plex.dsl.DslError attribute)</a>
 </li>
       <li><a href="reference/api_index.html#id14">diagnostics (py3plex.dsl.ApproximationSpec attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ApproximationSpec.diagnostics">[1]</a>
@@ -1130,6 +1144,8 @@
         <li><a href="reference/api_index.html#id103">(py3plex.dsl.ExplainResult attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ExplainResult.diagnostics">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidocs.html#py3plex.exceptions.Py3plexException.did_you_mean">did_you_mean (py3plex.exceptions.Py3plexException attribute)</a>, <a href="reference/api_index.html#py3plex.exceptions.Py3plexException.did_you_mean">[1]</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.ml.embedding.base.EmbeddingResult.dim">dim (py3plex.ml.embedding.base.EmbeddingResult property)</a>
@@ -1157,7 +1173,15 @@
 </li>
       <li><a href="reference/api_index.html#py3plex.uncertainty.WeightNoise.dist">dist (py3plex.uncertainty.WeightNoise attribute)</a>
 </li>
-      <li><a href="reference/api_index.html#py3plex.ml.embedding.base.EmbeddingResult.distance">distance() (py3plex.ml.embedding.base.EmbeddingResult method)</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.distance">distance (py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.distance">distance() (py3plex.dsl.LayerReductionBuilder method)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.ml.embedding.base.EmbeddingResult.distance">(py3plex.ml.embedding.base.EmbeddingResult method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/api_index.html#py3plex.dsl.DistanceSpec">DistanceSpec (class in py3plex.dsl)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.QueryBuilder.distinct">distinct() (py3plex.dsl.QueryBuilder method)</a>
 </li>
@@ -1271,6 +1295,10 @@
 </li>
       <li><a href="apidocs.html#py3plex.core.multinet.multi_layer_network.edge_count">edge_count (py3plex.core.multinet.multi_layer_network property)</a>, <a href="reference/api_index.html#py3plex.core.multinet.multi_layer_network.edge_count">[1]</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.edge_features">edge_features (py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.edge_features">edge_features() (py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
       <li><a href="reference/compat.html#id10">edge_id (py3plex.compat.EdgeTable attribute)</a>, <a href="reference/compat.html#py3plex.compat.EdgeTable.edge_id">[1]</a>
 </li>
       <li><a href="reference/compat.html#id25">edge_id_required (py3plex.compat.GraphSchema attribute)</a>, <a href="reference/compat.html#py3plex.compat.GraphSchema.edge_id_required">[1]</a>
@@ -1284,6 +1312,8 @@
       <li><a href="reference/api_index.html#py3plex.dsl.N.edge_swap">edge_swap() (py3plex.dsl.N static method)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.uncertainty.EdgeDrop">EdgeDrop (class in py3plex.uncertainty)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.EdgeFeatureSpec">EdgeFeatureSpec (class in py3plex.dsl)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.EdgeLayerConstraint">EdgeLayerConstraint (class in py3plex.dsl)</a>
 </li>
@@ -1387,14 +1417,22 @@
       </ul></li>
       <li><a href="reference/api_index.html#id169">etype (py3plex.dsl.PatternEdge attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.PatternEdge.etype">[1]</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.eval">eval (py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.eval">eval() (py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.EvalSpec">EvalSpec (class in py3plex.dsl)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.evaluate">evaluate() (py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
       <li><a href="apidocs.html#py3plex.algorithms.general.benchmark_classification.evaluate_oracle_F1">evaluate_oracle_F1() (in module py3plex.algorithms.general.benchmark_classification)</a>, <a href="reference/api_index.html#py3plex.algorithms.general.benchmark_classification.evaluate_oracle_F1">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/api_index.html#id26">evictions (py3plex.dsl.CacheStatistics attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.CacheStatistics.evictions">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.core.example.Example">Example (class in py3plex.algorithms.hedwig.core.example)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.core.example.Example">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.core.rule.Rule.examples">examples() (py3plex.algorithms.hedwig.core.rule.Rule method)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.core.rule.Rule.examples">[1]</a>
 </li>
       <li><a href="reference/api_index.html#id110">exclude (py3plex.dsl.ExplainSpec attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ExplainSpec.exclude">[1]</a>
@@ -1413,6 +1451,10 @@
         <li><a href="reference/api_index.html#py3plex.dsl.DynamicsBuilder.execute">(py3plex.dsl.DynamicsBuilder method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.JoinBuilder.execute">(py3plex.dsl.JoinBuilder method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.execute">(py3plex.dsl.LayerReductionBuilder method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.execute">(py3plex.dsl.LinkPredictionBuilder method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.MetaBuilder.execute">(py3plex.dsl.MetaBuilder method)</a>
 </li>
@@ -2129,10 +2171,10 @@
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.statistics.multilayer_statistics.interdependence">interdependence() (in module py3plex.algorithms.statistics.multilayer_statistics)</a>, <a href="reference/api_index.html#py3plex.algorithms.statistics.multilayer_statistics.interdependence">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.stats.scorefunctions.interesting">interesting() (in module py3plex.algorithms.hedwig.stats.scorefunctions)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.stats.scorefunctions.interesting">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidocs.html#py3plex.algorithms.statistics.multilayer_statistics.interlayer_degree_correlation_matrix">interlayer_degree_correlation_matrix() (in module py3plex.algorithms.statistics.multilayer_statistics)</a>, <a href="reference/api_index.html#py3plex.algorithms.statistics.multilayer_statistics.interlayer_degree_correlation_matrix">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.community_detection.community_louvain.Status.internals">internals (py3plex.algorithms.community_detection.community_louvain.Status attribute)</a>, <a href="reference/api_index.html#py3plex.algorithms.community_detection.community_louvain.Status.internals">[1]</a>
@@ -2191,8 +2233,14 @@
         <li><a href="apidocs.html#py3plex.algorithms.hedwig.learners.learner.Learner.is_implicit_root">(py3plex.algorithms.hedwig.learners.learner.Learner method)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.learners.learner.Learner.is_implicit_root">[1]</a>
 </li>
       </ul></li>
-      <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.is_replayable">is_replayable (py3plex.dsl.QueryResult property)</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionResult.is_replayable">is_replayable (py3plex.dsl.LayerReductionResult property)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.PredictionResult.is_replayable">(py3plex.dsl.PredictionResult property)</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.is_replayable">(py3plex.dsl.QueryResult property)</a>
+</li>
+      </ul></li>
       <li><a href="reference/api_index.html#py3plex.dsl.ConditionAtom.is_special">is_special (py3plex.dsl.ConditionAtom property)</a>
 </li>
       <li><a href="apidocs.html#py3plex.core.nx_compat.is_string_like">is_string_like() (in module py3plex.core.nx_compat)</a>, <a href="reference/api_index.html#py3plex.core.nx_compat.is_string_like">[1]</a>
@@ -2288,6 +2336,8 @@
       <li><a href="reference/api_index.html#id20">kind (py3plex.dsl.AutoCommunityConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.AutoCommunityConfig.kind">[1]</a>
 
       <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.EdgeFeatureSpec.kind">(py3plex.dsl.EdgeFeatureSpec attribute)</a>
+</li>
         <li><a href="reference/api_index.html#id96">(py3plex.dsl.EdgeLayerConstraint attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.EdgeLayerConstraint.kind">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id124">(py3plex.dsl.ExtendedQuery attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ExtendedQuery.kind">[1]</a>
@@ -2423,6 +2473,14 @@
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.LayerProxy">LayerProxy (class in py3plex.dsl)</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder">LayerReductionBuilder (class in py3plex.dsl)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionError">LayerReductionError</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionResult">LayerReductionResult (class in py3plex.dsl)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec">LayerReductionSpec (class in py3plex.dsl)</a>
+</li>
       <li><a href="reference/compat.html#id18">layers (py3plex.compat.GraphMeta attribute)</a>, <a href="reference/compat.html#py3plex.compat.GraphMeta.layers">[1]</a>
 
       <ul>
@@ -2441,6 +2499,8 @@
         <li><a href="reference/api_index.html#py3plex.dsl.CounterexampleBuilder.layers">(py3plex.dsl.CounterexampleBuilder method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.layers_expr">layers_expr (py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
       <li><a href="reference/api_index.html#py3plex.dsl.LayerSet">LayerSet (class in py3plex.dsl)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.LayerSetExpr">LayerSetExpr (in module py3plex.dsl)</a>
@@ -2449,10 +2509,10 @@
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.Q.learn_claims">learn_claims() (py3plex.dsl.Q static method)</a>
 </li>
-      <li><a href="apidocs.html#py3plex.wrappers.train_node2vec_embedding.learn_embedding">learn_embedding() (in module py3plex.wrappers.train_node2vec_embedding)</a>, <a href="reference/api_index.html#py3plex.wrappers.train_node2vec_embedding.learn_embedding">[1]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidocs.html#py3plex.wrappers.train_node2vec_embedding.learn_embedding">learn_embedding() (in module py3plex.wrappers.train_node2vec_embedding)</a>, <a href="reference/api_index.html#py3plex.wrappers.train_node2vec_embedding.learn_embedding">[1]</a>
+</li>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.learners.learner.Learner">Learner (class in py3plex.algorithms.hedwig.learners.learner)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.learners.learner.Learner">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.core.settings.Defaults.LEARNER">LEARNER (py3plex.algorithms.hedwig.core.settings.Defaults attribute)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.core.settings.Defaults.LEARNER">[1]</a>
@@ -2518,6 +2578,10 @@
       <li><a href="reference/api_index.html#py3plex.ml.embedding.line.LINEEmbedding">LINEEmbedding (class in py3plex.ml.embedding.line)</a>
 </li>
       <li><a href="apidocs.html#py3plex.visualization.fa2.fa2util.linGravity">linGravity() (in module py3plex.visualization.fa2.fa2util)</a>, <a href="reference/api_index.html#py3plex.visualization.fa2.fa2util.linGravity">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder">LinkPredictionBuilder (class in py3plex.dsl)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec">LinkPredictionSpec (class in py3plex.dsl)</a>
 </li>
       <li><a href="apidocs.html#py3plex.visualization.fa2.fa2util.linRepulsion">linRepulsion() (in module py3plex.visualization.fa2.fa2util)</a>, <a href="reference/api_index.html#py3plex.visualization.fa2.fa2util.linRepulsion">[1]</a>
 </li>
@@ -2714,6 +2778,8 @@
       <ul>
         <li><a href="reference/api_index.html#id55">(py3plex.dsl.ComputeItem attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ComputeItem.method">[1]</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.method">(py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
         <li><a href="reference/api_index.html#id205">(py3plex.dsl.ResolvedUQConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ResolvedUQConfig.method">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id245">(py3plex.dsl.SemiringClosureStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SemiringClosureStmt.method">[1]</a>
@@ -2721,19 +2787,31 @@
         <li><a href="reference/api_index.html#id296">(py3plex.dsl.UQConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.UQConfig.method">[1]</a>
 </li>
       </ul></li>
-      <li><a href="reference/api_index.html#py3plex.dsl.SemiringClosureBuilder.method">method() (py3plex.dsl.SemiringClosureBuilder method)</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.method">method() (py3plex.dsl.LayerReductionBuilder method)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.SemiringClosureBuilder.method">(py3plex.dsl.SemiringClosureBuilder method)</a>
 </li>
+      </ul></li>
       <li><a href="reference/api_index.html#py3plex.dsl.DslMissingMetricError.metric">metric (py3plex.dsl.DslMissingMetricError attribute)</a>
 </li>
       <li><a href="reference/api_index.html#id44">metric_name (py3plex.dsl.CompareStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.CompareStmt.metric_name">[1]</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.BenchmarkNode.metrics">metrics (py3plex.dsl.BenchmarkNode attribute)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.EvalSpec.metrics">(py3plex.dsl.EvalSpec attribute)</a>
 </li>
+      </ul></li>
       <li><a href="reference/api_index.html#py3plex.dsl.CommunityBenchmarkBuilder.metrics">metrics() (py3plex.dsl.CommunityBenchmarkBuilder method)</a>
 </li>
       <li><a href="apidocs.html#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.midpoint_generator">midpoint_generator() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)</a>, <a href="reference/api_index.html#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.midpoint_generator">[1]</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.ClaimLearnerBuilder.min_coverage">min_coverage() (py3plex.dsl.ClaimLearnerBuilder method)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.min_similarity">min_similarity (py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.min_similarity">min_similarity() (py3plex.dsl.LayerReductionBuilder method)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.ClaimLearnerBuilder.min_support">min_support() (py3plex.dsl.ClaimLearnerBuilder method)</a>
 </li>
@@ -2757,15 +2835,23 @@
         <li><a href="reference/api_index.html#id373">(py3plex.uncertainty.UncertaintyConfig attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.UncertaintyConfig.mode">[1]</a>
 </li>
       </ul></li>
-      <li><a href="reference/api_index.html#id145">model (py3plex.dsl.MetaResult attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.MetaResult.model">[1]</a>
-</li>
-      <li><a href="reference/api_index.html#py3plex.dsl.MetaBuilder.model">model() (py3plex.dsl.MetaBuilder method)</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.model">model (py3plex.dsl.LinkPredictionSpec attribute)</a>
 
       <ul>
+        <li><a href="reference/api_index.html#id145">(py3plex.dsl.MetaResult attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.MetaResult.model">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.model">model() (py3plex.dsl.LinkPredictionBuilder method)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.MetaBuilder.model">(py3plex.dsl.MetaBuilder method)</a>
+</li>
         <li><a href="reference/api_index.html#py3plex.dsl.N.model">(py3plex.dsl.N static method)</a>
 </li>
       </ul></li>
       <li><a href="reference/api_index.html#id151">model_type (py3plex.dsl.NullModelStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.NullModelStmt.model_type">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.ModelSpec">ModelSpec (class in py3plex.dsl)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.uncertainty.CommunityStats.modularity">modularity (py3plex.uncertainty.CommunityStats attribute)</a>
 
@@ -3115,11 +3201,15 @@
       <ul>
         <li><a href="reference/api_index.html#id58">(py3plex.dsl.ComputeItem attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ComputeItem.name">[1]</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.DistanceSpec.name">(py3plex.dsl.DistanceSpec attribute)</a>
+</li>
         <li><a href="reference/api_index.html#id78">(py3plex.dsl.DSLOperator attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.DSLOperator.name">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id131">(py3plex.dsl.FunctionCall attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.FunctionCall.name">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id141">(py3plex.dsl.LayerTerm attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.LayerTerm.name">[1]</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.ModelSpec.name">(py3plex.dsl.ModelSpec attribute)</a>
 </li>
         <li><a href="reference/api_index.html#id157">(py3plex.dsl.ParamRef attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ParamRef.name">[1]</a>
 </li>
@@ -3144,6 +3234,14 @@
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.core.settings.Defaults.NEGATIONS">NEGATIONS (py3plex.algorithms.hedwig.core.settings.Defaults attribute)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.core.settings.Defaults.NEGATIONS">[1]</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.negative_sampling">negative_sampling (py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.negative_sampling">negative_sampling() (py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.NegativeSamplingError">NegativeSamplingError</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.NegativeSamplingSpec">NegativeSamplingSpec (class in py3plex.dsl)</a>
+</li>
       <li><a href="reference/api_index.html#id113">neighbors_cfg (py3plex.dsl.ExplainSpec attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ExplainSpec.neighbors_cfg">[1]</a>
 </li>
       <li><a href="reference/api_index.html#id114">neighbors_top (py3plex.dsl.ExplainSpec attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ExplainSpec.neighbors_top">[1]</a>
@@ -3166,14 +3264,14 @@
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.ExportTarget.NETWORKX">NETWORKX (py3plex.dsl.ExportTarget attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/api_index.html#py3plex.uncertainty.nmi">nmi() (in module py3plex.uncertainty)</a>
 </li>
       <li><a href="reference/api_index.html#id313">nmi_mean (py3plex.uncertainty.PartitionUQ attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.PartitionUQ.nmi_mean">[1]</a>
 </li>
       <li><a href="reference/api_index.html#id314">nmi_std (py3plex.uncertainty.PartitionUQ attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.PartitionUQ.nmi_std">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.core.settings.Defaults.NO_CACHE">NO_CACHE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.core.settings.Defaults.NO_CACHE">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.visualization.fa2.fa2util.Node">Node (class in py3plex.visualization.fa2.fa2util)</a>, <a href="reference/api_index.html#py3plex.visualization.fa2.fa2util.Node">[1]</a>
@@ -3465,15 +3563,29 @@
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.BenchmarkAlgorithmSpec.params">(py3plex.dsl.BenchmarkAlgorithmSpec attribute)</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.DistanceSpec.params">(py3plex.dsl.DistanceSpec attribute)</a>
+</li>
         <li><a href="reference/api_index.html#id74">(py3plex.dsl.DSLExecutionContext attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.DSLExecutionContext.params">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id87">(py3plex.dsl.DynamicsStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.DynamicsStmt.params">[1]</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.EdgeFeatureSpec.params">(py3plex.dsl.EdgeFeatureSpec attribute)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.EvalSpec.params">(py3plex.dsl.EvalSpec attribute)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.params">(py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.ModelSpec.params">(py3plex.dsl.ModelSpec attribute)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.NegativeSamplingSpec.params">(py3plex.dsl.NegativeSamplingSpec attribute)</a>
 </li>
         <li><a href="reference/api_index.html#id153">(py3plex.dsl.NullModelStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.NullModelStmt.params">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id163">(py3plex.dsl.PathStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.PathStmt.params">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id273">(py3plex.dsl.SpecialPredicate attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SpecialPredicate.params">[1]</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.SplitSpec.params">(py3plex.dsl.SplitSpec attribute)</a>
 </li>
         <li><a href="reference/api_index.html#id276">(py3plex.dsl.Stage attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.Stage.params">[1]</a>
 </li>
@@ -3694,7 +3806,15 @@
         <li><a href="reference/api_index.html#id179">(py3plex.dsl.PatternNode attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.PatternNode.predicates">[1]</a>
 </li>
       </ul></li>
+      <li><a href="reference/api_index.html#py3plex.dsl.Q.predict">predict (py3plex.dsl.Q attribute)</a>
+</li>
       <li><a href="apidocs.html#py3plex.wrappers.benchmark_nodes.TopKRanker.predict">predict() (py3plex.wrappers.benchmark_nodes.TopKRanker method)</a>, <a href="reference/api_index.html#py3plex.wrappers.benchmark_nodes.TopKRanker.predict">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.PredictionResult">PredictionResult (class in py3plex.dsl)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.PredictionTaskError">PredictionTaskError</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.PredictStmt">PredictStmt (class in py3plex.dsl)</a>
 </li>
       <li><a href="reference/api_index.html#id115">prefix (py3plex.dsl.ExplainSpec attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ExplainSpec.prefix">[1]</a>
 </li>
@@ -3711,6 +3831,10 @@
       <li><a href="reference/api_index.html#id345">present_prob (py3plex.uncertainty.SelectionUQ attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.SelectionUQ.present_prob">[1]</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.uncertainty.EdgeDrop.preserve_connectivity">preserve_connectivity (py3plex.uncertainty.EdgeDrop attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.preserve_interlayer">preserve_interlayer (py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.preserve_interlayer">preserve_interlayer() (py3plex.dsl.LayerReductionBuilder method)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.MetaBuilder.preserve_order">preserve_order() (py3plex.dsl.MetaBuilder method)</a>
 </li>
@@ -3733,6 +3857,10 @@
       <li><a href="reference/api_index.html#py3plex.dsl.BenchmarkNode.provenance">provenance (py3plex.dsl.BenchmarkNode attribute)</a>
 
       <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionResult.provenance">(py3plex.dsl.LayerReductionResult property)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.PredictionResult.provenance">(py3plex.dsl.PredictionResult property)</a>
+</li>
         <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.provenance">(py3plex.dsl.QueryResult property)</a>
 </li>
         <li><a href="reference/api_index.html#id208">(py3plex.dsl.ResolvedUQConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ResolvedUQConfig.provenance">[1]</a>
@@ -3754,6 +3882,8 @@
         <li><a href="reference/api_index.html#py3plex.dsl.InMemoryCacheBackend.put">(py3plex.dsl.InMemoryCacheBackend method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     py3plex.algorithms.centrality_toolkit
 
@@ -3782,8 +3912,6 @@
         <li><a href="apidocs.html#module-py3plex.algorithms.community_detection.community_ranking">module</a>, <a href="reference/api_index.html#module-py3plex.algorithms.community_detection.community_ranking">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     py3plex.algorithms.community_detection.community_wrapper
 
@@ -4387,6 +4515,8 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.random_holdout">random_holdout() (py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
       <li><a href="apidocs.html#py3plex.core.random_generators.random_multilayer_ER">random_multilayer_ER() (in module py3plex.core.random_generators)</a>, <a href="reference/api_index.html#py3plex.core.random_generators.random_multilayer_ER">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.core.random_generators.random_multilayer_SBM">random_multilayer_SBM() (in module py3plex.core.random_generators)</a>, <a href="reference/api_index.html#py3plex.core.random_generators.random_multilayer_SBM">[1]</a>
@@ -4433,6 +4563,8 @@
 </li>
       <li><a href="reference/api_index.html#id332">ranks (py3plex.uncertainty.SelectionOutput attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.SelectionOutput.ranks">[1]</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.NegativeSamplingSpec.ratio">ratio (py3plex.dsl.NegativeSamplingSpec attribute)</a>
+</li>
       <li><a href="apidocs.html#py3plex.io.api.read">read() (in module py3plex.io.api)</a>, <a href="reference/api_index.html#py3plex.io.api.read">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.core.multinet.multi_layer_network.read_ground_truth_communities">read_ground_truth_communities() (py3plex.core.multinet.multi_layer_network method)</a>, <a href="reference/api_index.html#py3plex.core.multinet.multi_layer_network.read_ground_truth_communities">[1]</a>
@@ -4443,9 +4575,11 @@
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.record_as_experiment">record_as_experiment() (py3plex.dsl.QueryResult method)</a>
 </li>
-      <li><a href="reference/api_index.html#id209">reduce (py3plex.dsl.ResolvedUQConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ResolvedUQConfig.reduce">[1]</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.Q.reduce">reduce (py3plex.dsl.Q attribute)</a>
 
       <ul>
+        <li><a href="reference/api_index.html#id209">(py3plex.dsl.ResolvedUQConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ResolvedUQConfig.reduce">[1]</a>
+</li>
         <li><a href="reference/api_index.html#id299">(py3plex.dsl.UQConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.UQConfig.reduce">[1]</a>
 </li>
       </ul></li>
@@ -4456,6 +4590,10 @@
       <li><a href="reference/api_index.html#id369">reducer_outputs (py3plex.uncertainty.UQResult attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.UQResult.reducer_outputs">[1]</a>
 </li>
       <li><a href="reference/api_index.html#id363">reducers (py3plex.uncertainty.UQPlan attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.UQPlan.reducers">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.ReduceStmt">ReduceStmt (class in py3plex.dsl)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.ReductionMethodError">ReductionMethodError</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.Param.ref">ref() (py3plex.dsl.Param static method)</a>
 </li>
@@ -4487,12 +4625,30 @@
 </li>
       <li><a href="reference/api_index.html#id280">replacement (py3plex.dsl.SuggestedFix attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SuggestedFix.replacement">[1]</a>
 </li>
-      <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.replay">replay() (py3plex.dsl.QueryResult method)</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionResult.replay">replay() (py3plex.dsl.LayerReductionResult method)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.PredictionResult.replay">(py3plex.dsl.PredictionResult method)</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.replay">(py3plex.dsl.QueryResult method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/api_index.html#id89">replicates (py3plex.dsl.DynamicsStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.DynamicsStmt.replicates">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.report">report() (py3plex.dsl.LayerReductionBuilder method)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionResult.report">(py3plex.dsl.LayerReductionResult method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.PredictionResult.report">(py3plex.dsl.PredictionResult method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.report_level">report_level (py3plex.dsl.LayerReductionSpec attribute)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.ml.embedding.base.EmbeddingResult.reproduce">reproduce() (py3plex.ml.embedding.base.EmbeddingResult method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/api_index.html#py3plex.dsl.QueryBuilder.reproducible">reproducible() (py3plex.dsl.QueryBuilder method)</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.multicentrality.require">require() (in module py3plex.algorithms.multicentrality)</a>, <a href="reference/api_index.html#py3plex.algorithms.multicentrality.require">[1]</a>
@@ -4521,8 +4677,6 @@
         <li><a href="apidocs.html#py3plex.visualization.layout_algorithms.require">(in module py3plex.visualization.layout_algorithms)</a>, <a href="reference/api_index.html#py3plex.visualization.layout_algorithms.require">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/api_index.html#py3plex.dsl.DslMissingMetricError.required_by">required_by (py3plex.dsl.DslMissingMetricError attribute)</a>
 </li>
       <li><a href="reference/api_index.html#id193">required_measures (py3plex.dsl.PlannedQuery attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.PlannedQuery.required_measures">[1]</a>
@@ -4673,6 +4827,10 @@
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.SchemaProvider">SchemaProvider (class in py3plex.dsl)</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.scope">scope (py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.scope">scope() (py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.core.settings.Defaults.SCORE">SCORE (py3plex.algorithms.hedwig.core.settings.Defaults attribute)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.core.settings.Defaults.SCORE">[1]</a>
 </li>
       <li><a href="reference/api_index.html#id333">scores (py3plex.uncertainty.SelectionOutput attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.SelectionOutput.scores">[1]</a>
@@ -4684,9 +4842,17 @@
 </li>
         <li><a href="reference/api_index.html#id90">(py3plex.dsl.DynamicsStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.DynamicsStmt.seed">[1]</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.seed">(py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.seed">(py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.NegativeSamplingSpec.seed">(py3plex.dsl.NegativeSamplingSpec attribute)</a>
+</li>
         <li><a href="reference/api_index.html#id154">(py3plex.dsl.NullModelStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.NullModelStmt.seed">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id210">(py3plex.dsl.ResolvedUQConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ResolvedUQConfig.seed">[1]</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.SplitSpec.seed">(py3plex.dsl.SplitSpec attribute)</a>
 </li>
         <li><a href="reference/api_index.html#id300">(py3plex.dsl.UQConfig attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.UQConfig.seed">[1]</a>
 </li>
@@ -4705,6 +4871,10 @@
         <li><a href="reference/api_index.html#py3plex.dsl.CounterexampleBuilder.seed">(py3plex.dsl.CounterexampleBuilder method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.DynamicsBuilder.seed">(py3plex.dsl.DynamicsBuilder method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.seed">(py3plex.dsl.LayerReductionBuilder method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.seed">(py3plex.dsl.LinkPredictionBuilder method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.MetaBuilder.seed">(py3plex.dsl.MetaBuilder method)</a>
 </li>
@@ -4897,6 +5067,12 @@
       </ul></li>
       <li><a href="apidocs.html#py3plex.core.multinet.multi_layer_network.sparse_to_px">sparse_to_px() (py3plex.core.multinet.multi_layer_network method)</a>, <a href="reference/api_index.html#py3plex.core.multinet.multi_layer_network.sparse_to_px">[1]</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.PredictStmt.spec">spec (py3plex.dsl.PredictStmt attribute)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.ReduceStmt.spec">(py3plex.dsl.ReduceStmt attribute)</a>
+</li>
+      </ul></li>
       <li><a href="reference/api_index.html#id64">special (py3plex.dsl.ConditionAtom attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.ConditionAtom.special">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.learners.learner.Learner.specialize">specialize() (py3plex.algorithms.hedwig.learners.learner.Learner method)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.learners.learner.Learner.specialize">[1]</a>
@@ -4904,6 +5080,10 @@
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.learners.learner.Learner.specialize_add_relation">specialize_add_relation() (py3plex.algorithms.hedwig.learners.learner.Learner method)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.learners.learner.Learner.specialize_add_relation">[1]</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.dsl.SpecialPredicate">SpecialPredicate (class in py3plex.dsl)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.split">split (py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.split">split() (py3plex.dsl.LinkPredictionBuilder method)</a>
 </li>
       <li><a href="apidocs.html#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.split_to_indices">split_to_indices() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)</a>, <a href="reference/api_index.html#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.split_to_indices">[1]</a>
 </li>
@@ -4914,6 +5094,10 @@
 </li>
       </ul></li>
       <li><a href="apidocs.html#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.split_to_parts">split_to_parts() (py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork method)</a>, <a href="reference/api_index.html#py3plex.core.HINMINE.dataStructures.HeterogeneousInformationNetwork.split_to_parts">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.SplitSpec">SplitSpec (class in py3plex.dsl)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.SplitStrategyError">SplitStrategyError</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.node_ranking.spread_percent_hyper">spread_percent_hyper (in module py3plex.algorithms.node_ranking)</a>, <a href="reference/api_index.html#py3plex.algorithms.node_ranking.spread_percent_hyper">[1]</a>
 </li>
@@ -5019,8 +5203,14 @@
 </li>
       <li><a href="reference/api_index.html#id358">strata (py3plex.uncertainty.StratificationSpec attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.StratificationSpec.strata">[1]</a>
 </li>
-      <li><a href="reference/api_index.html#id366">strategy (py3plex.uncertainty.UQPlan attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.UQPlan.strategy">[1]</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.NegativeSamplingSpec.strategy">strategy (py3plex.dsl.NegativeSamplingSpec attribute)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.SplitSpec.strategy">(py3plex.dsl.SplitSpec attribute)</a>
 </li>
+        <li><a href="reference/api_index.html#id366">(py3plex.uncertainty.UQPlan attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.UQPlan.strategy">[1]</a>
+</li>
+      </ul></li>
       <li><a href="reference/api_index.html#py3plex.uncertainty.StratificationSpec">StratificationSpec (class in py3plex.uncertainty)</a>
 </li>
       <li><a href="reference/api_index.html#id328">STRATIFIED_PERTURBATION (py3plex.uncertainty.ResamplingStrategy attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.ResamplingStrategy.STRATIFIED_PERTURBATION">[1]</a>
@@ -5120,6 +5310,8 @@
       <ul>
         <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.target">(py3plex.dsl.QueryResult attribute)</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.ReduceStmt.target">(py3plex.dsl.ReduceStmt attribute)</a>
+</li>
         <li><a href="reference/api_index.html#id235">(py3plex.dsl.SelectStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SelectStmt.target">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id262">(py3plex.dsl.SemiringPathStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SemiringPathStmt.target">[1]</a>
@@ -5129,9 +5321,15 @@
         <li><a href="reference/api_index.html#id354">(py3plex.uncertainty.SelectionUQ attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.SelectionUQ.target">[1]</a>
 </li>
       </ul></li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionSpec.target_k">target_k (py3plex.dsl.LayerReductionSpec attribute)</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.target_k">target_k() (py3plex.dsl.LayerReductionBuilder method)</a>
+</li>
       <li><a href="reference/api_index.html#py3plex.dsl.ClaimLearnerBuilder.target_metrics">target_metrics() (py3plex.dsl.ClaimLearnerBuilder method)</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.statistics.multilayer_statistics.targeted_layer_removal">targeted_layer_removal() (in module py3plex.algorithms.statistics.multilayer_statistics)</a>, <a href="reference/api_index.html#py3plex.algorithms.statistics.multilayer_statistics.targeted_layer_removal">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.PredictStmt.task">task (py3plex.dsl.PredictStmt attribute)</a>
 </li>
       <li><a href="reference/api_index.html#id236">temporal_context (py3plex.dsl.SelectStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SelectStmt.temporal_context">[1]</a>
 
@@ -5139,6 +5337,8 @@
         <li><a href="reference/api_index.html#id291">(py3plex.dsl.TrajectoriesStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.TrajectoriesStmt.temporal_context">[1]</a>
 </li>
       </ul></li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.temporal_holdout">temporal_holdout() (py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
       <li><a href="reference/api_index.html#py3plex.dsl.TemporalContext">TemporalContext (class in py3plex.dsl)</a>
 </li>
       <li><a href="reference/api_index.html#py3plex.uncertainty.TemporalWindowBootstrap">TemporalWindowBootstrap (class in py3plex.uncertainty)</a>
@@ -5146,6 +5346,8 @@
       <li><a href="reference/api_index.html#id140">terms (py3plex.dsl.LayerExpr attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.LayerExpr.terms">[1]</a>
 </li>
       <li><a href="apidocs.html#py3plex.algorithms.hedwig.stats.validate.Validate.test">test() (py3plex.algorithms.hedwig.stats.validate.Validate method)</a>, <a href="reference/api_index.html#py3plex.algorithms.hedwig.stats.validate.Validate.test">[1]</a>
+</li>
+      <li><a href="reference/api_index.html#py3plex.dsl.SplitSpec.test_frac">test_frac (py3plex.dsl.SplitSpec attribute)</a>
 </li>
       <li><a href="apidocs.html#py3plex.core.multinet.multi_layer_network.test_scale_free">test_scale_free() (py3plex.core.multinet.multi_layer_network method)</a>, <a href="reference/api_index.html#py3plex.core.multinet.multi_layer_network.test_scale_free">[1]</a>
 </li>
@@ -5179,6 +5381,10 @@
         <li><a href="reference/api_index.html#py3plex.dsl.CompareBuilder.to_ast">(py3plex.dsl.CompareBuilder method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.DynamicsBuilder.to_ast">(py3plex.dsl.DynamicsBuilder method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionBuilder.to_ast">(py3plex.dsl.LayerReductionBuilder method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.to_ast">(py3plex.dsl.LinkPredictionBuilder method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.NullModelBuilder.to_ast">(py3plex.dsl.NullModelBuilder method)</a>
 </li>
@@ -5214,6 +5420,8 @@
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.LayerConstraint.to_dict">(py3plex.dsl.LayerConstraint method)</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionResult.to_dict">(py3plex.dsl.LayerReductionResult method)</a>
+</li>
         <li><a href="reference/api_index.html#py3plex.dsl.MatchRow.to_dict">(py3plex.dsl.MatchRow method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.MetaResult.to_dict">(py3plex.dsl.MetaResult method)</a>
@@ -5229,6 +5437,8 @@
         <li><a href="reference/api_index.html#py3plex.dsl.PlannedQuery.to_dict">(py3plex.dsl.PlannedQuery method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.Predicate.to_dict">(py3plex.dsl.Predicate method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.PredictionResult.to_dict">(py3plex.dsl.PredictionResult method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.to_dict">(py3plex.dsl.QueryResult method)</a>
 </li>
@@ -5311,10 +5521,14 @@
         <li><a href="reference/api_index.html#py3plex.ml.embedding.node2vec.Node2VecEmbedding.to_numpy">(py3plex.ml.embedding.node2vec.Node2VecEmbedding method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/api_index.html#py3plex.dsl.MetaResult.to_pandas">to_pandas() (py3plex.dsl.MetaResult method)</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.LayerReductionResult.to_pandas">to_pandas() (py3plex.dsl.LayerReductionResult method)</a>
 
       <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.MetaResult.to_pandas">(py3plex.dsl.MetaResult method)</a>
+</li>
         <li><a href="reference/api_index.html#py3plex.dsl.PatternQueryResult.to_pandas">(py3plex.dsl.PatternQueryResult method)</a>
+</li>
+        <li><a href="reference/api_index.html#py3plex.dsl.PredictionResult.to_pandas">(py3plex.dsl.PredictionResult method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.QueryResult.to_pandas">(py3plex.dsl.QueryResult method)</a>
 </li>
@@ -5351,8 +5565,14 @@
 </li>
       <li><a href="reference/api_index.html#id253">tol (py3plex.dsl.SemiringFixedPointStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SemiringFixedPointStmt.tol">[1]</a>
 </li>
-      <li><a href="reference/api_index.html#py3plex.dsl.QueryBuilder.top_k">top_k() (py3plex.dsl.QueryBuilder method)</a>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.top_k">top_k (py3plex.dsl.LinkPredictionSpec attribute)</a>
 </li>
+      <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.top_k">top_k() (py3plex.dsl.LinkPredictionBuilder method)</a>
+
+      <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.QueryBuilder.top_k">(py3plex.dsl.QueryBuilder method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/api_index.html#py3plex.uncertainty.RankReducer.topk_counts">topk_counts (py3plex.uncertainty.RankReducer attribute)</a>
 </li>
       <li><a href="reference/api_index.html#id355">topk_overlap_stats (py3plex.uncertainty.SelectionUQ attribute)</a>, <a href="reference/api_index.html#py3plex.uncertainty.SelectionUQ.topk_overlap_stats">[1]</a>
@@ -5500,6 +5720,8 @@
       <ul>
         <li><a href="reference/api_index.html#py3plex.dsl.DynamicsBuilder.uq">(py3plex.dsl.DynamicsBuilder method)</a>
 </li>
+        <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionBuilder.uq">(py3plex.dsl.LinkPredictionBuilder method)</a>
+</li>
         <li><a href="reference/api_index.html#py3plex.dsl.QueryBuilder.uq">(py3plex.dsl.QueryBuilder method)</a>
 </li>
         <li><a href="reference/api_index.html#py3plex.dsl.SemiringPathBuilder.uq">(py3plex.dsl.SemiringPathBuilder method)</a>
@@ -5510,6 +5732,8 @@
       <li><a href="reference/api_index.html#py3plex.dsl.BenchmarkProtocol.uq_config">uq_config (py3plex.dsl.BenchmarkProtocol attribute)</a>
 
       <ul>
+        <li><a href="reference/api_index.html#py3plex.dsl.LinkPredictionSpec.uq_config">(py3plex.dsl.LinkPredictionSpec attribute)</a>
+</li>
         <li><a href="reference/api_index.html#id237">(py3plex.dsl.SelectStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SelectStmt.uq_config">[1]</a>
 </li>
         <li><a href="reference/api_index.html#id263">(py3plex.dsl.SemiringPathStmt attribute)</a>, <a href="reference/api_index.html#py3plex.dsl.SemiringPathStmt.uq_config">[1]</a>
