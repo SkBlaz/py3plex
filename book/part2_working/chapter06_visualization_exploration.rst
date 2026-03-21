@@ -47,7 +47,7 @@ Basic Multilayer Visualization
     
     # Visualize with defaults
     draw_multilayer_default(
-        network.get_layers(),  # Returns dict of layer graphs
+        network.get_layers(),  # Returns tuple: (layer_names, layer_graphs, multiedges)
         display=True,
         labels=True
     )
@@ -57,9 +57,7 @@ This produces a circular layout with each layer shown in a different color.
 .. admonition:: API Note: Input Format
    :class: note
 
-   ``draw_multilayer_default`` expects a dict or list of NetworkX graphs. Always use ``network.get_layers()`` to get the properly formatted dict of layer graphs. This method returns a dictionary mapping layer names (strings) to NetworkX graph objects, and handles layout computation and layer separation automatically.
-   
-   Example: ``{'social': <NetworkX Graph>, 'work': <NetworkX Graph>}``
+   ``draw_multilayer_default`` expects the value returned by ``network.get_layers()``. This method returns a tuple ``(layer_names, layer_graphs, multiedges)``, where ``layer_graphs`` is a list of NetworkX graph objects already prepared for plotting.
 
 Preset Visualization Modes
 ---------------------------
