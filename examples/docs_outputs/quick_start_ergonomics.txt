@@ -113,7 +113,7 @@ Structure:
 
 Layers:
   • ['social', 'work']: 0 nodes, 0 intra-layer edges
-  • [<networkx.classes.multigraph.MultiGraph object at 0x7fcc5eee09e0>, <networkx.classes.multigraph.MultiGraph object at 0x7fcc5edf4b00>]: 0 nodes, 0 intra-layer edges
+  • [<networkx.classes.multigraph.MultiGraph object at 0xADDR>, <networkx.classes.multigraph.MultiGraph object at 0xADDR>]: 0 nodes, 0 intra-layer edges
   • defaultdict(<class 'list'>, {}): 0 nodes, 0 intra-layer edges
 ============================================================
 

@@ -15,6 +15,7 @@ Usage:
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -26,6 +27,11 @@ REPO_ROOT = Path(__file__).parent.parent
 EXAMPLES_DIR = REPO_ROOT / "examples" / "getting_started"
 OUTPUTS_DIR = REPO_ROOT / "examples" / "docs_outputs"
 MANIFEST_FILE = OUTPUTS_DIR / "manifest.json"
+
+
+_LOG_TIMESTAMP_RE = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
+_HEX_ADDRESS_RE = re.compile(r"0x[0-9a-fA-F]+")
+_ELAPSED_SECONDS_RE = re.compile(r"\bin \d+\.\d+s\b")
 
 
 def should_skip(example_path: Path) -> Tuple[bool, str]:
@@ -88,6 +94,25 @@ def run_example(example_path: Path, timeout: int = 30) -> Tuple[bool, str, str]:
         return False, "", str(e)
 
 
+def normalize_output(text: str) -> str:
+    """Normalize volatile runtime values so generated docs outputs are stable."""
+    if not text:
+        return text
+
+    normalized_lines = []
+    for line in text.splitlines():
+        line = _LOG_TIMESTAMP_RE.sub("<TIMESTAMP>", line)
+        line = _HEX_ADDRESS_RE.sub("0xADDR", line)
+        line = _ELAPSED_SECONDS_RE.sub("in <TIME>s", line)
+        normalized_lines.append(line)
+
+    # Preserve final newline if original text had one
+    normalized = "\n".join(normalized_lines)
+    if text.endswith("\n"):
+        normalized += "\n"
+    return normalized
+
+
 def save_output(example_name: str, stdout: str, stderr: str) -> None:
     """
     Save example output to files.
@@ -101,12 +126,12 @@ def save_output(example_name: str, stdout: str, stderr: str) -> None:
     
     # Save stdout
     output_file = OUTPUTS_DIR / f"{example_name}.txt"
-    output_file.write_text(stdout, encoding='utf-8')
+    output_file.write_text(normalize_output(stdout), encoding='utf-8')
     
     # Save stderr if present
     if stderr:
         error_file = OUTPUTS_DIR / f"{example_name}.err"
-        error_file.write_text(stderr, encoding='utf-8')
+        error_file.write_text(normalize_output(stderr), encoding='utf-8')
 
 
 def save_skipped_output(example_name: str, reason: str) -> None:

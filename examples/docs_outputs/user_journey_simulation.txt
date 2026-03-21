@@ -235,7 +235,7 @@ All improvements work together to create a smooth user experience!
                          SIMULATION COMPLETE                          
 ======================================================================
 
-OK All user journeys completed successfully in 0.20s
+OK All user journeys completed successfully in <TIME>s
 
 Key Takeaways:
 - First-time users can create networks and run queries immediately
