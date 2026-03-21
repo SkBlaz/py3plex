@@ -29,7 +29,8 @@ This chapter introduces the py3plex Domain-Specific Language (DSL), a SQL-like q
        )
        
        # Export to CSV
-       result.to_pandas().to_csv("top_influencers.csv", index=False)
+       df = result.to_pandas()  # to_pandas() returns a pandas DataFrame
+       df.to_csv("top_influencers.csv", index=False)
 
     Express common multilayer analyses in readable, composable steps.
 
@@ -142,7 +143,7 @@ Let's build a simple query step-by-step. See the complete examples in ``examples
     
     # Create a simple multilayer network
     net = multinet.multi_layer_network()
-    net.add_nodes([
+    net.add_nodes([  # add_nodes uses 'type'; add_edges uses 'source_type'/'target_type'
         {'source': 'Alice', 'type': 'social'},
         {'source': 'Bob', 'type': 'social'},
         {'source': 'Charlie', 'type': 'work'},
@@ -183,7 +184,7 @@ Let's build a simple query step-by-step. See the complete examples in ``examples
     # Find high-degree nodes
     result = (
         Q.nodes()
-         .from_layers(L["*"])  # All layers
+         .from_layers(L["*"])  # All layers (same as omitting .from_layers(...))
          .compute("degree")
          .where(degree__gt=3)
          .execute(net)
@@ -470,6 +471,8 @@ For completeness, here's the string DSL syntax. See ``examples/network_analysis/
 **Basic queries:**
 
 .. code-block:: python
+
+    from py3plex.dsl import execute_query
 
     # Select nodes
     execute_query(network, 'SELECT nodes')

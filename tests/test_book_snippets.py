@@ -44,6 +44,8 @@ def test_dsl_quick_start():
     assert result.count > 0
     df = result.to_pandas()
     assert 'degree' in df.columns
+    csv_text = df.to_csv(index=False)
+    assert "degree" in csv_text
 
 
 def test_networkx_compatibility():
@@ -114,6 +116,59 @@ def test_dsl_layer_filtering():
     )
     
     assert result.count > 0
+
+
+def test_dsl_all_layers_wildcard_filtering():
+    """Test L['*'] wildcard usage shown in DSL chapter."""
+    from py3plex.core import multinet
+    from py3plex.dsl import Q, L
+
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1],
+        ['Alice', 'work', 'Charlie', 'work', 1],
+    ], input_type="list")
+
+    result_all = (
+        Q.nodes()
+         .from_layers(L["*"])
+         .execute(network)
+    )
+    result_no_filter = Q.nodes().execute(network)
+
+    assert result_all.count == result_no_filter.count
+
+
+def test_add_nodes_and_add_edges_dict_conventions():
+    """Test dict field conventions used in book node/edge creation snippets."""
+    from py3plex.core import multinet
+
+    network = multinet.multi_layer_network()
+    network.add_nodes([
+        {'source': 'Alice', 'type': 'social'},
+        {'source': 'Bob', 'type': 'social'},
+    ])
+    network.add_edges([
+        {'source': 'Alice', 'target': 'Bob',
+         'source_type': 'social', 'target_type': 'social'},
+    ])
+
+    assert len(list(network.core_network.nodes())) == 2
+    assert len(list(network.core_network.edges())) == 1
+
+
+def test_legacy_string_dsl_execute_query_import_path():
+    """Test legacy string DSL import path used by book examples."""
+    from py3plex.core import multinet
+    from py3plex.dsl import execute_query
+
+    network = multinet.multi_layer_network()
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1],
+    ], input_type="list")
+
+    result = execute_query(network, 'SELECT nodes WHERE layer="friends"')
+    assert result["count"] > 0
 
 
 def test_initial_conditions_formats():
