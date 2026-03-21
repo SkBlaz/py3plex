@@ -1,0 +1,17 @@
+Creating a multilayer network...
+Added 6 nodes
+Added 5 edges
+
+Network Statistics:
+========================================
+Total node instances: 6
+Total edges: 5
+
+Node Degrees:
+========================================
+  0          (social  ): 2
+  1          (social  ): 2
+  2          (social  ): 2
+  3          (work    ): 2
+  4          (work    ): 1
+  5          (work    ): 1

@@ -1,0 +1,63 @@
+============================================================
+Available Built-in Datasets
+============================================================
+  - aarhus_cs: Social network of Aarhus CS department (61 nodes, 5 layers)
+  - synthetic_multilayer: Synthetic multilayer network (50 nodes, 3 layers)
+
+============================================================
+Loading Aarhus CS Dataset
+============================================================
+Network: <multi_layer_network: type=multiplex, directed=False, nodes=305, edges=2168, layers=5>
+Nodes: 305
+Edges: 620
+Layers (5): ['coauthor', 'facebook', 'leisure', 'lunch', 'work']
+
+============================================================
+Loading Synthetic Multilayer Dataset
+============================================================
+Network: <multi_layer_network: type=multilayer, directed=False, nodes=149, edges=385, layers=3>
+Nodes: 149
+Edges: 385
+Layers (3): ['layer1', 'layer2', 'layer3']
+
+============================================================
+Generating Random Multilayer Network
+============================================================
+Network: <multi_layer_network: type=multilayer, directed=False, nodes=30, edges=43, layers=3>
+Nodes: 30
+Edges: 43
+
+============================================================
+Generating Random Multiplex Network
+============================================================
+Network: <multi_layer_network: type=multiplex, directed=False, nodes=100, edges=657, layers=4>
+Nodes: 100
+Edges: 207
+Layers (4): [0, 1, 2, 3]
+
+============================================================
+Generating Synthetic Social Network
+============================================================
+Network: <multi_layer_network: type=multiplex, directed=False, nodes=60, edges=280, layers=3>
+Nodes: 60
+Edges: 100
+Layers (3): [0, 1, 2]
+Layer types: friendship (dense), work (clustered), family (small cliques)
+
+============================================================
+Generating Clique Multiplex Network
+============================================================
+Network: <multi_layer_network: type=multiplex, directed=False, nodes=30, edges=81, layers=2>
+Nodes: 30
+Edges: 36
+Structure: Multiple overlapping cliques in each layer
+
+============================================================
+Using Datasets with DSL Queries
+============================================================
+Query: SELECT nodes WHERE degree > 10
+Result: 220 nodes with degree > 10
+
+============================================================
+Example completed successfully!
+============================================================

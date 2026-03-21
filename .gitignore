@@ -115,7 +115,6 @@ output/
 outputs/
 examples/output/
 examples/*/outputs/
-examples/docs_outputs/
 examples/workflows/*.png
 *_results/
 workflow_results/
