@@ -9618,6 +9618,41 @@ import py3plex
 print(py3plex.__version__)  # "1.1.4"
 ```
 
+### Version Bump Checklist (Canonical)
+
+When the prompt is **"bump version"**, update the canonical project version in `pyproject.toml` and then propagate that same value to all required release surfaces below.
+
+**Authoritative source**:
+- `pyproject.toml` → `[project].version`
+
+**Must-update files for every release bump**:
+1. Library runtime metadata
+   - `py3plex/__init__.py` → `__version__`, `__api_version__`
+   - `py3plex/config.py` → `__version__`, `__api_version__`
+2. MCP package metadata
+   - `py3plex_mcp/__init__.py` → `__version__` (and top docstring version line if present)
+3. Documentation build metadata
+   - `docfiles/conf.py` → `version`, `release`
+4. Book build metadata
+   - `book/conf.py` → `version`, `release`
+5. Citation metadata
+   - `CITATION.cff` → `version` (and `date-released` when doing an actual release cut)
+
+**Book/content version mentions (when version is explicitly printed in prose)**:
+- Update book prose references that intentionally pin exact release text:
+  - `book/front_matter.rst`
+  - `book/bibliography.rst`
+  - `book/part5_systems/chapter16_reproducible_environments.rst` (example pins like `py3plex==X.Y.Z`)
+  - `book/appendices/appendix_b_docker_deployment.rst` (image tags like `py3plex:X.Y.Z`)
+
+**Validation after bump**:
+- Run focused consistency checks:
+  - `python -m pytest tests/test_version_consistency.py -q`
+  - `python -m pytest tests/test_book_manuscript_integrity.py -q`
+  - `python -m pytest tests/test_doc_conf.py tests/test_book_conf.py -q`
+
+These tests are intended to ensure that a single bump request updates library, docs, book, MCP, and citation version surfaces consistently.
+
 **Version History**:
 - **1.1.4** (Current): Repository statistics refresh and AGENTS.md consistency updates
 - **1.1.3**: Repository state updates and documentation improvements
