@@ -1,198 +1,33 @@
 .. _gui-chapter:
 
-The Py3plex GUI (Overview)
-=======================================
+GUI Overview: Where It Helps, Where It Does Not
+================================================
 
-The py3plex GUI is a web-based interface for interactive multilayer network exploration. It provides point-and-click access to py3plex features without requiring programming. **For detailed deployment configurations, see Appendix B.**
+The py3plex GUI is a convenience interface for interactive exploration. It is useful for rapid inspection and teaching workflows, but it should not be treated as a replacement for versioned analytical scripts.
 
 .. admonition:: Status: Experimental
    :class: warning
 
-   The py3plex GUI is **experimental** and designed for **local use only**.
-   It is not hardened for public internet deployment. Use it for exploration,
-   demos, and teaching—not as a primary production analysis interface.
+   The GUI is intended for local or controlled environments. It is not a hardened public deployment target.
 
-What is the Py3plex GUI?
--------------------------
+Appropriate Uses
+----------------
 
-The GUI is a FastAPI + SvelteKit web application that provides:
+* quick dataset inspection,
+* exploratory layer browsing,
+* demonstration and teaching,
+* rapid hypothesis sketching before scripted analysis.
 
-* **Network upload** — Load networks from files (edgelist, GraphML, JSON)
-* **Interactive visualization** — D3.js-powered network rendering
-* **Query interface** — Execute DSL queries via web forms
-* **Analysis workflows** — Common operations (centrality, communities) without coding
-* **Export results** — Download analysis outputs as CSV/JSON
+Inappropriate Uses
+------------------
 
-**Target users:** Researchers learning py3plex, educators demonstrating concepts, non-programmers exploring networks.
+* sole source of publication-critical results,
+* unversioned "click-through" analysis without provenance,
+* security-sensitive internet-facing deployment.
 
-Running Locally
----------------
+Recommended Practice
+--------------------
 
-Installation
-~~~~~~~~~~~~
+Use the GUI to discover questions, then transfer finalized analysis into scriptable py3plex workflows with explicit parameters, seeds, and exports.
 
-Install py3plex with GUI dependencies:
-
-.. code-block:: bash
-
-    # Install with GUI extras
-    pip install 'py3plex[gui]'
-    
-    # Or from source
-    cd py3plex
-    pip install -e '.[gui]'
-
-Manual Development Setup
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-For development without Docker:
-
-.. code-block:: bash
-
-    # Terminal 1: Start backend
-    cd gui/api
-    pip install -r requirements.txt
-    uvicorn app.main:app --reload --port 8000
-    
-    # Terminal 2: Start frontend
-    cd gui/frontend
-    npm install
-    npm run dev
-    
-    # Open browser to http://localhost:5173
-
-**Note:** Manual setup requires Redis running separately for background tasks.
-
-Configuration
-~~~~~~~~~~~~~
-
-Basic configuration in ``gui/api/config.py``:
-
-.. code-block:: python
-
-    # Development settings
-    DEBUG = True
-    HOST = '0.0.0.0'
-    PORT = 8000
-    
-    # File handling
-    UPLOAD_FOLDER = './uploads'
-    MAX_UPLOAD_SIZE = 100 * 1024 * 1024  # 100 MB
-    
-    # Analysis limits
-    MAX_NODES = 10000  # Prevent performance issues
-
-Key Workflows
--------------
-
-Upload and Explore
-~~~~~~~~~~~~~~~~~~
-
-**Basic workflow:**
-
-1. **Upload network** — Click "Upload Network", select file (edgelist, GraphML, etc.)
-2. **View statistics** — See node count, edge count, layer info
-3. **Visualize** — Interactive network rendering with zoom/pan
-4. **Layer selection** — Toggle layers on/off for focused viewing
-5. **Export** — Download visualization as PNG or SVG
-
-Query Interface
-~~~~~~~~~~~~~~~
-
-Execute DSL queries without writing code:
-
-1. Navigate to "Query" tab
-2. Build query using form:
-   
-   * Select target: nodes or edges
-   * Choose layers
-   * Add filters (degree, centrality, etc.)
-   * Select measures to compute
-   * Set ordering and limits
-
-3. Click "Execute"
-4. View results in table
-5. Export as CSV or JSON
-
-**Example:** "Find top 20 nodes by betweenness centrality in the social layer"
-
-Analysis Pipelines
-~~~~~~~~~~~~~~~~~~
-
-Pre-built workflows for common analyses:
-
-* **Community Detection** — Run Louvain or Infomap, visualize communities
-* **Centrality Analysis** — Compute degree, betweenness, PageRank
-* **Layer Comparison** — Compare statistics across layers
-* **Ego Networks** — Extract neighborhoods around selected nodes
-
-Each pipeline provides a guided interface with sensible defaults.
-
-Limitations and Safety
-----------------------
-
-Security Considerations
-~~~~~~~~~~~~~~~~~~~~~~~
-
-**⚠ WARNING:** The GUI is **NOT secure for public deployment**.
-
-* **No authentication** — Anyone with URL access can use it
-* **No rate limiting** — Vulnerable to resource exhaustion
-* **No input sanitization** — File uploads not sandboxed
-* **No HTTPS** — Data transmitted in plaintext
-
-**Safe use cases:**
-
-* Local machine only (``localhost``)
-* Trusted network (lab/office LAN)
-* Single-user exploration
-
-**Unsafe use cases:**
-
-* Public internet exposure
-* Multi-tenant environments
-* Sensitive data processing
-
-For Docker, reverse proxy configuration, or controlled-network deployment guidance, see Appendix B.
-
-Scalability Limits
-~~~~~~~~~~~~~~~~~~
-
-Performance degrades with network size:
-
-* **<1,000 nodes** — Full interactivity, all features work well
-* **1,000-5,000 nodes** — Some slowness, simplify visualizations
-* **5,000-10,000 nodes** — Limited features, use minimal layouts
-* **>10,000 nodes** — **Use CLI/library instead**, GUI becomes unusable
-
-**Tips for large networks:**
-
-* Use layer filtering to reduce size
-* Disable interactive visualization
-* Export to CSV and analyze programmatically
-
-When to Use the GUI vs CLI
---------------------------
-
-**Use GUI for:**
-
-* **Exploratory analysis** — Quick network inspection and hypothesis testing
-* **Learning** — Understanding py3plex features interactively
-* **Demonstration** — Presenting to non-programmers or stakeholders
-* **Rapid prototyping** — Testing analysis ideas before writing code
-
-**Use CLI/library for:**
-
-* **Large networks** — >5,000 nodes
-* **Production workflows** — Automated, reproducible pipelines
-* **Complex analyses** — Chaining multiple operations
-* **Performance-critical tasks** — Maximum speed and control
-* **Reproducibility** — Version-controlled scripts
-
-Closing Note
-------------
-
-Use the GUI as a local exploratory front-end. For reproducible or large-scale workflows, prefer scripts, CLI, and pinned environments.
-
-**For deployment details and security hardening, see Appendix B.**
-**For GUI API reference, see:** ``docfiles/gui/gui_api_reference.rst``
+This keeps interactive exploration and reproducible inference aligned rather than conflated.

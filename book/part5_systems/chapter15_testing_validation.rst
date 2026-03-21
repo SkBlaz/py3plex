@@ -1,163 +1,48 @@
 .. _testing-chapter:
 
-Testing and Validation
-===================================
+Testing and Validation as Methodological Controls
+=================================================
 
-py3plex uses a broad testing strategy to check correctness across algorithms, data structures, and the DSL. This chapter provides a high-level overview of what is validated and what still requires reader-side verification. **For detailed validation scripts and test code, see Appendix C.**
+Testing is not only software hygiene. In analytical pipelines, tests are controls against silent methodological drift.
 
-Testing Philosophy
-------------------
-
-py3plex testing follows four principles:
-
-1. **Correctness first:** Algorithms must produce mathematically correct results
-2. **Conservation laws:** Physical constraints (e.g., probability conservation) must hold
-3. **Regression prevention:** Known-good outputs are compared against current runs
-4. **Property testing:** Invariants should hold for random inputs
-
-Test Categories
-~~~~~~~~~~~~~~~
-
-* **Unit tests** — Individual functions and methods in isolation
-* **Integration tests** — Module interactions and end-to-end workflows
-* **Property-based tests** — Hypothesis-driven testing with random inputs
-* **Regression tests** — Compare against reference runs for dynamics models
-
-Test Organization
+Validation Layers
 -----------------
 
-The test suite is organized by module and functionality:
+py3plex workflows benefit from four test layers:
 
-.. code-block:: text
+1. **Unit checks** for deterministic core behavior.
+2. **Property/metamorphic checks** for invariants under transformations.
+3. **Differential checks** across equivalent APIs.
+4. **Workflow checks** that validate representative end-to-end analyses.
 
-    tests/
-    ├── test_core.py                  # Core data structures
-    ├── test_dsl*.py                  # DSL functionality (10+ files)
-    ├── test_dynamics*.py             # Dynamics models
-    ├── test_algorithms*.py           # Algorithm correctness
-    ├── test_centrality*.py           # Centrality measures
-    ├── test_community*.py            # Community detection
-    ├── test_io*.py                   # I/O and serialization
-    ├── test_uncertainty*.py          # Uncertainty quantification
-    └── property/                     # Property-based tests
+Why This Matters for Analysis
+-----------------------------
 
-Coverage is uneven across modules. Confirm current coverage in your own checkout before citing any specific percentages.
+A pipeline can execute successfully and still be wrong:
 
-Key Validation Strategies
---------------------------
+* representation drift changes semantics,
+* approximation defaults change outputs,
+* query refactors alter grouping logic.
 
-Random Walk Conservation
-~~~~~~~~~~~~~~~~~~~~~~~~
+Tests should target these failure modes directly.
 
-Random walks must conserve probability—transition probabilities from any state must sum to 1:
+Practical Workflow
+------------------
 
-.. code-block:: python
+* run focused tests near changed analytical components,
+* include at least one deterministic seed-based test for stochastic paths,
+* preserve small synthetic fixtures with known expected behavior,
+* treat regression diffs as analytical review prompts, not only coding errors.
 
-    def test_random_walk_conservation():
-        """Verify random walk conserves probability."""
-        # Implementation in tests/test_random_walk_conservation.py
-        # Computes transition matrix and checks row sums ≈ 1.0
+Example Validation Questions
+----------------------------
 
-**Tests:** ``tests/test_paths.py`` includes walk conservation checks.
+* Does node/edge count conservation hold after import transformations?
+* Do equivalent query formulations return equivalent sets?
+* Are ranking changes under perturbation within expected bounds?
+* Are provenance fields complete and stable?
 
-Node2Vec Validation
-~~~~~~~~~~~~~~~~~~~
+Connection to Reproducibility
+-----------------------------
 
-Validate that Node2Vec biases (parameters p and q) have the intended effects:
-
-* Higher p → reduced probability of returning to previous node
-* Higher q → preference for local exploration vs. distant jumps
-
-**Tests:** ``tests/test_node2vec.py`` validates bias behavior.
-
-Community Detection Validation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Verify that community detection algorithms satisfy basic properties:
-
-* **Modularity bounds:** Q ∈ [-0.5, 1.0]
-* **Partition completeness:** Every node assigned to exactly one community
-* **Singleton handling:** Isolated nodes form their own communities
-
-**Tests:** ``tests/test_community*.py`` files validate Louvain, Infomap, and other algorithms.
-
-Dynamics Validation
-~~~~~~~~~~~~~~~~~~~
-
-Epidemic models must satisfy conservation laws:
-
-* **SIS:** S(t) + I(t) = N for all t
-* **SIR:** S(t) + I(t) + R(t) = N for all t
-* **Steady state:** SIS reaches equilibrium for subcritical parameters
-
-**Tests:** ``tests/test_dynamics.py`` validates SIR, SIS, and other models with reference runs.
-
-Running Tests
--------------
-
-Basic Test Execution
-~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-    # Run all tests
-    pytest tests/
-    
-    # Run specific test file
-    pytest tests/test_dsl.py
-    
-    # Run tests matching a pattern
-    pytest tests/ -k "test_community"
-    
-    # Run with coverage
-    pytest tests/ --cov=py3plex --cov-report=html
-    
-    # Verbose output
-    pytest tests/ -v
-
-Using Makefile
-~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-    make test           # Run all tests
-    make test-coverage  # Generate HTML coverage report
-    make test-fast      # Run only fast tests (skip slow integration tests)
-
-**Test markers:**
-
-* ``@pytest.mark.slow`` — Tests that take >5 seconds
-* ``@pytest.mark.integration`` — End-to-end integration tests
-* ``@pytest.mark.hypothesis`` — Property-based tests
-
-Continuous Integration
-----------------------
-
-py3plex uses GitHub Actions for automated testing on pull requests and branch updates.
-
-GitHub Actions
-~~~~~~~~~~~~~~
-
-The CI pipeline tests across:
-
-* **Python versions:** 3.8, 3.9, 3.10, 3.11, 3.12
-* **Operating systems:** Ubuntu Linux, macOS, Windows
-* **Test suites:** Core, DSL, algorithms, dynamics, I/O
-
-**Build status:** Tests must pass on all platforms before merging.
-
-**Coverage expectations:** New code should maintain or improve practical confidence in touched areas.
-
-.. admonition:: CI Configuration
-   :class: note
-
-   The GitHub Actions workflow files are located in ``.github/workflows/`` in the repository. Key workflows include ``test.yml`` (main test suite), ``lint.yml`` (code quality checks), and ``docs.yml`` (documentation builds).
-
-Closing Note
-------------
-
-Treat testing claims in this book as workflow guidance, not blanket guarantees. For any critical study, record the exact test commands, environment details, and commit hash used for your own run.
-
-**For detailed test scripts and validation examples, see Appendix C.**
-
-**Next chapter:** Reproducible environments and deployment practices
+Testing catches accidental changes; reproducibility practices make intentional changes auditable. Both are required for credible technical results.

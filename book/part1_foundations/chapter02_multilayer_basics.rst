@@ -1,747 +1,88 @@
 .. _multilayer-basics-chapter:
 
-Multilayer Network Basics
-====================================
+Multilayer Basics: Semantics Before Computation
+================================================
 
-This chapter establishes the formal foundations of multilayer networks. We define key concepts, introduce mathematical notation, and show how different types of multilayer networks relate to each other.
+This chapter defines multilayer network objects and highlights semantic mistakes that produce misleading analyses.
 
-Formal Definitions
-------------------
+Formal Object
+-------------
 
-Node-Layer Pairs
-~~~~~~~~~~~~~~~~
+A multilayer network can be represented as :math:`\mathcal{M} = (V, L, V_M, E_{intra}, E_{inter})`, where:
 
-A **multilayer network** :math:`\mathcal{M}` consists of:
+* :math:`V` is the set of physical entities,
+* :math:`L` is the set of layers,
+* :math:`V_M \subseteq V \times L` is the set of node replicas,
+* :math:`E_{intra}` links replicas within a layer,
+* :math:`E_{inter}` links replicas across layers.
 
-* A set of **nodes** :math:`V = \{v_1, v_2, ..., v_N\}`
-* A set of **layers** :math:`L = \{\alpha, \beta, \gamma, ...\}`
-* A set of **node-layer pairs** :math:`V_M = V \times L`
-* **Intra-layer edges** :math:`E_{\alpha} \subseteq V \times V` within each layer :math:`\alpha`
-* **Inter-layer edges** :math:`E_{C} \subseteq V_M \times V_M` connecting node-layer pairs
+Concept vs Implementation
+-------------------------
 
-The **node-layer pair** :math:`(v, \alpha)` is the fundamental unit: it represents node :math:`v` in the context of layer :math:`\alpha`.
+**Concept:** node replicas are analytical units that encode context.
 
-Supra-Adjacency Matrix
-~~~~~~~~~~~~~~~~~~~~~~
+**py3plex implementation:** nodes are stored as ``(node, layer)`` pairs in the core graph, so many operations naturally return replica-level results.
 
-The **supra-adjacency matrix** :math:`\mathbf{A}` is a block matrix that encodes the full multilayer structure:
+Do not silently reinterpret replica counts as physical-node counts.
 
-.. math::
+Replica Semantics: The First Major Pitfall
+------------------------------------------
 
-   \mathbf{A} = \begin{pmatrix}
-   \mathbf{A}_{\alpha\alpha} & \mathbf{A}_{\alpha\beta} & \cdots \\
-   \mathbf{A}_{\beta\alpha} & \mathbf{A}_{\beta\beta} & \cdots \\
-   \vdots & \vdots & \ddots
-   \end{pmatrix}
+If a physical node appears in three layers, it has three replicas. This matters for:
 
-Where:
+* counts,
+* degree interpretation,
+* top-k selection,
+* community assignments.
 
-* **Diagonal blocks** :math:`\mathbf{A}_{\alpha\alpha}` are the adjacency matrices of individual layers
-* **Off-diagonal blocks** :math:`\mathbf{A}_{\alpha\beta}` encode inter-layer connections
+A frequent novice error is to compute top hubs globally, then report them as physical entities without de-duplicating by base node.
 
-For a multiplex network with :math:`N` nodes and :math:`L` layers, :math:`\mathbf{A}` is an :math:`(N \times L) \times (N \times L)` matrix.
+Degree Is Ambiguous in Multilayer Contexts
+------------------------------------------
 
-**Example:** A 3-node, 2-layer network:
+At least three notions of degree can be relevant:
 
-.. math::
+* **intra-layer degree** (within one layer),
+* **inter-layer degree** (coupling/transfer links),
+* **aggregate degree** (combined).
 
-   \mathbf{A} = \begin{pmatrix}
-   \mathbf{A}_{\text{friends}} & \omega \mathbf{I} \\
-   \omega \mathbf{I} & \mathbf{A}_{\text{colleagues}}
-   \end{pmatrix}
+In py3plex workflows, aggregate degree is often the default unless per-layer operations are explicitly applied.
 
-where :math:`\omega` is the **inter-layer coupling strength** and :math:`\mathbf{I}` is the identity matrix (representing identity edges: each node connects to itself across layers).
+Interpretive warning: aggregate degree is not necessarily a better statistic; it is a different statistic.
 
-Types of Multilayer Networks
------------------------------
+Coverage Semantics and False Certainty
+--------------------------------------
 
-Multiplex Networks
-~~~~~~~~~~~~~~~~~~
+Coverage filters encode cross-group logic:
 
-**Definition:** A multiplex network has the same node set in all layers, with different edge sets per layer.
+* ``all``: intersection,
+* ``any``: union,
+* thresholded modes (``at_least``, ``fraction``): partial overlap.
 
-.. math::
+``all`` is strict and can yield very small result sets. This is often interpreted as "only a few robust nodes," but it may instead reflect harsh filtering under high layer heterogeneity.
 
-   V_{\alpha} = V_{\beta} = \cdots = V \quad \text{for all layers}
+Global vs Per-Layer Operations
+------------------------------
 
-**Characteristics:**
+Two analyses can be correct yet answer different questions:
 
-* **Same entities** appear in all layers
-* **Different relationship types** per layer
-* **Strong inter-layer coupling** (typically :math:`\omega = 1.0` for identity edges)
+* **global** community detection: seeks communities spanning layers,
+* **per-layer** detection: compares community structure between layers.
 
-**Example: Social Multiplex Network**
+Neither is universally preferred. Choose based on hypothesis, not convenience.
 
-.. code-block:: python
+Minimal Sanity Checklist
+------------------------
 
-    from py3plex.core import multinet
-    
-    # Create multiplex network
-    network = multinet.multi_layer_network(network_type="multiplex")
-    
-    # Same people, different relationship types
-    network.add_edges([
-        ['Alice', 'friends', 'Bob', 'friends', 1],
-        ['Bob', 'friends', 'Carol', 'friends', 1],
-        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
-        ['Bob', 'colleagues', 'Dave', 'colleagues', 1],
-    ], input_type="list")
-    
-    # Verify structure
-    print(f"Layers: {network.get_layers()}")
-    print(f"Nodes per layer: {network.get_number_of_nodes_per_layer()}")
+Before trusting any multilayer output:
 
-**Real-world applications:**
+1. Confirm whether reported units are replicas or physical nodes.
+2. State which degree semantics are used.
+3. State whether operations were global or grouped by layer.
+4. Report coverage mode and thresholds.
+5. Provide at least one alternative analysis path as a robustness check.
 
-* Social networks across platforms (Facebook, Twitter, LinkedIn)
-* Transportation modes (air, rail, road)
-* Communication channels (email, phone, chat)
-* Biological interactions (genetic, protein, metabolic)
+Why This Chapter Matters
+------------------------
 
-Heterogeneous Information Networks
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Definition:** A network with different node types, where edges connect specific node type pairs.
-
-**Characteristics:**
-
-* **Different node types** per layer (authors, papers, venues)
-* **Type-specific edges** (author-paper, paper-venue)
-* **No inter-layer coupling** (nodes don't repeat across layers)
-
-**Example: Academic Network**
-
-.. code-block:: python
-
-    network = multinet.multi_layer_network()
-    
-    # Different node types
-    network.add_edges([
-        ['Alice', 'authors', 'Paper1', 'papers', 1],
-        ['Bob', 'authors', 'Paper1', 'papers', 1],
-        ['Paper1', 'papers', 'ICML', 'venues', 1],
-        ['Paper2', 'papers', 'ICML', 'venues', 1],
-    ], input_type="list")
-
-This creates a **tripartite** network with three node types: authors, papers, and venues.
-
-**Real-world applications:**
-
-* Academic networks (authors, papers, venues, keywords)
-* E-commerce (users, products, sellers, categories)
-* Biomedical (drugs, diseases, targets, pathways)
-* Knowledge graphs (entities, relations, concepts)
-
-Temporal Networks
-~~~~~~~~~~~~~~~~~
-
-**Definition:** Networks that evolve over time, represented as time-sliced layers.
-
-**Characteristics:**
-
-* **Time windows as layers** (2020, 2021, 2022, ...)
-* **Node presence varies** across time slices
-* **Temporal edges** connect adjacent time slices
-
-**Example: Temporal Social Network**
-
-.. code-block:: python
-
-    network = multinet.multi_layer_network()
-    
-    # Time-sliced layers
-    network.add_edges([
-        ['Alice', '2020', 'Bob', '2020', 1],
-        ['Alice', '2021', 'Bob', '2021', 1],
-        ['Bob', '2021', 'Carol', '2021', 1],
-        ['Alice', '2022', 'Carol', '2022', 1],
-    ], input_type="list")
-
-**Real-world applications:**
-
-* Communication patterns over time
-* Disease spread through populations
-* Financial transaction networks
-* Collaboration evolution
-
-Interdependent Networks
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Definition:** Multiple networks where the function of nodes in one layer depends on nodes in other layers.
-
-**Characteristics:**
-
-* **Dependency edges** encode functional relationships
-* **Cascading failures** possible across layers
-* **Critical infrastructure** applications
-
-**Example:** Power grid (layer 1) depends on communication network (layer 2). If communication fails, power grid control fails.
-
-**Real-world applications:**
-
-* Infrastructure systems (power, water, communication)
-* Supply chain networks
-* Cyber-physical systems
-* Ecological networks (species, habitats, resources)
-
-Inter-Layer Coupling
---------------------
-
-The **coupling strength** :math:`\omega` controls how strongly layers are connected.
-
-Identity Coupling
-~~~~~~~~~~~~~~~~~
-
-The most common form connects each node to itself across layers:
-
-.. math::
-
-   E_C = \{((v, \alpha), (v, \beta)) : v \in V, \alpha \neq \beta \in L\}
-
-with edge weight :math:`\omega`.
-
-**Choice of** :math:`\omega`:
-
-* :math:`\omega = 1.0` — Layers are equally important, nodes fully correspond
-* :math:`\omega < 1.0` — Layers are loosely coupled, favor intra-layer paths
-* :math:`\omega > 1.0` — Inter-layer transitions are encouraged
-
-**Example:**
-
-.. code-block:: python
-
-    network = multinet.multi_layer_network()
-    
-    # Add intra-layer edges
-    network.add_edges([
-        ['A', 'layer1', 'B', 'layer1', 1],
-        ['A', 'layer2', 'C', 'layer2', 1],
-    ], input_type="list")
-    
-    # Add inter-layer coupling (identity edges)
-    network.add_edges([
-        ['A', 'layer1', 'A', 'layer2', 0.5],  # omega = 0.5
-    ], input_type="list")
-
-General Coupling
-~~~~~~~~~~~~~~~~
-
-More complex couplings allow different nodes to connect across layers:
-
-.. math::
-
-   E_C = \{((v, \alpha), (w, \beta)) : (v, w) \in C_{\alpha\beta}\}
-
-where :math:`C_{\alpha\beta}` defines which nodes couple between layers :math:`\alpha` and :math:`\beta`.
-
-When to Use Multilayer Networks
---------------------------------
-
-Use multilayer modeling when:
-
-1. **Multiple relationship types have distinct semantics**
-   
-   Example: Friendship vs. professional collaboration—these networks have different properties and dynamics.
-
-2. **Node roles vary by context**
-   
-   Example: A person central in academic network may be peripheral in social media network.
-
-3. **Cross-layer interactions matter**
-   
-   Example: Information spreads from Twitter to traditional media—this cross-layer flow is meaningful.
-
-4. **Temporal evolution is important**
-   
-   Example: Community structure evolves over time—time-sliced layers preserve this evolution.
-
-5. **System-level resilience depends on layer dependencies**
-   
-   Example: Power grid failure affects communication, which affects emergency response.
-
-Choosing a Modeling Approach
------------------------------
-
-Decision Tree
-~~~~~~~~~~~~~
-
-.. code-block:: text
-
-    1. Do relationships have fundamentally different types?
-       YES → Use layers (multiplex or heterogeneous)
-       NO  → Use edge weights or attributes
-
-    2. Are the same entities present in all layers?
-       YES → Multiplex network (strong coupling)
-       NO  → Heterogeneous network (weak/no coupling)
-
-    3. Does time evolution matter?
-       YES → Temporal layers (time-sliced)
-       NO  → Static multilayer network
-
-    4. Are there functional dependencies between layers?
-       YES → Interdependent network (dependency edges)
-       NO  → Standard multiplex/heterogeneous
-
-Common Mistakes
-~~~~~~~~~~~~~~~
-
-**Over-aggregation**
-  Combining layers that should stay separate (e.g., merging email and meeting networks loses information about mode transitions).
-
-**Under-aggregation**
-  Creating too many sparse layers when edge weights would suffice (e.g., separate layer for each email vs. email timestamp as attribute).
-
-**Wrong coupling strength**
-  Using :math:`\omega = 1.0` when nodes don't fully correspond, or :math:`\omega \to 0` when they do.
-
-**Mismatched identifiers**
-  Using different IDs for the same entity across layers breaks multiplex structure.
-
-Why Flattening Fails
----------------------
-
-Flattening (aggregating all layers into a single graph) loses critical information:
-
-**1. Community Structure**
-
-Multilayer communities may have:
-
-* **Core in one layer, periphery in another**
-* **Cross-layer bridges** that appear as spurious intra-layer connections when flattened
-
-**Example:** Academic collaboration (dense group) + Twitter followers (different dense group). Flattening creates false bridges.
-
-**2. Centrality**
-
-A node's importance depends on layer:
-
-* **Structural centrality** in one layer (high degree)
-* **Functional centrality** in another (betweenness for information flow)
-
-Flattening mixes these distinct roles.
-
-**3. Path Structure**
-
-Meaningful paths often cross layers:
-
-* Email → meeting → collaboration
-* Twitter mention → news coverage → policy change
-
-Flattening hides these cross-layer transitions.
-
-**4. Dynamics**
-
-Disease spreading, information diffusion, and cascading failures all depend on layer-specific parameters and inter-layer transitions. Flattening cannot capture:
-
-* **Layer-specific transmission rates**
-* **Mode-switching dynamics**
-* **Asymmetric cross-layer effects**
-
-Key Terminology
----------------
-
-.. glossary::
-
-   Intra-layer edges
-      Edges within a single layer, connecting :math:`(v, \alpha)` to :math:`(w, \alpha)`.
-
-   Inter-layer edges
-      Edges between layers, connecting :math:`(v, \alpha)` to :math:`(w, \beta)` with :math:`\alpha \neq \beta`.
-
-   Node-layer pair
-      The tuple :math:`(v, \alpha)` representing node :math:`v` in layer :math:`\alpha`—the fundamental unit of a multilayer network.
-
-   Supra-adjacency matrix
-      The block matrix :math:`\mathbf{A}` encoding all intra-layer and inter-layer edges.
-
-   Coupling strength
-      The weight :math:`\omega` of inter-layer edges, controlling how strongly layers interact.
-
-   Multiplex network
-      Multilayer network with the same nodes in all layers.
-
-   Heterogeneous information network
-      Multilayer network with different node types per layer.
-
-Working with Supra-Adjacency Matrices in Py3plex
--------------------------------------------------
-
-.. code-block:: python
-
-    from py3plex.core import multinet, random_generators
-    
-    # Generate random multiplex network
-    network = random_generators.random_multiplex_ER(
-        n=100,
-        l=3,
-        p=0.05,
-        directed=False
-    )
-    
-    # Get supra-adjacency matrix (sparse format)
-    supra_matrix = network.get_supra_adjacency_matrix()
-    
-    print(f"Matrix shape: {supra_matrix.shape}")  # (300, 300) for 100 nodes replicated across 3 layers
-    print(f"Matrix density: {supra_matrix.nnz / (supra_matrix.shape[0] ** 2):.4f}")
-    
-    # Visualize matrix structure
-    network.visualize_matrix({"display": True})
-
-The supra-adjacency matrix enables tensor-based algorithms and linear algebra operations on the full multilayer structure.
-
-Use ``random_multiplex_ER`` when you want the classic :math:`N \times L` node-replica construction with identity coupling between layers. By contrast, ``random_multilayer_ER`` creates a general multilayer network in which each base node is assigned to a single layer, so the supra-adjacency shape is determined by the node-layer pairs that actually exist.
-
-Common Multilayer Semantic Pitfalls
-------------------------------------
-
-Understanding multilayer network semantics is crucial for correct analysis. Here are the most common misunderstandings and how to avoid them:
-
-Pitfall 1: Node Replicas vs Physical Nodes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**The Issue:**
-
-In multilayer networks, a single physical entity (e.g., person "Alice") appears as multiple node replicas across layers:
-
-* Physical node: ``"Alice"`` (the person)
-* Node replicas: ``("Alice", "social")``, ``("Alice", "work")``, ``("Alice", "family")``
-
-Most multilayer operations work on **node replicas**, not physical nodes.
-
-**Common Mistake:**
-
-.. code-block:: python
-
-    # ❌ Wrong: Assuming node count = unique physical nodes
-    result = Q.nodes().execute(multilayer_net)
-    n_people = result.count  # This counts REPLICAS, not people!
-    
-    # If network has 100 people across 3 layers:
-    # result.count = 300 (not 100!)
-
-**Correct Approaches:**
-
-.. code-block:: python
-
-    # ✅ Count physical nodes explicitly
-    result = Q.nodes().execute(multilayer_net)
-    physical_nodes = set(node[0] for node in result.items)
-    n_people = len(physical_nodes)
-    
-    # ✅ Work per-layer (avoids the ambiguity)
-    result = (
-        Q.nodes()
-         .per_layer()
-         .execute(multilayer_net)
-    )
-    # Now each group is one layer
-    
-    # ✅ Filter to single layer
-    result = (
-        Q.nodes()
-         .from_layers(L["social"])
-         .execute(multilayer_net)
-    )
-    # Now result.count = physical nodes in social layer
-
-**When py3plex warns:**
-
-The library issues ``MultilayerSemanticWarning`` when operations likely confuse replicas with physical nodes:
-
-.. code-block:: python
-
-    from py3plex.dsl.warnings import suppress_warnings
-    
-    # With warning (recommended for learning)
-    result = Q.nodes().execute(multilayer_net)
-    # Warning: Node replicas vs physical nodes...
-    
-    # Suppress if you understand the semantics
-    with suppress_warnings("node_replica_confusion"):
-        result = Q.nodes().execute(multilayer_net)
-
-Pitfall 2: Degree Meaning Ambiguity
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**The Issue:**
-
-"Degree" has three different meanings in multilayer networks:
-
-1. **Intra-layer degree**: Edges within the same layer
-2. **Inter-layer degree**: Edges to other layers (coupling)
-3. **Aggregate degree**: Total degree (intra + inter)
-
-By default, py3plex computes **aggregate degree** (most common use case).
-
-**Common Mistake:**
-
-.. code-block:: python
-
-    # ❌ Ambiguous: Which degree?
-    result = Q.nodes().compute("degree").execute(multilayer_net)
-    # This computes AGGREGATE degree (most connections)
-
-**Correct Approaches:**
-
-.. code-block:: python
-
-    # ✅ Explicit intra-layer degree
-    result = (
-        Q.nodes()
-         .per_layer()  # Group by layer
-         .compute("degree")  # Now it's per-layer degree
-         .execute(multilayer_net)
-    )
-    
-    # ✅ Degree in specific layer
-    result = (
-        Q.nodes()
-         .from_layers(L["social"])
-         .compute("degree")
-         .execute(multilayer_net)
-    )
-    
-    # ✅ Aggregate degree (explicit)
-    result = (
-        Q.nodes()
-         .compute("degree")  # Aggregate by default
-         .execute(multilayer_net)
-    )
-    # Comment: "Computing aggregate degree (intra + inter)"
-
-**When py3plex warns:**
-
-.. code-block:: python
-
-    from py3plex.dsl.warnings import warn_degree_ambiguity
-    
-    # Library warns when degree computation might be ambiguous
-    result = Q.nodes().compute("degree").execute(multilayer_net)
-    # Warning: Degree ambiguity - specify intra-layer, inter-layer, or aggregate
-
-Pitfall 3: Coverage Filters Removing Expected Nodes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**The Issue:**
-
-Coverage filters (``mode="all"``, ``mode="at_least"``) remove nodes not meeting the criterion **across all groups**. This can remove many nodes unexpectedly.
-
-**Common Mistake:**
-
-.. code-block:: python
-
-    # ❌ Unexpected filtering
-    result = (
-        Q.nodes()
-         .from_layers(L["*"])  # 5 layers
-         .per_layer()
-         .top_k(10, "degree")  # Top 10 per layer
-         .end_grouping()
-         .coverage(mode="all")  # Keep only nodes in ALL 5 layers
-         .execute(multilayer_net)
-    )
-    # Might return 0-2 nodes if few nodes are top-10 in ALL layers!
-
-**Correct Approaches:**
-
-.. code-block:: python
-
-    # ✅ Use less strict mode
-    result = (
-        Q.nodes()
-         .per_layer()
-         .top_k(10, "degree")
-         .end_grouping()
-         .coverage(mode="at_least", k=3)  # In at least 3 layers
-         .execute(multilayer_net)
-    )
-    
-    # ✅ Use fraction-based
-    result = (
-        Q.nodes()
-         .per_layer()
-         .top_k(10, "degree")
-         .end_grouping()
-         .coverage(mode="fraction", p=0.6)  # In at least 60% of layers
-         .execute(multilayer_net)
-    )
-    
-    # ✅ Check counts before filtering
-    result_before = (
-        Q.nodes()
-         .per_layer()
-         .top_k(10, "degree")
-         .end_grouping()
-         .execute(multilayer_net)
-    )
-    print(f"Before coverage: {result_before.count} nodes")
-    
-    result_after = (
-        Q.nodes()
-         .per_layer()
-         .top_k(10, "degree")
-         .end_grouping()
-         .coverage(mode="all")
-         .execute(multilayer_net)
-    )
-    print(f"After coverage: {result_after.count} nodes")
-
-**When py3plex warns:**
-
-.. code-block:: python
-
-    # Library warns if coverage filter removes >50% of items
-    result = (
-        Q.nodes()
-         .per_layer()
-         .top_k(10, "degree")
-         .end_grouping()
-         .coverage(mode="all")
-         .execute(multilayer_net)
-    )
-    # Warning: Coverage filter removed 95% of items (190/200)
-    #          mode='all' is STRICT - consider mode='any' or mode='at_least'
-
-Pitfall 4: Global vs Per-Layer Community Detection
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**The Issue:**
-
-Community detection on multilayer networks can operate:
-
-1. **Globally**: Find communities spanning multiple layers
-2. **Per-layer**: Find independent communities in each layer
-
-The choice dramatically affects results and interpretation.
-
-**Common Mistake:**
-
-.. code-block:: python
-
-    # ❌ Unclear intent
-    result = (
-        Q.nodes()
-         .community(method="leiden")
-         .execute(multilayer_net)
-    )
-    # This finds GLOBAL communities (span layers)
-    # Is this what you wanted?
-
-**Correct Approaches:**
-
-.. code-block:: python
-
-    # ✅ Explicit global communities
-    result = (
-        Q.nodes()
-         .community(method="leiden", omega=0.8)  # Explicit coupling
-         .execute(multilayer_net)
-    )
-    # Comment: "Finding global communities with omega=0.8 coupling"
-    
-    # ✅ Per-layer communities
-    result = (
-        Q.nodes()
-         .per_layer()
-         .community(method="leiden")
-         .end_grouping()
-         .execute(multilayer_net)
-    )
-    # Now each layer has independent communities
-    
-    # ✅ Layer-specific community
-    result = (
-        Q.nodes()
-         .from_layers(L["social"])
-         .community(method="leiden")
-         .execute(multilayer_net)
-    )
-
-**When py3plex warns:**
-
-.. code-block:: python
-
-    # Library warns about global community detection
-    result = (
-        Q.nodes()
-         .community(method="leiden")  # No omega specified
-         .execute(multilayer_net)
-    )
-    # Warning: Global community detection on 5-layer network
-    #          Communities will span layers. If you want per-layer:
-    #          Use .per_layer().community(...).end_grouping()
-
-Best Practices Summary
-~~~~~~~~~~~~~~~~~~~~~~
-
-**1. Be explicit about layer scope:**
-
-.. code-block:: python
-
-    # Unclear
-    Q.nodes().compute("degree")
-    
-    # Clear
-    Q.nodes().per_layer().compute("degree")  # Per-layer analysis
-    Q.nodes().from_layers(L["social"]).compute("degree")  # Single layer
-    Q.nodes().compute("degree")  # with comment: "aggregate degree"
-
-**2. Understand replica semantics:**
-
-* Most operations return **node replicas** (node, layer) tuples
-* To get physical nodes: extract first element of tuples
-* Use ``per_layer()`` when layer structure matters
-
-**3. Choose coverage modes carefully:**
-
-* ``mode="all"``: Very strict (intersection)
-* ``mode="any"``: Very permissive (union)
-* ``mode="at_least"`` or ``mode="fraction"``: Balanced middle ground
-
-**4. Set coupling parameters explicitly:**
-
-* Community detection: Always specify ``omega`` when using global mode
-* Dynamics: Always specify inter-layer transition rates
-* Centrality: Document whether you want per-layer or aggregate
-
-**5. Use warnings as learning tools:**
-
-.. code-block:: python
-
-    # Let warnings guide you during development
-    result = Q.nodes().compute("degree").execute(net)
-    # Read warning, understand issue, refactor
-    
-    # Suppress warnings in production when semantics are clear
-    from py3plex.dsl.warnings import suppress_warnings
-    with suppress_warnings("degree_ambiguity"):
-        result = Q.nodes().compute("degree").execute(net)
-
-Summary
--------
-
-Multilayer networks formalize systems with multiple relationship types by:
-
-* Using **node-layer pairs** as the fundamental unit
-* Encoding structure in the **supra-adjacency matrix**
-* Supporting various types: **multiplex**, **heterogeneous**, **temporal**, **interdependent**
-* Controlling interaction via **coupling strength** :math:`\omega`
-
-Key takeaways:
-
-1. **Multiplex** = same nodes, different edge types
-2. **Heterogeneous** = different node types per layer
-3. **Temporal** = time-sliced layers
-4. **Coupling** = inter-layer connections (identity edges most common)
-5. **Flattening loses information** — use multilayer analysis when layer structure matters
-
-The next chapter explains how py3plex implements these concepts and why its design choices support efficient, correct multilayer analysis.
-
-Further Reading
----------------
-
-* **Theory:** Kivelä et al. (2014). "Multilayer networks." *J. Complex Networks* 2(3): 203-271.
-* **Physics:** Boccaletti et al. (2014). "The structure and dynamics of multilayer networks." *Physics Reports* 544(1): 1-122.
-* **Textbook:** Bianconi, G. (2018). *Multilayer Networks: Structure and Function.* Oxford University Press.
-* **Applications:** De Domenico et al. (2013). "Mathematical formulation of multilayer networks." *Physical Review X* 3(4): 041022.
+Most downstream errors are not coding errors. They are semantic errors introduced before algorithm choice. Getting these distinctions right is the main precondition for meaningful multilayer inference.
