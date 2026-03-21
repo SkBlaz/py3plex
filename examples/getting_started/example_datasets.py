@@ -14,7 +14,15 @@ DEFAULT_SEED = 42
 
 
 def _safe_layer_names(net) -> list:
-    """Return layer names without triggering visualization layout codepaths."""
+    """Return layer names without invoking visualization-oriented layer processing.
+
+    In some runtime environments, calling ``net.get_layers()`` can trigger layout
+    preparation paths that rely on optional visualization dependencies. For this
+    lightweight example script we only need the layer labels, so we read them
+    directly from node replicas in ``net.core_network`` to keep the example robust.
+    This is a pragmatic workaround for the example runner environment and can be
+    revisited once ``get_layers()`` is decoupled from visualization prep paths.
+    """
     layers = set()
     for node in net.core_network.nodes():
         if isinstance(node, tuple) and len(node) >= 2:

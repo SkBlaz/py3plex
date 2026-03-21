@@ -111,9 +111,21 @@ def save_output(example_name: str, stdout: str, stderr: str) -> None:
 
 def save_skipped_output(example_name: str, reason: str) -> None:
     """Save placeholder output for a skipped example."""
-    OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     output_file = OUTPUTS_DIR / f"{example_name}.txt"
     output_file.write_text(f"SKIPPED: {reason}\n", encoding="utf-8")
+
+
+def build_manifest_entry(example_name: str, has_stderr: bool, skipped: bool = False, skip_reason: str = "") -> Dict:
+    """Build a manifest entry for an executed or intentionally skipped example."""
+    result = {
+        "success": True,
+        "output_file": f"{example_name}.txt",
+        "has_stderr": has_stderr,
+    }
+    if skipped:
+        result["skipped"] = True
+        result["skip_reason"] = skip_reason
+    return result
 
 
 def generate_manifest(results: Dict[str, Dict]) -> None:
@@ -178,13 +190,12 @@ def main():
         if skip:
             print(f"Skipping {example_name} ({skip_reason})")
             save_skipped_output(example_name, skip_reason)
-            results[example_name] = {
-                "success": True,
-                "skipped": True,
-                "skip_reason": skip_reason,
-                "output_file": f"{example_name}.txt",
-                "has_stderr": False,
-            }
+            results[example_name] = build_manifest_entry(
+                example_name,
+                has_stderr=False,
+                skipped=True,
+                skip_reason=skip_reason,
+            )
             print()
             continue
 
@@ -195,11 +206,10 @@ def main():
         if success:
             print(f"  ✓ Success")
             save_output(example_name, stdout, stderr)
-            results[example_name] = {
-                "success": True,
-                "output_file": f"{example_name}.txt",
-                "has_stderr": bool(stderr)
-            }
+            results[example_name] = build_manifest_entry(
+                example_name,
+                has_stderr=bool(stderr),
+            )
         else:
             print(f"  ✗ Failed")
             if stderr:
