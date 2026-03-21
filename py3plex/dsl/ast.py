@@ -1196,6 +1196,117 @@ class SemiringStmt:
 
 
 # ==============================================================================
+# Predictive Task DSL AST Nodes
+# ==============================================================================
+
+
+@dataclass
+class SplitSpec:
+    """Data split strategy for predictive tasks."""
+
+    strategy: str = "random_holdout"
+    test_frac: float = 0.2
+    seed: Optional[int] = None
+    params: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class NegativeSamplingSpec:
+    """Negative sampling strategy for predictive tasks."""
+
+    strategy: str = "uniform"
+    ratio: float = 1.0
+    seed: Optional[int] = None
+    params: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class ModelSpec:
+    """Predictive model specification."""
+
+    name: str
+    params: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class EdgeFeatureSpec:
+    """Edge feature operator for embedding pipelines."""
+
+    kind: str = "hadamard"
+    params: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class EvalSpec:
+    """Evaluation metrics specification."""
+
+    metrics: List[str] = field(default_factory=lambda: ["roc_auc"])
+    params: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class LinkPredictionSpec:
+    """Link prediction workflow specification."""
+
+    layers_expr: Optional[Any] = None  # LayerExpr or LayerSet
+    scope: Dict[str, Any] = field(default_factory=dict)
+    split: SplitSpec = field(default_factory=SplitSpec)
+    negative_sampling: NegativeSamplingSpec = field(default_factory=NegativeSamplingSpec)
+    model: ModelSpec = field(default_factory=lambda: ModelSpec(name="common_neighbors"))
+    edge_features: EdgeFeatureSpec = field(default_factory=EdgeFeatureSpec)
+    classifier: Optional[ModelSpec] = None
+    eval: EvalSpec = field(default_factory=EvalSpec)
+    top_k: Optional[int] = None
+    uq_config: Optional[UQConfig] = None
+    seed: Optional[int] = None
+
+
+@dataclass
+class PredictStmt:
+    """Top-level predictive task statement."""
+
+    task: str = "links"
+    spec: Optional[LinkPredictionSpec] = None
+
+
+# ==============================================================================
+# Layer Reduction DSL AST Nodes
+# ==============================================================================
+
+
+@dataclass
+class DistanceSpec:
+    """Distance/similarity function specification for layer reduction."""
+
+    name: str = "js_divergence"
+    params: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class LayerReductionSpec:
+    """Layer reduction workflow specification."""
+
+    method: str = "hierarchical_js"
+    target_k: int = 1
+    distance: Optional[DistanceSpec] = None
+    criterion: Optional[str] = None
+    min_similarity: Optional[float] = None
+    preserve_interlayer: bool = True
+    aggregate: str = "sum"
+    report_level: str = "full"
+    seed: Optional[int] = None
+    params: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class ReduceStmt:
+    """Top-level reduce/simplify statement."""
+
+    target: str = "layers"
+    spec: Optional[LayerReductionSpec] = None
+
+
+# ==============================================================================
 # Benchmark AST Nodes
 # ==============================================================================
 
