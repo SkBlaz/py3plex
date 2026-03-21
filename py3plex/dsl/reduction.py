@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Callable
@@ -17,6 +18,7 @@ from py3plex.algorithms.statistics import multilayer_statistics as mls
 from .ast import LayerReductionSpec, ReduceStmt
 from .errors import LayerReductionError, ReductionMethodError
 
+logger = logging.getLogger(__name__)
 
 @dataclass
 class _ReductionRegistryEntry:
@@ -133,9 +135,13 @@ def _layer_degree_signature(network: Any, layer: str, bins: int = 10) -> np.ndar
 def _distance_js_divergence(network: Any, layer_i: str, layer_j: str) -> float:
     s1 = _layer_degree_signature(network, layer_i)
     s2 = _layer_degree_signature(network, layer_j)
-    from .predictive import _js_divergence  # local reuse
-
-    return _js_divergence(s1, s2)
+    eps = 1e-12
+    p = s1 + eps
+    q = s2 + eps
+    p = p / p.sum()
+    q = q / q.sum()
+    m = 0.5 * (p + q)
+    return float(0.5 * np.sum(p * np.log(p / m)) + 0.5 * np.sum(q * np.log(q / m)))
 
 
 def _distance_spectral(network: Any, layer_i: str, layer_j: str) -> float:
@@ -187,6 +193,12 @@ def _compute_distance_matrix(network: Any, layers: list[str], distance_name: str
         for j in range(i + 1, n):
             d = float(fn(network, layers[i], layers[j]))
             if not np.isfinite(d):
+                logger.warning(
+                    "Non-finite distance encountered for layers (%s,%s) with %s; substituting 1.0",
+                    layers[i],
+                    layers[j],
+                    distance_name,
+                )
                 d = 1.0
             mat[i, j] = d
             mat[j, i] = d
@@ -300,6 +312,8 @@ def _reduce_von_neumann_entropy(network: Any, spec: LayerReductionSpec) -> Layer
     res.meta.setdefault("warnings", []).append(
         "von_neumann_entropy currently uses entropy-informed hierarchical approximation in v1."
     )
+    res.meta["approximation"] = True
+    res.meta["approximation_kind"] = "entropy_signature_hierarchical_js"
     return res
 
 
@@ -309,6 +323,8 @@ def _reduce_strata_sbm(network: Any, spec: LayerReductionSpec) -> LayerReduction
     res.meta.setdefault("warnings", []).append(
         "strata_sbm uses lightweight SBM-like signature approximation in v1."
     )
+    res.meta["approximation"] = True
+    res.meta["approximation_kind"] = "sbm_signature_hierarchical_js"
     return res
 
 
@@ -340,6 +356,8 @@ def execute_reduce_stmt(network: Any, stmt: ReduceStmt) -> LayerReductionResult:
         "original_layers": result.meta.get("original_layers"),
         "reduced_layers": result.meta.get("reduced_layers"),
         "warnings": warnings,
+        "approximation": result.meta.get("approximation", False),
+        "approximation_kind": result.meta.get("approximation_kind"),
     }
     result.meta["provenance"] = provenance
     result.meta["query_ast"] = stmt
@@ -386,4 +404,3 @@ def _register_defaults() -> None:
 
 
 _register_defaults()
-

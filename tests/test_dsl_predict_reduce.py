@@ -82,6 +82,9 @@ def test_predict_links_node2vec_temporal_holdout_executes(multilayer_network_sam
     assert "ap" in res.metrics
     assert res.provenance is not None
     assert res.provenance["split"]["strategy"] == "temporal_holdout"
+    cutoff = res.provenance["split"]["cutoff_time"]
+    if cutoff is not None:
+        assert cutoff >= 1.0
 
 
 def test_predict_links_by_layer_holdout_executes(multilayer_network_sample):
@@ -111,6 +114,7 @@ def test_predict_seed_determinism(multilayer_network_sample):
     r2 = q.execute(multilayer_network_sample)
     assert r1.metrics["roc_auc"] == pytest.approx(r2.metrics["roc_auc"])
     assert r1.metrics["average_precision"] == pytest.approx(r2.metrics["average_precision"])
+    assert r1.provenance["split"] == r2.provenance["split"]
 
 
 def test_reduce_layers_hierarchical_executes(multilayer_network_sample):
@@ -132,5 +136,7 @@ def test_reduce_layers_other_methods(multilayer_network_sample):
     r2 = Q.reduce.layers(method="strata_sbm").target_k(2).execute(multilayer_network_sample)
     assert r1.meta["method"] == "von_neumann_entropy"
     assert r2.meta["method"] == "strata_sbm"
+    assert r1.provenance.get("approximation") is True
+    assert r2.provenance.get("approximation") is True
     assert r1.provenance is not None
     assert r2.provenance is not None
