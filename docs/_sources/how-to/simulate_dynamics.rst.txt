@@ -3,7 +3,7 @@ How to Simulate Multilayer Dynamics
 
 This guide presents py3plex as a comprehensive framework for simulating dynamical processes on multilayer networks. We cover epidemic models (SIR, SIS), diffusion processes (random walks), and custom dynamics implementations—all with full multilayer support.
 
-.. admonition:: 📓 Run this guide online
+.. admonition::  Run this guide online
    :class: tip
 
    You can run this tutorial in your browser without any local installation:

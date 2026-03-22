@@ -113,10 +113,10 @@ class FlakyTestDetector:
             return test_results
             
         except subprocess.TimeoutExpired:
-            print(f"⚠️  Run {run_number + 1} timed out after 600s")
+            print(f"  Run {run_number + 1} timed out after 600s")
             return {}
         except Exception as e:
-            print(f"❌ Run {run_number + 1} failed with error: {e}")
+            print(f" Run {run_number + 1} failed with error: {e}")
             return {}
     
     def _parse_pytest_output(self, stdout: str, stderr: str) -> Dict[str, TestRun]:
@@ -168,7 +168,7 @@ class FlakyTestDetector:
     
     def detect_flaky_tests(self) -> List[TestStatistics]:
         """Run tests multiple times and detect flaky tests."""
-        print(f"🔍 Starting flaky test detection")
+        print(f" Starting flaky test detection")
         print(f"   Runs: {self.runs}")
         print(f"   Test path: {self.test_path}")
         print(f"   Parallel workers: {self.parallel}")
@@ -223,7 +223,7 @@ class FlakyTestDetector:
         print("FLAKY TEST DETECTION REPORT")
         print("="*80)
         
-        print(f"\n📊 Overall Statistics:")
+        print(f"\n Overall Statistics:")
         print(f"   Total unique tests: {len(statistics)}")
         print(f"   Flaky tests: {len(flaky_tests)}")
         print(f"   Stable passing: {len(stable_passed)}")
@@ -231,7 +231,7 @@ class FlakyTestDetector:
         print(f"   Flaky rate: {len(flaky_tests)/len(statistics)*100:.2f}%")
         
         if flaky_tests:
-            print(f"\n⚠️  FLAKY TESTS ({len(flaky_tests)}):")
+            print(f"\n  FLAKY TESTS ({len(flaky_tests)}):")
             print("-" * 80)
             
             # Sort by pass rate (most flaky first)
@@ -278,7 +278,7 @@ class FlakyTestDetector:
         with open(output_file, 'w') as f:
             json.dump(report_data, f, indent=2)
         
-        print(f"\n📄 Full report saved to: {output_file}")
+        print(f"\n Full report saved to: {output_file}")
         
         # Generate recommendations
         self._generate_recommendations(flaky_tests)
@@ -286,7 +286,7 @@ class FlakyTestDetector:
     def _generate_recommendations(self, flaky_tests: List[TestStatistics]):
         """Generate recommendations for fixing flaky tests."""
         if not flaky_tests:
-            print("\n✅ No flaky tests detected!")
+            print("\n No flaky tests detected!")
             return
         
         print("\n" + "="*80)
@@ -368,10 +368,10 @@ def main():
     # Exit with error if flaky tests found
     flaky_count = sum(1 for s in statistics if s.is_flaky)
     if flaky_count > 0:
-        print(f"\n❌ Found {flaky_count} flaky tests")
+        print(f"\n Found {flaky_count} flaky tests")
         sys.exit(1)
     else:
-        print("\n✅ No flaky tests detected")
+        print("\n No flaky tests detected")
         sys.exit(0)
 
 

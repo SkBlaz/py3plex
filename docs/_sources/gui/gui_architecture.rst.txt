@@ -398,12 +398,12 @@ Security Architecture
 Current (Development Mode)
 --------------------------
 
-- ✓ Read-only py3plex mount
-- ✓ Isolated data directories
-- ✗ CORS allows all origins
-- ✗ No authentication
-- ✗ No HTTPS
-- ✗ No rate limiting
+-  Read-only py3plex mount
+-  Isolated data directories
+-  CORS allows all origins
+-  No authentication
+-  No HTTPS
+-  No rate limiting
 
 Production Hardening
 --------------------

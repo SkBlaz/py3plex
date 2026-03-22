@@ -248,30 +248,30 @@ if __name__ == "__main__":
     
     print("1. Testing SBM runner...")
     test_sbm_runner_basic()
-    print("   ✓ SBM runner works")
+    print("    SBM runner works")
     
     print("2. Testing DC-SBM runner...")
     test_dc_sbm_runner_basic()
-    print("   ✓ DC-SBM runner works")
+    print("    DC-SBM runner works")
     
     print("3. Testing determinism...")
     test_sbm_determinism()
-    print("   ✓ Determinism verified")
+    print("    Determinism verified")
     
     print("4. Testing UQ integration...")
     test_sbm_with_uq()
-    print("   ✓ UQ integration works")
+    print("    UQ integration works")
     
     print("5. Testing budget scaling...")
     test_sbm_budget_scaling()
-    print("   ✓ Budget scaling works")
+    print("    Budget scaling works")
     
     print("6. Testing model selection...")
     test_sbm_model_selection()
-    print("   ✓ Model selection works")
+    print("    Model selection works")
     
     print("7. Testing multilayer...")
     test_sbm_multilayer()
-    print("   ✓ Multilayer works")
+    print("    Multilayer works")
     
-    print("\n✅ All smoke tests passed!")
+    print("\n All smoke tests passed!")

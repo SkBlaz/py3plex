@@ -66,17 +66,17 @@ jobs:
 
     - name: Validate quickstart examples
       run: |
-        echo "🧪 Running quickstart examples..."
+        echo " Running quickstart examples..."
         source .venv/bin/activate
         # Verify imports work before running
-        python -c "from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer; print('✓ Import successful')"
+        python -c "from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer; print(' Import successful')"
         cd examples
         # Run getting_started examples to validate basic functionality
         echo "Running getting_started examples..."
         python getting_started/example_datasets.py
         python getting_started/example_multilayer_functionality.py
         python getting_started/example_random_generator.py
-        echo "✅ Quickstart validation completed successfully"
+        echo " Quickstart validation completed successfully"
       timeout-minutes: 10
       env:
         # Use non-interactive backend for matplotlib
@@ -84,14 +84,14 @@ jobs:
 
     - name: Check example outputs
       run: |
-        echo "📊 Checking generated outputs..."
+        echo " Checking generated outputs..."
         if [ -d "example_images" ]; then
           echo "Found example_images directory"
           ls -lh example_images/*.png 2>/dev/null || echo "No PNG files generated"
         else
           echo "No example_images directory created (expected for quickstart examples)"
         fi
-        echo "✓ Output check complete"
+        echo " Output check complete"
       timeout-minutes: 1
 
     - name: Upload example artifacts

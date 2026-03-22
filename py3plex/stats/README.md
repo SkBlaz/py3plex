@@ -145,13 +145,13 @@ register_statistic(spec)
 
 ## Key Features
 
-✅ **Five uncertainty models**: Delta, Gaussian, Bootstrap, Empirical, Interval
-✅ **Automatic propagation**: Arithmetic operations propagate uncertainty
-✅ **Backward compatible**: `float(statvalue)` for existing code
-✅ **Serializable**: JSON export for all types
-✅ **Reproducible**: Seed tracking in provenance
-✅ **Type-safe**: Frozen dataclasses prevent mutation
-✅ **Tested**: 51 unit tests, 100% coverage of core functionality
+ **Five uncertainty models**: Delta, Gaussian, Bootstrap, Empirical, Interval
+ **Automatic propagation**: Arithmetic operations propagate uncertainty
+ **Backward compatible**: `float(statvalue)` for existing code
+ **Serializable**: JSON export for all types
+ **Reproducible**: Seed tracking in provenance
+ **Type-safe**: Frozen dataclasses prevent mutation
+ **Tested**: 51 unit tests, 100% coverage of core functionality
 
 ## Examples
 

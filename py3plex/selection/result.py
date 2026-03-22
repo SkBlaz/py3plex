@@ -165,10 +165,10 @@ class AutoCommunityResult:
         
         pareto_front = getattr(self, 'pareto_front', [])
         if len(pareto_front) == 1:
-            sections.append("✓ Dominated all other algorithms (sole Pareto-optimal solution)")
+            sections.append(" Dominated all other algorithms (sole Pareto-optimal solution)")
         elif len(pareto_front) > 1:
-            sections.append(f"✓ Part of Pareto front with {len(pareto_front)} non-dominated algorithms")
-            sections.append("✓ Consensus partition computed from co-assignment matrix")
+            sections.append(f" Part of Pareto front with {len(pareto_front)} non-dominated algorithms")
+            sections.append(" Consensus partition computed from co-assignment matrix")
         
         # Top metrics
         if hasattr(self, 'evaluation_matrix') and not self.evaluation_matrix.empty:
@@ -243,7 +243,7 @@ class AutoCommunityResult:
                 if stability > 0.8:
                     sections.append("  → High confidence in community assignments")
                 elif stability < 0.5:
-                    sections.append("  ⚠ Low stability - consider increasing UQ samples")
+                    sections.append("   Low stability - consider increasing UQ samples")
             
             if stats.node_confidence:
                 confidences = list(stats.node_confidence.values())
@@ -266,7 +266,7 @@ class AutoCommunityResult:
                 elif max_z > 2.0:
                     sections.append("  → Significant structure (p < 0.05)")
                 else:
-                    sections.append("  ⚠ Weak signal relative to null models")
+                    sections.append("   Weak signal relative to null models")
             else:
                 sections.append("  (Z-scores not computed)")
         else:

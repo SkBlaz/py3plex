@@ -66,9 +66,9 @@ def test_truly_empty_network_with_uq():
 
 if __name__ == "__main__":
     test_empty_groups_handled_gracefully()
-    print("✓ Empty groups handled gracefully")
+    print(" Empty groups handled gracefully")
     
     test_truly_empty_network_with_uq()
-    print("✓ Empty network handled gracefully")
+    print(" Empty network handled gracefully")
     
     print("\nAll tests passed!")

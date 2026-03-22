@@ -3,7 +3,7 @@ Graph Programs: First-Class Compositional Objects
 
 **Goal:** Use Graph Programs to build typed, optimizable, reproducible query pipelines that can be inspected, composed, and cached before execution.
 
-.. admonition:: 🎯 Key Concept
+.. admonition::  Key Concept
    :class: tip
 
    Graph Programs turn DSL v2 queries into **first-class objects** with:

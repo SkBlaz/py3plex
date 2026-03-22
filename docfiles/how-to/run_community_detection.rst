@@ -3,7 +3,7 @@ How to Run Community Detection on Multilayer Networks
 
 **Goal:** This guide demonstrates how to apply community detection algorithms to multilayer networks and interpret their results. Community detection identifies *mesoscale structure*—groups of nodes that are more densely connected internally than to the rest of the network. In multilayer networks, communities can exist within single layers, span multiple layers, or emerge from inter-layer coupling patterns. This analysis is essential for understanding functional modules, organizational structure, and hierarchical clustering in complex systems.
 
-.. admonition:: 📓 Run this guide online
+.. admonition::  Run this guide online
    :class: tip
 
    You can run this tutorial in your browser without any local installation:
@@ -2456,16 +2456,16 @@ H ranges from 0.1 to 0.9 (clipped):
     
     # Interpret
     if rc > 0.8:
-        print("  ✓ High replica consistency (nodes coherent across layers)")
+        print("   High replica consistency (nodes coherent across layers)")
     elif rc < 0.3:
-        print("  ⚠ Low replica consistency (nodes fragmented across layers)")
+        print("   Low replica consistency (nodes fragmented across layers)")
     else:
         print("  → Moderate replica consistency")
     
     if h > 0.7:
-        print("  ✓ High layer entropy (balanced communities)")
+        print("   High layer entropy (balanced communities)")
     elif h < 0.3:
-        print("  ⚠ Low layer entropy (degenerate partition)")
+        print("   Low layer entropy (degenerate partition)")
     else:
         print("  → Moderate layer entropy")
 
@@ -2475,8 +2475,8 @@ H ranges from 0.1 to 0.9 (clipped):
 
     Replica Consistency: 0.8765
     Layer Entropy: 0.7234
-      ✓ High replica consistency (nodes coherent across layers)
-      ✓ High layer entropy (balanced communities)
+       High replica consistency (nodes coherent across layers)
+       High layer entropy (balanced communities)
 
 **Comparison: good vs. bad partitions:**
 

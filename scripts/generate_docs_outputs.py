@@ -229,14 +229,14 @@ def main():
         success, stdout, stderr = run_example(example_path, args.timeout)
         
         if success:
-            print(f"  ✓ Success")
+            print(f"   Success")
             save_output(example_name, stdout, stderr)
             results[example_name] = build_manifest_entry(
                 example_name,
                 has_stderr=bool(stderr),
             )
         else:
-            print(f"  ✗ Failed")
+            print(f"   Failed")
             if stderr:
                 print(f"    Error: {stderr[:200]}")
             failed.append(example_name)

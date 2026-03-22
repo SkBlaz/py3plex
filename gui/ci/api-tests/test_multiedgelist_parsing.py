@@ -41,7 +41,7 @@ def test_load_multiedgelist_with_comments():
         assert 'social' in layers, "Should have social layer"
         assert 'work' in layers, "Should have work layer"
         
-        print("✓ Comments handled correctly")
+        print(" Comments handled correctly")
     finally:
         os.unlink(filepath)
 
@@ -65,7 +65,7 @@ def test_load_multiedgelist_simple_format():
             assert 'layer' in data, "Edge should have layer attribute"
             assert data['layer'] == 'default', "Should use default layer"
         
-        print("✓ Simple 2-column format supported")
+        print(" Simple 2-column format supported")
     finally:
         os.unlink(filepath)
 
@@ -87,7 +87,7 @@ def test_load_multiedgelist_with_weights():
         assert 2.0 in weights, "Should have edge with weight 2.0"
         assert 0.5 in weights, "Should have edge with weight 0.5"
         
-        print("✓ Edge weights parsed correctly")
+        print(" Edge weights parsed correctly")
     finally:
         os.unlink(filepath)
 
@@ -106,7 +106,7 @@ def test_load_multiedgelist_no_weights():
         for u, v, data in graph.edges(data=True):
             assert data['weight'] == 1.0, "Should default to weight 1.0"
         
-        print("✓ Default weights assigned correctly")
+        print(" Default weights assigned correctly")
     finally:
         os.unlink(filepath)
 
@@ -142,7 +142,7 @@ def test_multigraph_to_graph_conversion():
     assert degree_cent['2'] == 4.5
     assert degree_cent['3'] == 1.5
     
-    print("✓ MultiGraph to Graph conversion works for centrality")
+    print(" MultiGraph to Graph conversion works for centrality")
 
 
 def test_empty_lines_handling():
@@ -158,7 +158,7 @@ def test_empty_lines_handling():
     try:
         graph = load_multilayer_edgelist(filepath)
         assert graph.number_of_edges() == 2, "Empty lines should be skipped"
-        print("✓ Empty lines handled correctly")
+        print(" Empty lines handled correctly")
     finally:
         os.unlink(filepath)
 

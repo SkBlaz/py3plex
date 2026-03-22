@@ -32,7 +32,7 @@ pytest test_upload.py
 
 ---
 
-### `test_multiedgelist_parsing.py` ⭐ NEW
+### `test_multiedgelist_parsing.py` NEW
 Comprehensive unit tests for multi-edgelist parsing improvements.
 
 **What it tests:**
@@ -55,7 +55,7 @@ python test_multiedgelist_parsing.py
 
 ---
 
-### `test_user_journey_centrality.py` ⭐ NEW
+### `test_user_journey_centrality.py` NEW
 Integration test simulating complete user journey for multi-edgelist centrality analysis.
 
 **What it tests:**

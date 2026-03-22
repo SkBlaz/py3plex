@@ -88,7 +88,7 @@ cp _build/latex/py3plex.pdf ../docs/py3plex_documentation.pdf
 
 # Show results
 echo ""
-echo -e "${GREEN}✓ PDF generation completed successfully!${NC}"
+echo -e "${GREEN} PDF generation completed successfully!${NC}"
 echo ""
 echo -e "Output file: ${BLUE}../docs/py3plex_documentation.pdf${NC}"
 

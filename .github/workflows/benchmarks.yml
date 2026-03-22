@@ -60,14 +60,14 @@ jobs:
 
     - name: Run core performance benchmarks
       run: |
-        echo "🚀 Running core multilayer data structure benchmarks..."
+        echo " Running core multilayer data structure benchmarks..."
         source .venv/bin/activate
         uv run pytest tests/test_performance_core.py --benchmark-only -v --benchmark-json=benchmark-core.json
       timeout-minutes: 10
 
     - name: Run aggregation benchmarks
       run: |
-        echo "🚀 Running aggregation benchmarks..."
+        echo " Running aggregation benchmarks..."
         source .venv/bin/activate
         uv run pytest benchmarks/bench_aggregation.py --benchmark-only -v --benchmark-json=benchmark-aggregation.json
       timeout-minutes: 10
@@ -76,12 +76,12 @@ jobs:
     - name: Generate benchmark summary
       if: always()
       run: |
-        echo "## 📊 Benchmark Results" >> $GITHUB_STEP_SUMMARY
+        echo "##  Benchmark Results" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Core Performance Benchmarks" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         if [ -f benchmark-core.json ]; then
-          echo "✅ Core benchmarks completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo " Core benchmarks completed successfully" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           python -c 'import json, sys, textwrap; exec(textwrap.dedent("""
               import json
@@ -103,15 +103,15 @@ jobs:
                   sys.exit(0)
           """))' >> $GITHUB_STEP_SUMMARY
         else
-          echo "⚠️ No core benchmark results found" >> $GITHUB_STEP_SUMMARY
+          echo " No core benchmark results found" >> $GITHUB_STEP_SUMMARY
         fi
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Aggregation Benchmarks" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         if [ -f benchmark-aggregation.json ]; then
-          echo "✅ Aggregation benchmarks completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo " Aggregation benchmarks completed successfully" >> $GITHUB_STEP_SUMMARY
         else
-          echo "ℹ️ Aggregation benchmarks skipped (module not available)" >> $GITHUB_STEP_SUMMARY
+          echo "INFO: Aggregation benchmarks skipped (module not available)" >> $GITHUB_STEP_SUMMARY
         fi
 
     - name: Upload benchmark results
@@ -127,7 +127,7 @@ jobs:
       if: github.event_name == 'pull_request'
       continue-on-error: true
       run: |
-        echo "📈 Comparing with baseline performance..."
+        echo " Comparing with baseline performance..."
         echo "This would compare with baseline from main branch in a production setup"
         # In a full implementation, this would:
         # 1. Download baseline benchmark from main branch

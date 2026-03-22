@@ -82,7 +82,7 @@ jobs:
 
     - name: Setup development environment
       run: |
-        echo "🔧 Setting up development environment with uv..."
+        echo " Setting up development environment with uv..."
         uv venv --clear .venv
         if [ "$RUNNER_OS" == "Windows" ]; then
           source .venv/Scripts/activate
@@ -98,7 +98,7 @@ jobs:
         MPLBACKEND: Agg  # Avoid GUI issues in matplotlib
         HYPOTHESIS_PROFILE: ci  # Use CI profile for Hypothesis
       run: |
-        echo "🧪 Running tests..."
+        echo " Running tests..."
         if [ "$RUNNER_OS" == "Windows" ]; then
           source .venv/Scripts/activate
         else
@@ -106,9 +106,9 @@ jobs:
         fi
         uv pip install pytest hypothesis
         if [ -f "run_tests.py" ]; then
-          timeout 600 uv run python run_tests.py || echo "⚠️ Tests timed out after 10 minutes"
+          timeout 600 uv run python run_tests.py || echo " Tests timed out after 10 minutes"
         else
-          uv run pytest tests/ || echo "⚠️ Tests failed"
+          uv run pytest tests/ || echo " Tests failed"
         fi
       timeout-minutes: 30
       shell: bash
@@ -118,13 +118,13 @@ jobs:
         MPLBACKEND: Agg
         HYPOTHESIS_PROFILE: ci
       run: |
-        echo "🔬 Running metamorphic tests..."
+        echo " Running metamorphic tests..."
         if [ "$RUNNER_OS" == "Windows" ]; then
           source .venv/Scripts/activate
         else
           source .venv/bin/activate
         fi
-        uv run pytest -q -k metamorphic tests/ || echo "⚠️ Metamorphic tests failed"
+        uv run pytest -q -k metamorphic tests/ || echo " Metamorphic tests failed"
       timeout-minutes: 5
       shell: bash
 
@@ -170,13 +170,13 @@ jobs:
 
     - name: Run tests (minimal)
       run: |
-        echo "🐍 Python version: $(python --version)"
-        echo "📦 Installed packages:"
+        echo " Python version: $(python --version)"
+        echo " Installed packages:"
         source .venv/bin/activate
         uv pip list | head -20
-        echo "🧪 Running tests with minimal dependencies..."
-        timeout 400 uv run python run_tests.py || echo "⚠️ Minimal tests timed out after 6.7 minutes"
-        echo "✅ Minimal dependency tests completed"
+        echo " Running tests with minimal dependencies..."
+        timeout 400 uv run python run_tests.py || echo " Minimal tests timed out after 6.7 minutes"
+        echo " Minimal dependency tests completed"
         echo "Note: Some tests may be skipped due to missing optional dependencies"
       timeout-minutes: 8
 
@@ -218,7 +218,7 @@ jobs:
         HYPOTHESIS_PROFILE: nightly
         HYPOTHESIS_MAX_EXAMPLES: 600
       run: |
-        echo "🔬 Running extended metamorphic tests..."
+        echo " Running extended metamorphic tests..."
         echo "Configuration:"
         echo "  - HYPOTHESIS_PROFILE: nightly"
         echo "  - HYPOTHESIS_MAX_EXAMPLES: 600"

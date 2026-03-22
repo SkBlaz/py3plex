@@ -17,7 +17,7 @@ try:
     import networkx as nx
     CAN_RUN_TESTS = True
 except ImportError as e:
-    print(f"⚠ Cannot run tests: {e}")
+    print(f" Cannot run tests: {e}")
     print("These tests require API dependencies. Run in Docker or install dependencies:")
     print("  cd gui/api && pip install -r requirements.txt")
     CAN_RUN_TESTS = False
@@ -73,7 +73,7 @@ def test_summary_caching():
         stats = get_cache_stats()
         assert stats['summary_cache_size'] == 0
         
-        print("✓ Summary caching works correctly")
+        print(" Summary caching works correctly")
     finally:
         os.unlink(filepath)
         GRAPH_REGISTRY.pop(graph_id, None)
@@ -109,7 +109,7 @@ def test_position_caching():
         positions2 = get_graph_positions(graph_id)
         assert positions2 == positions1
         
-        print("✓ Position caching works correctly")
+        print(" Position caching works correctly")
     finally:
         GRAPH_REGISTRY.pop(graph_id, None)
 
@@ -138,7 +138,7 @@ def test_large_graph_layout_optimization():
         positions = compute_layout(graph_id, algorithm='kamada_kawai')
         assert len(positions) == G.number_of_nodes()
         
-        print("✓ Large graph layout optimization works")
+        print(" Large graph layout optimization works")
     finally:
         GRAPH_REGISTRY.pop(graph_id, None)
 
@@ -164,7 +164,7 @@ def test_centrality_result_limiting():
         assert 'degree' in results
         assert len(results['degree']) <= G.number_of_nodes()
         
-        print("✓ Centrality computation works for large graphs")
+        print(" Centrality computation works for large graphs")
     finally:
         GRAPH_REGISTRY.pop(graph_id, None)
 
@@ -197,7 +197,7 @@ def test_optimized_graph_filtering():
         # Clean up subgraph
         GRAPH_REGISTRY.pop(result.subgraph_id, None)
         
-        print("✓ Optimized graph filtering works")
+        print(" Optimized graph filtering works")
     finally:
         GRAPH_REGISTRY.pop(graph_id, None)
 
@@ -226,7 +226,7 @@ def test_multigraph_centrality_with_optimization():
         assert 'pagerank' in results
         assert len(results['degree']) == 3  # 3 nodes
         
-        print("✓ MultiGraph centrality with optimization works")
+        print(" MultiGraph centrality with optimization works")
     finally:
         GRAPH_REGISTRY.pop(graph_id, None)
 

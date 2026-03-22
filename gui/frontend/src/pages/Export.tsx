@@ -276,7 +276,7 @@ export default function Export() {
               <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mr-2 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm text-green-700 dark:text-green-300">
-                  ✓ Workspace saved as <strong>{saveResult.filename}</strong>
+                   Workspace saved as <strong>{saveResult.filename}</strong>
                 </p>
                 <p className="text-xs text-green-600 dark:text-green-400 mt-1">
                   ID: {saveResult.workspace_id}

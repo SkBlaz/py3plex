@@ -629,7 +629,7 @@ Supported Algorithms
 
 **Currently supported with uncertainty:**
 
-* ``multilayer_pagerank()`` ✓
+* ``multilayer_pagerank()`` 
 
 **Coming soon:**
 

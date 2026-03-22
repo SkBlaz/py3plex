@@ -44,7 +44,7 @@ def test_toy_example_two_nodes_one_edge():
     assert len(model.hard_membership_) == 2
     assert all(label == 0 for label in model.hard_membership_)
     
-    print("✓ Toy example with 2 nodes passed")
+    print(" Toy example with 2 nodes passed")
 
 
 def test_toy_example_triangle():
@@ -77,7 +77,7 @@ def test_toy_example_triangle():
     assert model.K_ == 1
     assert len(set(model.hard_membership_)) == 1
     
-    print("✓ Toy example with triangle passed")
+    print(" Toy example with triangle passed")
 
 
 def test_toy_example_two_disconnected_pairs():
@@ -121,7 +121,7 @@ def test_toy_example_two_disconnected_pairs():
     # May find 1 or 2 blocks depending on initialization, just check it's valid
     assert 1 <= unique_labels <= 2
     
-    print("✓ Toy example with two pairs passed")
+    print(" Toy example with two pairs passed")
 
 
 def test_toy_example_star_graph():
@@ -169,7 +169,7 @@ def test_toy_example_star_graph():
     prob_hub_to_spoke = model.predict_proba(0, 1, 'L1')
     assert prob_hub_to_spoke > 0
     
-    print("✓ Toy example with star graph passed")
+    print(" Toy example with star graph passed")
 
 
 def test_toy_example_multiplex_consistent_structure():
@@ -214,7 +214,7 @@ def test_toy_example_multiplex_consistent_structure():
     assert model.layer_mode_ == 'shared_blocks'
     assert len(model.hard_membership_) == 4
     
-    print("✓ Toy example with multiplex passed")
+    print(" Toy example with multiplex passed")
 
 
 def test_toy_example_dc_sbm_degree_correction():
@@ -267,7 +267,7 @@ def test_toy_example_dc_sbm_degree_correction():
     assert hub_theta > 0
     assert all(theta > 0 for theta in other_theta)
     
-    print("✓ Toy example with DC-SBM passed")
+    print(" Toy example with DC-SBM passed")
 
 
 def test_toy_example_model_selection():
@@ -326,7 +326,7 @@ def test_toy_example_model_selection():
     assert 'comparison_table' in info
     assert len(info['comparison_table']) == 3
     
-    print(f"✓ Toy example with model selection passed (selected K={info['best_K']})")
+    print(f" Toy example with model selection passed (selected K={info['best_K']})")
 
 
 def test_toy_example_link_prediction():
@@ -380,7 +380,7 @@ def test_toy_example_link_prediction():
     prob_0_2 = model.predict_proba(0, 2, 'L1')
     assert prob_0_2 >= 0
     
-    print("✓ Toy example with link prediction passed")
+    print(" Toy example with link prediction passed")
 
 
 if __name__ == "__main__":
@@ -399,5 +399,5 @@ if __name__ == "__main__":
     test_toy_example_link_prediction()
     
     print("\n" + "="*60)
-    print("All Toy Examples Passed! ✓")
+    print("All Toy Examples Passed! ")
     print("="*60)

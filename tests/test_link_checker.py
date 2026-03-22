@@ -2,6 +2,7 @@
 Tests for link checker script.
 """
 
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -84,6 +85,48 @@ def test_no_new_markdown_files():
     # Verify no unexpected files exist
     unexpected_files = set(md_files) - set(expected_md_files)
     assert not unexpected_files, f"Unexpected markdown files found: {unexpected_files}"
+
+
+def test_no_emojis_in_repository_text_files():
+    """Test that repository text files do not contain emoji characters."""
+    repo_root = Path(__file__).parent.parent
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F300-\U0001FAFF"  # Supplemental Symbols and Pictographs
+        "\U0001F600-\U0001F64F"  # Emoticons
+        "\U0001F1E6-\U0001F1FF"  # Flags
+        "\u2600-\u26FF"          # Misc symbols
+        "\u2700-\u27BF"          # Dingbats
+        "\u23F0-\u23FF"          # Misc technical symbols used as emoji (e.g. stopwatch)
+        "\u2139"                 # Information source symbol
+        "\u2B50"                 # White medium star
+        "\uFE0F"                 # Variation selector-16 (emoji presentation)
+        "\u200D"                 # Zero-width joiner (emoji sequences)
+        "]"
+    )
+
+    violations = []
+    for file_path in repo_root.rglob("*"):
+        if not file_path.is_file():
+            continue
+        relative = str(file_path.relative_to(repo_root))
+        if ".git" in file_path.parts or ".pytest_cache" in file_path.parts or "node_modules" in file_path.parts:
+            continue
+
+        try:
+            content = file_path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+
+        for line_no, line in enumerate(content.splitlines(), start=1):
+            if emoji_pattern.search(line):
+                violations.append(f"{relative}:{line_no}:{line.strip()}")
+                if len(violations) >= 20:
+                    break
+        if len(violations) >= 20:
+            break
+
+    assert not violations, "Emoji characters found in repository:\n" + "\n".join(violations)
 
 
 def test_link_statistics():

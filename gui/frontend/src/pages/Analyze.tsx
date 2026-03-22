@@ -281,8 +281,9 @@ export default function Analyze() {
           <button
             onClick={() => setNotification(null)}
             className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
+            aria-label="Close notification"
           >
-            ✕
+            <XCircle className="h-5 w-5" />
           </button>
         </div>
       )}
@@ -386,7 +387,7 @@ export default function Analyze() {
           <div className="text-center py-8">
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">No jobs yet. Start an analysis above.</p>
             <p className="text-xs text-gray-400 dark:text-gray-500">
-              💡 Tip: Use keyboard shortcuts to quickly start jobs
+               Tip: Use keyboard shortcuts to quickly start jobs
             </p>
           </div>
         ) : (
@@ -409,7 +410,7 @@ export default function Analyze() {
                 <div className="text-right">
                   <p className="text-xs text-gray-400 dark:text-gray-500 font-mono">{job.id}</p>
                   {job.status === 'completed' && job.result && (
-                    <p className="text-sm text-green-600 dark:text-green-400 mt-1">✓ Complete</p>
+                    <p className="text-sm text-green-600 dark:text-green-400 mt-1"> Complete</p>
                   )}
                 </div>
               </div>

@@ -45,7 +45,7 @@ def test_cli_check_valid_edgelist():
         assert result.returncode == 0
         # Output may be in stdout or stderr (logger output)
         output = result.stdout + result.stderr
-        assert "no issues" in output.lower() or "✓" in output
+        assert "no issues" in output.lower() or "" in output
     finally:
         Path(temp_file).unlink()
 

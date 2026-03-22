@@ -302,7 +302,7 @@ Validate a graph data file (auto-detects format):
 .. code-block:: text
 
     Checking file: network.csv
-    ✓ No issues found!
+     No issues found!
 
 **Output for file with issues:**
 
@@ -327,7 +327,7 @@ Validate a graph data file (auto-detects format):
       Warnings: 3
       Info: 1
     
-    ✗ Validation failed with errors
+     Validation failed with errors
 
 Supported File Formats
 ~~~~~~~~~~~~~~~~~~~~~~

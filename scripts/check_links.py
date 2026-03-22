@@ -161,7 +161,7 @@ def main():
     print()
     
     # Find all markdown and RST files
-    print("📝 Finding documentation files...")
+    print(" Finding documentation files...")
     md_files = find_markdown_files(repo_root)
     rst_files = find_rst_files(repo_root / 'docfiles')
     
@@ -170,7 +170,7 @@ def main():
     print()
     
     # Extract all links
-    print("🔍 Extracting links...")
+    print(" Extracting links...")
     all_links = {}
     
     for md_file in md_files:
@@ -188,7 +188,7 @@ def main():
     print()
     
     # Check links by category
-    print("🔗 Validating links...")
+    print(" Validating links...")
     errors = []
     
     for file_path, links in all_links.items():
@@ -211,14 +211,14 @@ def main():
     # Report results
     print()
     if errors:
-        print("❌ Link validation FAILED")
+        print(" Link validation FAILED")
         print("=" * 80)
         for error in errors:
             print(error)
         print()
         return 1
     else:
-        print("✅ All links validated successfully!")
+        print(" All links validated successfully!")
         print()
         
         # Print summary statistics
@@ -227,7 +227,7 @@ def main():
             all_link_list.extend(links)
         
         categories = categorize_links(all_link_list)
-        print("📊 Link Statistics:")
+        print(" Link Statistics:")
         print(f"  GitHub links: {len(categories['github'])}")
         print(f"  Documentation links: {len(categories['docs'])}")
         print(f"  PyPI links: {len(categories['pypi'])}")

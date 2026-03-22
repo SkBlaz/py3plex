@@ -32,19 +32,19 @@ cd "$SCRIPT_DIR"
 
 # Print colored output
 print_info() {
-    echo -e "${BLUE}ℹ${NC} $1"
+    echo -e "${BLUE}INFO${NC} $1"
 }
 
 print_success() {
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
+    echo -e "${YELLOW}${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}${NC} $1"
 }
 
 # Check if Docker is running
@@ -146,10 +146,10 @@ show_access_info() {
     print_success "Py3plex GUI is now running!"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    echo "  🌐 Main GUI:        http://localhost:8080"
-    echo "  📊 Job Monitor:     http://localhost:5555"
-    echo "  🔧 API Docs:        http://localhost:8080/api/docs"
-    echo "  ⚡ Frontend Dev:    http://localhost:5173 (direct)"
+    echo "   Main GUI:        http://localhost:8080"
+    echo "   Job Monitor:     http://localhost:5555"
+    echo "   API Docs:        http://localhost:8080/api/docs"
+    echo "   Frontend Dev:    http://localhost:5173 (direct)"
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""

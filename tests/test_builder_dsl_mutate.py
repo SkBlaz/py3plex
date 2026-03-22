@@ -38,7 +38,7 @@ print("\n" + "=" * 80)
 print("Test 1: Node Selection (Q.nodes())")
 print("-" * 80)
 result = Q.nodes().execute(network)
-print(f"✓ Selected {result.count} nodes")
+print(f" Selected {result.count} nodes")
 assert result.count > 0, "Should have nodes"
 
 # Test 2: Edge Selection
@@ -46,7 +46,7 @@ print("\n" + "=" * 80)
 print("Test 2: Edge Selection (Q.edges())")
 print("-" * 80)
 result = Q.edges().execute(network)
-print(f"✓ Selected {result.count} edges")
+print(f" Selected {result.count} edges")
 assert result.count > 0, "Should have edges"
 
 # Test 3: Filtering
@@ -54,7 +54,7 @@ print("\n" + "=" * 80)
 print("Test 3: Filtering (.where())")
 print("-" * 80)
 result = Q.nodes().where(layer="social").execute(network)
-print(f"✓ Filtered to {result.count} social nodes")
+print(f" Filtered to {result.count} social nodes")
 assert result.count == 3, "Should have 3 social nodes"
 
 # Test 4: Mutations
@@ -66,7 +66,7 @@ print("-" * 80)
 result = Q.nodes().compute("degree").mutate(
     category="hub"
 ).execute(network)
-print(f"✓ Added constant 'category' column")
+print(f" Added constant 'category' column")
 assert 'category' in result.attributes, "Should have 'category' attribute"
 # Note: Constant values work in the implementation
 
@@ -75,7 +75,7 @@ result = Q.nodes().compute("degree").mutate(
     doubled_degree=lambda row: row.get("degree", 0) * 2,
     plus_one=lambda row: row.get("degree", 0) + 1
 ).execute(network)
-print(f"✓ Created 'doubled_degree' and 'plus_one' columns using lambdas")
+print(f" Created 'doubled_degree' and 'plus_one' columns using lambdas")
 assert 'doubled_degree' in result.attributes, "Should have 'doubled_degree' attribute"
 assert 'plus_one' in result.attributes, "Should have 'plus_one' attribute"
 
@@ -93,7 +93,7 @@ result = Q.nodes().compute("degree", "clustering").mutate(
     score=lambda row: row.get("degree", 0) * row.get("clustering", 0),
     is_hub=lambda row: row.get("degree", 0) > 1
 ).execute(network)
-print(f"✓ Created 'score' and 'is_hub' columns using multiple attributes")
+print(f" Created 'score' and 'is_hub' columns using multiple attributes")
 assert 'score' in result.attributes, "Should have 'score' attribute"
 assert 'is_hub' in result.attributes, "Should have 'is_hub' attribute"
 
@@ -106,7 +106,7 @@ result = Q.nodes().compute("degree").summarize(
     max_degree="max(degree)",
     n="n()"
 ).execute(network)
-print(f"✓ Created summary with avg_degree, max_degree, and count")
+print(f" Created summary with avg_degree, max_degree, and count")
 assert 'avg_degree' in result.attributes, "Should have 'avg_degree' attribute"
 assert 'max_degree' in result.attributes, "Should have 'max_degree' attribute"
 assert 'n' in result.attributes, "Should have 'n' attribute"
@@ -133,7 +133,7 @@ result = (
     )
     .execute(network)
 )
-print(f"✓ Complex query executed successfully with {result.count} nodes")
+print(f" Complex query executed successfully with {result.count} nodes")
 assert result.count == 3, "Should have 3 social nodes"
 assert 'score' in result.attributes, "Should have 'score' attribute"
 assert 'normalized_degree' in result.attributes, "Should have 'normalized_degree' attribute"
@@ -143,7 +143,7 @@ print("\n" + "=" * 80)
 print("Test 7: Export to Pandas DataFrame")
 print("-" * 80)
 df = result.to_pandas()
-print(f"✓ Exported to DataFrame with shape {df.shape}")
+print(f" Exported to DataFrame with shape {df.shape}")
 print("\nFirst few rows:")
 print(df.head())
 
@@ -151,9 +151,9 @@ print("\n" + "=" * 80)
 print("ALL TESTS PASSED!")
 print("=" * 80)
 print("\nBuilder DSL supports all 5 key operations:")
-print("  1. ✓ Node selection (Q.nodes())")
-print("  2. ✓ Edge selection (Q.edges())")
-print("  3. ✓ Filtering (.where())")
-print("  4. ✓ Mutations (.mutate())")
-print("  5. ✓ Summary (.summarize())")
+print("  1.  Node selection (Q.nodes())")
+print("  2.  Edge selection (Q.edges())")
+print("  3.  Filtering (.where())")
+print("  4.  Mutations (.mutate())")
+print("  5.  Summary (.summarize())")
 print("=" * 80)

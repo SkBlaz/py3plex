@@ -36,9 +36,9 @@ setup:
 up: setup
 	docker compose up --build -d
 	@echo ""
-	@echo "✅ Py3plex GUI is starting..."
-	@echo "🌐 Open http://localhost:8080 in your browser"
-	@echo "📊 Flower (job monitoring) at http://localhost:5555"
+	@echo " Py3plex GUI is starting..."
+	@echo " Open http://localhost:8080 in your browser"
+	@echo " Flower (job monitoring) at http://localhost:5555"
 	@echo ""
 	@echo "Run 'make logs' to view logs"
 

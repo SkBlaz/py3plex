@@ -58,7 +58,7 @@ jobs:
         source .venv/bin/activate
         uv pip install -e .[tests]
         # Install optional deps for comprehensive tests
-        uv pip install python-louvain || echo "⚠️ python-louvain not available"
+        uv pip install python-louvain || echo " python-louvain not available"
       timeout-minutes: 10
     
     - name: Run property tests (excluding slow)
@@ -120,7 +120,7 @@ jobs:
         uv venv --clear .venv
         source .venv/bin/activate
         uv pip install -e .[tests]
-        uv pip install python-louvain || echo "⚠️ python-louvain not available"
+        uv pip install python-louvain || echo " python-louvain not available"
       timeout-minutes: 10
     
     - name: Run all property tests (including slow)
@@ -170,5 +170,5 @@ jobs:
     - name: Run property tests (minimal, skip tests with missing deps)
       run: |
         source .venv/bin/activate
-        uv run pytest tests/property/ -v -m "property and not slow" --tb=short || echo "⚠️ Some tests skipped due to missing deps"
+        uv run pytest tests/property/ -v -m "property and not slow" --tb=short || echo " Some tests skipped due to missing deps"
       timeout-minutes: 10

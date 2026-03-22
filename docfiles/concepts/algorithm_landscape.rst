@@ -49,10 +49,10 @@ Algorithm Families
 
 *Trade-offs:*
 
-* ✓ Fast (scales to millions of nodes)
-* ✓ Easy to use (minimal parameters)
-* ✗ Resolution limit (may miss small communities)
-* ✗ Stochastic (different runs give different results)
+*  Fast (scales to millions of nodes)
+*  Easy to use (minimal parameters)
+*  Resolution limit (may miss small communities)
+*  Stochastic (different runs give different results)
 
 .. code-block:: python
 
@@ -78,11 +78,11 @@ Algorithm Families
 
 *Trade-offs:*
 
-* ✓ Theoretically grounded (information theory)
-* ✓ Finds hierarchical structure
-* ✗ Slower than modularity methods
-* ✗ May require external binaries
-* ✗ Sensitive to how inter-layer edges are weighted (add or scale them explicitly before running on multilayer data)
+*  Theoretically grounded (information theory)
+*  Finds hierarchical structure
+*  Slower than modularity methods
+*  May require external binaries
+*  Sensitive to how inter-layer edges are weighted (add or scale them explicitly before running on multilayer data)
 
 .. code-block:: python
 
@@ -105,10 +105,10 @@ Algorithm Families
 
 *Trade-offs:*
 
-* ✓ More realistic for many real networks
-* ✓ Captures multi-role nodes
-* ✗ More complex to interpret
-* ✗ Computationally expensive
+*  More realistic for many real networks
+*  Captures multi-role nodes
+*  More complex to interpret
+*  Computationally expensive
 
 .. code-block:: python
 

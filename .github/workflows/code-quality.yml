@@ -38,11 +38,11 @@ jobs:
     
     - name: Run lint checks via Makefile
       run: |
-        echo "🔍 Running lint checks via Makefile..."
+        echo " Running lint checks via Makefile..."
         source .venv/bin/activate
         make lint
       timeout-minutes: 5
     
     - name: Linting note
       run: |
-        echo "✅ Linting complete. Remaining issues should be addressed in future PRs."
+        echo " Linting complete. Remaining issues should be addressed in future PRs."

@@ -128,7 +128,7 @@ def run_benchmarks():
         try:
             results = benchmark_network_creation(num_layers, nodes_per_layer)
             
-            print(f"  ⏱️  Creation time: {results['creation_time']:.3f}s")
+            print(f"    Creation time: {results['creation_time']:.3f}s")
             print(f"  Stats: Total nodes: {results['num_nodes']}")
             print(f"  Edges: Total edges: {results['num_edges']}")
             

@@ -3,7 +3,7 @@ Quick Start Tutorial
 
 Get started with py3plex in just a few minutes. This tutorial shows you the essential concepts through three focused examples.
 
-.. admonition:: 📓 Executable Examples
+.. admonition::  Executable Examples
    :class: tip
 
    All examples are in the ``examples/00_quickstart/`` directory and can be run directly:

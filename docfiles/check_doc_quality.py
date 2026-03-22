@@ -182,12 +182,12 @@ def print_results(results: dict) -> None:
     # Summary
     print("\n" + "="*70)
     if results['files_with_issues'] == 0:
-        print("✓ All checks passed!")
+        print(" All checks passed!")
     elif len(results['forbidden_patterns']) == 0:
-        print(f"⚠ Found {results['files_with_issues']} file(s) with docker-compose references")
+        print(f" Found {results['files_with_issues']} file(s) with docker-compose references")
         print("  Review manually - documented legacy references are acceptable")
     else:
-        print(f"✗ Found issues in {results['files_with_issues']} file(s)")
+        print(f" Found issues in {results['files_with_issues']} file(s)")
     print("="*70 + "\n")
 
 

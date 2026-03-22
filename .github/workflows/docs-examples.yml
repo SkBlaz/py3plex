@@ -42,7 +42,7 @@ jobs:
       run: |
         source .venv/bin/activate
         python scripts/generate_docs_outputs.py
-        echo "✓ Documentation outputs generated"
+        echo " Documentation outputs generated"
       timeout-minutes: 5
       env:
         MPLBACKEND: Agg
@@ -51,7 +51,7 @@ jobs:
       run: |
         source .venv/bin/activate
         python scripts/validate_docs_outputs.py --verbose
-        echo "✓ Documentation outputs validated"
+        echo " Documentation outputs validated"
       timeout-minutes: 2
 
     - name: Upload outputs artifact
@@ -68,7 +68,7 @@ jobs:
       run: |
         # Check if any output files have changed
         git diff --exit-code examples/docs_outputs/ || {
-          echo "❌ Documentation outputs have diverged!"
+          echo " Documentation outputs have diverged!"
           echo "Please run 'python scripts/generate_docs_outputs.py' locally and commit the changes."
           exit 1
         }

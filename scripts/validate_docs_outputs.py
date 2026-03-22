@@ -179,7 +179,7 @@ def main():
             print(f"  - {error}")
         return 1
     else:
-        print("✓ All documentation outputs are valid")
+        print(" All documentation outputs are valid")
         return 0
 
 

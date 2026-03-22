@@ -76,7 +76,7 @@ try:
     net3.add_edges([{'source': 'A', 'target': 'B'}], input_type="invalid")
 except ValueError as e:
     print(f"  Error caught: {str(e)[:100]}...")
-    print("  ✓ Clear, actionable error message with expected format!")
+    print("   Clear, actionable error message with expected format!")
 
 # 5. Performance warnings
 print("\n5. Performance Warnings for Large Networks")

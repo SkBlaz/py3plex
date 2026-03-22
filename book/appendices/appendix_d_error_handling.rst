@@ -430,17 +430,17 @@ Traditional error messages say "what went wrong". Py3plex errors explain "what t
     # Pedagogical error (helpful)
     DslSyntaxError: Cannot call .where() after .end_grouping()
     
-    💭 You probably wanted to: Filter nodes before grouping
+     You probably wanted to: Filter nodes before grouping
     
-    ❌ Why this failed: After .end_grouping(), the query context 
+     Why this failed: After .end_grouping(), the query context 
        returns to ungrouped state. The .where() clause filters the 
        entire result, not individual groups.
     
-    ✅ Corrected examples:
+     Corrected examples:
       1. Q.nodes().where(degree__gt=3).per_layer().top_k(5)
       2. Q.nodes().per_layer().filter_within_groups(degree__gt=3)
     
-    ⚠️  Common pitfall: Grouping operations (.per_layer(), .group_by())
+      Common pitfall: Grouping operations (.per_layer(), .group_by())
        create a new context. Apply filters before grouping for clarity.
 
 **Core Principles:**
@@ -469,13 +469,13 @@ Raised for invalid DSL syntax or query structure:
     # Output:
     # DslSyntaxError: Cannot call .where() on QueryResult
     #
-    # 💭 You probably wanted to: Filter before executing
+    #  You probably wanted to: Filter before executing
     #
-    # ❌ Why this failed: .execute() returns a QueryResult object,
+    #  Why this failed: .execute() returns a QueryResult object,
     #    which is immutable. Query building methods like .where()
     #    must be called before .execute().
     #
-    # ✅ Corrected examples:
+    #  Corrected examples:
     #   1. Q.nodes().where(degree__gt=3).execute(net)
     #   2. result = Q.nodes().execute(net); df = result.to_pandas().query("degree > 3")
 
@@ -495,17 +495,17 @@ Raised when query execution fails due to runtime conditions:
     # Output:
     # DslExecutionError: Cannot filter on 'betweenness' (not computed)
     #
-    # 💭 You probably wanted to: Compute betweenness before filtering
+    #  You probably wanted to: Compute betweenness before filtering
     #
-    # ❌ Why this failed: The .where() clause references 'betweenness',
+    #  Why this failed: The .where() clause references 'betweenness',
     #    but this metric hasn't been computed yet. Autocompute is
     #    disabled for filters to prevent silent expensive operations.
     #
-    # ✅ Corrected examples:
+    #  Corrected examples:
     #   1. Q.nodes().compute("betweenness_centrality").where(betweenness__gt=0.1)
     #   2. Q.nodes().where(degree__gt=5).compute("betweenness_centrality")
     #
-    # ⚠️  Common pitfall: Some metrics (degree) are cheap and autocomputed.
+    #   Common pitfall: Some metrics (degree) are cheap and autocomputed.
     #    Expensive metrics (betweenness, closeness) require explicit .compute()
 
 **MultilayerSemanticError** — Multilayer-specific guidance
@@ -554,17 +554,17 @@ Example: Before and After
 
     DslExecutionError: .coverage() requires active grouping
     
-    💭 You probably wanted to: Apply coverage after .per_layer()
+     You probably wanted to: Apply coverage after .per_layer()
     
-    ❌ Why this failed: The .coverage() method filters items based
+     Why this failed: The .coverage() method filters items based
        on their presence across groups. You must create groups first
        with .per_layer() or .group_by().
     
-    ✅ Corrected examples:
+     Corrected examples:
       1. Q.nodes().per_layer().top_k(5, "degree").end_grouping().coverage(mode="all")
       2. Q.nodes().from_layers(L["*"]).per_layer().compute("degree").coverage(mode="any")
     
-    ⚠️  Common pitfall: .coverage() is a post-grouping filter, not a
+      Common pitfall: .coverage() is a post-grouping filter, not a
        pre-grouping filter. It answers "which items appear across groups?"
 
 Using Pedagogical Errors Effectively
