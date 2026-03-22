@@ -197,6 +197,25 @@ python<span class="w"> </span>scripts/validate_docs_outputs.py
 <p>This example demonstrates creating a simple multilayer network and querying it.</p>
 <p><strong>Source code:</strong></p>
 <p><strong>Output:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Creating a multilayer network...
+Added 6 nodes
+Added 5 edges
+
+Network Statistics:
+========================================
+Total node instances: 6
+Total edges: 5
+
+Node Degrees:
+========================================
+  0          (social  ): 2
+  1          (social  ): 2
+  2          (social  ): 2
+  3          (work    ): 2
+  4          (work    ): 1
+  5          (work    ): 1
+</pre></div>
+</div>
 <p><strong>What this shows:</strong></p>
 <ul class="simple">
 <li><p>Creating a multilayer network</p></li>
@@ -210,6 +229,31 @@ python<span class="w"> </span>scripts/validate_docs_outputs.py
 <p>This example demonstrates running Louvain community detection on a multilayer network.</p>
 <p><strong>Source code:</strong></p>
 <p><strong>Output:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Example: Community Detection on Multilayer Network
+============================================================
+
+1. Creating network with community structure...
+   Added 6 nodes
+   Added 7 edges
+
+2. Running Louvain community detection...
+
+3. Community assignments:
+------------------------------------------------------------
+   Found 2 communities
+
+   Community 0: (&#39;A&#39;, &#39;social&#39;), (&#39;B&#39;, &#39;social&#39;), (&#39;C&#39;, &#39;social&#39;)
+   Community 1: (&#39;D&#39;, &#39;social&#39;), (&#39;E&#39;, &#39;social&#39;), (&#39;F&#39;, &#39;social&#39;)
+
+4. Community statistics:
+------------------------------------------------------------
+   Average community size: 3.0
+   Largest community: 3 nodes
+   Smallest community: 3 nodes
+
+OK Community detection complete!
+</pre></div>
+</div>
 <p><strong>What this shows:</strong></p>
 <ul class="simple">
 <li><p>Creating a network with community structure</p></li>
