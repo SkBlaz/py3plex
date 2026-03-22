@@ -274,7 +274,7 @@ export default function LoadData() {
             Supported formats: .txt, .edgelist, .gml, .gpickle
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-            💡 Tip: Press <kbd className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded">Ctrl+U</kbd> to open file picker
+             Tip: Press <kbd className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded">Ctrl+U</kbd> to open file picker
           </p>
         </div>
 

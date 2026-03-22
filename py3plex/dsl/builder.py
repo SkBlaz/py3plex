@@ -3412,23 +3412,23 @@ class QueryBuilder:
         print("\n[STATE] Current query state:")
         state_items = []
         if has_layers:
-            state_items.append("✓ Layers selected")
+            state_items.append(" Layers selected")
         if has_filters:
-            state_items.append("✓ Filters applied")
+            state_items.append(" Filters applied")
         if has_compute:
             metrics = [c.name for c in self._select.compute]
-            state_items.append(f"✓ Computing: {', '.join(metrics)}")
+            state_items.append(f" Computing: {', '.join(metrics)}")
         if has_grouping:
             group_keys = ', '.join(self._select.group_by)
-            state_items.append(f"✓ Grouped by: {group_keys}")
+            state_items.append(f" Grouped by: {group_keys}")
         if has_uq:
-            state_items.append("✓ Uncertainty enabled")
+            state_items.append(" Uncertainty enabled")
         if has_ordering:
-            state_items.append("✓ Ordering specified")
+            state_items.append(" Ordering specified")
         if has_limit:
-            state_items.append(f"✓ Limited to {self._select.limit} results")
+            state_items.append(f" Limited to {self._select.limit} results")
         if has_explain:
-            state_items.append("✓ Explanations enabled")
+            state_items.append(" Explanations enabled")
         
         if state_items:
             for item in state_items:

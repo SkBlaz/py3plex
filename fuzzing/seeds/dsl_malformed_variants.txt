@@ -34,7 +34,7 @@ SELECT	nodes	WHERE	layer = "layer1"
 SeLeCt NoDeS wHeRe LaYeR="layer1"
 
 # Unicode characters
-SELECT nodes WHERE layer="🔥"
+SELECT nodes WHERE layer=""
 
 # Very long strings
 SELECT nodes WHERE layer="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

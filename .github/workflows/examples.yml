@@ -71,10 +71,10 @@ jobs:
 
     - name: Run fast examples
       run: |
-        echo "🧪 Running fast examples (< 30 seconds each)..."
+        echo " Running fast examples (< 30 seconds each)..."
         source .venv/bin/activate
         python .github/scripts/run_examples.py --fast-only --timeout 30
-        echo "✅ Fast examples completed successfully"
+        echo " Fast examples completed successfully"
       timeout-minutes: 25
       env:
         # Use non-interactive backend for matplotlib

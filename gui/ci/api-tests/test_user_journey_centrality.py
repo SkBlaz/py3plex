@@ -190,7 +190,7 @@ def test_multiedgelist_all_centrality_metrics():
                 print(f"  {metric} completed successfully")
                 break
             elif job_status["status"] == "failed":
-                print(f"  ⚠ {metric} failed: {job_status.get('error', 'Unknown error')}")
+                print(f"   {metric} failed: {job_status.get('error', 'Unknown error')}")
                 # Some metrics may fail on certain graph structures, that's OK
                 break
             
@@ -257,7 +257,7 @@ def test_multiedgelist_format_variations():
             summary = client.get(f"/api/graphs/{graph_id}/summary").json()
             print(f"  Parsed successfully: {summary['nodes']} nodes, {summary['edges']} edges")
         else:
-            print(f"  ⚠ Failed to parse: {response.status_code}")
+            print(f"   Failed to parse: {response.status_code}")
             # Some formats might not be supported, document this
     
     print("\nFormat variation testing complete")

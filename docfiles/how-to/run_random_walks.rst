@@ -530,7 +530,7 @@ Layer-Specific Embedding Analysis
                 'mean_embedding_norm': mean_norm
             }
             
-            print(f"  ✓ Embeddings generated: {len(emb)} nodes")
+            print(f"   Embeddings generated: {len(emb)} nodes")
             print(f"  Mean embedding norm: {mean_norm:.2f}")
         except Exception as e:
             print(f"  [ERROR] {e}")
@@ -542,19 +542,19 @@ Layer-Specific Embedding Analysis
     Layer: layer1
       Nodes: 40
       Edges: 95
-      ✓ Embeddings generated: 40 nodes
+       Embeddings generated: 40 nodes
       Mean embedding norm: 12.34
     
     Layer: layer2
       Nodes: 40
       Edges: 87
-      ✓ Embeddings generated: 40 nodes
+       Embeddings generated: 40 nodes
       Mean embedding norm: 11.89
     
     Layer: layer3
       Nodes: 40
       Edges: 102
-      ✓ Embeddings generated: 40 nodes
+       Embeddings generated: 40 nodes
       Mean embedding norm: 13.01
 
 Export Embeddings with Metadata Using DSL

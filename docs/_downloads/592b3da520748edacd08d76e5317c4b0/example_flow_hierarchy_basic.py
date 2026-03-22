@@ -50,7 +50,7 @@ def main():
         n_walks=200,       # Number of random walks per node
         seed=42            # For reproducibility
     )
-    print("✓ Detection complete")
+    print(" Detection complete")
     print()
 
     # Display summary

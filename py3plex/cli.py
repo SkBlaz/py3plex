@@ -3036,7 +3036,7 @@ def cmd_capabilities(args: argparse.Namespace) -> int:
             print(_json.dumps(flat, indent=2))
         else:
             for key, val in flat.items():
-                marker = "✓" if val else "✗"
+                marker = "" if val else ""
                 print(f"  {marker}  {key}")
         return 0
 

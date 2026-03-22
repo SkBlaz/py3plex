@@ -56,7 +56,7 @@ def test_autocommunity_with_sbm_only():
             .execute(net)
         )
         
-        print(f"✓ AutoCommunity with SBM-only completed")
+        print(f" AutoCommunity with SBM-only completed")
         print(f"  Selected: {result.selected}")
         print(f"  Algorithms tested: {result.algorithms_tested}")
         print(f"  Communities: {result.community_stats.n_communities}")
@@ -66,7 +66,7 @@ def test_autocommunity_with_sbm_only():
         
         return True
     except Exception as e:
-        print(f"✗ AutoCommunity with SBM-only failed: {e}")
+        print(f" AutoCommunity with SBM-only failed: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -85,7 +85,7 @@ def test_autocommunity_mixed_algorithms():
             .execute(net)
         )
         
-        print(f"✓ AutoCommunity with mixed algorithms completed")
+        print(f" AutoCommunity with mixed algorithms completed")
         print(f"  Selected: {result.selected}")
         print(f"  Algorithms tested: {result.algorithms_tested}")
         print(f"  Communities: {result.community_stats.n_communities}")
@@ -98,7 +98,7 @@ def test_autocommunity_mixed_algorithms():
         
         return True
     except Exception as e:
-        print(f"✗ AutoCommunity with mixed algorithms failed: {e}")
+        print(f" AutoCommunity with mixed algorithms failed: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -119,12 +119,12 @@ def test_autocommunity_sbm_with_specific_metrics():
             .execute(net)
         )
         
-        print(f"✓ AutoCommunity with SBM metrics completed")
+        print(f" AutoCommunity with SBM metrics completed")
         print(f"  Selected: {result.selected}")
         
         return True
     except Exception as e:
-        print(f"✗ AutoCommunity with SBM metrics failed: {e}")
+        print(f" AutoCommunity with SBM metrics failed: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     print()
     
     if all(results):
-        print("✅ All AutoCommunity integration tests passed!")
+        print(" All AutoCommunity integration tests passed!")
     else:
-        print(f"❌ {results.count(False)}/{len(results)} tests failed")
+        print(f" {results.count(False)}/{len(results)} tests failed")
         exit(1)

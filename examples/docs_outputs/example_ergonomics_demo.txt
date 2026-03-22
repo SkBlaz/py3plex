@@ -45,7 +45,7 @@ Demo 1: Interactive Query Building with .hint()
 ============================================================
 
 [STATE] Current query state:
-  ✓ Layers selected
+   Layers selected
 
 [TIP] Suggested next steps:
 
@@ -73,7 +73,7 @@ Demo 1: Interactive Query Building with .hint()
 ============================================================
 
 [STATE] Current query state:
-  ✓ Layers selected
+   Layers selected
 
 [TIP] Suggested next steps:
 
@@ -99,8 +99,8 @@ Demo 1: Interactive Query Building with .hint()
 ============================================================
 
 [STATE] Current query state:
-  ✓ Layers selected
-  ✓ Computing: degree
+   Layers selected
+   Computing: degree
 
 [TIP] Suggested next steps:
 

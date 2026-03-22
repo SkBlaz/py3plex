@@ -54,7 +54,7 @@ jobs:
       run: |
         source .venv/bin/activate
         cd docfiles
-        echo "📚 Building Sphinx documentation..."
+        echo " Building Sphinx documentation..."
         # Build without treating warnings as errors to avoid breaking on autodoc issues
         sphinx-build -b html . _build/ --keep-going
       timeout-minutes: 5
@@ -63,7 +63,7 @@ jobs:
       run: |
         source .venv/bin/activate
         cd docfiles
-        echo "📄 Building PDF documentation..."
+        echo " Building PDF documentation..."
         # Build PDF using latexpdf builder
         sphinx-build -b latex . _build/latex --keep-going
         cd _build/latex
@@ -73,9 +73,9 @@ jobs:
         # Check if PDF was actually generated
         if [ -f "py3plex.pdf" ] && [ -s "py3plex.pdf" ]; then
           PDF_SIZE=$(wc -c < py3plex.pdf)
-          echo "✅ PDF generated successfully ($PDF_SIZE bytes)"
+          echo " PDF generated successfully ($PDF_SIZE bytes)"
         else
-          echo "❌ PDF generation failed - file not created or empty"
+          echo " PDF generation failed - file not created or empty"
           exit 1
         fi
       timeout-minutes: 10
@@ -84,7 +84,7 @@ jobs:
       run: |
         source .venv/bin/activate
         cd book
-        echo "📖 Building Book PDF..."
+        echo " Building Book PDF..."
         # Build LaTeX source files
         sphinx-build -b latex . _build/latex --keep-going
         cd _build/latex
@@ -93,9 +93,9 @@ jobs:
         # Check if PDF was generated
         if [ -f "py3plex_book.pdf" ] && [ -s "py3plex_book.pdf" ]; then
           PDF_SIZE=$(wc -c < py3plex_book.pdf)
-          echo "✅ Book PDF generated successfully ($PDF_SIZE bytes)"
+          echo " Book PDF generated successfully ($PDF_SIZE bytes)"
         else
-          echo "❌ Book PDF generation failed - file not created or empty"
+          echo " Book PDF generation failed - file not created or empty"
           exit 1
         fi
       timeout-minutes: 10
@@ -103,23 +103,23 @@ jobs:
     - name: Copy PDFs to docs directory
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
-        echo "📦 Copying PDFs to docs directory..."
+        echo " Copying PDFs to docs directory..."
         mkdir -p docs
         # Verify documentation PDF exists before copying
         if [ ! -f "docfiles/_build/latex/py3plex.pdf" ]; then
-          echo "❌ Error: Documentation PDF not found at docfiles/_build/latex/py3plex.pdf"
+          echo " Error: Documentation PDF not found at docfiles/_build/latex/py3plex.pdf"
           exit 1
         fi
         cp docfiles/_build/latex/py3plex.pdf docs/py3plex_documentation.pdf
         ls -lh docs/py3plex_documentation.pdf
         # Verify book PDF exists before copying
         if [ ! -f "book/_build/latex/py3plex_book.pdf" ]; then
-          echo "❌ Error: Book PDF not found at book/_build/latex/py3plex_book.pdf"
+          echo " Error: Book PDF not found at book/_build/latex/py3plex_book.pdf"
           exit 1
         fi
         cp book/_build/latex/py3plex_book.pdf docs/py3plex_book.pdf
         ls -lh docs/py3plex_book.pdf
-        echo "✅ PDFs copied successfully"
+        echo " PDFs copied successfully"
       timeout-minutes: 1
     
     - name: Upload documentation artifacts
@@ -145,7 +145,7 @@ jobs:
     - name: Deploy HTML to docs folder for GitHub Pages
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
-        echo "📦 Deploying HTML documentation to docs/ folder..."
+        echo " Deploying HTML documentation to docs/ folder..."
         # Remove old HTML files but keep PDF
         find docs -type f -name "*.html" -delete
         find docs -type d \( -name "_static" -o -name "_images" -o -name "_sources" \) -exec rm -rf {} + 2>/dev/null || true
@@ -153,7 +153,7 @@ jobs:
         rsync -av --exclude='.buildinfo' --exclude='.doctrees' --exclude='README.md' docfiles/_build/ docs/
         # Create .nojekyll to prevent Jekyll processing
         touch docs/.nojekyll
-        echo "✅ HTML files copied to docs/"
+        echo " HTML files copied to docs/"
         ls -la docs/ | head -20
       timeout-minutes: 1
     
@@ -167,7 +167,7 @@ jobs:
         if ! git diff --staged --quiet; then
           git commit -m "Update documentation (HTML + PDF) [skip ci]"
           git push
-          echo "✅ Documentation committed and pushed"
+          echo " Documentation committed and pushed"
         else
           echo "ℹ️ No changes to documentation, skipping commit"
         fi

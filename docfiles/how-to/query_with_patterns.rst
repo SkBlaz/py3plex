@@ -3,7 +3,7 @@ How to Find Graph Patterns and Motifs with the Pattern Matching API
 
 **Goal:** Use py3plex's Pattern Matching Builder API to find graph motifs, paths, triangles, and complex subgraph patterns in multilayer networks.
 
-.. admonition:: 🎯 What You'll Learn
+.. admonition::  What You'll Learn
    :class: tip
 
    * How to express graph patterns using the ``Q.pattern()`` builder API
@@ -12,7 +12,7 @@ How to Find Graph Patterns and Motifs with the Pattern Matching API
    * How to filter patterns using node and edge predicates
    * How to extract and analyze pattern match results
 
-.. admonition:: 💻 Complete Example
+.. admonition::  Complete Example
    :class: note
 
    See the full executable example: :download:`example_pattern_matching.py <../../examples/network_analysis/example_pattern_matching.py>`

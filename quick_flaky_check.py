@@ -13,7 +13,7 @@ from collections import defaultdict
 
 def run_quick_test():
     """Run a small subset of tests to demonstrate flaky detection."""
-    print("🔍 Running quick flaky test check on a small test subset...")
+    print(" Running quick flaky test check on a small test subset...")
     print("   This will run a subset of tests 3 times to demonstrate the concept.")
     
     # Pick a few fast tests to check
@@ -66,19 +66,19 @@ def run_quick_test():
         # Check if results are inconsistent
         returncodes = [r.get("returncode", -1) for r in runs]
         if len(set(returncodes)) > 1:
-            print(f"\n⚠️  POTENTIALLY FLAKY: {test_file}")
+            print(f"\n️  POTENTIALLY FLAKY: {test_file}")
             print(f"   Return codes across runs: {returncodes}")
             flaky_found = True
         else:
-            print(f"\n✅ STABLE: {test_file}")
+            print(f"\n STABLE: {test_file}")
             print(f"   Consistent return code: {returncodes[0]}")
     
     if flaky_found:
-        print("\n⚠️  Some tests showed inconsistent behavior.")
+        print("\n️  Some tests showed inconsistent behavior.")
         print("Run the full detection script for comprehensive analysis:")
         print("   python detect_flaky_tests.py --runs 5")
     else:
-        print("\n✅ All tested files showed consistent behavior.")
+        print("\n All tested files showed consistent behavior.")
     
     return 0 if not flaky_found else 1
 

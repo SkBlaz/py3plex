@@ -126,18 +126,18 @@ result = estimate_uncertainty(
 
 ## Supported Functions
 
-### Centrality (Phase 3) ✅
+### Centrality (Phase 3) 
 - `multilayer_pagerank()` - Full support with uncertainty
 - `multilayer_betweenness_centrality()` - Coming soon
 - `multilayer_eigenvector_centrality()` - Coming soon
 - `multiplex_degree_centrality()` - Coming soon
 
-### Community Detection (Phase 4) 🚧
+### Community Detection (Phase 4) 
 - Louvain detection with `CommunityStats`
 - Co-association matrices
 - Stability indices
 
-### Robustness (Future) 🔜
+### Robustness (Future) 
 - `robustness_centrality()` returning StatSeries
 - Dynamic process simulations with uncertainty
 

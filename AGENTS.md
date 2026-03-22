@@ -10,7 +10,7 @@
 
 **Version**: py3plex 1.1.4 | DSL v2.1 | Python 3.8+
 
-**🚀 New to py3plex?** 
+** New to py3plex?** 
 - **5 minutes**: See [dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) for 7 copy-paste patterns
 - **15 minutes**: Jump to [Quick Start: Golden Paths](#quick-start-golden-paths) for 5 essential patterns that cover 80% of use cases
 - **Deep dive**: Continue reading this comprehensive guide
@@ -73,7 +73,7 @@ q.hint()
 # [HINT] Query Builder Hints
 # ==========================================
 # [STATE] Current query state:
-#   ✓ Layers selected
+#    Layers selected
 #
 # [TIP] Suggested next steps:
 # 1. -> .where(degree__gt=3)  # Filter nodes by attributes
@@ -4359,9 +4359,9 @@ df = result.to_pandas(expand_uncertainty=True)
 
 | Feature | summarize_only | propagate |
 |---------|---------------|-----------|
-| Metric UQ | ✓ (mean, std, CI) | ✓ (mean, std, CI) |
-| Selection UQ | ✗ | ✓ (p_present, p_selected) |
-| Rank UQ | ✗ | ✓ (rank_uq) |
+| Metric UQ |  (mean, std, CI) |  (mean, std, CI) |
+| Selection UQ |  |  (p_present, p_selected) |
+| Rank UQ |  |  (rank_uq) |
 | Computational cost | Lower | Higher (n_samples × query) |
 | Use for | Metric uncertainty | Selection stability |
 
@@ -8100,22 +8100,22 @@ assert (df1["degree_mean"] - df2["degree_mean"]).abs().max() < 1e-6
 
 | Subsystem | Unit Tests | Integration Tests | Metamorphic Tests | Differential Tests |
 |-----------|------------|-------------------|-------------------|-------------------|
-| **DSL v2** | ✓ Extensive | ✓ Yes | ✓ Yes | ✓ vs Legacy DSL |
-| **Legacy DSL** | ✓ Basic | ✓ Yes | ✗ No | ✓ vs DSL v2 |
-| **graph_ops** | ✓ Basic | ✓ Yes | ✗ No | ✓ vs DSL v2 |
-| **Centrality** | ✓ Extensive | ✓ Yes | ✓ Comprehensive | ✗ No (planned vs NetworkX) |
-| **Community Detection** | ✓ Extensive | ✓ Yes | ✓ Yes | ✗ No |
-| **Null Models** | ✓ Yes | ✓ Yes | ✓ Basic | ✗ No |
-| **UQ/Bootstrap** | ✓ Yes | ✓ Yes | ✗ No | ✗ No |
-| **Dynamics** | ✓ Yes | ✓ Yes | ✗ No (planned) | ✗ No |
-| **Temporal** | ✓ Basic | ✓ Yes | ✗ No (planned) | ✗ No |
-| **I/O** | ✓ Yes | ✓ Roundtrip tests | ✗ No | ✗ No |
-| **CLI** | ✓ Yes | ✓ Yes | ✗ No | ✗ No |
-| **Pipeline** | ✓ Yes | ✓ Yes | ✗ No | ✗ No |
+| **DSL v2** |  Extensive |  Yes |  Yes |  vs Legacy DSL |
+| **Legacy DSL** |  Basic |  Yes |  No |  vs DSL v2 |
+| **graph_ops** |  Basic |  Yes |  No |  vs DSL v2 |
+| **Centrality** |  Extensive |  Yes |  Comprehensive |  No (planned vs NetworkX) |
+| **Community Detection** |  Extensive |  Yes |  Yes |  No |
+| **Null Models** |  Yes |  Yes |  Basic |  No |
+| **UQ/Bootstrap** |  Yes |  Yes |  No |  No |
+| **Dynamics** |  Yes |  Yes |  No (planned) |  No |
+| **Temporal** |  Basic |  Yes |  No (planned) |  No |
+| **I/O** |  Yes |  Roundtrip tests |  No |  No |
+| **CLI** |  Yes |  Yes |  No |  No |
+| **Pipeline** |  Yes |  Yes |  No |  No |
 
 **Legend**:
-- ✓ = Implemented
-- ✗ = Not yet implemented
+-  = Implemented
+-  = Not yet implemented
 - "Extensive" = >20 tests
 - "Yes" = 5-20 tests
 - "Basic" = <5 tests
@@ -8652,14 +8652,14 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 - `plugins` - 20.7% (plugin system)
 
 #### Modules Previously at 0% Now with Comprehensive Tests:
-- ✅ `core/schema_validation.py` - 16 tests added (field validation)
-- ✅ `core/lazy_evaluation.py` - 15 tests added (lazy properties & caching)
-- ✅ `core/immutable.py` - 15 tests added (immutable network views)
-- ✅ `compat/exceptions.py` - 19 tests added (compatibility exceptions)
-- ✅ `_parallel.py` - 19 tests added (parallel execution & seed spawning)
-- ✅ `temporal_utils_extended.py` - 40 tests added (duration parsing & formatting)
-- ✅ `algorithms/advanced_random_generators.py` - 21 tests added (BA, ER, SBM generators)
-- ✅ `algorithms/attribute_correlation.py` - 23 tests added (attribute-centrality correlation)
+-  `core/schema_validation.py` - 16 tests added (field validation)
+-  `core/lazy_evaluation.py` - 15 tests added (lazy properties & caching)
+-  `core/immutable.py` - 15 tests added (immutable network views)
+-  `compat/exceptions.py` - 19 tests added (compatibility exceptions)
+-  `_parallel.py` - 19 tests added (parallel execution & seed spawning)
+-  `temporal_utils_extended.py` - 40 tests added (duration parsing & formatting)
+-  `algorithms/advanced_random_generators.py` - 21 tests added (BA, ER, SBM generators)
+-  `algorithms/attribute_correlation.py` - 23 tests added (attribute-centrality correlation)
 
 #### Remaining Gaps (modules with tests but reported lower coverage):
 - `cli.py` - 70.2% (1,618 statements) - **Has 79 comprehensive tests** in test_cli.py
@@ -10626,16 +10626,16 @@ These tests enforce the following documented guarantees:
 
 The expanded test suite validates these architectural claims from AGENTS.md:
 
-1. **AST hash stability**: Identical queries produce identical AST hashes ✅ (tested)
-2. **Reproducibility guarantee**: Same AST hash + seed + network → same results ✅ (tested)
-3. **Provenance schema stability**: All executors produce same provenance keys ✅ (tested)
-4. **Deterministic metrics**: Degree, betweenness produce identical values on repeat ✅ (tested)
-5. **Network fingerprint stability**: Queries don't modify networks ✅ (tested)
-6. **Round-trip safety**: Data conversions preserve structure ✅ (tested)
-7. **Exception safety**: Typed exceptions, no state corruption ✅ (tested)
-8. **Empty-network robustness**: All operations handle empty inputs ✅ (tested)
-9. **Null model correctness**: Structural invariants preserved ✅ (tested)
-10. **API symmetry**: Node and edge operations have documented parity ✅ (tested)
+1. **AST hash stability**: Identical queries produce identical AST hashes  (tested)
+2. **Reproducibility guarantee**: Same AST hash + seed + network → same results  (tested)
+3. **Provenance schema stability**: All executors produce same provenance keys  (tested)
+4. **Deterministic metrics**: Degree, betweenness produce identical values on repeat  (tested)
+5. **Network fingerprint stability**: Queries don't modify networks  (tested)
+6. **Round-trip safety**: Data conversions preserve structure  (tested)
+7. **Exception safety**: Typed exceptions, no state corruption  (tested)
+8. **Empty-network robustness**: All operations handle empty inputs  (tested)
+9. **Null model correctness**: Structural invariants preserved  (tested)
+10. **API symmetry**: Node and edge operations have documented parity  (tested)
 
 ### Test Design Principles
 

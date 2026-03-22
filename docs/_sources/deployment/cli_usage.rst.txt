@@ -317,7 +317,7 @@ Validate a graph data file (auto-detects format). The command returns exit code 
 .. code-block:: text
 
     Checking file: network.csv
-    ✓ No issues found!
+     No issues found!
 
 **Output for file with issues:**
 
@@ -342,7 +342,7 @@ Validate a graph data file (auto-detects format). The command returns exit code 
       Warnings: 3
       Info: 1
     
-    ✗ Validation failed with errors
+     Validation failed with errors
 
 Supported File Formats
 ~~~~~~~~~~~~~~~~~~~~~~

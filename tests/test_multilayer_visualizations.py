@@ -774,10 +774,10 @@ if __name__ == "__main__":
         try:
             print(f"\nRunning {test_name}...", end=" ")
             test_func()
-            print("✓ PASSED")
+            print(" PASSED")
             passed += 1
         except Exception as e:
-            print(f"✗ FAILED: {e}")
+            print(f" FAILED: {e}")
             failed += 1
     
     print("\n" + "=" * 70)
@@ -1010,10 +1010,10 @@ if __name__ == "__main__":
         try:
             print(f"\nRunning {test_name}...", end=" ")
             test_func()
-            print("✓ PASSED")
+            print(" PASSED")
             passed += 1
         except Exception as e:
-            print(f"✗ FAILED: {e}")
+            print(f" FAILED: {e}")
             failed += 1
     
     print("\n" + "=" * 70)

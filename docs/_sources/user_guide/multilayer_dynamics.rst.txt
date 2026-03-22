@@ -3,7 +3,7 @@ Multilayer Dynamics
 
 Consider a disease spreading through a community where people interact both in-person (physical layer) and online (digital layer). An individual infected in person can spread to their physical contacts, but awareness spread online might change behavior and reduce transmission. **Multilayer dynamics** simulates these coupled processes across interaction types.
 
-.. admonition:: 🔬 DSL for Dynamics
+.. admonition::  DSL for Dynamics
    :class: dsl-example
 
    Run dynamics simulations declaratively with the DSL:
@@ -56,10 +56,10 @@ py3plex supports three main classes of dynamics:
 
 All models support:
 
-- ✅ **Multilayer networks** — Different interaction contexts (physical, digital, etc.)
-- ✅ **Reproducible simulations** — Seeded random number generation
-- ✅ **Rich output measures** — Prevalence, state counts, trajectories
-- ✅ **Clean API** — Object-oriented design aligned with best practices
+-  **Multilayer networks** — Different interaction contexts (physical, digital, etc.)
+-  **Reproducible simulations** — Seeded random number generation
+-  **Rich output measures** — Prevalence, state counts, trajectories
+-  **Clean API** — Object-oriented design aligned with best practices
 
 ----
 
@@ -878,19 +878,19 @@ Examples and Tutorials
 Key Takeaways
 -------------
 
-✅ **Three dynamics models**: SIR (with immunity), SIS (without immunity), RandomWalk (diffusion)
+ **Three dynamics models**: SIR (with immunity), SIS (without immunity), RandomWalk (diffusion)
 
-✅ **Clean API**: ``DynamicsClass(network, params).set_seed(seed).run(steps)``
+ **Clean API**: ``DynamicsClass(network, params).set_seed(seed).run(steps)``
 
-✅ **Rich outputs**: Prevalence, state counts, trajectories via ``results.get_measure()``
+ **Rich outputs**: Prevalence, state counts, trajectories via ``results.get_measure()``
 
-✅ **Multilayer support**: Dynamics spread through multiple interaction contexts
+ **Multilayer support**: Dynamics spread through multiple interaction contexts
 
-✅ **Reproducible**: Always use ``.set_seed()`` for deterministic results
+ **Reproducible**: Always use ``.set_seed()`` for deterministic results
 
-✅ **Tunable parameters**: Adjust β, γ to model different scenarios
+ **Tunable parameters**: Adjust β, γ to model different scenarios
 
-✅ **Visualization ready**: Extract numpy arrays or pandas DataFrames for plotting
+ **Visualization ready**: Extract numpy arrays or pandas DataFrames for plotting
 
 ----
 

@@ -155,16 +155,16 @@ When to Use Multilayer Analysis?
 
 Use multilayer networks when:
 
-* ✅ You have **multiple relationship types** between entities
-* ✅ The **type of relationship matters** for your analysis
-* ✅ You want to **preserve layer-specific structure**
-* ✅ You're studying **cross-layer effects** (e.g., how Twitter activity affects LinkedIn connections)
+*  You have **multiple relationship types** between entities
+*  The **type of relationship matters** for your analysis
+*  You want to **preserve layer-specific structure**
+*  You're studying **cross-layer effects** (e.g., how Twitter activity affects LinkedIn connections)
 
 Stick with single-layer when:
 
-* ❌ All relationships are of the same type
-* ❌ Relationship type doesn't affect your analysis
-* ❌ You only care about aggregate connectivity
+*  All relationships are of the same type
+*  Relationship type doesn't affect your analysis
+*  You only care about aggregate connectivity
 
 Next Steps
 ----------

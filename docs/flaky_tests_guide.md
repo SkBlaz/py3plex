@@ -14,7 +14,7 @@ Flaky tests are tests that sometimes pass and sometimes fail, without any change
 
 **Problem:** Tests that use random values without setting seeds
 ```python
-# ❌ BAD - Will produce different results each run
+#  BAD - Will produce different results each run
 import random
 def test_random_selection():
     value = random.randint(1, 100)
@@ -23,7 +23,7 @@ def test_random_selection():
 
 **Solution:** Always set seeds
 ```python
-# ✅ GOOD - Deterministic behavior
+#  GOOD - Deterministic behavior
 import random
 def test_random_selection():
     random.seed(42)
@@ -35,7 +35,7 @@ def test_random_selection():
 
 **Problem:** Tests that rely on execution speed or timing
 ```python
-# ❌ BAD - Will fail on slow systems
+#  BAD - Will fail on slow systems
 import time
 def test_performance():
     start = time.time()
@@ -46,7 +46,7 @@ def test_performance():
 
 **Solution:** Use relative comparisons or mock time
 ```python
-# ✅ GOOD - Tests relative performance
+#  GOOD - Tests relative performance
 def test_performance():
     start = time.time()
     fast_operation()
@@ -78,7 +78,7 @@ def test_might_be_flaky():
 
 ### 2. Best Practices
 
-✅ **DO:**
+ **DO:**
 - Always set random seeds
 - Use pytest fixtures for test data
 - Sort collections before comparison
@@ -86,7 +86,7 @@ def test_might_be_flaky():
 - Mock external dependencies
 - Test locally multiple times before pushing
 
-❌ **DON'T:**
+ **DON'T:**
 - Don't use time.sleep() in tests
 - Don't test absolute performance
 - Don't ignore flaky tests

@@ -2798,16 +2798,16 @@ Uncertainty-Aware Algebra
      - Guaranteed
      - Notes
    * - Idempotence
-     - ✓ Yes
+     -  Yes
      - ``q | q = q`` (with same seed)
    * - Commutativity
-     - ✓ Yes
+     -  Yes
      - ``q1 | q2 = q2 | q1``
    * - Associativity
-     - ✓ Yes
+     -  Yes
      - ``(q1 | q2) | q3 = q1 | (q2 | q3)``
    * - Distributivity
-     - ✗ No
+     -  No
      - ``q1 & (q2 | q3) ≠ (q1 & q2) | (q1 & q3)`` when UQ differs
 
 **Why Distributivity Fails**: UQ introduces probabilistic variation. Filtering before union vs. union before filtering can yield different confidence intervals.
@@ -3013,8 +3013,8 @@ Algebraic Laws & Guarantees
 
 - **Distributivity**: ``q1 & (q2 | q3) = (q1 & q2) | (q1 & q3)`` 
   
-  - ✓ Holds for deterministic queries
-  - ✗ May not hold with UQ due to probabilistic variation
+  -  Holds for deterministic queries
+  -  May not hold with UQ due to probabilistic variation
 
 **Explicitly Unsupported**:
 

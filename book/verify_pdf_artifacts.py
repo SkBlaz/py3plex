@@ -68,13 +68,13 @@ def check_pdf_artifacts(pdf_path):
                 pages = found_artifacts[artifact]
                 if pages:
                     any_found = True
-                    print(f"❌ {description} ({repr(artifact)})")
+                    print(f" {description} ({repr(artifact)})")
                     print(f"   Found on pages: {', '.join(map(str, pages[:10]))}")
                     if len(pages) > 10:
                         print(f"   ... and {len(pages) - 10} more pages")
                     issues_found.append(f"{description} on {len(pages)} pages")
                 else:
-                    print(f"✓ {description} ({repr(artifact)}) - CLEAN")
+                    print(f" {description} ({repr(artifact)}) - CLEAN")
             
             # Check for "(continues on next page)" in code blocks
             # This is harder to verify automatically, but we can look for the pattern
@@ -89,23 +89,23 @@ def check_pdf_artifacts(pdf_path):
             
             print(f"\n'(continues on next page)' markers:")
             if continues_pages:
-                print(f"⚠ Found on pages: {', '.join(map(str, continues_pages[:10]))}")
+                print(f" Found on pages: {', '.join(map(str, continues_pages[:10]))}")
                 if len(continues_pages) > 10:
                     print(f"   ... and {len(continues_pages) - 10} more pages")
                 print("   Note: These may be intentional in tables/figures")
             else:
-                print("✓ No continuation markers found")
+                print(" No continuation markers found")
             
             print("-" * 60)
             
             if any_found:
-                print("\n❌ FAILED: Found artifacts that should have been eliminated")
+                print("\n FAILED: Found artifacts that should have been eliminated")
                 print("\nIssues found:")
                 for issue in issues_found:
                     print(f"  - {issue}")
                 return False
             else:
-                print("\n✅ PASSED: No problematic artifacts found!")
+                print("\n PASSED: No problematic artifacts found!")
                 return True
                 
     except Exception as e:
@@ -150,23 +150,23 @@ def check_docker_consistency(pdf_path):
             
             print("\nPort References:")
             if port_5000_pages:
-                print(f"❌ Port 5000 found on pages: {', '.join(map(str, port_5000_pages))}")
+                print(f" Port 5000 found on pages: {', '.join(map(str, port_5000_pages))}")
                 issues.append("Old port 5000 still present")
             else:
-                print("✓ No old port 5000 references found")
+                print(" No old port 5000 references found")
             
             if port_8000_pages:
-                print(f"✓ Port 8000 found on pages: {', '.join(map(str, port_8000_pages))}")
+                print(f" Port 8000 found on pages: {', '.join(map(str, port_8000_pages))}")
             
             print("\nVersion References:")
             if version_pages:
-                print(f"✓ Version 1.1.0 found on pages: {', '.join(map(str, version_pages))}")
+                print(f" Version 1.1.0 found on pages: {', '.join(map(str, version_pages))}")
             
             if issues:
-                print(f"\n❌ Found {len(issues)} consistency issues")
+                print(f"\n Found {len(issues)} consistency issues")
                 return False
             else:
-                print("\n✅ Docker chapter appears consistent")
+                print("\n Docker chapter appears consistent")
                 return True
                 
     except Exception as e:

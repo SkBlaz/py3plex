@@ -126,4 +126,4 @@ def test_dsl_community_filtering_workflow():
 if __name__ == '__main__':
     test_dsl_community_filtering_example()
     test_dsl_community_filtering_workflow()
-    print("✓ All tests passed!")
+    print(" All tests passed!")

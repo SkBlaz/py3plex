@@ -267,26 +267,26 @@ if __name__ == "__main__":
     
     print("\n1. Testing multiedgelist round-trip...")
     test_multiedgelist_roundtrip()
-    print("   ✓ Passed")
+    print("    Passed")
     
     print("\n2. Testing gpickle round-trip...")
     test_gpickle_roundtrip()
-    print("   ✓ Passed")
+    print("    Passed")
     
     print("\n3. Testing NetworkX conversion round-trip...")
     test_networkx_conversion_roundtrip()
-    print("   ✓ Passed")
+    print("    Passed")
     
     print("\n4. Testing node attributes preservation...")
     test_node_attributes_preservation()
-    print("   ✓ Passed")
+    print("    Passed")
     
     print("\n5. Testing edge weights preservation...")
     test_edge_weights_preservation()
-    print("   ✓ Passed")
+    print("    Passed")
     
     print("\n6. Testing special characters in node names...")
     test_special_characters_in_node_names()
-    print("   ✓ Passed")
+    print("    Passed")
     
-    print("\n✓ All I/O round-trip tests passed!")
+    print("\n All I/O round-trip tests passed!")

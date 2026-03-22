@@ -115,7 +115,7 @@ Real crashes (segfaults, memory corruption, assertion failures) will be reported
 If fuzzing completes without finding crashes:
 
 ```
-✅ No crashes found
+ No crashes found
 Fuzzing completed successfully
 ```
 
@@ -124,7 +124,7 @@ Fuzzing completed successfully
 If crashes are discovered:
 
 ```
-⚠️  CRASHES FOUND!
+️  CRASHES FOUND!
 Crash files saved to fuzzing/crashes/
 ```
 

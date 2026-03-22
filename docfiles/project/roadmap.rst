@@ -118,7 +118,7 @@ Help prioritize development by:
 
 * Commenting on existing feature request issues with your use case
 * Opening new issues for feature requests (use the "enhancement" label)
-* Using 👍 reactions to vote on priorities
+* Using  reactions to vote on priorities
 * Contributing implementations for features you need
 
 Contributing to Development

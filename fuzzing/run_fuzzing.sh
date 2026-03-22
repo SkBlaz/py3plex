@@ -92,7 +92,7 @@ echo ""
 
 # Check for crashes
 if ls fuzzing/crashes/crash-* 1>/dev/null 2>&1; then
-    echo "⚠️  CRASHES FOUND!"
+    echo "️  CRASHES FOUND!"
     echo "Crash files saved to fuzzing/crashes/"
     ls -lh fuzzing/crashes/crash-*
     echo ""
@@ -100,7 +100,7 @@ if ls fuzzing/crashes/crash-* 1>/dev/null 2>&1; then
     echo "  python3 fuzzing/fuzz_load_network.py fuzzing/seeds/ fuzzing/crashes/crash-XXXXX"
     exit 1
 else
-    echo "✅ No crashes found"
+    echo " No crashes found"
     echo "Fuzzing completed successfully"
     exit 0
 fi

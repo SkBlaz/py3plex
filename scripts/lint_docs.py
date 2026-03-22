@@ -102,9 +102,9 @@ def main():
     
     # Report issues
     if all_issues:
-        print("❌ Documentation linting found issues:\n")
+        print(" Documentation linting found issues:\n")
         for filepath, issues in all_issues:
-            print(f"\n📄 {filepath.relative_to(repo_root)}:")
+            print(f"\n {filepath.relative_to(repo_root)}:")
             for line_num, description, line_content in issues:
                 if line_num > 0:
                     print(f"  Line {line_num}: {description}")
@@ -119,7 +119,7 @@ def main():
     if versions:
         unique_versions = set(v[2] for v in versions)
         if len(unique_versions) > 1:
-            print(f"\n⚠️  Warning: Found multiple py3plex versions in examples:")
+            print(f"\n️  Warning: Found multiple py3plex versions in examples:")
             for version in sorted(unique_versions):
                 print(f"  - py3plex=={version}")
                 matching = [v for v in versions if v[2] == version]
@@ -128,7 +128,7 @@ def main():
             print("\nNote: Examples should use the current release version.")
             return 0  # Warning only, not a hard failure
     
-    print("✅ Documentation linting passed!")
+    print(" Documentation linting passed!")
     return 0
 
 if __name__ == '__main__':

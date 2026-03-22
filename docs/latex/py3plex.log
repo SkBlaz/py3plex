@@ -1178,96 +1178,96 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [15]
 
-! LaTeX Error: Unicode character ✅ (U+2705)
+! LaTeX Error: Unicode character  (U+2705)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1384 ✅
+l.1384 
            You have \sphinxstylestrong{multiple relationship types} between ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ✅ (U+2705)
+! LaTeX Error: Unicode character  (U+2705)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1388 ✅
+l.1388 
            The \sphinxstylestrong{type of relationship matters} for your ana...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ✅ (U+2705)
+! LaTeX Error: Unicode character  (U+2705)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1392 ✅
+l.1392 
            You want to \sphinxstylestrong{preserve layer\sphinxhyphen{}speci...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ✅ (U+2705)
+! LaTeX Error: Unicode character  (U+2705)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1396 ✅
+l.1396 
            You’re studying \sphinxstylestrong{cross\sphinxhyphen{}layer ef...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ❌ (U+274C)
+! LaTeX Error: Unicode character  (U+274C)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1405 ❌
+l.1405 
            All relationships are of the same type
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ❌ (U+274C)
+! LaTeX Error: Unicode character  (U+274C)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1409 ❌
+l.1409 
            Relationship type doesn’t affect your analysis
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ❌ (U+274C)
+! LaTeX Error: Unicode character  (U+274C)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1413 ❌
+l.1413 
            You only care about aggregate connectivity
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1400,14 +1400,14 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [26]
 
-! LaTeX Error: Unicode character 📓 (U+1F4D3)
+! LaTeX Error: Unicode character  (U+1F4D3)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.2501 ...onition}{note}{📓 Executable Examples}
+l.2501 ...onition}{note}{ Executable Examples}
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2015,14 +2015,14 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [74]
 
-! LaTeX Error: Unicode character 📓 (U+1F4D3)
+! LaTeX Error: Unicode character  (U+1F4D3)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.7484 ...ition}{note}{📓 Run this guide online}
+l.7484 ...ition}{note}{ Run this guide online}
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -3090,7 +3090,7 @@ You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ⚠ (U+26A0)
+! LaTeX Error: Unicode character  (U+26A0)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
@@ -3103,7 +3103,7 @@ You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ⚠ (U+26A0)
+! LaTeX Error: Unicode character  (U+26A0)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
@@ -3330,14 +3330,14 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [128]
 
-! LaTeX Error: Unicode character 📓 (U+1F4D3)
+! LaTeX Error: Unicode character  (U+1F4D3)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.11308 ...tion}{note}{📓 Run this guide online}
+l.11308 ...tion}{note}{ Run this guide online}
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -4126,14 +4126,14 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [187]
 
-! LaTeX Error: Unicode character 📓 (U+1F4D3)
+! LaTeX Error: Unicode character  (U+1F4D3)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.15189 ...tion}{note}{📓 Run this guide online}
+l.15189 ...tion}{note}{ Run this guide online}
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -4661,27 +4661,27 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [225]
 
-! LaTeX Error: Unicode character 🎯 (U+1F3AF)
+! LaTeX Error: Unicode character  (U+1F3AF)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.18254 ...nition}{note}{🎯 What You’ll Learn}
+l.18254 ...nition}{note}{ What You’ll Learn}
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character 💻 (U+1F4BB)
+! LaTeX Error: Unicode character  (U+1F4BB)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.18279 ...dmonition}{note}{💻 Complete Example}
+l.18279 ...dmonition}{note}{ Complete Example}
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -5362,66 +5362,66 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [286]
 
-! LaTeX Error: Unicode character ✗ (U+2717)
+! LaTeX Error: Unicode character  (U+2717)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.23313 ✗
+l.23313 
             Resolution limit (may miss small communities)
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ✗ (U+2717)
+! LaTeX Error: Unicode character  (U+2717)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.23317 ✗
+l.23317 
             Stochastic (different runs give different results)
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ✗ (U+2717)
+! LaTeX Error: Unicode character  (U+2717)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.23366 ✗
+l.23366 
             Slower than modularity methods
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ✗ (U+2717)
+! LaTeX Error: Unicode character  (U+2717)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.23370 ✗
+l.23370 
             May require external binaries
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ✗ (U+2717)
+! LaTeX Error: Unicode character  (U+2717)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.23374 ✗
+l.23374 
             Sensitive to how inter\sphinxhyphen{}layer edges are weighted (a...
 
 You may provide a definition with
@@ -5437,27 +5437,27 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [287]
 
-! LaTeX Error: Unicode character ✗ (U+2717)
+! LaTeX Error: Unicode character  (U+2717)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.23420 ✗
+l.23420 
             More complex to interpret
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ✗ (U+2717)
+! LaTeX Error: Unicode character  (U+2717)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.23424 ✗
+l.23424 
             Computationally expensive
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -5828,7 +5828,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.26816 ...��─\(\rightarrow\) Community Measures
+l.26816 ...─\(\rightarrow\) Community Measures
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -5841,7 +5841,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.26821 ...�──┬─\(\rightarrow\) Benchmarks
+l.26821 ...──┬─\(\rightarrow\) Benchmarks
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -5854,7 +5854,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.26824 ...�─┬─\(\rightarrow\) Visualization
+l.26824 ...─┬─\(\rightarrow\) Visualization
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6112,7 +6112,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28294 ...�     ┌─────────┐
+l.28294 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6125,7 +6125,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28294 ...�     ┌─────────┐
+l.28294 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6138,7 +6138,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28294 ...�     ┌─────────┐
+l.28294 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6151,7 +6151,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28294 ...�     ┌─────────┐
+l.28294 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6164,7 +6164,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28296 ...��────┴────┐    │
+l.28296 ...────┴────┐    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6177,7 +6177,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28296 ...��────┴────┐    │
+l.28296 ...────┴────┐    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6190,7 +6190,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28296 ...��────┴────┐    │
+l.28296 ...────┴────┐    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6203,7 +6203,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28296 ...��────┴────┐    │
+l.28296 ...────┴────┐    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6255,7 +6255,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28317 ...�     ┌─────────┐
+l.28317 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6268,7 +6268,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28317 ...�     ┌─────────┐
+l.28317 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6281,7 +6281,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28317 ...�     ┌─────────┐
+l.28317 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6294,7 +6294,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28317 ...�     ┌─────────┐
+l.28317 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6307,7 +6307,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28319 ...��────┼────┐    │
+l.28319 ...────┼────┐    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6320,7 +6320,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28319 ...��────┼────┐    │
+l.28319 ...────┼────┐    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6333,7 +6333,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28319 ...��────┼────┐    │
+l.28319 ...────┼────┐    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6346,7 +6346,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28319 ...��────┼────┐    │
+l.28319 ...────┼────┐    │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6424,7 +6424,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28343 ...�     ┌─────────┐
+l.28343 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6437,7 +6437,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28343 ...�     ┌─────────┐
+l.28343 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6450,7 +6450,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28343 ...�     ┌─────────┐
+l.28343 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6463,7 +6463,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28343 ...�     ┌─────────┐
+l.28343 ...     ┌─────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6602,7 +6602,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28372 ...�──────┐              │
+l.28372 ...──────┐              │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6615,7 +6615,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28372 ...�──────┐              │
+l.28372 ...──────┐              │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -6628,7 +6628,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.28374 ...�──────┘              │
+l.28374 ...──────┘              │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -10542,7 +10542,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.74416 ...� k\_j\textasciicircum{}α / 2m\_α) δ
+l.74416 ... k\_j\textasciicircum{}α / 2m\_α) δ
                                                   \_αβ + δ\_ij ω\_αβ
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -11066,7 +11066,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.74577 ...phinxhyphen{} γ\textasciicircum{}{[}α
-                                                  {]}P\textasciicircum{}{[}�...
+                                                  {]}P\textasciicircum{}{[}...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13256,7 +13256,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 Formula: Q = (1/2μ
-                           ) Σᵢⱼₐᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} �...
+                           ) Σᵢⱼₐᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13270,7 +13270,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 Formula: Q = (1/2μ) Σ
-                               ᵢⱼₐᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} �...
+                               ᵢⱼₐᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13284,7 +13284,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 Formula: Q = (1/2μ) Σᵢ
-                                  ⱼₐᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} �...
+                                  ⱼₐᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13298,7 +13298,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 Formula: Q = (1/2μ) Σᵢⱼ
-                                     ₐᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} �...
+                                     ₐᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13312,7 +13312,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 Formula: Q = (1/2μ) Σᵢⱼₐ
-                                        ᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} �...
+                                        ᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13326,7 +13326,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 Formula: Q = (1/2μ) Σᵢⱼₐᵦ
-                                            {[}(Aᵢⱼᵅ \sphinxhyphen{} �...
+                                            {[}(Aᵢⱼᵅ \sphinxhyphen{} ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13340,7 +13340,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 ...la: Q = (1/2μ) Σᵢⱼₐᵦ {[}(Aᵢ
-                                                  ⱼᵅ \sphinxhyphen{} γ�...
+                                                  ⱼᵅ \sphinxhyphen{} γ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13354,7 +13354,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 ... Q = (1/2μ) Σᵢⱼₐᵦ {[}(Aᵢⱼ
-                                                  ᵅ \sphinxhyphen{} γ·k�...
+                                                  ᵅ \sphinxhyphen{} γ·k...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13368,7 +13368,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 ...= (1/2μ) Σᵢⱼₐᵦ {[}(Aᵢⱼᵅ
-                                                   \sphinxhyphen{} γ·kᵢ�...
+                                                   \sphinxhyphen{} γ·kᵢ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13381,8 +13381,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75777 ...��ᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} γ
-                                                  ·kᵢᵅkⱼᵅ/(2mₐ))�...
+l.75777 ...ᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} γ
+                                                  ·kᵢᵅkⱼᵅ/(2mₐ))...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13396,7 +13396,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 ...{[}(Aᵢⱼᵅ \sphinxhyphen{} γ·kᵢ
-                                                  ᵅkⱼᵅ/(2mₐ))δₐ�...
+                                                  ᵅkⱼᵅ/(2mₐ))δₐ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13423,8 +13423,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75777 ...�ⱼᵅ \sphinxhyphen{} γ·kᵢᵅkⱼ
-                                                  ᵅ/(2mₐ))δₐᵦ + ω�...
+l.75777 ...ⱼᵅ \sphinxhyphen{} γ·kᵢᵅkⱼ
+                                                  ᵅ/(2mₐ))δₐᵦ + ω...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13437,7 +13437,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75777 ...�ᵅ \sphinxhyphen{} γ·kᵢᵅkⱼᵅ
+l.75777 ...ᵅ \sphinxhyphen{} γ·kᵢᵅkⱼᵅ
                                                   /(2mₐ))δₐᵦ + ω·δ...
 
 You may provide a definition with
@@ -13466,7 +13466,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75777 ...xhyphen{} γ·kᵢᵅkⱼᵅ/(2mₐ))δ
-                                                  ₐᵦ + ω·δᵢⱼ{]} �...
+                                                  ₐᵦ + ω·δᵢⱼ{]} ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13507,7 +13507,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75777 ...�·kᵢᵅkⱼᵅ/(2mₐ))δₐᵦ + ω
+l.75777 ...·kᵢᵅkⱼᵅ/(2mₐ))δₐᵦ + ω
                                                   ·δᵢⱼ{]} δ(cᵢᵅ, ...
 
 You may provide a definition with
@@ -13561,7 +13561,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75777 ...�/(2mₐ))δₐᵦ + ω·δᵢⱼ{]} δ
+l.75777 .../(2mₐ))δₐᵦ + ω·δᵢⱼ{]} δ
                                                   (cᵢᵅ, cⱼᵝ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13600,7 +13600,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75777 ...�ᵦ + ω·δᵢⱼ{]} δ(cᵢᵅ, cⱼ
+l.75777 ...ᵦ + ω·δᵢⱼ{]} δ(cᵢᵅ, cⱼ
                                                   ᵝ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -13613,7 +13613,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75777 ...� + ω·δᵢⱼ{]} δ(cᵢᵅ, cⱼᵝ
+l.75777 ... + ω·δᵢⱼ{]} δ(cᵢᵅ, cⱼᵝ
                                                   )
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -14010,7 +14010,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75908 ...��ⱼ rᵢⱼ log\(\sb{\text{2}}\)(rᵢ
+l.75908 ...ⱼ rᵢⱼ log\(\sb{\text{2}}\)(rᵢ
                                                   ⱼ), where rᵢⱼ is the...
 
 You may provide a definition with
@@ -14024,7 +14024,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.75908 ...�� rᵢⱼ log\(\sb{\text{2}}\)(rᵢⱼ
+l.75908 ... rᵢⱼ log\(\sb{\text{2}}\)(rᵢⱼ
                                                   ), where rᵢⱼ is the no...
 
 You may provide a definition with
@@ -14208,7 +14208,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.75960 ...la: kᵢ = (kᵢ\(\sp{\text{1}}\), kᵢ
-                                                  \(\sp{\text{2}}\), …, k�...
+                                                  \(\sp{\text{2}}\), …, k...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -14509,7 +14509,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76022 ...� Eᵦ|} / {\color{red}\bfseries{}|Eₐ
+l.76022 ... Eᵦ|} / {\color{red}\bfseries{}|Eₐ
                                                    ∪ Eᵦ|}
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -14522,7 +14522,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76022 ...��|} / {\color{red}\bfseries{}|Eₐ ∪
+l.76022 ...|} / {\color{red}\bfseries{}|Eₐ ∪
                                                    Eᵦ|}
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -14711,7 +14711,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76083 ...n{}Σₐ pₐ log\(\sb{\text{2}}\)(pₐ
-                                                  ), where pₐ = Eₐ / Σ�...
+                                                  ), where pₐ = Eₐ / Σ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -15716,7 +15716,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76280 ...�β = Σᵢ(kᵢᵅ \sphinxhyphen{} k̄
+l.76280 ...β = Σᵢ(kᵢᵅ \sphinxhyphen{} k̄
                                                   ᵅ)(kᵢᵝ \sphinxhyphen...
 
 You may provide a definition with
@@ -15744,7 +15744,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76280 ...��(kᵢᵅ \sphinxhyphen{} k̄ᵅ)(kᵢ
+l.76280 ...(kᵢᵅ \sphinxhyphen{} k̄ᵅ)(kᵢ
                                                   ᵝ \sphinxhyphen{} k̄ᵝ...
 
 You may provide a definition with
@@ -15773,7 +15773,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76280 ...n{} k̄ᵅ)(kᵢᵝ \sphinxhyphen{} k̄
-                                                  ᵝ) / {[}√(Σᵢ(kᵢ�...
+                                                  ᵝ) / {[}√(Σᵢ(kᵢ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -15884,7 +15884,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76280 ...��(Σᵢ(kᵢᵅ \sphinxhyphen{} k̄ᵅ
+l.76280 ...(Σᵢ(kᵢᵅ \sphinxhyphen{} k̄ᵅ
                                                   )\(\sp{\text{2}}\)) √(Σ...
 
 You may provide a definition with
@@ -15954,7 +15954,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76280 ...��)\(\sp{\text{2}}\)) √(Σᵢ(kᵢᵝ
+l.76280 ...)\(\sp{\text{2}}\)) √(Σᵢ(kᵢᵝ
                                                    \sphinxhyphen{} k̄ᵝ)\(...
 
 You may provide a definition with
@@ -15981,7 +15981,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76280 ...��(Σᵢ(kᵢᵝ \sphinxhyphen{} k̄ᵝ
+l.76280 ...(Σᵢ(kᵢᵝ \sphinxhyphen{} k̄ᵝ
                                                   )\(\sp{\text{2}}\)){]}
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -16147,7 +16147,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76342 Formula: H\_dep = \sphinxhyphen{}Σ
-                                           ₙ pₙ log\(\sb{\text{2}}\)(p�...
+                                           ₙ pₙ log\(\sb{\text{2}}\)(p...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -16161,7 +16161,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76342 Formula: H\_dep = \sphinxhyphen{}Σₙ
-                                               pₙ log\(\sb{\text{2}}\)(p�...
+                                               pₙ log\(\sb{\text{2}}\)(p...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -16861,7 +16861,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76561 ... = \sphinxhyphen{}Σᵢ (kᵢ/Σⱼkⱼ
-                                                  ) log\(\sb{\text{2}}\)(k�...
+                                                  ) log\(\sb{\text{2}}\)(k...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -16874,7 +16874,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76561 ...��/Σⱼkⱼ) log\(\sb{\text{2}}\)(kᵢ
+l.76561 .../Σⱼkⱼ) log\(\sb{\text{2}}\)(kᵢ
                                                   /Σⱼkⱼ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -16900,7 +16900,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76561 ...��kⱼ) log\(\sb{\text{2}}\)(kᵢ/Σⱼ
+l.76561 ...kⱼ) log\(\sb{\text{2}}\)(kᵢ/Σⱼ
                                                   kⱼ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -16913,7 +16913,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76561 ...��) log\(\sb{\text{2}}\)(kᵢ/Σⱼkⱼ
+l.76561 ...) log\(\sb{\text{2}}\)(kᵢ/Σⱼkⱼ
                                                   )
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17380,7 +17380,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76717 ...� = Σᵦ≠ᵅ C\textasciicircum{}αβ
+l.76717 ... = Σᵦ≠ᵅ C\textasciicircum{}αβ
                                                    / (L\sphinxhyphen{}1)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17476,7 +17476,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76718 ...� = Σᵦ≠ᵅ F\textasciicircum{}αβ
+l.76718 ... = Σᵦ≠ᵅ F\textasciicircum{}αβ
                                                    / (L\sphinxhyphen{}1)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17690,7 +17690,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76796 ...�ᵝ = {\color{red}\bfseries{}|Eᵅ ∩
+l.76796 ...ᵝ = {\color{red}\bfseries{}|Eᵅ ∩
                                                    Eᵝ|} / {\color{red}\bfs...
 
 You may provide a definition with
@@ -17718,7 +17718,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76796 ...� Eᵝ|} / {\color{red}\bfseries{}|Eᵅ
+l.76796 ... Eᵝ|} / {\color{red}\bfseries{}|Eᵅ
                                                   |}
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17810,7 +17810,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76850 Formula: S\textasciicircum{}α
-                                      β = ⟨Aₐ, Aᵦ⟩ / (‖Aₐ‖ �...
+                                      β = ⟨Aₐ, Aᵦ⟩ / (‖Aₐ‖ ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17824,7 +17824,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76850 Formula: S\textasciicircum{}αβ
-                                         = ⟨Aₐ, Aᵦ⟩ / (‖Aₐ‖ �...
+                                         = ⟨Aₐ, Aᵦ⟩ / (‖Aₐ‖ ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17838,7 +17838,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76850 Formula: S\textasciicircum{}αβ = ⟨Aₐ
-                                                  , Aᵦ⟩ / (‖Aₐ‖ �...
+                                                  , Aᵦ⟩ / (‖Aₐ‖ ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17852,7 +17852,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76850 ...S\textasciicircum{}αβ = ⟨Aₐ, Aᵦ
-                                                  ⟩ / (‖Aₐ‖ ‖Aᵦ�...
+                                                  ⟩ / (‖Aₐ‖ ‖Aᵦ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17894,7 +17894,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76850 ... Aᵦ⟩ / (‖Aₐ‖ ‖Aᵦ‖) = Σ
-                                                  ᵢⱼ AᵢⱼᵅAᵢⱼ�...
+                                                  ᵢⱼ AᵢⱼᵅAᵢⱼ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17907,7 +17907,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...��⟩ / (‖Aₐ‖ ‖Aᵦ‖) = Σᵢ
+l.76850 ...⟩ / (‖Aₐ‖ ‖Aᵦ‖) = Σᵢ
                                                   ⱼ AᵢⱼᵅAᵢⱼᵝ /...
 
 You may provide a definition with
@@ -17921,8 +17921,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...�� / (‖Aₐ‖ ‖Aᵦ‖) = Σᵢⱼ
-                                                   AᵢⱼᵅAᵢⱼᵝ / �...
+l.76850 ... / (‖Aₐ‖ ‖Aᵦ‖) = Σᵢⱼ
+                                                   AᵢⱼᵅAᵢⱼᵝ / ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17936,7 +17936,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.76850 ...(‖Aₐ‖ ‖Aᵦ‖) = Σᵢⱼ Aᵢ
-                                                  ⱼᵅAᵢⱼᵝ / √(Σ�...
+                                                  ⱼᵅAᵢⱼᵝ / √(Σ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17949,8 +17949,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...�Aₐ‖ ‖Aᵦ‖) = Σᵢⱼ Aᵢⱼ
-                                                  ᵅAᵢⱼᵝ / √(Σᵢ�...
+l.76850 ...Aₐ‖ ‖Aᵦ‖) = Σᵢⱼ Aᵢⱼ
+                                                  ᵅAᵢⱼᵝ / √(Σᵢ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -17963,7 +17963,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...��‖ ‖Aᵦ‖) = Σᵢⱼ Aᵢⱼᵅ
+l.76850 ...‖ ‖Aᵦ‖) = Σᵢⱼ Aᵢⱼᵅ
                                                   Aᵢⱼᵝ / √(Σᵢⱼ(...
 
 You may provide a definition with
@@ -17977,7 +17977,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...� ‖Aᵦ‖) = Σᵢⱼ AᵢⱼᵅAᵢ
+l.76850 ... ‖Aᵦ‖) = Σᵢⱼ AᵢⱼᵅAᵢ
                                                   ⱼᵝ / √(Σᵢⱼ(Aᵢ...
 
 You may provide a definition with
@@ -17991,7 +17991,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...��Aᵦ‖) = Σᵢⱼ AᵢⱼᵅAᵢⱼ
+l.76850 ...Aᵦ‖) = Σᵢⱼ AᵢⱼᵅAᵢⱼ
                                                   ᵝ / √(Σᵢⱼ(Aᵢⱼ...
 
 You may provide a definition with
@@ -18117,7 +18117,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...��ⱼ(Aᵢⱼᵅ)\(\sp{\text{2}}\)) √
+l.76850 ...ⱼ(Aᵢⱼᵅ)\(\sp{\text{2}}\)) √
                                                   (Σᵢⱼ(Aᵢⱼᵝ)\(\sp...
 
 You may provide a definition with
@@ -18131,7 +18131,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...��(Aᵢⱼᵅ)\(\sp{\text{2}}\)) √(Σ
+l.76850 ...(Aᵢⱼᵅ)\(\sp{\text{2}}\)) √(Σ
                                                   ᵢⱼ(Aᵢⱼᵝ)\(\sp{\t...
 
 You may provide a definition with
@@ -18159,7 +18159,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...�ⱼᵅ)\(\sp{\text{2}}\)) √(Σᵢⱼ
+l.76850 ...ⱼᵅ)\(\sp{\text{2}}\)) √(Σᵢⱼ
                                                   (Aᵢⱼᵝ)\(\sp{\text{2}...
 
 You may provide a definition with
@@ -18173,7 +18173,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76850 ...��)\(\sp{\text{2}}\)) √(Σᵢⱼ(Aᵢ
+l.76850 ...)\(\sp{\text{2}}\)) √(Σᵢⱼ(Aᵢ
                                                   ⱼᵝ)\(\sp{\text{2}}\))
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -18704,7 +18704,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76991 ...�ᵃˣ = maximum possible triplets = Σ
+l.76991 ...ᵃˣ = maximum possible triplets = Σ
                                                   ₐ kᵢᵅ(kᵢᵅ \sphin...
 
 You may provide a definition with
@@ -18718,7 +18718,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76991 ...�ˣ = maximum possible triplets = Σₐ
+l.76991 ...ˣ = maximum possible triplets = Σₐ
                                                    kᵢᵅ(kᵢᵅ \sphinxhy...
 
 You may provide a definition with
@@ -19041,8 +19041,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...��ᴸ = (1/2μ) Σᵢⱼₐᵦ {[}(Aᵢ
-                                                  ⱼᵅ \sphinxhyphen{} γ�...
+l.77045 ...ᴸ = (1/2μ) Σᵢⱼₐᵦ {[}(Aᵢ
+                                                  ⱼᵅ \sphinxhyphen{} γ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19055,7 +19055,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...�� = (1/2μ) Σᵢⱼₐᵦ {[}(Aᵢⱼ
+l.77045 ... = (1/2μ) Σᵢⱼₐᵦ {[}(Aᵢⱼ
                                                   ᵅ \sphinxhyphen{} γₐP...
 
 You may provide a definition with
@@ -19083,8 +19083,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...��ᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} γ
-                                                  ₐPᵢⱼᵅ)δₐᵦ + �...
+l.77045 ...ᵦ {[}(Aᵢⱼᵅ \sphinxhyphen{} γ
+                                                  ₐPᵢⱼᵅ)δₐᵦ + ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19097,8 +19097,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...�� {[}(Aᵢⱼᵅ \sphinxhyphen{} γₐ
-                                                  Pᵢⱼᵅ)δₐᵦ + ω�...
+l.77045 ... {[}(Aᵢⱼᵅ \sphinxhyphen{} γₐ
+                                                  Pᵢⱼᵅ)δₐᵦ + ω...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19126,7 +19126,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77045 ...Aᵢⱼᵅ \sphinxhyphen{} γₐPᵢⱼ
-                                                  ᵅ)δₐᵦ + ωₐᵦδ�...
+                                                  ᵅ)δₐᵦ + ωₐᵦδ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19139,8 +19139,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...�ⱼᵅ \sphinxhyphen{} γₐPᵢⱼᵅ
-                                                  )δₐᵦ + ωₐᵦδᵢ�...
+l.77045 ...ⱼᵅ \sphinxhyphen{} γₐPᵢⱼᵅ
+                                                  )δₐᵦ + ωₐᵦδᵢ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19153,7 +19153,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...�ᵅ \sphinxhyphen{} γₐPᵢⱼᵅ)δ
+l.77045 ...ᵅ \sphinxhyphen{} γₐPᵢⱼᵅ)δ
                                                   ₐᵦ + ωₐᵦδᵢⱼ{...
 
 You may provide a definition with
@@ -19167,7 +19167,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...� \sphinxhyphen{} γₐPᵢⱼᵅ)δₐ
+l.77045 ... \sphinxhyphen{} γₐPᵢⱼᵅ)δₐ
                                                   ᵦ + ωₐᵦδᵢⱼ{]} ...
 
 You may provide a definition with
@@ -19196,7 +19196,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77045 ...xhyphen{} γₐPᵢⱼᵅ)δₐᵦ + ω
-                                                  ₐᵦδᵢⱼ{]} δ(gᵢ�...
+                                                  ₐᵦδᵢⱼ{]} δ(gᵢ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19224,7 +19224,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77045 ...n{} γₐPᵢⱼᵅ)δₐᵦ + ωₐᵦ
-                                                  δᵢⱼ{]} δ(gᵢᵅ, g�...
+                                                  δᵢⱼ{]} δ(gᵢᵅ, g...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19251,7 +19251,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...�ₐPᵢⱼᵅ)δₐᵦ + ωₐᵦδᵢ
+l.77045 ...ₐPᵢⱼᵅ)δₐᵦ + ωₐᵦδᵢ
                                                   ⱼ{]} δ(gᵢᵅ, gⱼᵝ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19264,7 +19264,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...�Pᵢⱼᵅ)δₐᵦ + ωₐᵦδᵢⱼ
+l.77045 ...Pᵢⱼᵅ)δₐᵦ + ωₐᵦδᵢⱼ
                                                   {]} δ(gᵢᵅ, gⱼᵝ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19277,7 +19277,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77045 ...��ᵅ)δₐᵦ + ωₐᵦδᵢⱼ{]} δ
+l.77045 ...ᵅ)δₐᵦ + ωₐᵦδᵢⱼ{]} δ
                                                   (gᵢᵅ, gⱼᵝ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19702,7 +19702,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77060 δ
-          (gᵢᵅ, gⱼᵝ) = 1 if node i in layer α and node j in layer �...
+          (gᵢᵅ, gⱼᵝ) = 1 if node i in layer α and node j in layer ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19716,7 +19716,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77060 δ(gᵢ
-               ᵅ, gⱼᵝ) = 1 if node i in layer α and node j in layer �...
+               ᵅ, gⱼᵝ) = 1 if node i in layer α and node j in layer ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19730,7 +19730,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77060 δ(gᵢᵅ
-                  , gⱼᵝ) = 1 if node i in layer α and node j in layer �...
+                  , gⱼᵝ) = 1 if node i in layer α and node j in layer ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19744,7 +19744,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77060 δ(gᵢᵅ, gⱼ
-                        ᵝ) = 1 if node i in layer α and node j in layer �...
+                        ᵝ) = 1 if node i in layer α and node j in layer ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -19758,7 +19758,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77060 δ(gᵢᵅ, gⱼᵝ
-                           ) = 1 if node i in layer α and node j in layer �...
+                           ) = 1 if node i in layer α and node j in layer ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -20228,7 +20228,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77187 ...��ᵅ = Σₛ≠ᵢ≠ₜ (σₛₜ(iα
+l.77187 ...ᵅ = Σₛ≠ᵢ≠ₜ (σₛₜ(iα
                                                   ) / σₛₜ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -20254,7 +20254,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77187 ...�ₛ≠ᵢ≠ₜ (σₛₜ(iα) / σₛ
+l.77187 ...ₛ≠ᵢ≠ₜ (σₛₜ(iα) / σₛ
                                                   ₜ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -20267,7 +20267,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77187 ...�≠ᵢ≠ₜ (σₛₜ(iα) / σₛₜ
+l.77187 ...≠ᵢ≠ₜ (σₛₜ(iα) / σₛₜ
                                                   )
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -20518,7 +20518,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77247 Standard closeness formula: Cᵢ
-                                        ᵅ = (N*L \sphinxhyphen{} 1) / Σ�...
+                                        ᵅ = (N*L \sphinxhyphen{} 1) / Σ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -20532,7 +20532,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77247 Standard closeness formula: Cᵢᵅ
-                                            = (N*L \sphinxhyphen{} 1) / Σ�...
+                                            = (N*L \sphinxhyphen{} 1) / Σ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -20558,7 +20558,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77247 ...��ᵅ = (N*L \sphinxhyphen{} 1) / Σⱼ
+l.77247 ...ᵅ = (N*L \sphinxhyphen{} 1) / Σⱼ
                                                   ᵝ≠ᵢᵅ d(iα, jβ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -20571,7 +20571,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77247 ...�� = (N*L \sphinxhyphen{} 1) / Σⱼᵝ
+l.77247 ... = (N*L \sphinxhyphen{} 1) / Σⱼᵝ
                                                   ≠ᵢᵅ d(iα, jβ)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -20944,7 +20944,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77343 ...�ᴹ(k) = Eᴹ(\textgreater{}k) / (Nᴹ
+l.77343 ...ᴹ(k) = Eᴹ(\textgreater{}k) / (Nᴹ
                                                   (\textgreater{}k) * (Nᴹ(...
 
 You may provide a definition with
@@ -21468,7 +21468,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77617 ...��ₗ₋\(\sb{\text{1}}\)\} with 0 = λ
+l.77617 ...ₗ₋\(\sb{\text{1}}\)\} with 0 = λ
                                                   \(\sb{\text{0}}\) ≤ λ\(...
 
 You may provide a definition with
@@ -21483,7 +21483,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77617 ...}}\)\} with 0 = λ\(\sb{\text{0}}\) ≤
-                                                   λ\(\sb{\text{1}}\) ≤ �...
+                                                   λ\(\sb{\text{1}}\) ≤ ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -21551,7 +21551,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77617 ...� λ\(\sb{\text{1}}\) ≤ … ≤ λₙ
+l.77617 ... λ\(\sb{\text{1}}\) ≤ … ≤ λₙ
                                                   ₗ₋\(\sb{\text{1}}\)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -21564,7 +21564,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.77617 ...�\(\sb{\text{1}}\) ≤ … ≤ λₙₗ
+l.77617 ...\(\sb{\text{1}}\) ≤ … ≤ λₙₗ
                                                   ₋\(\sb{\text{1}}\)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -21808,7 +21808,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77785 wₐ
-             = weight for layer α (typically 1/L for uniform weighting, Σ�...
+             = weight for layer α (typically 1/L for uniform weighting, Σ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -21822,7 +21822,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.77785 wₐ = weight for layer α
-                                   (typically 1/L for uniform weighting, Σ�...
+                                   (typically 1/L for uniform weighting, Σ...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -22352,7 +22352,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.78671 k\textasciicircum{}{[}α
-                                ,out{]}\_i = Σ\_j 1(A\textasciicircum{}{[}�...
+                                ,out{]}\_i = Σ\_j 1(A\textasciicircum{}{[}...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -22366,7 +22366,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.78671 k\textasciicircum{}{[}α,out{]}\_i = Σ
-                                               \_j 1(A\textasciicircum{}{[}�...
+                                               \_j 1(A\textasciicircum{}{[}...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -26825,7 +26825,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [889]
 
-! LaTeX Error: Unicode character ⚠ (U+26A0)
+! LaTeX Error: Unicode character  (U+26A0)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
@@ -27164,14 +27164,14 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [916]
 
-! LaTeX Error: Unicode character 👍 (U+1F44D)
+! LaTeX Error: Unicode character  (U+1F44D)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.99245 Using 👍
+l.99245 Using 
                    reactions to vote on priorities
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27830,7 +27830,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104418 ...��───────────┐
+l.104418 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27843,7 +27843,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104418 ...��───────────┐
+l.104418 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27856,7 +27856,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104421 ...��───────────┘
+l.104421 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27869,7 +27869,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104421 ...��───────────┘
+l.104421 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27882,7 +27882,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104421 ...��───────────┘
+l.104421 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27921,7 +27921,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104424 ...��───────────┐
+l.104424 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27934,7 +27934,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104424 ...��───────────┐
+l.104424 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27947,7 +27947,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104424 ...��───────────┐
+l.104424 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27960,7 +27960,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104424 ...��───────────┐
+l.104424 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27973,7 +27973,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104428 ...��───────────┘
+l.104428 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27986,7 +27986,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104428 ...��───────────┘
+l.104428 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -27999,7 +27999,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104428 ...��───────────┘
+l.104428 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28012,7 +28012,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104430 ...��───────────┐
+l.104430 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28025,7 +28025,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104430 ...��───────────┐
+l.104430 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28038,7 +28038,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104430 ...��───────────┐
+l.104430 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28077,7 +28077,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104432 ...��───────────┐
+l.104432 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28090,7 +28090,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104432 ...��───────────┐
+l.104432 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28103,7 +28103,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104432 ...��───────────┐
+l.104432 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28116,7 +28116,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104432 ...��───────────┐
+l.104432 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28142,7 +28142,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104436 ...��───────────┘
+l.104436 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28155,7 +28155,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104436 ...��───────────┘
+l.104436 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28181,7 +28181,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104439 ...��───────────┐
+l.104439 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28194,7 +28194,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104439 ...��───────────┐
+l.104439 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28207,7 +28207,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.104444 ...��───────────┘
+l.104444 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28420,7 +28420,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105794 ...��───────────┐
+l.105794 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28433,7 +28433,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105794 ...��───────────┐
+l.105794 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28446,7 +28446,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105797 ...��───────────┘
+l.105797 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28459,7 +28459,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105799 ...��───────────┐
+l.105799 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28472,7 +28472,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105799 ...��───────────┐
+l.105799 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28485,7 +28485,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105801 ...�──────────┐ │
+l.105801 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28498,7 +28498,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105801 ...�──────────┐ │
+l.105801 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28511,7 +28511,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105801 ...�──────────┐ │
+l.105801 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28524,7 +28524,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105801 ...�──────────┐ │
+l.105801 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28537,7 +28537,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105804 ...�──────────┘ │
+l.105804 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28550,7 +28550,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105804 ...�──────────┘ │
+l.105804 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28563,7 +28563,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105804 ...�──────────┘ │
+l.105804 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28576,7 +28576,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105805 ...��───────────┘
+l.105805 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28589,7 +28589,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105807 ...��───────────┐
+l.105807 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28602,7 +28602,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105807 ...��───────────┐
+l.105807 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28615,7 +28615,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105809 ...�──────────┐ │
+l.105809 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28628,7 +28628,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105809 ...�──────────┐ │
+l.105809 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28641,7 +28641,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105809 ...�──────────┐ │
+l.105809 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28654,7 +28654,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105809 ...�──────────┐ │
+l.105809 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28667,7 +28667,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105812 ...�──────────┘ │
+l.105812 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28680,7 +28680,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105812 ...�──────────┘ │
+l.105812 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28693,7 +28693,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105812 ...�──────────┘ │
+l.105812 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28706,7 +28706,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105813 ...��───────────┘
+l.105813 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28719,7 +28719,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105815 ...��───────────┐
+l.105815 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28732,7 +28732,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105815 ...��───────────┐
+l.105815 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28745,7 +28745,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105817 ...�──────────┐ │
+l.105817 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28758,7 +28758,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105817 ...�──────────┐ │
+l.105817 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28771,7 +28771,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105817 ...�──────────┐ │
+l.105817 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28784,7 +28784,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105817 ...�──────────┐ │
+l.105817 ...──────────┐ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28797,7 +28797,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105821 ...�──────────┘ │
+l.105821 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28810,7 +28810,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105821 ...�──────────┘ │
+l.105821 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28823,7 +28823,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105821 ...�──────────┘ │
+l.105821 ...──────────┘ │
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28836,7 +28836,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105822 ...��───────────┘
+l.105822 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28849,7 +28849,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105824 ...��───────────┐
+l.105824 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28862,7 +28862,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105824 ...��───────────┐
+l.105824 ...───────────┐
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -28875,7 +28875,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.105827 ...��───────────┘
+l.105827 ...───────────┘
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
