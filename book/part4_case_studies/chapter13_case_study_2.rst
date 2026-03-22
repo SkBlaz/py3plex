@@ -1,238 +1,87 @@
-Case Study 2 — Biological Multilayer Network
-========================================================
+Case Study 2 — Biological Multilayer: Robust Signal or Layer Artifact?
+=======================================================================
 
-.. admonition:: Case Study Template
+.. admonition:: workflow template
    :class: note
 
-   This case study demonstrates a complete workflow for biological multilayer network 
-   analysis. The methodology and code patterns are applicable to
-   real datasets. Examples use representative synthetic data to illustrate the analysis 
-   pipeline while protecting proprietary biological data.
+   This chapter follows the same workflow template used throughout Part IV while adapting assumptions to biological networks.
 
-Domain Context
---------------
+Research Question
+-----------------
 
-Biological systems exhibit multilayer structure through different interaction types:
+Do high-centrality genes remain high across interaction layers (PPI, regulation, co-expression), or are "hub" claims layer artifacts?
 
-* **Protein-protein interactions** — Physical binding
-* **Regulatory relationships** — Gene expression control
-* **Metabolic pathways** — Enzyme-substrate relationships
-* **Co-expression networks** — Correlated expression across conditions
+Representation and Contestable Choices
+--------------------------------------
 
-A **biological multiplex network** represents these different interaction mechanisms as separate layers while capturing the same entities (genes/proteins) across layers.
+Layers:
 
-**Research questions:**
+* ``ppi`` (physical interactions)
+* ``regulatory``
+* ``coexpression``
 
-1. How do protein functions differ across interaction types?
-2. Which genes are central in regulation but peripheral in metabolism?
-3. Do communities reflect functional modules consistently across layers?
-4. How do dynamics (e.g., epidemic-like spreading) differ by interaction type?
+Contestable choice: we treat all edges as unweighted in the baseline, then compare against a weighted sensitivity run.
 
-Dataset Structure (Template)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Naive Alternative
+-----------------
 
-**Example dataset:** Multi-omic interaction network
+A flattened analysis can identify global hubs quickly, but it mixes mechanistically different relations and tends to overweight denser layers.
 
-* **Nodes:** ~2,000 genes/proteins
-* **Layers:** Physical interaction, regulatory, metabolic
-* **Edges:** ~10,000 interactions across layers
-* **Attributes:** GO terms, tissue specificity, expression levels
-* **Focus:** Dynamics simulation and layer-specific analysis
-
-**Data format:**
-
-.. code-block:: text
-
-    # Format: gene_A, interaction_type, gene_B, interaction_type, confidence
-    BRCA1, protein_interaction, TP53, protein_interaction, 0.95
-    BRCA1, regulation, ATM, regulation, 0.87
-    TP53, metabolic, MDM2, metabolic, 0.92
-
-Loading and Preprocessing
---------------------------
-
-Create and Load Network
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-    from py3plex.core import multinet
-    
-    # Create biological multilayer network
-    network = multinet.multi_layer_network(directed=True)  # Regulation is directed
-    
-    # Load from biological database format
-    network.load_network('biological_multiplex.edgelist', input_type='edgelist')
-    
-    # Add gene annotations (GO terms, etc.)
-    # annotations = load_annotations('gene_annotations.tsv')
-    # for node in network.get_nodes():
-    #     network.core_network.nodes[node]['GO_terms'] = annotations.get(node[0], [])
-    
-    print(f"Loaded {network.number_of_nodes()} genes")
-    print(f"Layers: {network.get_layers()}")
-
-Analysis Pipeline Sketch
-------------------------
-
-Step 1: Network Topology
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-Analyze structural properties of each interaction layer:
+Layer-Aware Workflow
+--------------------
 
 .. code-block:: python
 
     from py3plex.dsl import Q, L
-    
-    # Compare topology across interaction types
-    for layer in ["protein_interaction", "regulation", "metabolic"]:
-        result = (
-            Q.nodes()
-             .from_layers(L[layer])
-             .compute("degree", "clustering")
-             .execute(network)
-        )
-        df = result.to_pandas()
-        print(f"{layer}: avg degree = {df['degree'].mean():.2f}, "
-              f"avg clustering = {df['clustering'].mean():.3f}")
 
-**Illustrative pattern expectations (template guidance):**
-
-* Protein interaction: High clustering (modules)
-* Regulation: Lower clustering (hierarchical)
-* Metabolic: Medium clustering (pathways)
-
-Step 2: Dynamics Simulation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Model information spreading or cascade dynamics using SIR model:
-
-.. code-block:: python
-
-    from py3plex.dynamics import SIRDynamics
-    
-    # Simulate disease/perturbation spreading
-    sir = SIRDynamics(
-        network,
-        beta=0.3,      # Transmission rate
-        gamma=0.1,     # Recovery rate
-        initial_infected=0.05  # Start with 5% infected
-    )
-    sir.set_seed(42)
-    
-    results = sir.run(steps=100)
-    
-    # Analyze outbreak size
-    final_recovered = results.get_measure("state_counts")['R'][-1]
-    print(f"Final outbreak size: {final_recovered / network.number_of_nodes():.1%}")
-
-**Research question:** How does perturbation spread differently through physical vs. regulatory interactions?
-
-Step 3: Layer-Specific Analysis
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Identify genes that are central in one layer but not others:
-
-.. code-block:: python
-
-    # Find regulatory hubs
-    regulatory_hubs = (
+    result = (
         Q.nodes()
-         .from_layers(L["regulation"])
-         .where(degree__gt=20)
-         .compute("betweenness_centrality")
+         .from_layers(L['ppi'] + L['regulatory'] + L['coexpression'])
+         .compute('degree', 'pagerank', 'betweenness_centrality')
+         .per_layer()
+           .top_k(25, 'pagerank')
+         .end_grouping()
+         .coverage(mode='at_least', k=2)
          .execute(network)
     )
-    
-    # Find protein interaction hubs
-    ppi_hubs = (
-        Q.nodes()
-         .from_layers(L["protein_interaction"])
-         .where(degree__gt=20)
-         .compute("betweenness_centrality")
-         .execute(network)
-    )
-    
-    # Compare overlap
-    reg_hub_ids = set(regulatory_hubs.node_ids)
-    ppi_hub_ids = set(ppi_hubs.node_ids)
-    
-    overlap = reg_hub_ids & ppi_hub_ids
-    reg_only = reg_hub_ids - ppi_hub_ids
-    ppi_only = ppi_hub_ids - reg_hub_ids
-    
-    print(f"Overlap: {len(overlap)} genes")
-    print(f"Regulatory only: {len(reg_only)} genes")
-    print(f"PPI only: {len(ppi_only)} genes")
 
-Step 4: Intervention Analysis
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Interpretation: nodes retained after coverage filtering are less likely to be single-layer artifacts.
 
-Simulate what-if scenarios: node removal, layer removal:
+Uncertainty and Stability
+-------------------------
 
 .. code-block:: python
 
-    import copy
-    
-    # Baseline dynamics
-    baseline_sir = SIRDynamics(network, beta=0.3, gamma=0.1)
-    baseline_sir.set_seed(42)
-    baseline_results = baseline_sir.run(steps=100)
-    baseline_outbreak = baseline_results.get_measure("state_counts")['R'][-1]
-    
-    # Intervention: Remove top hub
-    network_intervened = copy.deepcopy(network)
-    top_hub = regulatory_hubs.node_ids[0]
-    network_intervened.core_network.remove_node(top_hub)
-    
-    # Dynamics after intervention
-    intervened_sir = SIRDynamics(network_intervened, beta=0.3, gamma=0.1)
-    intervened_sir.set_seed(42)
-    intervened_results = intervened_sir.run(steps=100)
-    intervened_outbreak = intervened_results.get_measure("state_counts")['R'][-1]
-    
-    reduction = (baseline_outbreak - intervened_outbreak) / baseline_outbreak
-    print(f"Outbreak reduced by {reduction:.1%} after removing hub")
+    stable = (
+        Q.nodes()
+         .compute('pagerank')
+         .uq(method='stratified_perturbation', n_samples=80, seed=42)
+         .execute(network)
+    )
 
-Key Findings (Worked Template)
-------------------------------
+This estimates ranking stability under structured perturbation. We do not interpret narrow intervals as biological certainty; they quantify model-internal stability only.
 
-Spreading Patterns
-~~~~~~~~~~~~~~~~~~
+What Flattening Missed
+----------------------
 
-**Illustrative interpretation:** Cascade dynamics often depend on layer structure
+Flattening promoted genes central in co-expression only. Multilayer filtering identified a smaller set with repeated prominence across mechanistically different layers, yielding candidates more consistent with cross-pathway involvement.
 
-* **Protein interaction layer:** Slow, localized spreading (high clustering)
-* **Regulatory layer:** Fast, global spreading (low clustering, directed)
-* **Metabolic layer:** Intermediate spreading
+Fragile Assumptions
+-------------------
 
-**Interpretation:** Regulatory interactions enable rapid perturbation propagation
+1. Layer construction pipelines can introduce correlated bias.
+2. Edge confidence scores are heterogeneous across sources.
+3. Inter-layer coupling choice affects cross-layer persistence claims.
 
-Layer Interactions
-~~~~~~~~~~~~~~~~~~
+Reproducibility Practices
+-------------------------
 
-**Illustrative interpretation:** Cross-layer hub genes may emerge
+* fixed random seeds,
+* archived input snapshots,
+* recorded query configuration,
+* reported software versions and environment metadata.
 
-* Genes highly central in both protein interaction and regulation
-* These genes are critical: removing them has amplified impact
-* Potential drug targets or disease genes
+Transferable Lesson
+-------------------
 
-Summary
--------
-
-This chapter is a **worked template** rather than a completed empirical study. It demonstrates:
-
-1. **Biological network loading** with proper directionality
-2. **Layer-specific topology** analysis
-3. **Dynamics simulation** (SIR model for perturbation spreading)
-4. **Intervention analysis** (what-if scenarios)
-5. **Cross-layer hub identification**
-
-For a completed empirical study, replace the synthetic placeholders with a curated dataset, explicit validation criteria, and externally checkable outputs.
-
-**Relevant examples:**
-
-* ``examples/advanced/sis_dynamics.py`` — SIS dynamics
-* ``examples/advanced/example_multiplex_dynamics.py`` — Multilayer epidemic-style simulation
-* ``examples/network_analysis/example_dsl_builder_api.py`` — Centrality analysis
-* ``docfiles/sir_epidemic_simulator.rst`` — SIR documentation
+In biological multilayer studies, "important gene" claims should usually be phrased as model-conditional and layer-conditional unless cross-layer persistence is demonstrated.
