@@ -1,0 +1,227 @@
+
+======================================================================
+PY3PLEX DSL PATTERNS: QUICK REFERENCE
+======================================================================
+
+This script demonstrates the 7 most common DSL query patterns.
+Each pattern includes:
+  - Use case description
+  - Frequency in typical workflows
+  - Complete working code
+  - Live execution with sample output
+
+No markdown files are created - the code IS the documentation!
+
+======================================================================
+PATTERN 1: Basic Node Query with Filtering
+======================================================================
+
+Code:
+
+    result = (
+        Q.nodes()
+         .from_layers(L["social"])              # Select layer
+         .compute("degree", "betweenness_centrality")  # Compute metrics first
+         .where(degree__gt=2)                    # Then filter by attribute
+         .execute(net)
+    )
+    
+
+Result: Found 2 high-degree nodes in social layer
+
+Top results:
+        id  degree  betweenness_centrality
+0      Bob       1                     0.0
+1  Charlie       1                     0.0
+
+======================================================================
+PATTERN 2: Cross-Layer Hub Analysis
+======================================================================
+
+Code:
+
+    result = (
+        Q.nodes()
+         .from_layers(L["*"])                    # All layers
+         .compute("degree", "pagerank")
+         .per_layer()                             # Group by layer
+           .top_k(3, "degree")                    # Top 3 per layer
+         .end_grouping()
+         .coverage(mode="at_least", k=2)         # Keep nodes in >=2 layers
+         .execute(net)
+    )
+    
+
+Result: Found 8 cross-layer hubs
+
+Cross-layer hubs:
+  - Bob: present in ['hobby', 'social']
+  - Eve: present in ['hobby', 'work']
+  - Charlie: present in ['social', 'work']
+  - David: present in ['social', 'work']
+
+======================================================================
+PATTERN 3: Uncertainty Quantification
+======================================================================
+
+Code:
+
+    result = (
+        Q.nodes()
+         .compute("pagerank")
+         .uq(method="bootstrap",                 # Bootstrap resampling
+             n_samples=50,                       # 50 samples
+             ci=0.95,                            # 95% confidence interval
+             seed=42)                            # Reproducibility
+         .execute(net)
+    )
+    
+    df = result.to_pandas(expand_uncertainty=True)
+    
+
+Result: Computed PageRank with confidence intervals for 18 nodes
+
+Sample with confidence intervals:
+      id  pagerank  pagerank_ci95_low  pagerank_ci95_high
+0  Alice  0.061113           0.000000            0.127837
+1  Alice  0.055856           0.000000            0.118034
+2  Alice  0.054414           0.000000            0.111111
+3    Bob  0.098658           0.040936            0.189493
+4    Bob  0.064047           0.000000            0.111111
+
+======================================================================
+PATTERN 4: Layer Algebra
+======================================================================
+
+Code:
+
+    # Union of layers
+    result_union = (
+        Q.nodes()
+         .from_layers(L["social"] + L["work"])   # Union
+         .execute(net)
+    )
+    
+    # All except one layer
+    result_diff = (
+        Q.nodes()
+         .from_layers(L["*"] - L["hobby"])       # Difference
+         .execute(net)
+    )
+    
+
+Social | Work: 12 node replicas
+All - Hobby: 12 node replicas
+Social only: 6 node replicas
+
+======================================================================
+PATTERN 5: Data Transformation with Mutate
+======================================================================
+
+Code:
+
+    result = (
+        Q.nodes()
+         .compute("degree", "clustering")
+         .mutate(
+             hub_score=lambda row: row.get("degree", 0) * row.get("clustering", 0),
+             category=lambda row: "hub" if row.get("degree", 0) > 2 else "peripheral"
+         )
+         .execute(net)
+    )
+    
+
+Result: Created 2 derived columns for 18 nodes
+
+Category distribution:
+category
+peripheral    16
+hub            2
+Name: count, dtype: int64
+
+Sample with derived columns:
+      id  degree  clustering  hub_score    category
+0  Alice       2    1.000000        2.0  peripheral
+1  Alice       1    0.000000        0.0  peripheral
+2  Alice       1    0.000000        0.0  peripheral
+3    Bob       3    0.666667        2.0         hub
+4    Bob       1    0.000000        0.0  peripheral
+
+======================================================================
+PATTERN 6: Per-Layer Aggregation
+======================================================================
+
+Code:
+
+    result = (
+        Q.nodes()
+         .per_layer()
+         .compute("degree")
+         .aggregate(
+             avg_degree="mean(degree)",
+             max_degree="max(degree)",
+             node_count="count()"
+         )
+         .execute(net)
+    )
+    
+
+Result: Computed per-layer statistics
+
+Per-layer summary:
+  - hobby: 6 nodes, avg degree = 0.67, max = 1.0
+  - social: 6 nodes, avg degree = 2.00, max = 3.0
+  - work: 6 nodes, avg degree = 1.00, max = 2.0
+
+======================================================================
+PATTERN 7: Multiple Export Formats
+======================================================================
+
+Code:
+
+    result = Q.nodes().compute("degree").execute(net)
+    
+    # Pandas DataFrame
+    df = result.to_pandas()
+    
+    # NetworkX graph
+    graph = result.to_networkx()
+    
+    # Apache Arrow (high-performance)
+    table = result.to_arrow()
+    
+    # CSV file
+    df.to_csv("results.csv", index=False)
+    
+
+OK Pandas DataFrame: 18 rows x 3 columns
+OK NetworkX graph: 18 nodes, 0 edges
+OK Apache Arrow: (skipped - pyarrow not installed)
+
+DataFrame preview:
+      id   layer  degree
+0  Alice  social       2
+1  Alice    work       1
+2  Alice   hobby       1
+3    Bob  social       3
+4    Bob    work       1
+
+======================================================================
+SUMMARY: 7 Essential DSL Patterns
+======================================================================
+
+    1. Basic Filtering          (40%) - Q.nodes().from_layers().where().compute()
+    2. Cross-Layer Hubs         (25%) - .per_layer().top_k().coverage()
+    3. Uncertainty Quantif.     (15%) - .uq(method="bootstrap", n_samples=100)
+    4. Layer Algebra            (12%) - L["a"] + L["b"], L["*"] - L["x"]
+    5. Data Transformation      (10%) - .mutate(new_col=lambda row: ...)
+    6. Aggregation              (8%)  - .per_layer().aggregate()
+    7. Export Formats           (30%) - .to_pandas(), .to_networkx(), .to_arrow()
+    
+     Pro Tip: Chain these patterns together for powerful queries!
+    
+     More Resources:
+       - See README.md for quick patterns section
+       - See AGENTS.md#quick-start-golden-paths for comprehensive guide
+       - See examples/network_analysis/ for 50+ detailed examples
+    
