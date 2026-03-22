@@ -132,7 +132,7 @@ def run_sir_example() -> SIRDynamics:
 def plot_epidemic_curve(prevalence, state_counts) -> None:
     """Plot the epidemic curve showing S, I, R over time (if matplotlib available)."""
     if plt is None:
-        print(f"️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        print(f"  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
         return
 
     output_dir = _ensure_output_dir()
@@ -181,7 +181,7 @@ def run_comparison_with_different_parameters() -> None:
     ]
 
     if plt is None:
-        print(f"️  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
+        print(f"  Skipping plot: matplotlib not installed ({MATPLOTLIB_ERROR})")
         return
 
     _ensure_output_dir()

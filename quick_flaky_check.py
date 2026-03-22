@@ -66,7 +66,7 @@ def run_quick_test():
         # Check if results are inconsistent
         returncodes = [r.get("returncode", -1) for r in runs]
         if len(set(returncodes)) > 1:
-            print(f"\n️  POTENTIALLY FLAKY: {test_file}")
+            print(f"\n  POTENTIALLY FLAKY: {test_file}")
             print(f"   Return codes across runs: {returncodes}")
             flaky_found = True
         else:
@@ -74,7 +74,7 @@ def run_quick_test():
             print(f"   Consistent return code: {returncodes[0]}")
     
     if flaky_found:
-        print("\n️  Some tests showed inconsistent behavior.")
+        print("\n  Some tests showed inconsistent behavior.")
         print("Run the full detection script for comprehensive analysis:")
         print("   python detect_flaky_tests.py --runs 5")
     else:

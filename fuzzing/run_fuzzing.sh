@@ -92,7 +92,7 @@ echo ""
 
 # Check for crashes
 if ls fuzzing/crashes/crash-* 1>/dev/null 2>&1; then
-    echo "️  CRASHES FOUND!"
+    echo "  CRASHES FOUND!"
     echo "Crash files saved to fuzzing/crashes/"
     ls -lh fuzzing/crashes/crash-*
     echo ""

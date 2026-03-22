@@ -119,7 +119,7 @@ def main():
     if versions:
         unique_versions = set(v[2] for v in versions)
         if len(unique_versions) > 1:
-            print(f"\n️  Warning: Found multiple py3plex versions in examples:")
+            print(f"\n  Warning: Found multiple py3plex versions in examples:")
             for version in sorted(unique_versions):
                 print(f"  - py3plex=={version}")
                 matching = [v for v in versions if v[2] == version]

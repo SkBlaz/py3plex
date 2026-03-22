@@ -281,8 +281,9 @@ export default function Analyze() {
           <button
             onClick={() => setNotification(null)}
             className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
+            aria-label="Close notification"
           >
-            
+            <XCircle className="h-5 w-5" />
           </button>
         </div>
       )}

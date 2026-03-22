@@ -32,7 +32,7 @@ cd "$SCRIPT_DIR"
 
 # Print colored output
 print_info() {
-    echo -e "${BLUE}ℹ${NC} $1"
+    echo -e "${BLUE}INFO${NC} $1"
 }
 
 print_success() {

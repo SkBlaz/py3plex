@@ -169,6 +169,6 @@ jobs:
           git push
           echo " Documentation committed and pushed"
         else
-          echo "ℹ️ No changes to documentation, skipping commit"
+          echo "INFO: No changes to documentation, skipping commit"
         fi
       timeout-minutes: 2

@@ -26838,7 +26838,7 @@ You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-! LaTeX Error: Unicode character ️ (U+FE0F)
+! LaTeX Error: Unicode character  (U+FE0F)
                not set up for use with LaTeX.
 
 See the LaTeX manual or LaTeX Companion for explanation.

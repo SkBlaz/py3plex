@@ -440,7 +440,7 @@ Traditional error messages say "what went wrong". Py3plex errors explain "what t
       1. Q.nodes().where(degree__gt=3).per_layer().top_k(5)
       2. Q.nodes().per_layer().filter_within_groups(degree__gt=3)
     
-    ️  Common pitfall: Grouping operations (.per_layer(), .group_by())
+      Common pitfall: Grouping operations (.per_layer(), .group_by())
        create a new context. Apply filters before grouping for clarity.
 
 **Core Principles:**
@@ -505,7 +505,7 @@ Raised when query execution fails due to runtime conditions:
     #   1. Q.nodes().compute("betweenness_centrality").where(betweenness__gt=0.1)
     #   2. Q.nodes().where(degree__gt=5).compute("betweenness_centrality")
     #
-    # ️  Common pitfall: Some metrics (degree) are cheap and autocomputed.
+    #   Common pitfall: Some metrics (degree) are cheap and autocomputed.
     #    Expensive metrics (betweenness, closeness) require explicit .compute()
 
 **MultilayerSemanticError** — Multilayer-specific guidance
@@ -564,7 +564,7 @@ Example: Before and After
       1. Q.nodes().per_layer().top_k(5, "degree").end_grouping().coverage(mode="all")
       2. Q.nodes().from_layers(L["*"]).per_layer().compute("degree").coverage(mode="any")
     
-    ️  Common pitfall: .coverage() is a post-grouping filter, not a
+      Common pitfall: .coverage() is a post-grouping filter, not a
        pre-grouping filter. It answers "which items appear across groups?"
 
 Using Pedagogical Errors Effectively

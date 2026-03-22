@@ -113,7 +113,7 @@ class FlakyTestDetector:
             return test_results
             
         except subprocess.TimeoutExpired:
-            print(f"️  Run {run_number + 1} timed out after 600s")
+            print(f"  Run {run_number + 1} timed out after 600s")
             return {}
         except Exception as e:
             print(f" Run {run_number + 1} failed with error: {e}")
@@ -231,7 +231,7 @@ class FlakyTestDetector:
         print(f"   Flaky rate: {len(flaky_tests)/len(statistics)*100:.2f}%")
         
         if flaky_tests:
-            print(f"\n️  FLAKY TESTS ({len(flaky_tests)}):")
+            print(f"\n  FLAKY TESTS ({len(flaky_tests)}):")
             print("-" * 80)
             
             # Sort by pass rate (most flaky first)

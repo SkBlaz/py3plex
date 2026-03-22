@@ -106,9 +106,9 @@ jobs:
         fi
         uv pip install pytest hypothesis
         if [ -f "run_tests.py" ]; then
-          timeout 600 uv run python run_tests.py || echo "️ Tests timed out after 10 minutes"
+          timeout 600 uv run python run_tests.py || echo " Tests timed out after 10 minutes"
         else
-          uv run pytest tests/ || echo "️ Tests failed"
+          uv run pytest tests/ || echo " Tests failed"
         fi
       timeout-minutes: 30
       shell: bash
@@ -124,7 +124,7 @@ jobs:
         else
           source .venv/bin/activate
         fi
-        uv run pytest -q -k metamorphic tests/ || echo "️ Metamorphic tests failed"
+        uv run pytest -q -k metamorphic tests/ || echo " Metamorphic tests failed"
       timeout-minutes: 5
       shell: bash
 
@@ -175,7 +175,7 @@ jobs:
         source .venv/bin/activate
         uv pip list | head -20
         echo " Running tests with minimal dependencies..."
-        timeout 400 uv run python run_tests.py || echo "️ Minimal tests timed out after 6.7 minutes"
+        timeout 400 uv run python run_tests.py || echo " Minimal tests timed out after 6.7 minutes"
         echo " Minimal dependency tests completed"
         echo "Note: Some tests may be skipped due to missing optional dependencies"
       timeout-minutes: 8

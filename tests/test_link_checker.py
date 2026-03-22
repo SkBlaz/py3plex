@@ -97,6 +97,11 @@ def test_no_emojis_in_repository_text_files():
         "\U0001F1E6-\U0001F1FF"  # Flags
         "\u2600-\u26FF"          # Misc symbols
         "\u2700-\u27BF"          # Dingbats
+        "\u23F0-\u23FF"          # Misc technical symbols used as emoji (e.g. stopwatch)
+        "\u2139"                 # Information source symbol
+        "\u2B50"                 # White medium star
+        "\uFE0F"                 # Variation selector-16 (emoji presentation)
+        "\u200D"                 # Zero-width joiner (emoji sequences)
         "]"
     )
 

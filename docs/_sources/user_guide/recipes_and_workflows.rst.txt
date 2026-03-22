@@ -1378,7 +1378,7 @@ Recipe 22: DSL with EXPLAIN Mode
        if plan.warnings:
            print("\nWarnings:")
            for warning in plan.warnings:
-               print(f"️  {warning}")
+               print(f"  {warning}")
 
        # Optimized version: filter first to reduce computation
        optimized_query = (

@@ -103,7 +103,7 @@ jobs:
                   sys.exit(0)
           """))' >> $GITHUB_STEP_SUMMARY
         else
-          echo "️ No core benchmark results found" >> $GITHUB_STEP_SUMMARY
+          echo " No core benchmark results found" >> $GITHUB_STEP_SUMMARY
         fi
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Aggregation Benchmarks" >> $GITHUB_STEP_SUMMARY
@@ -111,7 +111,7 @@ jobs:
         if [ -f benchmark-aggregation.json ]; then
           echo " Aggregation benchmarks completed successfully" >> $GITHUB_STEP_SUMMARY
         else
-          echo "ℹ️ Aggregation benchmarks skipped (module not available)" >> $GITHUB_STEP_SUMMARY
+          echo "INFO: Aggregation benchmarks skipped (module not available)" >> $GITHUB_STEP_SUMMARY
         fi
 
     - name: Upload benchmark results

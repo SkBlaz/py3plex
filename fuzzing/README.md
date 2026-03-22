@@ -124,7 +124,7 @@ Fuzzing completed successfully
 If crashes are discovered:
 
 ```
-️  CRASHES FOUND!
+  CRASHES FOUND!
 Crash files saved to fuzzing/crashes/
 ```
 
