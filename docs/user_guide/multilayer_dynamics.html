@@ -150,7 +150,7 @@
 <h1>Multilayer Dynamics<a class="headerlink" href="#multilayer-dynamics" title="Link to this heading"></a></h1>
 <p>Consider a disease spreading through a community where people interact both in-person (physical layer) and online (digital layer). An individual infected in person can spread to their physical contacts, but awareness spread online might change behavior and reduce transmission. <strong>Multilayer dynamics</strong> simulates these coupled processes across interaction types.</p>
 <div class="dsl-example admonition">
-<p class="admonition-title"> DSL for Dynamics</p>
+<p class="admonition-title">DSL for Dynamics</p>
 <p>Run dynamics simulations declaratively with the DSL:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">SIS</span>
 
@@ -194,10 +194,10 @@
 </ul>
 <p>All models support:</p>
 <ul class="simple">
-<li><p> <strong>Multilayer networks</strong> — Different interaction contexts (physical, digital, etc.)</p></li>
-<li><p> <strong>Reproducible simulations</strong> — Seeded random number generation</p></li>
-<li><p> <strong>Rich output measures</strong> — Prevalence, state counts, trajectories</p></li>
-<li><p> <strong>Clean API</strong> — Object-oriented design aligned with best practices</p></li>
+<li><p><strong>Multilayer networks</strong> — Different interaction contexts (physical, digital, etc.)</p></li>
+<li><p><strong>Reproducible simulations</strong> — Seeded random number generation</p></li>
+<li><p><strong>Rich output measures</strong> — Prevalence, state counts, trajectories</p></li>
+<li><p><strong>Clean API</strong> — Object-oriented design aligned with best practices</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -919,13 +919,15 @@ p_{\\text{lazy}} &amp; \\text{if } j = i \\\\
 <hr class="docutils" />
 <section id="key-takeaways">
 <h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading"></a></h2>
-<p> <strong>Three dynamics models</strong>: SIR (with immunity), SIS (without immunity), RandomWalk (diffusion)</p>
-<p> <strong>Clean API</strong>: <code class="docutils literal notranslate"><span class="pre">DynamicsClass(network,</span> <span class="pre">params).set_seed(seed).run(steps)</span></code></p>
-<p> <strong>Rich outputs</strong>: Prevalence, state counts, trajectories via <code class="docutils literal notranslate"><span class="pre">results.get_measure()</span></code></p>
-<p> <strong>Multilayer support</strong>: Dynamics spread through multiple interaction contexts</p>
-<p> <strong>Reproducible</strong>: Always use <code class="docutils literal notranslate"><span class="pre">.set_seed()</span></code> for deterministic results</p>
-<p> <strong>Tunable parameters</strong>: Adjust β, γ to model different scenarios</p>
-<p> <strong>Visualization ready</strong>: Extract numpy arrays or pandas DataFrames for plotting</p>
+<blockquote>
+<div><p><strong>Three dynamics models</strong>: SIR (with immunity), SIS (without immunity), RandomWalk (diffusion)</p>
+<p><strong>Clean API</strong>: <code class="docutils literal notranslate"><span class="pre">DynamicsClass(network,</span> <span class="pre">params).set_seed(seed).run(steps)</span></code></p>
+<p><strong>Rich outputs</strong>: Prevalence, state counts, trajectories via <code class="docutils literal notranslate"><span class="pre">results.get_measure()</span></code></p>
+<p><strong>Multilayer support</strong>: Dynamics spread through multiple interaction contexts</p>
+<p><strong>Reproducible</strong>: Always use <code class="docutils literal notranslate"><span class="pre">.set_seed()</span></code> for deterministic results</p>
+<p><strong>Tunable parameters</strong>: Adjust β, γ to model different scenarios</p>
+<p><strong>Visualization ready</strong>: Extract numpy arrays or pandas DataFrames for plotting</p>
+</div></blockquote>
 </section>
 <hr class="docutils" />
 <section id="next-steps">

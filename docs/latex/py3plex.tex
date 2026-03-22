@@ -1381,19 +1381,19 @@ Use multilayer networks when:
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
- You have \sphinxstylestrong{multiple relationship types} between entities
+You have \sphinxstylestrong{multiple relationship types} between entities
 
 \item {} 
 \sphinxAtStartPar
- The \sphinxstylestrong{type of relationship matters} for your analysis
+The \sphinxstylestrong{type of relationship matters} for your analysis
 
 \item {} 
 \sphinxAtStartPar
- You want to \sphinxstylestrong{preserve layer\sphinxhyphen{}specific structure}
+You want to \sphinxstylestrong{preserve layer\sphinxhyphen{}specific structure}
 
 \item {} 
 \sphinxAtStartPar
- You’re studying \sphinxstylestrong{cross\sphinxhyphen{}layer effects} (e.g., how Twitter activity affects LinkedIn connections)
+You’re studying \sphinxstylestrong{cross\sphinxhyphen{}layer effects} (e.g., how Twitter activity affects LinkedIn connections)
 
 \end{itemize}
 
@@ -1402,15 +1402,15 @@ Stick with single\sphinxhyphen{}layer when:
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
- All relationships are of the same type
+All relationships are of the same type
 
 \item {} 
 \sphinxAtStartPar
- Relationship type doesn’t affect your analysis
+Relationship type doesn’t affect your analysis
 
 \item {} 
 \sphinxAtStartPar
- You only care about aggregate connectivity
+You only care about aggregate connectivity
 
 \end{itemize}
 
@@ -2498,7 +2498,7 @@ For any errors, please open an issue at \sphinxurl{https://github.com/SkBlaz/py3
 \sphinxAtStartPar
 Get started with py3plex in just a few minutes. This tutorial shows you the essential concepts through three focused examples.
 
-\begin{sphinxadmonition}{note}{ Executable Examples}
+\begin{sphinxadmonition}{note}{Executable Examples}
 
 \sphinxAtStartPar
 All examples are in the \sphinxcode{\sphinxupquote{examples/00\_quickstart/}} directory and can be run directly:
@@ -7481,7 +7481,7 @@ Persist results so you can compare runs or feed them into other tools.
 \sphinxAtStartPar
 \sphinxstylestrong{Goal:} This guide demonstrates how to apply community detection algorithms to multilayer networks and interpret their results. Community detection identifies \sphinxstyleemphasis{mesoscale structure}—groups of nodes that are more densely connected internally than to the rest of the network. In multilayer networks, communities can exist within single layers, span multiple layers, or emerge from inter\sphinxhyphen{}layer coupling patterns. This analysis is essential for understanding functional modules, organizational structure, and hierarchical clustering in complex systems.
 
-\begin{sphinxadmonition}{note}{ Run this guide online}
+\begin{sphinxadmonition}{note}{Run this guide online}
 
 \sphinxAtStartPar
 You can run this tutorial in your browser without any local installation:
@@ -10439,14 +10439,14 @@ H ranges from 0.1 to 0.9 (clipped):
 
 \PYG{c+c1}{\PYGZsh{} Interpret}
 \PYG{k}{if} \PYG{n}{rc} \PYG{o}{\PYGZgt{}} \PYG{l+m+mf}{0.8}\PYG{p}{:}
-    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  \(\checkmark\) High replica consistency (nodes coherent across layers)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{   High replica consistency (nodes coherent across layers)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{k}{elif} \PYG{n}{rc} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{0.3}\PYG{p}{:}
     \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{   Low replica consistency (nodes fragmented across layers)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{k}{else}\PYG{p}{:}
     \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  \(\rightarrow\) Moderate replica consistency}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 
 \PYG{k}{if} \PYG{n}{h} \PYG{o}{\PYGZgt{}} \PYG{l+m+mf}{0.7}\PYG{p}{:}
-    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  \(\checkmark\) High layer entropy (balanced communities)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{   High layer entropy (balanced communities)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{k}{elif} \PYG{n}{h} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{0.3}\PYG{p}{:}
     \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{   Low layer entropy (degenerate partition)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{k}{else}\PYG{p}{:}
@@ -10459,8 +10459,8 @@ H ranges from 0.1 to 0.9 (clipped):
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 Replica Consistency: 0.8765
 Layer Entropy: 0.7234
-  \(\checkmark\) High replica consistency (nodes coherent across layers)
-  \(\checkmark\) High layer entropy (balanced communities)
+   High replica consistency (nodes coherent across layers)
+   High layer entropy (balanced communities)
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -11305,7 +11305,7 @@ Raghavan, U. N., Albert, R., \& Kumara, S. (2007). Near linear time algorithm to
 \sphinxAtStartPar
 This guide presents py3plex as a comprehensive framework for simulating dynamical processes on multilayer networks. We cover epidemic models (SIR, SIS), diffusion processes (random walks), and custom dynamics implementations—all with full multilayer support.
 
-\begin{sphinxadmonition}{note}{ Run this guide online}
+\begin{sphinxadmonition}{note}{Run this guide online}
 
 \sphinxAtStartPar
 You can run this tutorial in your browser without any local installation:
@@ -13693,7 +13693,7 @@ Generated embeddings for 105 multilayer nodes
             \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{mean\PYGZus{}embedding\PYGZus{}norm}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{mean\PYGZus{}norm}
         \PYG{p}{\PYGZcb{}}
 
-        \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  \(\checkmark\) Embeddings generated: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{emb}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+        \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{   Embeddings generated: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{emb}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
         \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  Mean embedding norm: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{mean\PYGZus{}norm}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
     \PYG{k}{except} \PYG{n+ne}{Exception} \PYG{k}{as} \PYG{n}{e}\PYG{p}{:}
         \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  [ERROR] }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{e}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
@@ -13706,19 +13706,19 @@ Generated embeddings for 105 multilayer nodes
 Layer: layer1
   Nodes: 40
   Edges: 95
-  \(\checkmark\) Embeddings generated: 40 nodes
+   Embeddings generated: 40 nodes
   Mean embedding norm: 12.34
 
 Layer: layer2
   Nodes: 40
   Edges: 87
-  \(\checkmark\) Embeddings generated: 40 nodes
+   Embeddings generated: 40 nodes
   Mean embedding norm: 11.89
 
 Layer: layer3
   Nodes: 40
   Edges: 102
-  \(\checkmark\) Embeddings generated: 40 nodes
+   Embeddings generated: 40 nodes
   Mean embedding norm: 13.01
 \end{sphinxVerbatim}
 
@@ -15186,7 +15186,7 @@ of the aggregated network.
 \sphinxAtStartPar
 \sphinxstylestrong{Goal:} Use py3plex’s SQL\sphinxhyphen{}inspired Domain\sphinxhyphen{}Specific Language (DSL) to query, filter, and analyze multilayer networks. The DSL is a \sphinxstylestrong{first\sphinxhyphen{}class query language} specifically designed for multilayer graph structures, providing both string syntax for interactive exploration and a type\sphinxhyphen{}safe builder API for production code.
 
-\begin{sphinxadmonition}{note}{ Run this guide online}
+\begin{sphinxadmonition}{note}{Run this guide online}
 
 \sphinxAtStartPar
 You can run this tutorial in your browser without any local installation:
@@ -18251,7 +18251,7 @@ The book provides:
 \sphinxAtStartPar
 \sphinxstylestrong{Goal:} Use py3plex’s Pattern Matching Builder API to find graph motifs, paths, triangles, and complex subgraph patterns in multilayer networks.
 
-\begin{sphinxadmonition}{note}{ What You’ll Learn}
+\begin{sphinxadmonition}{note}{What You’ll Learn}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
@@ -18276,7 +18276,7 @@ How to extract and analyze pattern match results
 \end{itemize}
 \end{sphinxadmonition}
 
-\begin{sphinxadmonition}{note}{ Complete Example}
+\begin{sphinxadmonition}{note}{Complete Example}
 
 \sphinxAtStartPar
 See the full executable example: \sphinxcode{\sphinxupquote{example\_pattern\_matching.py}}
@@ -23302,19 +23302,19 @@ Detect anomalies (nodes that don’t fit any community)
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\(\checkmark\) Fast (scales to millions of nodes)
+Fast (scales to millions of nodes)
 
 \item {} 
 \sphinxAtStartPar
-\(\checkmark\) Easy to use (minimal parameters)
+Easy to use (minimal parameters)
 
 \item {} 
 \sphinxAtStartPar
- Resolution limit (may miss small communities)
+Resolution limit (may miss small communities)
 
 \item {} 
 \sphinxAtStartPar
- Stochastic (different runs give different results)
+Stochastic (different runs give different results)
 
 \end{itemize}
 
@@ -23355,23 +23355,23 @@ Detect anomalies (nodes that don’t fit any community)
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\(\checkmark\) Theoretically grounded (information theory)
+Theoretically grounded (information theory)
 
 \item {} 
 \sphinxAtStartPar
-\(\checkmark\) Finds hierarchical structure
+Finds hierarchical structure
 
 \item {} 
 \sphinxAtStartPar
- Slower than modularity methods
+Slower than modularity methods
 
 \item {} 
 \sphinxAtStartPar
- May require external binaries
+May require external binaries
 
 \item {} 
 \sphinxAtStartPar
- Sensitive to how inter\sphinxhyphen{}layer edges are weighted (add or scale them explicitly before running on multilayer data)
+Sensitive to how inter\sphinxhyphen{}layer edges are weighted (add or scale them explicitly before running on multilayer data)
 
 \end{itemize}
 
@@ -23409,19 +23409,19 @@ Detect anomalies (nodes that don’t fit any community)
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
-\(\checkmark\) More realistic for many real networks
+More realistic for many real networks
 
 \item {} 
 \sphinxAtStartPar
-\(\checkmark\) Captures multi\sphinxhyphen{}role nodes
+Captures multi\sphinxhyphen{}role nodes
 
 \item {} 
 \sphinxAtStartPar
- More complex to interpret
+More complex to interpret
 
 \item {} 
 \sphinxAtStartPar
- Computationally expensive
+Computationally expensive
 
 \end{itemize}
 
