@@ -40,6 +40,21 @@ A Minimal, Auditable Loading Pattern
 
 Implementation detail: py3plex expects explicit layer attributes in node and edge dictionaries for multilayer semantics.
 
+Bad Import / Corrected Import (Layer Naming)
+--------------------------------------------
+
+.. code-block:: python
+
+    # Bad: inconsistent layer labels create artificial layer splits
+    bad_edges = [
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'Social', 'target_type': 'social'},
+    ]
+
+    # Corrected: normalize labels before import
+    fixed_edges = [
+        {'source': 'Alice', 'target': 'Bob', 'source_type': 'social', 'target_type': 'social'},
+    ]
+
 Format Selection (Practical Rule)
 ---------------------------------
 
@@ -60,8 +75,14 @@ At minimum, validate:
 * missing node or layer labels,
 * self-loops and duplicate edges (if relevant to your methods),
 * weight domain assumptions (non-negative, normalized, etc.).
+* explicit distinction between coupling edges and domain edges.
 
 A naive mistake is to accept parser success as data validity.
+
+Coupling Edges vs Domain Edges
+------------------------------
+
+Coupling edges encode identity continuity across layers (for example, ``Alice_social`` to ``Alice_work``), while domain edges encode real relations inside a domain layer (for example, trust or transaction ties). Mixing both without tags makes transfer intensity look like domain connectivity and can distort both centrality and community interpretation.
 
 What Can Go Wrong
 -----------------
@@ -69,10 +90,12 @@ What Can Go Wrong
 * Layer labels encoded inconsistently (e.g., `Social`, `social`, `soc`).
 * Coupling edges mixed with domain edges without tagging.
 * Flattened imports accidentally treated as multilayer outputs.
+* Cross-layer weights treated as comparable when one layer uses probabilities and another uses counts (for example, 0.8 reliability vs 80 interactions).
+* Missingness concentrated in one layer, causing false "low influence" or unstable community assignments for nodes that are merely under-observed.
 
 These errors usually survive until interpretation, where they are expensive to detect.
 
 Recommendation
 --------------
 
-Treat data loading code as part of your methodological appendix. If another analyst cannot reconstruct your representation choices from that code, the pipeline is not yet ready.
+Treat data loading code as part of your methodological appendix. If another analyst cannot reconstruct your representation choices from that code, the pipeline is not yet ready. At the end of loading, save a reproducibility bundle containing the cleaned input snapshot, layer schema, entity-resolution rules, and a machine-readable load manifest (versions, parsing options, and checksums).

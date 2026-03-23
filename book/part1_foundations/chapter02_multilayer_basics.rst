@@ -25,6 +25,23 @@ Concept vs Implementation
 
 Do not silently reinterpret replica counts as physical-node counts.
 
+Replica-Level vs Physical-Node-Level Reading
+---------------------------------------------
+
++-------------------------------+--------------------------------------------+----------------------------------------------+
+| Question                      | Replica-level interpretation                | Physical-node-level interpretation            |
++===============================+============================================+==============================================+
+| Unit of analysis              | ``(node, layer)``                          | ``node`` aggregated across layers             |
++-------------------------------+--------------------------------------------+----------------------------------------------+
+| Count of entities             | number of replicas in :math:`V_M`          | number of unique entities in :math:`V`        |
++-------------------------------+--------------------------------------------+----------------------------------------------+
+| Degree meaning                | context-specific participation              | aggregate participation footprint             |
++-------------------------------+--------------------------------------------+----------------------------------------------+
+| Typical failure mode          | overcounting "important actors"             | hiding context-specific specialization        |
++-------------------------------+--------------------------------------------+----------------------------------------------+
+| Safe reporting pattern        | report layer explicitly                     | report aggregation rule explicitly            |
++-------------------------------+--------------------------------------------+----------------------------------------------+
+
 Replica Semantics: The First Major Pitfall
 ------------------------------------------
 
@@ -36,6 +53,11 @@ If a physical node appears in three layers, it has three replicas. This matters 
 * community assignments.
 
 A frequent novice error is to compute top hubs globally, then report them as physical entities without de-duplicating by base node.
+
+Worked Micro-Example: One Person, Different Rankings
+-----------------------------------------------------
+
+Suppose ``A`` appears in three layers: social, work, and support. In social, ``A`` is peripheral; in work, ``A`` is a bridge; in support, ``A`` is isolated. A global top-k on aggregate degree can still elevate ``A`` because work-layer bridging dominates, while a per-layer ranking reveals that ``A`` is only locally critical in one context. The same identifier is stable, but the analytical role is not.
 
 Degree Is Ambiguous in Multilayer Contexts
 ------------------------------------------
@@ -49,6 +71,13 @@ At least three notions of degree can be relevant:
 In py3plex workflows, aggregate degree is often the default unless per-layer operations are explicitly applied.
 
 Interpretive warning: aggregate degree is not necessarily a better statistic; it is a different statistic.
+
+.. admonition:: Wrong conclusion / corrected conclusion
+   :class: warning
+
+   **Wrong conclusion:** "Node B is universally the top hub because it has the highest degree."
+
+   **Corrected conclusion:** "Node B has the highest aggregate degree under this representation; per-layer degree shows it is dominant only in the collaboration layer and ordinary elsewhere."
 
 Coverage Semantics and False Certainty
 --------------------------------------
@@ -80,7 +109,7 @@ Before trusting any multilayer output:
 2. State which degree semantics are used.
 3. State whether operations were global or grouped by layer.
 4. Report coverage mode and thresholds.
-5. Provide at least one alternative analysis path as a robustness check.
+5. Provide at least one alternative analysis path as a robustness check (for example, rerun rankings with stratified perturbation UQ and compare top-k stability).
 
 Why This Chapter Matters
 ------------------------

@@ -6,13 +6,9 @@ Most network tutorials begin with capabilities. This chapter begins with failure
 Problem Framing
 ---------------
 
-In many domains, edges carry incompatible semantics:
+In many domains, edges carry incompatible semantics. Consider a hospital contact network where one layer records formal care-team coordination, one records informal consultation, and one records shared-shift overlap. Flattening those layers into one tie type mixes institutional structure, social behavior, and scheduling artifacts.
 
-* social ties mix trust, co-work, and kinship,
-* transport links mix modes with different costs and failure dynamics,
-* biological links mix physical interaction, regulation, and co-expression.
-
-Flattening these into one graph is not just information loss. It changes the estimand. A centrality score in a flattened graph answers a different question than a score on a structured multilayer representation.
+Flattening these into one graph is not just information loss. It changes the estimand. A centrality score in a flattened graph answers a different question than a score on a structured multilayer representation, and mathematically replaces layer-conditioned adjacency operators with a single aggregate operator.
 
 A Running Contrast: Flattened vs Multilayer
 -------------------------------------------
@@ -23,6 +19,8 @@ Consider a commuter system with rail and bus layers:
 * In a multilayer model, we can separate within-mode influence from transfer dependence.
 
 The practical consequence is interpretive: "important node" may mean resilient hub, fragile bottleneck, or mode-bridging artifact depending on representation.
+
+Concrete estimand shift: in a flattened commuter graph, Station X can rank #2 by aggregate betweenness because all transfer traffic is merged, while in the multilayer representation it can drop below the top 20 in metro-only betweenness and rise to #1 in cross-layer brokerage. The metric name is similar, but the estimand is not.
 
 What py3plex Contributes (and What It Does Not)
 -----------------------------------------------
@@ -57,8 +55,10 @@ This text is aimed at graduate researchers and practitioners who already use gra
 Chapter Roadmap
 ---------------
 
-* Chapter 2 formalizes multilayer semantics and common traps.
-* Chapter 3 explains py3plex design trade-offs.
+* Chapter 3 formalizes multilayer semantics and common traps.
+* Chapter 4 explains py3plex design trade-offs.
 * Part II moves to practical workflows.
 * Part III focuses on DSL reasoning.
 * Part IV turns methods into domain arguments through case studies.
+
+The next chapter provides the semantic rules that make these distinctions operational rather than rhetorical.

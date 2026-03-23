@@ -1,11 +1,6 @@
 Case Study 1 — Social Multiplex: Influence vs Brokerage
 =========================================================
 
-.. admonition:: workflow template
-   :class: note
-
-   This chapter uses a reusable workflow template for social multiplex analysis. The template is intentionally explicit about assumptions so readers can adapt it to their own data.
-
 Research Question
 -----------------
 
@@ -52,6 +47,25 @@ Multilayer Analysis
 
 Key finding: several individuals absent from flattened top-k appear repeatedly as high-brokerage nodes across layers.
 
+Tiny Result Table (Illustrative)
+--------------------------------
+
++-------------------------------+-----------------------------+-------------------------------------+
+| Rank position                | Flattened top-k             | Multilayer brokerage top-k          |
++===============================+=============================+=====================================+
+| 1                            | P07                         | P12                                 |
++-------------------------------+-----------------------------+-------------------------------------+
+| 2                            | P03                         | P07                                 |
++-------------------------------+-----------------------------+-------------------------------------+
+| 3                            | P11                         | P19                                 |
++-------------------------------+-----------------------------+-------------------------------------+
+| 4                            | P12                         | P03                                 |
++-------------------------------+-----------------------------+-------------------------------------+
+| 5                            | P25                         | P11                                 |
++-------------------------------+-----------------------------+-------------------------------------+
+
+Interpretive shift: P12 looks secondary in flattened degree but becomes first-ranked under cross-layer brokerage because it links mentorship and collaboration substructures.
+
 Why Multilayer Changed the Result
 ---------------------------------
 
@@ -77,6 +91,7 @@ Robustness Checks
     )
 
 We treat rank changes within confidence overlap as ambiguous rather than definitive.
+Under bootstrap/UQ, the top-3 set remained stable while positions 4–8 swapped frequently, so we report a robust core and a contingent middle tier rather than a single rigid ordering.
 
 Transferable Lesson
 -------------------
@@ -86,4 +101,4 @@ If the practical question concerns cross-context brokerage, flattened centrality
 Local Caveat
 ------------
 
-This case relies on relatively stable layer definitions. In domains where layer labels are noisy or evolving, the same workflow needs temporal and schema-uncertainty extensions.
+This case relies on relatively stable layer definitions. If labels such as "mentorship" and "collaboration" are noisy or drift over time, cross-layer brokerage can be spuriously inflated or suppressed, directly altering who appears "strategically central."

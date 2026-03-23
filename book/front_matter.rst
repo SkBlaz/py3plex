@@ -23,13 +23,7 @@ The book assumes intermediate Python fluency, familiarity with standard graph co
 How to Read This Book
 ---------------------
 
-* **Part I (Foundations)** defines semantics and design boundaries.
-* **Part II (Working Practice)** covers onboarding, representation choices, visualization, and algorithm families.
-* **Part III (DSL)** teaches query reasoning, not just syntax.
-* **Part IV (Case Studies)** demonstrates analytical payoff and contestable modeling choices.
-* **Part V (Systems)** treats testing and reproducibility as central scientific practice.
-
-Reference-heavy material (deployment details, long validation scripts, API listings) is placed in appendices to keep the main text focused.
+Read the book as a staged argument. **Part I (Foundations)** defines semantics and design boundaries; **Part II (Working Practice)** turns those choices into onboarding, representation, visualization, and algorithm decisions; **Part III (DSL)** makes query logic auditable; **Part IV (Case Studies)** shows where conclusions materially change; and **Part V (Systems)** treats testing and reproducibility as scientific controls. The core chapters carry the argument, while the appendices remain software reference material for implementation detail and lookup.
 
 What This Book Deliberately Does Not Do
 ---------------------------------------
@@ -53,25 +47,19 @@ Conventions
 Acknowledgment and Citation
 ---------------------------
 
-If py3plex contributes to published work, cite:
+If py3plex contributes to published work, cite the primary toolkit paper:
 
-.. code-block:: bibtex
-
-    @Article{Skrlj2019,
-      author={Skrlj, Blaz and Kralj, Jan and Lavrac, Nada},
-      title={Py3plex toolkit for visualization and analysis of multilayer networks},
-      journal={Applied Network Science},
-      year={2019},
-      volume={4},
-      number={1},
-      pages={94},
-      doi={10.1007/s41109-019-0203-7}
-    }
+Skrlj, B., Kralj, J., and Lavrac, N. (2019). *Py3plex toolkit for visualization and analysis of multilayer networks*. Applied Network Science, 4(1), 94. DOI: ``10.1007/s41109-019-0203-7``.
 
 License
 -------
 
-The py3plex library is released under the MIT License. Book text is released under CC BY 4.0.
+The py3plex library is released under the MIT License; this book text is released under CC BY 4.0.
+
+Running Example Used Throughout
+-------------------------------
+
+Across Parts I–V, we repeatedly revisit a three-layer commuter network (metro, bus, and walking-transfer links) to compare a flattened ranking against a multilayer ranking, then stress-test that difference under uncertainty and disruption scenarios.
 
 .. note::
-   **Version Information:** This book edition is version 1.1.4 (2025), aligned with py3plex 1.1.4 and Python 3.8+ runtime support.
+   **Version Information:** This book edition is version 1.1.4 (2026), aligned with py3plex 1.1.4 and Python 3.8+ runtime support.

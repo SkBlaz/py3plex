@@ -45,3 +45,15 @@ At minimum, report:
 * known limitations relevant to your claims.
 
 A short, honest limitations paragraph is usually more credible than broad claims of robustness.
+
+What We Would Need to Trust Stronger Claims
+-------------------------------------------
+
+Stronger claims would require converging evidence across representation alternatives, robustness checks that preserve the substantive conclusion, and validation against at least one external signal (for example, known events, curated benchmarks, or domain-grounded labels).
+
+Example Limitations Paragraph for a Paper
+-----------------------------------------
+
+"Our multilayer ranking is conditional on the layer schema, coupling assumptions, and perturbation model used in this study. Projection-based baselines and per-layer alternatives were evaluated and produced qualitatively similar high-level patterns, but several node-level rank swaps remained sensitive to representation and temporal window choice. Therefore we interpret top-tier findings as robust trends and lower-tier differences as model-conditional."
+
+This chapter should be read alongside Chapter 3 (semantic ambiguity at replica vs physical level) and Chapter 8 (algorithm-family-specific safe and unsafe claims).
