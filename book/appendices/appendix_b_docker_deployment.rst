@@ -12,8 +12,17 @@ Recommended Path (Controlled Environment)
 
 .. code-block:: bash
 
-    docker build -t py3plex:1.1.4 .
-    docker run --rm -v $(pwd)/data:/data -v $(pwd)/results:/results py3plex:1.1.4 python script.py
+    # Build image
+    docker build -t py3plex:latest .
+    
+    # Build with specific Python version
+    docker build --build-arg PYTHON_VERSION=3.11 -t py3plex:3.11 .
+    
+    # Build with version tag matching book release
+    docker build -t py3plex:1.1.5 .
+    
+    # Run a pinned reproducible analysis
+    docker run --rm -v $(pwd)/data:/data -v $(pwd)/results:/results py3plex:1.1.5 python script.py
 
 For multi-service local orchestration:
 
