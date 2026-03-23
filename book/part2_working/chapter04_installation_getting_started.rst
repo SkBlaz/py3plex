@@ -34,7 +34,9 @@ Minimal Smoke Test
     result = Q.nodes().compute('degree').execute(net)
     print(result.count)
 
-Interpretation note: this verifies installation and execution path only. It does not validate model semantics.
+Expected output for this snippet is ``3``.
+
+Interpretation note: in this exact snippet, ``result.count`` is a replica-level count and equals the physical-node count because all edges are in one layer. This is the minimum **verified run** because it checks that import, data structure construction, DSL execution, and result materialization all work in your environment; it is not just a toy print statement.
 
 First-Run Checks That Actually Matter
 -------------------------------------
@@ -48,7 +50,7 @@ After the smoke test:
 Common Early Failures
 ---------------------
 
-* **Import succeeds, query fails:** often missing optional dependencies for specific algorithms.
+* **Import succeeds, query fails:** often missing optional dependencies for specific algorithm families (for example, community-detection extras such as Infomap-related workflows).
 * **Unexpected node counts:** replica vs physical-node confusion.
 * **Platform mismatch in scripts:** shell-activation differences or path assumptions.
 

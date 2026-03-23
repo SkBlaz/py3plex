@@ -24,6 +24,7 @@ Workflow Pattern 1: Grouped Selection with Coverage
     )
 
 Judgment point: coverage threshold controls strictness. ``all`` can be too restrictive in heterogeneous systems.
+Do not use coverage when the analysis target is deliberately layer-specific; cross-layer intersection logic can erase exactly the heterogeneity you are trying to study.
 
 Workflow Pattern 2: UQ-Aware Ranking
 ------------------------------------
@@ -40,6 +41,7 @@ Workflow Pattern 2: UQ-Aware Ranking
     )
 
 Interpretive warning: confidence intervals quantify algorithm/data perturbation under a model; they do not validate domain truth.
+Interpretive warning: interval overlap does not imply irrelevance, and non-overlap does not imply biological or social truth; both depend on model choice, data quality, and estimand definition.
 
 Workflow Pattern 3: Temporal Slicing
 ------------------------------------
@@ -54,6 +56,7 @@ Workflow Pattern 3: Temporal Slicing
     )
 
 Judgment point: time-window boundaries can dominate observed effects. Report window design choices explicitly.
+Here ``.during()`` is intended as stable public DSL syntax for temporal windowing, not merely illustrative pseudocode.
 
 Composability vs Readability
 ----------------------------
@@ -84,3 +87,8 @@ Before finalizing an advanced query workflow:
 2. verify uncertainty configuration,
 3. verify seeds and provenance capture,
 4. verify that outputs answer the intended question.
+
+Synthesis: Managing Complexity Creep
+------------------------------------
+
+Advanced pipelines fail most often through complexity creep: each added clause is locally reasonable, but the combined workflow becomes hard to audit. Treat readability, explicit assumptions, and provenance capture as first-class constraints, not post-hoc cleanup tasks.

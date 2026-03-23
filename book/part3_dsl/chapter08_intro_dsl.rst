@@ -36,6 +36,11 @@ Core Workflow Pattern
 
 Interpretation boundary: this is a reproducible computational selection, not automatically a defensible scientific claim.
 
+Raw Python vs DSL (When to Use Each)
+------------------------------------
+
+Use raw Python when the task is truly simple or highly custom (for example, quick one-off filtering in a notebook). Use the DSL when you need an auditable chain with explicit scope, ordering, and reproducibility hooks. A practical split: prototype in Python if needed, then promote claim-bearing analysis to DSL.
+
 Theory vs Implementation vs Workflow
 ------------------------------------
 
@@ -43,6 +48,7 @@ Theory vs Implementation vs Workflow
 * **Implementation:** py3plex resolves fields, may autocompute metrics, and executes against internal graph structures.
 * **Workflow:** your chosen thresholds and ordering reflect domain judgment.
 
+In the query above, ``where(degree__gt=3)`` is not just syntax: it operationalizes an inclusion threshold that can change the inferred "important actors" set.
 Keep these separate in analysis reports.
 
 Layer Algebra and Scope Control
@@ -59,6 +65,11 @@ Layer selection should reflect hypothesis scope, not convenience:
 
 A common error is using all layers by default and inferring layer-specific conclusions.
 
+Autocompute and Hidden Assumptions
+----------------------------------
+
+Autocompute can be useful, but it can also hide expensive or semantically consequential metric resolution. If a field is resolved implicitly, reviewers may miss that a methodological choice was made. Prefer explicit ``.compute(...)`` calls in claim-bearing workflows.
+
 What New Users Usually Misunderstand
 ------------------------------------
 
@@ -66,7 +77,9 @@ What New Users Usually Misunderstand
 2. A short query can still encode strong assumptions.
 3. Ranking stability requires separate checks (UQ, sensitivity, or perturbation).
 
+For example, ``Q.nodes().from_layers(L['social']).order_by('-degree').limit(10)`` looks compact but encodes a strong methodological choice: social-layer degree is being treated as the primary definition of importance.
+
 Next Step
 ---------
 
-Chapter 9 covers builder internals and explain plans. Chapter 10 covers advanced workflows where query complexity can hide methodological risk.
+Chapter 10 covers builder internals and explain plans. Chapter 11 covers advanced workflows where query complexity can hide methodological risk.
