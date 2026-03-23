@@ -41,7 +41,7 @@ What This Book Deliberately Does Not Do
 About the Software
 ------------------
 
-This edition targets **py3plex 1.1.4**. py3plex implements multilayer data structures, algorithm wrappers, DSL tooling, and workflow utilities. Some operations delegate to single-layer backends after explicit transformations; those transitions are identified in the relevant chapters.
+This edition targets **py3plex 1.1.5**. py3plex implements multilayer data structures, algorithm wrappers, DSL tooling, and workflow utilities. Some operations delegate to single-layer backends after explicit transformations; those transitions are identified in the relevant chapters.
 
 Conventions
 -----------
@@ -74,4 +74,4 @@ License
 The py3plex library is released under the MIT License. Book text is released under CC BY 4.0.
 
 .. note::
-   **Version Information:** This book edition is version 1.1.4 (2025), aligned with py3plex 1.1.4 and Python 3.8+ runtime support.
+   **Version Information:** This book edition is version 1.1.5 (2025), aligned with py3plex 1.1.5 and Python 3.8+ runtime support.
