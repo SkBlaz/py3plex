@@ -66,6 +66,22 @@ def get_network_signature(net):
     return (nodes, edges)
 
 
+def decode_signature(signature, node_map, layer_map):
+    """Decode encoded (node, layer) tuples using saved multiedgelist maps."""
+    reverse_node_map = {encoded: node for node, encoded in node_map.items()}
+    reverse_layer_map = {encoded: layer for layer, encoded in layer_map.items()}
+
+    def decode_replica(replica):
+        node, layer = replica
+        return (reverse_node_map[node], reverse_layer_map[layer])
+
+    decoded_nodes = sorted(decode_replica(node) for node in signature[0])
+    decoded_edges = sorted(
+        (decode_replica(edge[0]), decode_replica(edge[1])) for edge in signature[1]
+    )
+    return (decoded_nodes, decoded_edges)
+
+
 def test_multiedgelist_roundtrip():
     """Test that node names are preserved in multiedgelist format."""
     original_net = create_test_network()
@@ -92,6 +108,38 @@ def test_multiedgelist_roundtrip():
             f"Nodes mismatch:\nOriginal: {original_sig[0]}\nLoaded: {loaded_sig[0]}"
         assert original_sig[1] == loaded_sig[1], \
             f"Edges mismatch:\nOriginal: {original_sig[1]}\nLoaded: {loaded_sig[1]}"
+
+
+def test_multiedgelist_encoded_roundtrip():
+    """Test that encoded multiedgelist can be decoded back to original names."""
+    original_net = create_test_network()
+    original_sig = get_network_signature(original_net)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        file_path = Path(tmpdir) / "test_network_encoded.txt"
+
+        # Save network in encoded format (stores node_map/layer_map on network)
+        original_net.save_network(
+            output_file=str(file_path), output_type="multiedgelist_encoded"
+        )
+
+        # Load encoded network as multiedgelist
+        loaded_net = multinet.multi_layer_network(directed=False, verbose=False)
+        loaded_net.load_network(
+            input_file=str(file_path), input_type="multiedgelist", directed=False
+        )
+
+        encoded_sig = get_network_signature(loaded_net)
+        decoded_sig = decode_signature(
+            encoded_sig, original_net.node_map, original_net.layer_map
+        )
+
+        assert original_sig[0] == decoded_sig[0], (
+            f"Decoded nodes mismatch:\nOriginal: {original_sig[0]}\nDecoded: {decoded_sig[0]}"
+        )
+        assert original_sig[1] == decoded_sig[1], (
+            f"Decoded edges mismatch:\nOriginal: {original_sig[1]}\nDecoded: {decoded_sig[1]}"
+        )
 
 
 def test_gpickle_roundtrip():
