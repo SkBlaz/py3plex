@@ -68,12 +68,19 @@ def get_network_signature(net):
 
 def decode_signature(signature, node_map, layer_map):
     """Decode encoded (node, layer) tuples using saved multiedgelist maps."""
-    reverse_node_map = {encoded: node for node, encoded in node_map.items()}
-    reverse_layer_map = {encoded: layer for layer, encoded in layer_map.items()}
+    encoded_to_node_map = {encoded: node for node, encoded in node_map.items()}
+    encoded_to_layer_map = {encoded: layer for layer, encoded in layer_map.items()}
+
+    encoded_nodes = {node for node, _ in signature[0]}
+    encoded_layers = {layer for _, layer in signature[0]}
+    missing_node_ids = encoded_nodes - set(encoded_to_node_map)
+    missing_layer_ids = encoded_layers - set(encoded_to_layer_map)
+    assert not missing_node_ids, f"Missing encoded node IDs in node_map: {missing_node_ids}"
+    assert not missing_layer_ids, f"Missing encoded layer IDs in layer_map: {missing_layer_ids}"
 
     def decode_replica(replica):
         node, layer = replica
-        return (reverse_node_map[node], reverse_layer_map[layer])
+        return (encoded_to_node_map[node], encoded_to_layer_map[layer])
 
     decoded_nodes = sorted(decode_replica(node) for node in signature[0])
     decoded_edges = sorted(
@@ -122,6 +129,8 @@ def test_multiedgelist_encoded_roundtrip():
         original_net.save_network(
             output_file=str(file_path), output_type="multiedgelist_encoded"
         )
+        assert original_net.node_map, "node_map should be populated for encoded output"
+        assert original_net.layer_map, "layer_map should be populated for encoded output"
 
         # Load encoded network as multiedgelist
         loaded_net = multinet.multi_layer_network(directed=False, verbose=False)
