@@ -202,7 +202,20 @@ Run inside a virtual environment to keep dependencies isolated.</p>
 <span class="c1"># 3. Inspect result</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> high-degree nodes&quot;</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top high-degree nodes:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;degree_centrality&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><strong>Expected output (illustrative):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 8 high-degree nodes
+
+Top high-degree nodes:
+             id  degree_centrality
+0  (u12, work)           0.241379
+1  (u05, work)           0.206897
+2  (u41, social)         0.189655
+3  (u33, social)         0.172414
+4  (u20, leisure)        0.172414
 </pre></div>
 </div>
 <p><strong>What this does:</strong></p>

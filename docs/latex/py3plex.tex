@@ -2566,7 +2566,23 @@ Load a built\sphinxhyphen{}in dataset and run a simple query:
 \PYG{c+c1}{\PYGZsh{} 3. Inspect result}
 \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Found }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{result}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ high\PYGZhy{}degree nodes}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
-\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{df}\PYG{o}{.}\PYG{n}{head}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{Top high\PYGZhy{}degree nodes:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{df}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{]}\PYG{o}{.}\PYG{n}{head}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output (illustrative):}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Found 8 high\PYGZhy{}degree nodes
+
+Top high\PYGZhy{}degree nodes:
+             id  degree\PYGZus{}centrality
+0  (u12, work)           0.241379
+1  (u05, work)           0.206897
+2  (u41, social)         0.189655
+3  (u33, social)         0.172414
+4  (u20, leisure)        0.172414
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -3611,7 +3627,8 @@ Nodes per layer:
 \paragraph{Method 2: Add Nodes First}
 \label{\detokenize{how-to/load_and_build_networks:method-2-add-nodes-first}}
 \sphinxAtStartPar
-For more control over node attributes and to ensure edges only connect existing nodes:
+For more control over node attributes and to ensure edges only connect existing nodes.
+Use this pattern when you need explicit node\sphinxhyphen{}layer registration before edges.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
@@ -3633,6 +3650,21 @@ For more control over node attributes and to ensure edges only connect existing 
     \PYG{p}{[}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Alice}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{]}\PYG{p}{,}
     \PYG{p}{[}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Bob}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Carol}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{friends}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,} \PYG{l+m+mf}{1.0}\PYG{p}{]}
 \PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Verify network was built correctly}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Number of nodes: 6
+Number of edges: 2
+Number of unique node IDs (across all layers): 4
+Nodes per layer:
+  Layer \PYGZsq{}friends\PYGZsq{}: 3 nodes
+  Layer \PYGZsq{}colleagues\PYGZsq{}: 3 nodes
 \end{sphinxVerbatim}
 
 
@@ -3666,6 +3698,20 @@ For networks with edge attributes and mixed field names (timestamps, types, etc.
         \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{timestamp}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{2024\PYGZhy{}01\PYGZhy{}16}\PYG{l+s+s1}{\PYGZsq{}}
     \PYG{p}{\PYGZcb{}}
 \PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dict}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Verify network was built correctly}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{basic\PYGZus{}stats}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output:}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Number of nodes: 3
+Number of edges: 2
+Number of unique node IDs (across all layers): 3
+Nodes per layer:
+  Layer \PYGZsq{}friends\PYGZsq{}: 3 nodes
 \end{sphinxVerbatim}
 
 
@@ -15709,7 +15755,28 @@ Use \sphinxcode{\sphinxupquote{where()}} to add filter conditions. The builder A
 \sphinxstylestrong{Understanding} \sphinxcode{\sphinxupquote{layer\_count}}:
 
 \sphinxAtStartPar
-In multilayer networks, a node may appear in multiple layers. The \sphinxcode{\sphinxupquote{layer\_count}} attribute indicates how many layers the node participates in:
+In multilayer networks, a node may appear in multiple layers. The \sphinxcode{\sphinxupquote{layer\_count}} attribute indicates how many layers the node participates in.
+
+\sphinxAtStartPar
+Concrete example (using the network built in this page):
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Nodes that appear in exactly one layer}
+\PYG{n}{layer\PYGZus{}specific} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{layer\PYGZus{}count\PYGZus{}\PYGZus{}eq}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Layer\PYGZhy{}specific nodes: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{layer\PYGZus{}specific}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Nodes that appear in two or more layers (cross\PYGZhy{}layer connectors)}
+\PYG{n}{connectors} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{layer\PYGZus{}count\PYGZus{}\PYGZus{}gte}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Connector nodes: }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{connectors}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output (illustrative):}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+Layer\PYGZhy{}specific nodes: 3
+Connector nodes: 2
+\end{sphinxVerbatim}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
@@ -15844,11 +15911,22 @@ Required for robust statistical inference and hypothesis testing
 
 \PYG{c+c1}{\PYGZsh{} Access uncertainty information}
 \PYG{n}{df} \PYG{o}{=} \PYG{n}{result}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
-\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{df}\PYG{o}{.}\PYG{n}{head}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
-
-\PYG{c+c1}{\PYGZsh{} Results contain mean, std, and quantiles for each metric}
-\PYG{c+c1}{\PYGZsh{} The \PYGZsq{}degree\PYGZsq{} column now has dict values with uncertainty info}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{df}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{degree}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{betweenness\PYGZus{}centrality}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{]}\PYG{o}{.}\PYG{n}{head}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{)}
 \end{sphinxVerbatim}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Expected output (illustrative):}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+                  id                                             degree                            betweenness\PYGZus{}centrality
+0   (alice, social)  \PYGZob{}\PYGZsq{}mean\PYGZsq{}: 12, \PYGZsq{}std\PYGZsq{}: 0.42, \PYGZsq{}quantiles\PYGZsq{}: \PYGZob{}0.025:...  \PYGZob{}\PYGZsq{}mean\PYGZsq{}: 0.245, \PYGZsq{}std\PYGZsq{}: 0.018, \PYGZsq{}quantiles\PYGZsq{}: \PYGZob{}0...
+1     (bob, social)  \PYGZob{}\PYGZsq{}mean\PYGZsq{}: 8, \PYGZsq{}std\PYGZsq{}: 0.35, \PYGZsq{}quantiles\PYGZsq{}: \PYGZob{}0.025: ...  \PYGZob{}\PYGZsq{}mean\PYGZsq{}: 0.189, \PYGZsq{}std\PYGZsq{}: 0.016, \PYGZsq{}quantiles\PYGZsq{}: \PYGZob{}0...
+2     (eve, social)  \PYGZob{}\PYGZsq{}mean\PYGZsq{}: 15, \PYGZsq{}std\PYGZsq{}: 0.61, \PYGZsq{}quantiles\PYGZsq{}: \PYGZob{}0.025:...  \PYGZob{}\PYGZsq{}mean\PYGZsq{}: 0.301, \PYGZsq{}std\PYGZsq{}: 0.021, \PYGZsq{}quantiles\PYGZsq{}: \PYGZob{}0...
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+Results contain mean, std, and quantiles for each metric.
+The \sphinxcode{\sphinxupquote{degree}} and \sphinxcode{\sphinxupquote{betweenness\_centrality}} columns now contain dictionaries instead of scalar values.
 
 \sphinxAtStartPar
 \sphinxstylestrong{Uncertainty methods:}

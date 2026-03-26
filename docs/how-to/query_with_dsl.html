@@ -523,7 +523,22 @@ max       15.000000                0.301000
 <li><p><code class="docutils literal notranslate"><span class="pre">__ne</span></code> or <code class="docutils literal notranslate"><span class="pre">__neq</span></code>: not equal (<code class="docutils literal notranslate"><span class="pre">!=</span></code>)</p></li>
 </ul>
 <p><strong>Understanding</strong> <code class="docutils literal notranslate"><span class="pre">layer_count</span></code>:</p>
-<p>In multilayer networks, a node may appear in multiple layers. The <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> attribute indicates how many layers the node participates in:</p>
+<p>In multilayer networks, a node may appear in multiple layers. The <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> attribute indicates how many layers the node participates in.</p>
+<p>Concrete example (using the network built in this page):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes that appear in exactly one layer</span>
+<span class="n">layer_specific</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer_count__eq</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer-specific nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_specific</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Nodes that appear in two or more layers (cross-layer connectors)</span>
+<span class="n">connectors</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer_count__gte</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connector nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">connectors</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output (illustrative):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layer-specific nodes: 3
+Connector nodes: 2
+</pre></div>
+</div>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">layer_count__gte=2</span></code>: nodes appearing in at least 2 layers</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">layer_count__eq=1</span></code>: nodes appearing in exactly 1 layer (layer-specific nodes)</p></li>
@@ -612,12 +627,18 @@ Top 10 nodes by betweenness centrality:
 
 <span class="c1"># Access uncertainty information</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-
-<span class="c1"># Results contain mean, std, and quantiles for each metric</span>
-<span class="c1"># The &#39;degree&#39; column now has dict values with uncertainty info</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span> <span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
+<p><strong>Expected output (illustrative):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                  id                                             degree                            betweenness_centrality
+0   (alice, social)  {&#39;mean&#39;: 12, &#39;std&#39;: 0.42, &#39;quantiles&#39;: {0.025:...  {&#39;mean&#39;: 0.245, &#39;std&#39;: 0.018, &#39;quantiles&#39;: {0...
+1     (bob, social)  {&#39;mean&#39;: 8, &#39;std&#39;: 0.35, &#39;quantiles&#39;: {0.025: ...  {&#39;mean&#39;: 0.189, &#39;std&#39;: 0.016, &#39;quantiles&#39;: {0...
+2     (eve, social)  {&#39;mean&#39;: 15, &#39;std&#39;: 0.61, &#39;quantiles&#39;: {0.025:...  {&#39;mean&#39;: 0.301, &#39;std&#39;: 0.021, &#39;quantiles&#39;: {0...
+</pre></div>
+</div>
+<p>Results contain mean, std, and quantiles for each metric.
+The <code class="docutils literal notranslate"><span class="pre">degree</span></code> and <code class="docutils literal notranslate"><span class="pre">betweenness_centrality</span></code> columns now contain dictionaries instead of scalar values.</p>
 <p><strong>Uncertainty methods:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;perturbation&quot;</span></code>: Drop a small fraction of edges/nodes randomly (default: 5%)</p></li>

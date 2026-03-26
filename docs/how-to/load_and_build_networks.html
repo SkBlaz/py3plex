@@ -212,7 +212,8 @@ Nodes per layer:
 </section>
 <section id="method-2-add-nodes-first">
 <h3>Method 2: Add Nodes First<a class="headerlink" href="#method-2-add-nodes-first" title="Link to this heading"></a></h3>
-<p>For more control over node attributes and to ensure edges only connect existing nodes:</p>
+<p>For more control over node attributes and to ensure edges only connect existing nodes.
+Use this pattern when you need explicit node-layer registration before edges.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -232,6 +233,18 @@ Nodes per layer:
     <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">],</span>
     <span class="p">[(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="p">])</span>
+
+<span class="c1"># Verify network was built correctly</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 6
+Number of edges: 2
+Number of unique node IDs (across all layers): 4
+Nodes per layer:
+  Layer &#39;friends&#39;: 3 nodes
+  Layer &#39;colleagues&#39;: 3 nodes
 </pre></div>
 </div>
 </section>
@@ -262,6 +275,17 @@ Nodes per layer:
         <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-16&#39;</span>
     <span class="p">}</span>
 <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;dict&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify network was built correctly</span>
+<span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 3
+Number of edges: 2
+Number of unique node IDs (across all layers): 3
+Nodes per layer:
+  Layer &#39;friends&#39;: 3 nodes
 </pre></div>
 </div>
 </section>

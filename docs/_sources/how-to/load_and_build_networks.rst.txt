@@ -50,7 +50,8 @@ The simplest approach—nodes are created automatically when you add edges.
 Method 2: Add Nodes First
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For more control over node attributes and to ensure edges only connect existing nodes:
+For more control over node attributes and to ensure edges only connect existing nodes.  
+Use this pattern when you need explicit node-layer registration before edges.
 
 .. code-block:: python
 
@@ -73,6 +74,20 @@ For more control over node attributes and to ensure edges only connect existing 
         [('Alice', 'friends'), ('Bob', 'friends'), 1.0],
         [('Bob', 'friends'), ('Carol', 'friends'), 1.0]
     ])
+    
+    # Verify network was built correctly
+    network.basic_stats()
+
+**Expected output:**
+
+.. code-block:: text
+
+    Number of nodes: 6
+    Number of edges: 2
+    Number of unique node IDs (across all layers): 4
+    Nodes per layer:
+      Layer 'friends': 3 nodes
+      Layer 'colleagues': 3 nodes
 
 Method 3: Use Dictionary Format
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,6 +120,19 @@ For networks with edge attributes and mixed field names (timestamps, types, etc.
             'timestamp': '2024-01-16'
         }
     ], input_type="dict")
+    
+    # Verify network was built correctly
+    network.basic_stats()
+
+**Expected output:**
+
+.. code-block:: text
+
+    Number of nodes: 3
+    Number of edges: 2
+    Number of unique node IDs (across all layers): 3
+    Nodes per layer:
+      Layer 'friends': 3 nodes
 
 Loading Networks from Files
 ----------------------------

@@ -56,7 +56,22 @@ Load a built-in dataset and run a simple query:
     # 3. Inspect result
     print(f"Found {len(result.nodes)} high-degree nodes")
     df = result.to_pandas()
-    print(df.head())
+    print("\nTop high-degree nodes:")
+    print(df[['id', 'degree_centrality']].head())
+
+**Expected output (illustrative):**
+
+.. code-block:: text
+
+    Found 8 high-degree nodes
+    
+    Top high-degree nodes:
+                 id  degree_centrality
+    0  (u12, work)           0.241379
+    1  (u05, work)           0.206897
+    2  (u41, social)         0.189655
+    3  (u33, social)         0.172414
+    4  (u20, leisure)        0.172414
 
 **What this does:**
 

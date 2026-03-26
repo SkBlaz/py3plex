@@ -350,7 +350,26 @@ Use ``where()`` to add filter conditions. The builder API uses Django-style ``__
 
 **Understanding** ``layer_count``:
 
-In multilayer networks, a node may appear in multiple layers. The ``layer_count`` attribute indicates how many layers the node participates in:
+In multilayer networks, a node may appear in multiple layers. The ``layer_count`` attribute indicates how many layers the node participates in.
+
+Concrete example (using the network built in this page):
+
+.. code-block:: python
+
+    # Nodes that appear in exactly one layer
+    layer_specific = Q.nodes().where(layer_count__eq=1).execute(network)
+    print(f"Layer-specific nodes: {len(layer_specific)}")
+    
+    # Nodes that appear in two or more layers (cross-layer connectors)
+    connectors = Q.nodes().where(layer_count__gte=2).execute(network)
+    print(f"Connector nodes: {len(connectors)}")
+
+**Expected output (illustrative):**
+
+.. code-block:: text
+
+    Layer-specific nodes: 3
+    Connector nodes: 2
 
 * ``layer_count__gte=2``: nodes appearing in at least 2 layers
 * ``layer_count__eq=1``: nodes appearing in exactly 1 layer (layer-specific nodes)
@@ -449,10 +468,19 @@ Computing Metrics with Uncertainty
     
     # Access uncertainty information
     df = result.to_pandas()
-    print(df.head())
-    
-    # Results contain mean, std, and quantiles for each metric
-    # The 'degree' column now has dict values with uncertainty info
+    print(df[['id', 'degree', 'betweenness_centrality']].head(3))
+
+**Expected output (illustrative):**
+
+.. code-block:: text
+
+                      id                                             degree                            betweenness_centrality
+    0   (alice, social)  {'mean': 12, 'std': 0.42, 'quantiles': {0.025:...  {'mean': 0.245, 'std': 0.018, 'quantiles': {0...
+    1     (bob, social)  {'mean': 8, 'std': 0.35, 'quantiles': {0.025: ...  {'mean': 0.189, 'std': 0.016, 'quantiles': {0...
+    2     (eve, social)  {'mean': 15, 'std': 0.61, 'quantiles': {0.025:...  {'mean': 0.301, 'std': 0.021, 'quantiles': {0...
+
+Results contain mean, std, and quantiles for each metric.  
+The ``degree`` and ``betweenness_centrality`` columns now contain dictionaries instead of scalar values.
 
 **Uncertainty methods:**
 
