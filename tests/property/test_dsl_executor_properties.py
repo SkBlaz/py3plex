@@ -468,7 +468,7 @@ def test_executor_param_limit_equivalent_to_literal(limit_val):
     """
     network = create_test_network(num_nodes=7, num_layers=2, seed=42)
 
-    query_param = Q.nodes().limit(Param.ref("k")).to_ast()
+    query_param = Q.nodes().limit(Param.int("k")).to_ast()
     query_literal = Q.nodes().limit(limit_val).to_ast()
 
     result_param = execute_ast(network, query_param, params={"k": limit_val}).to_pandas()
