@@ -35,7 +35,12 @@ def _make_small_multilayer_network():
     return net
 
 
-def test_where_order_by_limit_chain_with_no_matches_returns_empty_result():
+def _set_replica_identity(*results):
+    for result in results:
+        result.meta["identity_strategy"] = IdentityStrategy.BY_REPLICA
+
+
+def test_chained_filters_return_empty_safely():
     net = _make_small_multilayer_network()
 
     result = (
@@ -54,10 +59,15 @@ def test_where_order_by_limit_chain_with_no_matches_returns_empty_result():
 def test_union_with_empty_result_preserves_nonempty_items():
     net = _make_small_multilayer_network()
     nonempty = Q.nodes().execute(net)
-    empty = Q.nodes().from_layers(L["social"]).where(degree__gt=100).execute(net)
+    empty = (
+        Q.nodes()
+        .from_layers(L["social"])
+        .compute("degree")
+        .where(degree__gt=100)
+        .execute(net)
+    )
 
-    nonempty.meta["identity_strategy"] = IdentityStrategy.BY_REPLICA
-    empty.meta["identity_strategy"] = IdentityStrategy.BY_REPLICA
+    _set_replica_identity(nonempty, empty)
 
     union = nonempty | empty
 
@@ -69,10 +79,15 @@ def test_union_with_empty_result_preserves_nonempty_items():
 def test_intersection_with_empty_result_is_empty():
     net = _make_small_multilayer_network()
     nonempty = Q.nodes().execute(net)
-    empty = Q.nodes().from_layers(L["social"]).where(degree__gt=100).execute(net)
+    empty = (
+        Q.nodes()
+        .from_layers(L["social"])
+        .compute("degree")
+        .where(degree__gt=100)
+        .execute(net)
+    )
 
-    nonempty.meta["identity_strategy"] = IdentityStrategy.BY_REPLICA
-    empty.meta["identity_strategy"] = IdentityStrategy.BY_REPLICA
+    _set_replica_identity(nonempty, empty)
 
     intersection = nonempty & empty
 
