@@ -425,3 +425,110 @@ def test_executor_no_matching_layer_returns_empty():
     
     # Should be empty
     assert len(df) == 0
+
+
+# ============================================================================
+# Additional Property Tests: Structural Invariants
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    small_limit=st.integers(min_value=1, max_value=8),
+    big_limit=st.integers(min_value=1, max_value=12),
+)
+def test_executor_limit_monotonicity(small_limit, big_limit):
+    """
+    Property: Smaller LIMIT never returns more rows than larger LIMIT.
+
+    For fixed network/query and limits a <= b:
+        |Q LIMIT a| <= |Q LIMIT b|
+    """
+    assume(small_limit <= big_limit)
+
+    network = create_test_network(num_nodes=8, num_layers=2, seed=42)
+
+    query_small = Q.nodes().limit(small_limit).to_ast()
+    query_big = Q.nodes().limit(big_limit).to_ast()
+
+    result_small = execute_ast(network, query_small).to_pandas()
+    result_big = execute_ast(network, query_big).to_pandas()
+
+    assert len(result_small) <= len(result_big)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    limit_val=st.integers(min_value=1, max_value=10),
+)
+def test_executor_param_limit_equivalent_to_literal(limit_val):
+    """
+    Property: LIMIT with bound parameter is equivalent to literal LIMIT.
+    """
+    network = create_test_network(num_nodes=7, num_layers=2, seed=42)
+
+    query_param = Q.nodes().limit(Param.ref("k")).to_ast()
+    query_literal = Q.nodes().limit(limit_val).to_ast()
+
+    result_param = execute_ast(network, query_param, params={"k": limit_val}).to_pandas()
+    result_literal = execute_ast(network, query_literal).to_pandas()
+
+    assert len(result_param) == len(result_literal)
+    assert list(result_param.columns) == list(result_literal.columns)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    threshold=st.integers(min_value=0, max_value=5),
+)
+def test_executor_and_duplicate_condition_idempotent(threshold):
+    """
+    Property: Duplicating the same condition with AND is idempotent.
+    """
+    network = create_test_network(num_nodes=6, num_layers=2, seed=42)
+
+    query_single = Q.nodes().where(degree__gt=threshold).to_ast()
+    query_double = Q.nodes().where(degree__gt=threshold).where(degree__gt=threshold).to_ast()
+
+    result_single = execute_ast(network, query_single).to_pandas()
+    result_double = execute_ast(network, query_double).to_pandas()
+
+    assert len(result_single) == len(result_double)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(
+    threshold=st.integers(min_value=0, max_value=5),
+)
+def test_executor_desc_order_then_limit_matches_sorted_prefix(threshold):
+    """
+    Property: ORDER BY desc + LIMIT n returns prefix of fully sorted results.
+    """
+    network = create_test_network(num_nodes=8, num_layers=1, seed=42)
+
+    full_df = (
+        execute_ast(
+            network,
+            Q.nodes().compute("degree").where(degree__gt=threshold).order_by("degree", desc=True).to_ast(),
+        )
+        .to_pandas()
+    )
+
+    top_df = (
+        execute_ast(
+            network,
+            Q.nodes()
+            .compute("degree")
+            .where(degree__gt=threshold)
+            .order_by("degree", desc=True)
+            .limit(3)
+            .to_ast(),
+        )
+        .to_pandas()
+    )
+
+    assert len(top_df) <= 3
+    assert top_df["degree"].tolist() == full_df["degree"].tolist()[: len(top_df)]
