@@ -1,29 +1,24 @@
 {
   "examples": {
     "01_basic_query": {
-      "has_stderr": false,
-      "output_file": "01_basic_query.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/01_basic_query.py\", line 13, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"",
+      "success": false
     },
     "02_community_detection": {
-      "has_stderr": false,
-      "output_file": "02_community_detection.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/02_community_detection.py\", line 16, in <module>\n    from py3plex.core import multinet\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner",
+      "success": false
     },
     "dsl_patterns_quick_reference": {
-      "has_stderr": false,
-      "output_file": "dsl_patterns_quick_reference.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/dsl_patterns_quick_reference.py\", line 12, in <module>\n    from py3plex.core import multinet\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/",
+      "success": false
     },
     "example_datasets": {
-      "has_stderr": true,
-      "output_file": "example_datasets.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/example_datasets.py\", line 11, in <module>\n    import py3plex as p3\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3pl",
+      "success": false
     },
     "example_ergonomics_demo": {
-      "has_stderr": false,
-      "output_file": "example_ergonomics_demo.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/example_ergonomics_demo.py\", line 17, in <module>\n    from py3plex.core import multinet\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runne",
+      "success": false
     },
     "example_multilayer_functionality": {
       "has_stderr": false,
@@ -33,14 +28,12 @@
       "success": true
     },
     "example_networkx_wrapper": {
-      "has_stderr": false,
-      "output_file": "example_networkx_wrapper.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/example_networkx_wrapper.py\", line 12, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n",
+      "success": false
     },
     "example_networkx_wrapper_kwargs": {
-      "has_stderr": false,
-      "output_file": "example_networkx_wrapper_kwargs.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/example_networkx_wrapper_kwargs.py\", line 12, in <module>\n    from py3plex.core import multinet\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/ho",
+      "success": false
     },
     "example_nx_wrapper": {
       "has_stderr": false,
@@ -50,14 +43,12 @@
       "success": true
     },
     "example_random_generator": {
-      "has_stderr": false,
-      "output_file": "example_random_generator.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/example_random_generator.py\", line 15, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n",
+      "success": false
     },
     "example_random_generators_advanced": {
-      "has_stderr": false,
-      "output_file": "example_random_generators_advanced.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/example_random_generators_advanced.py\", line 11, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_la",
+      "success": false
     },
     "mcp_quickstart": {
       "has_stderr": false,
@@ -67,9 +58,8 @@
       "success": true
     },
     "quick_start_ergonomics": {
-      "has_stderr": true,
-      "output_file": "quick_start_ergonomics.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/quick_start_ergonomics.py\", line 23, in <module>\n    from py3plex.ergonomics import (\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/",
+      "success": false
     },
     "tutorial_10min": {
       "has_stderr": false,
@@ -79,9 +69,8 @@
       "success": true
     },
     "user_journey_simulation": {
-      "has_stderr": false,
-      "output_file": "user_journey_simulation.txt",
-      "success": true
+      "error": "Traceback (most recent call last):\n  File \"/home/runner/work/py3plex/py3plex/examples/getting_started/user_journey_simulation.py\", line 29, in <module>\n    from py3plex.core import multinet\n  File \"/home/runner/work/py3plex/py3plex/py3plex/__init__.py\", line 57, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runner/work/py3plex/py3plex/py3plex/core/__init__.py\", line 24, in <module>\n    from py3plex.core.multinet import multi_layer_network\n  File \"/home/runne",
+      "success": false
     }
   },
   "generated": "CI",
