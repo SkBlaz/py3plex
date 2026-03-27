@@ -1,7 +1,10 @@
 """Tests for helper functions in py3plex.ergonomics."""
 
+from unittest.mock import Mock
+
 import pytest
 
+import py3plex.algorithms.community_detection as cd
 from py3plex.ergonomics import (
     quick_analysis,
     quick_communities,
@@ -10,7 +13,7 @@ from py3plex.ergonomics import (
 )
 
 
-def test_quick_network_builds_nodes_and_intralayer_edges():
+def test_quick_network_node_and_edge_creation():
     net = quick_network(
         people=["Alice", "Bob", "Carol"],
         layers=["work", "social"],
@@ -65,22 +68,25 @@ def test_quick_communities_invalid_algorithm_raises():
 def test_quick_communities_uses_louvain(monkeypatch):
     net = quick_network(people=["A", "B"], layers=["layer1"])
 
-    called = {"seen": False}
-
-    def _fake_louvain(network, random_state):
-        called["seen"] = True
-        assert network is net
-        assert random_state == 123
-        return {("A", "layer1"): 0, ("B", "layer1"): 1}
-
-    import py3plex.algorithms.community_detection as cd
-
-    monkeypatch.setattr(cd, "louvain_multilayer", _fake_louvain)
+    mock_louvain = Mock(return_value={("A", "layer1"): 0, ("B", "layer1"): 1})
+    monkeypatch.setattr(cd, "louvain_multilayer", mock_louvain)
 
     result = quick_communities(net, algorithm="louvain", seed=123)
-    assert called["seen"] is True
+    mock_louvain.assert_called_once_with(net, random_state=123)
     assert result["n_communities"] == 2
     assert result["sizes"] == {0: 1, 1: 1}
+
+
+def test_quick_communities_uses_leiden(monkeypatch):
+    net = quick_network(people=["A", "B"], layers=["layer1"])
+
+    mock_leiden = Mock(return_value={("A", "layer1"): 3, ("B", "layer1"): 3})
+    monkeypatch.setattr(cd, "leiden_multilayer", mock_leiden)
+
+    result = quick_communities(net, algorithm="leiden", seed=7)
+    mock_leiden.assert_called_once_with(net, random_state=7)
+    assert result["n_communities"] == 1
+    assert result["sizes"] == {3: 2}
 
 
 def test_show_network_summary_prints_core_sections(capsys):
