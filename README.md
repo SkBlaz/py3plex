@@ -1,5 +1,6 @@
-
 <img src="https://github.com/user-attachments/assets/47e16a25-cd58-41eb-9ccd-b40191758d91" alt="py3plex logo" width="400">
+
+# py3plex
 
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
 [![Examples](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml)
@@ -19,12 +20,14 @@
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
 
-**Key Features:**
+## Key Features
+
 * SQL-like DSL for intuitive network queries with smart defaults
 * Multilayer network visualization and analysis
 * Community detection and centrality measures
 * Network decomposition and embeddings
 
+## Flagship Example
 
 ```python
 from py3plex.core import datasets
@@ -184,7 +187,7 @@ Py3plex is released under the [MIT License](LICENSE).
 
 **Note on licensing:** Prior to version 1.0, the project was distributed under the BSD-3-Clause license. Starting with version 1.0, the license was changed to MIT to better align with the broader Python scientific ecosystem and simplify contribution and reuse. Both licenses are permissive and OSI-approved.
 
-# Citations
+## Citations
 ```
 @Article{Skrlj2019,
 author={Skrlj, Blaz
