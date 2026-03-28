@@ -5,6 +5,7 @@ These generators create synthetic multilayer/multiplex networks
 for testing, benchmarking, and teaching purposes.
 """
 
+from collections import defaultdict
 from typing import Optional
 
 import networkx as nx
@@ -301,13 +302,16 @@ def make_social_network(
     # Work layer: Random clusters (departments)
     n_departments = max(2, n_people // 10)
     department_assignments = np.random.randint(0, n_departments, n_people)
-    for i in range(n_people):
-        for j in range(i + 1, n_people):
-            if department_assignments[i] == department_assignments[j]:
+    department_members = defaultdict(list)
+    for person_idx, department in enumerate(department_assignments):
+        department_members[department].append(person_idx)
+    for members in department_members.values():
+        for i in range(len(members)):
+            for j in range(i + 1, len(members)):
                 if np.random.random() < 0.3:  # Not everyone knows everyone
                     G.add_edge(
-                        (i, layer_map["work"]),
-                        (j, layer_map["work"]),
+                        (members[i], layer_map["work"]),
+                        (members[j], layer_map["work"]),
                         type="work",
                         weight=1
                     )

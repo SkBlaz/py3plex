@@ -1,7 +1,7 @@
 # a class for random graph generation
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import networkx as nx
 import numpy as np
@@ -336,7 +336,7 @@ def random_multilayer_ER(
     # First, assign one node to each layer
     if n >= l:
         # If we have enough nodes, assign first l nodes to layers 0..l-1
-        layers = dict()
+        layers = {}
         for i in range(l):
             layers[i] = i
         # Then randomly assign remaining nodes
@@ -450,7 +450,7 @@ def random_multiplex_generator(n: int, m: int, d: float = 0.9) -> nx.MultiGraph:
         layer_list = random.sample(layers, random.choice(layers))
         node_to_layers[node] = layer_list
         for l in layer_list:
-            layer_to_nodes[l] = layer_to_nodes.get(l, []) + [node]
+            layer_to_nodes.setdefault(l, []).append(node)
 
     edge_to_layers: dict = {}
     for l, nlist in layer_to_nodes.items():
@@ -463,7 +463,7 @@ def random_multiplex_generator(n: int, m: int, d: float = 0.9) -> nx.MultiGraph:
             else:
                 e = (p2, p1)
 
-            edge_to_layers[e] = edge_to_layers.get(e, []) + [l]
+            edge_to_layers.setdefault(e, []).append(l)
 
     for k, v in edge_to_layers.items():
         for l in v:
