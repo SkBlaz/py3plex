@@ -7,7 +7,7 @@ def _import_py3plex_or_skip():
     try:
         import py3plex
     except ModuleNotFoundError as exc:
-        if exc.name in {"matplotlib"}:
+        if exc.name == "matplotlib":
             pytest.skip(f"optional dependency missing for top-level import: {exc.name}")
         raise
     return py3plex
