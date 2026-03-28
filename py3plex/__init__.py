@@ -123,6 +123,7 @@ from py3plex.profiling import (
     profile_performance,
     timed_section,
 )
+import py3plex.config as config
 
 # Plugin system - import for easy access
 from py3plex.plugins import (
@@ -162,6 +163,12 @@ from py3plex.datasets import (
     make_random_multilayer,
     make_random_multiplex,
     make_social_network,
+)
+from py3plex.io import (
+    load_from_arrow,
+    load_network_from_parquet,
+    save_network_to_parquet,
+    save_to_arrow,
 )
 
 # Dynamics module for simulating dynamical processes
@@ -299,6 +306,13 @@ __all__ = [
     "make_social_network",
     "list_datasets",
     "get_data_dir",
+    # Config module
+    "config",
+    # I/O convenience functions
+    "save_to_arrow",
+    "load_from_arrow",
+    "save_network_to_parquet",
+    "load_network_from_parquet",
     # Dynamics (simulation)
     "D",
     "SimulationBuilder",
