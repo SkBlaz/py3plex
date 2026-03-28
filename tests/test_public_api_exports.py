@@ -7,7 +7,7 @@ def _import_py3plex_or_skip():
     try:
         import py3plex
     except ModuleNotFoundError as exc:
-        if exc.name == "matplotlib":
+        if exc.name in {"matplotlib", "networkx"}:
             pytest.skip(f"optional dependency missing for top-level import: {exc.name}")
         raise
     return py3plex
@@ -44,22 +44,17 @@ def test_io_convenience_functions_exported_from_main_package():
 
 
 def test_io_convenience_functions_match_io_module():
-    """Top-level I/O convenience exports should match py3plex.io objects."""
-    _import_py3plex_or_skip()
-    from py3plex import (
-        load_from_arrow,
-        load_network_from_parquet,
-        save_network_to_parquet,
-        save_to_arrow,
-    )
-    from py3plex.io import (
-        load_from_arrow as io_load_from_arrow,
-        load_network_from_parquet as io_load_network_from_parquet,
-        save_network_to_parquet as io_save_network_to_parquet,
-        save_to_arrow as io_save_to_arrow,
-    )
+    """Top-level I/O convenience exports should be callable lazy aliases."""
+    py3plex = _import_py3plex_or_skip()
 
-    assert save_to_arrow is io_save_to_arrow
-    assert load_from_arrow is io_load_from_arrow
-    assert save_network_to_parquet is io_save_network_to_parquet
-    assert load_network_from_parquet is io_load_network_from_parquet
+    names = [
+        "save_to_arrow",
+        "load_from_arrow",
+        "save_network_to_parquet",
+        "load_network_from_parquet",
+    ]
+
+    for name in names:
+        fn = getattr(py3plex, name)
+        assert callable(fn)
+        assert fn.__module__ == "py3plex"
