@@ -1,7 +1,7 @@
 # a class for random graph generation
 import random
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import networkx as nx
 import numpy as np
@@ -336,7 +336,7 @@ def random_multilayer_ER(
     # First, assign one node to each layer
     if n >= l:
         # If we have enough nodes, assign first l nodes to layers 0..l-1
-        layers = dict()
+        layers = {}
         for i in range(l):
             layers[i] = i
         # Then randomly assign remaining nodes
