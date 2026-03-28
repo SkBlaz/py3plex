@@ -443,7 +443,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--type",
         choices=["random", "er", "ba", "ws"],
         default="random",
-        help="Network model (default: random): random, er, ba, or ws",
+        help="Network model (default: random): random (random multilayer), er (Erdős-Rényi), ba (Barabási-Albert), ws (Watts-Strogatz)",
     )
     create_parser.add_argument(
         "--probability",
@@ -465,7 +465,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     load_parser = subparsers.add_parser(
         "load", help="Load and inspect a multilayer network (use '-' for stdin)"
     )
-    load_parser.add_argument("input", help="Input network file (use '-' to read from stdin)")
+    load_parser.add_argument("input", help="Input network file (use '-' for stdin)")
     load_parser.add_argument(
         "--info", action="store_true", help="Display network information"
     )
@@ -491,7 +491,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "-a",
         choices=["louvain", "infomap", "label_prop"],
         default="louvain",
-        help="Community detection algorithm (default: louvain): louvain, infomap, or label_prop",
+        help="Community detection algorithm (default: louvain): louvain, infomap, or label_prop (label propagation)",
     )
     community_parser.add_argument(
         "--output", "-o", help="Output file for community assignments (JSON)"
@@ -635,7 +635,7 @@ Examples:
     )
     query_parser.add_argument(
         "input",
-        help="Input network file (use '-' to read from stdin)",
+        help="Input network file (use '-' for stdin)",
     )
     query_parser.add_argument(
         "query",

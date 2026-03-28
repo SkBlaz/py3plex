@@ -273,4 +273,4 @@ class TestCLIDocumentation:
                 cli.main([command, "--help"])
             captured = capsys.readouterr()
             help_text = captured.out
-            assert "-" in help_text and "stdin" in help_text.lower()
+            assert "Input network file (use '-' for stdin)" in help_text
