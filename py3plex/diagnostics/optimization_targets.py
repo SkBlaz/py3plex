@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 from py3plex.profiling import get_monitor
 
@@ -31,7 +31,7 @@ class OptimizationTarget:
     area: OptimizationArea
     function: str
     file_path: str
-    line_range: tuple[int, int]
+    line_range: Tuple[int, int]
     bottleneck: str
     complexity: str
     optimization_target: str
@@ -231,7 +231,8 @@ def _collect_profiled_functions(targets: Sequence[OptimizationTarget]) -> Dict[s
     target_functions = {t.function for t in targets}
     for func_name, stats in monitor.stats.items():
         if func_name in target_functions:
-            call_count = float(stats.get("call_count", 0.0))
+            raw_call_count = stats.get("call_count", 0.0)
+            call_count = max(float(raw_call_count), 0.0)
             total_time = float(stats.get("total_time", 0.0))
             avg_ms = (total_time / call_count * 1000.0) if call_count > 0 else 0.0
             result[func_name] = {
@@ -245,7 +246,7 @@ def _collect_profiled_functions(targets: Sequence[OptimizationTarget]) -> Dict[s
 
 def find_optimization_targets(
     network: Any = None,
-    areas: Optional[Sequence[OptimizationArea | str]] = None,
+    areas: Optional[Sequence[Union[OptimizationArea, str]]] = None,
     include_profiling: bool = True,
 ) -> OptimizationTargetReport:
     """Find likely performance bottlenecks and concrete optimization targets.
@@ -274,7 +275,7 @@ def find_optimization_targets(
     ]
 
     profiling = _collect_profiled_functions(targets) if include_profiling else None
-    if profiling == {}:
+    if not profiling:
         profiling = None
 
     return OptimizationTargetReport(
