@@ -118,15 +118,20 @@ After reviewing ``README.md``, ``AGENTS.md``, and the current docs tree, these a
 
 1. **Conflicting example inventory and scale claims**
 
-   * README says **170+** examples.
-   * ``AGENTS.md`` says **267** examples.
-   * ``docfiles/getting_started/tutorial_10min.rst`` says **26 focused examples** in its section list.
+   * README says **170+** examples *(as observed on 2026-03-28 in ``README.md``)*.
+   * ``AGENTS.md`` says **267** examples *(as observed on 2026-03-28 in ``AGENTS.md``)*.
+   * ``docfiles/getting_started/tutorial_10min.rst`` says **26 focused examples** *(as observed on 2026-03-28 in that file's "Next Steps" section)*.
 
    New users cannot quickly trust which navigation map is current.
 
 2. **Broken or stale example path references in onboarding docs**
 
-   Several onboarding pages reference example folders that are not present in the current top-level ``examples/`` layout (for example ``examples/00_quickstart/`` and category folders such as ``communities/`` and ``temporal/``). This blocks copy-paste adoption because the first command often fails with "file not found".
+   Several onboarding pages reference example folders that are not present in the current top-level ``examples/`` layout. For example:
+
+   * ``docfiles/getting_started/tutorial_10min.rst`` references ``examples/00_quickstart/...`` and category folders such as ``examples/communities/`` and ``examples/temporal/``.
+   * ``docfiles/examples/index.rst`` describes a folder taxonomy that includes categories not present in the current top-level examples tree.
+
+   This blocks copy-paste adoption because the first command often fails with "file not found".
 
 3. **No single canonical "start here" path across README and docs**
 
