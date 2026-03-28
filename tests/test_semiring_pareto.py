@@ -32,17 +32,21 @@ class TestParetoSet:
 
         assert frontier.to_list() == [(0.0, 3.0), (1.0, 2.0)]
 
-    def test_dominates_returns_false_for_dimension_mismatch(self):
-        """Dominance comparison across different dimensions should be False."""
+    def test_add_with_dimension_mismatch_keeps_both_vectors(self):
+        """Dimension-mismatched vectors should not dominate each other in add()."""
         frontier = ParetoSet()
+        frontier.add((1.0, 2.0))
+        frontier.add((1.0, 2.0, 3.0))
 
-        assert frontier._dominates((1.0, 2.0), (1.0, 2.0, 3.0)) is False
+        assert frontier.to_list() == [(1.0, 2.0), (1.0, 2.0, 3.0)]
 
-    def test_dominates_uses_epsilon_tolerance(self):
-        """Small numerical differences within epsilon are not strict dominance."""
+    def test_add_uses_epsilon_tolerance(self):
+        """Near-equal vectors within epsilon should both remain in frontier."""
         frontier = ParetoSet(epsilon=1e-6)
+        frontier.add((1.0, 1.0))
+        frontier.add((1.0 + 5e-7, 1.0 + 5e-7))
 
-        assert frontier._dominates((1.0, 1.0), (1.0 + 5e-7, 1.0 + 5e-7)) is False
+        assert frontier.to_list() == [(1.0, 1.0), (1.0000005, 1.0000005)]
 
     def test_union_combines_frontiers_and_prunes_dominated_points(self):
         """Union should merge frontiers and remove dominated vectors."""
