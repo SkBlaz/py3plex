@@ -215,6 +215,24 @@ class TestUncertaintyDefaultsIntegration:
         Q.uncertainty.defaults(random_state=None)
         assert Q.uncertainty.get("random_state") is None
 
+    def test_metric_uncertainty_overrides_global_method(self):
+        """Metric-level uncertainty arguments should override global defaults."""
+        net = build_test_network()
+
+        Q.uncertainty.defaults(method="bootstrap", n_boot=11, random_state=123)
+        result = (
+            Q.nodes()
+            .compute("degree", uncertainty=True, method="perturbation", n_samples=7, seed=5)
+            .execute(net)
+        )
+
+        attr = result.attributes.get("degree", {})
+        assert attr
+        first_val = next(iter(attr.values()))
+        assert isinstance(first_val, dict)
+        assert first_val.get("method") == "perturbation"
+        assert first_val.get("n_samples") == 7
+
 
 class TestUncertaintyDefaultsDocumentation:
     """Tests matching documentation examples."""

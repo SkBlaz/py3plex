@@ -173,6 +173,33 @@ class TestReplay:
             if deg1 is not None and deg2 is not None:
                 assert deg1 == deg2
 
+    def test_replay_preserves_uncertainty_metric_payload(self, sample_network):
+        """Replay should preserve UQ payload fields for computed metrics."""
+        result1 = (
+            Q.nodes()
+            .provenance(mode="replayable", capture="snapshot", seed=42)
+            .compute(
+                "degree",
+                uncertainty=True,
+                method="perturbation",
+                n_samples=7,
+                seed=42,
+            )
+            .execute(sample_network, progress=False)
+        )
+
+        result2 = result1.replay(strict=False)
+
+        assert result1.count == result2.count
+        item = result1.items[0]
+        v1 = result1.attributes["degree"][item]
+        v2 = result2.attributes["degree"][item]
+        for key in ("mean", "std", "method", "n_samples"):
+            assert key in v1 and key in v2
+
+        assert v1["method"] == v2["method"] == "perturbation"
+        assert v1["n_samples"] == v2["n_samples"] == 7
+
 
 class TestBundleIO:
     """Test bundle export and import."""

@@ -10,7 +10,6 @@ import pytest
 
 from py3plex.core import multinet
 from py3plex.dsl import Q
-from py3plex.uncertainty import StatSeries, ResamplingStrategy
 
 
 def build_test_network():
@@ -276,6 +275,24 @@ class TestDSLUncertaintyEdgeCases:
         )
         
         assert len(result) >= 1
+
+    def test_uncertainty_single_node_method_metadata_present(self):
+        """Single-node/small-network UQ should return structured uncertainty metadata."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        net.add_edges([["a", "L0", "b", "L0", 1.0]], input_type="list")
+
+        result = (
+            Q.nodes()
+            .compute("degree", uncertainty=True, method="bootstrap", n_samples=5, seed=9)
+            .execute(net)
+        )
+
+        assert len(result) >= 1
+        degree_attr = result.attributes.get("degree", {})
+        first_val = next(iter(degree_attr.values()))
+        assert isinstance(first_val, dict)
+        assert "mean" in first_val and "std" in first_val
+        assert "method" in first_val and "n_samples" in first_val
 
 
 class TestDSLUncertaintyIntegration:
