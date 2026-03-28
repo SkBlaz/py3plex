@@ -304,7 +304,7 @@ def make_social_network(
     department_assignments = np.random.randint(0, n_departments, n_people)
     department_members = defaultdict(list)
     for person_idx, department in enumerate(department_assignments):
-        department_members[int(department)].append(person_idx)
+        department_members[department].append(person_idx)
     for members in department_members.values():
         for i in range(len(members)):
             for j in range(i + 1, len(members)):
