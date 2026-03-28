@@ -399,7 +399,12 @@ For more information, visit: https://github.com/SkBlaz/py3plex
 
     parser.add_argument("--version", action="version", version=f"py3plex {__version__}")
 
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+    subparsers = parser.add_subparsers(
+        dest="command",
+        title="commands",
+        metavar="COMMAND",
+        help="Available commands (run 'py3plex COMMAND --help' for details)",
+    )
 
     # HELP command
     subparsers.add_parser("help", help="Show detailed help information about py3plex")
@@ -438,7 +443,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--type",
         choices=["random", "er", "ba", "ws"],
         default="random",
-        help="Network type - Possible values: 'random' (random network, default), 'er' (Erdős-Rényi), 'ba' (Barabási-Albert preferential attachment), 'ws' (Watts-Strogatz small-world)",
+        help="Network model (default: random): random, er, ba, or ws",
     )
     create_parser.add_argument(
         "--probability",
@@ -470,6 +475,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     load_parser.add_argument("--output", "-o", help="Save output to file (JSON format)")
     load_parser.add_argument(
         "--input-format",
+        dest="input_format",
         choices=["auto", "multiedgelist", "edgelist", "json"],
         default="auto",
         help="Input format for stdin data (default: auto-detect)",
@@ -479,13 +485,13 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     community_parser = subparsers.add_parser(
         "community", help="Detect communities in the network"
     )
-    community_parser.add_argument("input", help="Input network file")
+    community_parser.add_argument("input", help="Input network file (use '-' for stdin)")
     community_parser.add_argument(
         "--algorithm",
         "-a",
         choices=["louvain", "infomap", "label_prop"],
         default="louvain",
-        help="Community detection algorithm - Possible values: 'louvain' (Louvain method, default), 'infomap' (Infomap algorithm), 'label_prop' (Label propagation)",
+        help="Community detection algorithm (default: louvain): louvain, infomap, or label_prop",
     )
     community_parser.add_argument(
         "--output", "-o", help="Output file for community assignments (JSON)"
@@ -501,13 +507,13 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     centrality_parser = subparsers.add_parser(
         "centrality", help="Compute node centrality measures"
     )
-    centrality_parser.add_argument("input", help="Input network file")
+    centrality_parser.add_argument("input", help="Input network file (use '-' for stdin)")
     centrality_parser.add_argument(
         "--measure",
         "-m",
         choices=["degree", "betweenness", "closeness", "eigenvector", "pagerank"],
         default="degree",
-        help="Centrality measure - Possible values: 'degree' (degree centrality, default), 'betweenness' (betweenness centrality), 'closeness' (closeness centrality), 'eigenvector' (eigenvector centrality), 'pagerank' (PageRank)",
+        help="Centrality measure (default: degree): degree, betweenness, closeness, eigenvector, or pagerank",
     )
     centrality_parser.add_argument(
         "--output", "-o", help="Output file for centrality scores (JSON)"
@@ -518,7 +524,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     stats_parser = subparsers.add_parser(
         "stats", help="Compute multilayer network statistics"
     )
-    stats_parser.add_argument("input", help="Input network file")
+    stats_parser.add_argument("input", help="Input network file (use '-' for stdin)")
     stats_parser.add_argument(
         "--measure",
         "-m",
@@ -532,7 +538,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
             "edge_overlap",
         ],
         default="all",
-        help="Statistic to compute - Possible values: 'all' (compute all statistics, default), 'density' (network density), 'clustering' (clustering coefficient), 'layer_density' (density per layer), 'node_activity' (node activity across layers), 'versatility' (versatility centrality), 'edge_overlap' (edge overlap between layers)",
+        help="Statistic (default: all): all, density, clustering, layer_density, node_activity, versatility, or edge_overlap",
     )
     stats_parser.add_argument(
         "--layer", help="Specific layer for layer-specific statistics"
@@ -545,7 +551,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     viz_parser = subparsers.add_parser(
         "visualize", help="Visualize the multilayer network"
     )
-    viz_parser.add_argument("input", help="Input network file")
+    viz_parser.add_argument("input", help="Input network file (use '-' for stdin)")
     viz_parser.add_argument(
         "--output",
         "-o",
@@ -556,7 +562,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
         "--layout",
         choices=["spring", "circular", "kamada_kawai", "multilayer"],
         default="multilayer",
-        help="Layout algorithm - Possible values: 'spring' (force-directed spring layout), 'circular' (circular layout), 'kamada_kawai' (Kamada-Kawai force layout), 'multilayer' (specialized multilayer layout, default)",
+        help="Layout algorithm (default: multilayer): spring, circular, kamada_kawai, or multilayer",
     )
     viz_parser.add_argument(
         "--width", type=int, default=12, help="Figure width in inches (default: 12)"
@@ -569,12 +575,12 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     aggregate_parser = subparsers.add_parser(
         "aggregate", help="Aggregate multilayer network into single layer"
     )
-    aggregate_parser.add_argument("input", help="Input network file")
+    aggregate_parser.add_argument("input", help="Input network file (use '-' for stdin)")
     aggregate_parser.add_argument(
         "--method",
         choices=["sum", "mean", "max", "min"],
         default="sum",
-        help="Aggregation method for edge weights - Possible values: 'sum' (sum weights, default), 'mean' (average weights), 'max' (maximum weight), 'min' (minimum weight)",
+        help="Aggregation method (default: sum): sum, mean, max, or min",
     )
     aggregate_parser.add_argument(
         "--output", "-o", required=True, help="Output file for aggregated network"
@@ -584,7 +590,7 @@ For more information, visit: https://github.com/SkBlaz/py3plex
     convert_parser = subparsers.add_parser(
         "convert", help="Convert network between different formats"
     )
-    convert_parser.add_argument("input", help="Input network file")
+    convert_parser.add_argument("input", help="Input network file (use '-' for stdin)")
     convert_parser.add_argument(
         "--output",
         "-o",
@@ -652,6 +658,7 @@ Examples:
     )
     query_parser.add_argument(
         "--input-format",
+        dest="input_format",
         choices=["auto", "multiedgelist", "edgelist", "json"],
         default="auto",
         help="Input format for stdin data (default: auto-detect)",
