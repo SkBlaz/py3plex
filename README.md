@@ -163,7 +163,7 @@ make ci     # Run lint + tests in CI-style order
 
 Safety notes for contributors:
 - Keep changes focused and add tests next to the feature you modify.
-- Do not add new markdown files unless explicitly requested (repository policy is enforced by tests).
+- Do not add new markdown files unless explicitly requested (enforced by `tests/test_link_checker.py` to prevent documentation drift).
 - Prefer running targeted tests first, then broader checks before opening a PR.
 
 ### MCP Integration (AI Agents)
