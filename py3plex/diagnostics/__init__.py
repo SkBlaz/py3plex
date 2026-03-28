@@ -20,6 +20,12 @@ from .core import (
 )
 from .codes import ERROR_CODES, ErrorCode
 from .utils import fuzzy_match, did_you_mean
+from .optimization_targets import (
+    OptimizationArea,
+    OptimizationTarget,
+    OptimizationTargetReport,
+    find_optimization_targets,
+)
 
 __all__ = [
     "Diagnostic",
@@ -31,4 +37,8 @@ __all__ = [
     "ErrorCode",
     "fuzzy_match",
     "did_you_mean",
+    "OptimizationArea",
+    "OptimizationTarget",
+    "OptimizationTargetReport",
+    "find_optimization_targets",
 ]
