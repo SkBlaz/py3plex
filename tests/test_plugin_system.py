@@ -132,6 +132,29 @@ class TestPluginRegistry:
         with pytest.raises(KeyError, match="not found"):
             registry.get("centrality", "nonexistent")
 
+    def test_invalid_plugin_remains_listed_but_not_retrievable(self):
+        """Validation-failing plugin should still be discoverable in registry listings."""
+        registry = PluginRegistry()
+
+        class InvalidCentrality(CentralityPlugin):
+            @property
+            def name(self):
+                return "invalid_but_listed"
+
+            def validate(self) -> bool:
+                return False
+
+            def compute(self, network, **kwargs):
+                return {}
+
+        registry.register_plugin("centrality", "invalid_but_listed", InvalidCentrality)
+
+        listed = registry.list_plugins("centrality")
+        assert "invalid_but_listed" in listed["centrality"]
+
+        with pytest.raises(RuntimeError, match="validation failed"):
+            registry.get("centrality", "invalid_but_listed")
+
     def test_get_plugin_info(self):
         """Test getting plugin metadata."""
         registry = PluginRegistry()

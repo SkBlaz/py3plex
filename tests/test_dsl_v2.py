@@ -51,6 +51,7 @@ from py3plex.dsl import (
     PredictStmt,
     ReduceStmt,
 )
+from py3plex.dsl.algebra import AmbiguousIdentityError, AttributeConflictError, ConflictResolution
 
 
 @pytest.fixture
@@ -543,6 +544,17 @@ class TestErrorHandling:
         assert measure_registry.has("betweenness")  # alias
         assert not measure_registry.has("unknown_measure")
 
+    def test_parameter_missing_error_lists_provided_parameters(self, sample_network):
+        """Test missing parameter message includes provided parameter names."""
+        q = Q.nodes().where(degree__gt=Param.int("threshold"))
+        with pytest.raises(ParameterMissingError) as exc_info:
+            q.execute(sample_network, other=1)
+
+        msg = str(exc_info.value)
+        assert ":threshold" in msg
+        assert "Provided parameters" in msg
+        assert "other" in msg
+
 
 class TestMeasureRegistry:
     """Test measure registry functionality."""
@@ -619,6 +631,79 @@ class TestSerializerDSL:
         q = Q.nodes().limit(10)
         dsl = q.to_dsl()
         assert "LIMIT 10" in dsl
+
+
+class TestResultAlgebra:
+    """Test post-execution algebra operations on QueryResult."""
+
+    @pytest.fixture
+    def multilayer_algebra_network(self):
+        """Create a small multilayer network for result algebra tests."""
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        net.add_edges(
+            [
+                ["a", "L0", "b", "L0", 1.0],
+                ["b", "L0", "c", "L0", 1.0],
+                ["c", "L0", "a", "L0", 1.0],
+                ["a", "L1", "b", "L1", 1.0],
+                ["b", "L1", "c", "L1", 1.0],
+                ["c", "L1", "a", "L1", 1.0],
+            ],
+            input_type="list",
+        )
+        return net
+
+    def test_union_requires_identity_strategy_for_multilayer(self, multilayer_algebra_network):
+        """Union should fail with ambiguous identity on multilayer results."""
+        r1 = Q.nodes().compute("degree").execute(multilayer_algebra_network)
+        r2 = Q.nodes().compute("degree").execute(multilayer_algebra_network)
+
+        with pytest.raises(AmbiguousIdentityError, match="Identity strategy"):
+            _ = r1 | r2
+
+    def test_union_requires_conflict_resolution_for_mixed_uncertainty(self, multilayer_algebra_network):
+        """Union should surface attribute conflicts for deterministic vs uncertain attrs."""
+        r1 = Q.nodes().compute("degree").execute(multilayer_algebra_network)
+        r2 = (
+            Q.nodes()
+            .compute(
+                "degree",
+                uncertainty=True,
+                method="bootstrap",
+                n_samples=5,
+                seed=1,
+            )
+            .execute(multilayer_algebra_network)
+        )
+        r1.meta["identity_strategy"] = "by_replica"
+        r2.meta["identity_strategy"] = "by_replica"
+
+        with pytest.raises(AttributeConflictError):
+            _ = r1 | r2
+
+    def test_union_mixed_uncertainty_with_conflict_resolution(self, multilayer_algebra_network):
+        """Union should succeed when identity and conflict resolution are explicit."""
+        r1 = Q.nodes().compute("degree").execute(multilayer_algebra_network)
+        r2 = (
+            Q.nodes()
+            .compute(
+                "degree",
+                uncertainty=True,
+                method="bootstrap",
+                n_samples=5,
+                seed=1,
+            )
+            .execute(multilayer_algebra_network)
+        )
+        r1.meta["identity_strategy"] = "by_replica"
+        r2.meta["identity_strategy"] = "by_replica"
+        r1.meta["conflict_resolution"] = ConflictResolution.PREFER_RIGHT
+
+        merged = r1 | r2
+        assert merged.count == len(merged.items)
+        first_val = next(iter(merged.attributes["degree"].values()))
+        assert isinstance(first_val, dict)
+        assert "mean" in first_val
 
     def test_with_layers(self):
         """Test serializing query with FROM layers."""

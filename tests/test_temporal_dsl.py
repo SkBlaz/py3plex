@@ -5,6 +5,7 @@ from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
 from py3plex.core import multinet
 from py3plex.dsl import Q, L
 from py3plex.dsl.ast import WindowSpec
+from py3plex.dsl.errors import DslExecutionError
 
 
 class TestDSLWindowSpec:
@@ -263,6 +264,34 @@ class TestDSLTemporalErrors:
         
         # Should not raise error at build time
         assert q._select.temporal_context is not None
+
+    def test_window_unknown_aggregation_raises_on_execution(self):
+        """Window execution should reject unknown aggregation modes."""
+        tnet = TemporalMultiLayerNetwork()
+        tnet.add_edges(
+            [
+                {
+                    "source": "A",
+                    "target": "B",
+                    "source_type": "layer1",
+                    "target_type": "layer1",
+                    "t": 100.0,
+                    "weight": 1.0,
+                }
+            ]
+        )
+
+        q = Q.nodes().window(50.0, aggregation="avg")
+        with pytest.raises(DslExecutionError, match="Unknown aggregation mode"):
+            q.execute(tnet)
+
+    def test_during_accepts_negative_timestamps(self):
+        """Temporal context should preserve negative timestamps in AST."""
+        q = Q.edges().during(-10.0, 5.0)
+        ast = q.to_ast()
+        assert ast.select.temporal_context is not None
+        assert ast.select.temporal_context.t0 == -10.0
+        assert ast.select.temporal_context.t1 == 5.0
 
 
 class TestDSLChaining:

@@ -170,3 +170,10 @@ class TestExtractEdgeTimeUnbounded:
         # Should return atemporal interval when parsing fails
         assert interval.start is None
         assert interval.end is None
+
+    def test_extract_partial_interval_with_invalid_end_keeps_unbounded(self):
+        """Invalid t_end with valid t_start should produce unbounded end interval."""
+        edge = {'source': 'A', 'target': 'B', 't_start': 100.0, 't_end': 'invalid'}
+        interval = extract_edge_time(edge)
+        assert interval.start == 100.0
+        assert interval.end == float('inf')

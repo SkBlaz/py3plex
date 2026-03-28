@@ -12,6 +12,7 @@ import types
 import pytest
 
 from py3plex.core import multinet
+from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
 from py3plex.plugins.examples import (
     ExampleCircularLayout,
     ExampleNetworkDensity,
@@ -187,3 +188,22 @@ def test_example_simple_community_connected_components_and_deterministic():
     assert communities1[("X", "L")] == communities1[("Y", "L")]
     assert communities1[("A", "L")] != communities1[("X", "L")]
 
+
+def test_plugin_contract_with_temporal_network_input():
+    """Example metric plugin should fail gracefully for unsupported temporal type."""
+    tnet = TemporalMultiLayerNetwork()
+    tnet.add_edges(
+        [
+            {
+                "source": "A",
+                "target": "B",
+                "source_type": "L0",
+                "target_type": "L0",
+                "t": 10.0,
+            }
+        ]
+    )
+
+    plugin = ExampleNetworkDensity()
+    with pytest.raises(ValueError, match="multi_layer_network"):
+        plugin.compute(tnet)
