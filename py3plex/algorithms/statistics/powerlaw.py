@@ -1409,8 +1409,6 @@ class Truncated_Power_Law(Distribution):
 
     @property
     def _pdf_discrete_normalizer(self):
-        if 0:
-            return False
         from mpmath import (
             exp,  # faster /here/ than numpy.exp
             lerchphi,
@@ -1429,21 +1427,7 @@ class Truncated_Power_Law(Distribution):
     def pdf(self, data=None):
         if data is None and hasattr(self, 'parent_Fit'):
             data = self.parent_Fit.data
-        if not self.discrete and self.in_range() and False:
-            data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
-            from mpmath import gammainc
-            from numpy import exp
-            #                (Lambda**(1-alpha))/\
-            #                float(gammainc(1-alpha,Lambda*xmin))
-            likelihoods = (
-                self.Lambda**(1 - self.alpha) /
-                (data**self.alpha * exp(self.Lambda * data) * gammainc(
-                    1 - self.alpha, self.Lambda * self.xmin)).astype(float))
-            # Simplified so as not to throw a nan from infs being divided by each other
-            from sys import float_info
-            likelihoods[likelihoods == 0] = 10**float_info.min_10_exp
-        else:
-            likelihoods = Distribution.pdf(self, data)
+        likelihoods = Distribution.pdf(self, data)
         return likelihoods
 
     def _generate_random_continuous(self, r):
