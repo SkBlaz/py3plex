@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Mar 28, 2026}
+\date{Mar 29, 2026}
 \release{1.1.5}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -99303,6 +99303,84 @@ Enhanced performance for centrality computations \sphinxhyphen{} \sphinxstylestr
 Integration with popular graph databases \sphinxhyphen{} \sphinxstylestrong{Under consideration}
 
 \end{itemize}
+
+
+\subsubsection{Documentation Gaps Blocking New\sphinxhyphen{}User Adoption}
+\label{\detokenize{project/roadmap:documentation-gaps-blocking-new-user-adoption}}
+\sphinxAtStartPar
+After reviewing \sphinxcode{\sphinxupquote{README.md}}, \sphinxcode{\sphinxupquote{AGENTS.md}}, and the current docs tree, these are the highest\sphinxhyphen{}impact documentation gaps for first\sphinxhyphen{}time users:
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Conflicting example inventory and scale claims}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+README says \sphinxstylestrong{170+} examples \sphinxstyleemphasis{(as observed on 2026\sphinxhyphen{}03\sphinxhyphen{}28 in \textasciigrave{}\textasciigrave{}README.md\textasciigrave{}\textasciigrave{})}.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{AGENTS.md}} says \sphinxstylestrong{267} examples \sphinxstyleemphasis{(as observed on 2026\sphinxhyphen{}03\sphinxhyphen{}28 in \textasciigrave{}\textasciigrave{}AGENTS.md\textasciigrave{}\textasciigrave{})}.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{docfiles/getting\_started/tutorial\_10min.rst}} says \sphinxstylestrong{26 focused examples} \sphinxstyleemphasis{(as observed on 2026\sphinxhyphen{}03\sphinxhyphen{}28 in that file’s “Next Steps” section)}.
+
+\end{itemize}
+
+\sphinxAtStartPar
+New users cannot quickly trust which navigation map is current.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Broken or stale example path references in onboarding docs}
+
+\sphinxAtStartPar
+Several onboarding pages reference example folders that are not present in the current top\sphinxhyphen{}level \sphinxcode{\sphinxupquote{examples/}} layout. For example:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{docfiles/getting\_started/tutorial\_10min.rst}} references \sphinxcode{\sphinxupquote{examples/00\_quickstart/...}} and category folders such as \sphinxcode{\sphinxupquote{examples/communities/}} and \sphinxcode{\sphinxupquote{examples/temporal/}}.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{docfiles/examples/index.rst}} describes a folder taxonomy that includes categories not present in the current top\sphinxhyphen{}level examples tree.
+
+\end{itemize}
+
+\sphinxAtStartPar
+This blocks copy\sphinxhyphen{}paste adoption because the first command often fails with “file not found”.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{No single canonical “start here” path across README and docs}
+
+\sphinxAtStartPar
+README, docs homepage, and tutorial pages each present different starting flows. The project has strong content depth, but first\sphinxhyphen{}time users lack one authoritative linear path from install \sphinxhyphen{}\textgreater{} first successful query \sphinxhyphen{}\textgreater{} next steps.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{README flagship snippet is advanced before a minimal validated success case}
+
+\sphinxAtStartPar
+The first large code sample is feature\sphinxhyphen{}rich (community detection + UQ + grouping + explainability), which is valuable for power users but can overwhelm new adopters who need a shortest possible “first success” script first.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{Audience boundary between AGENTS.md and human docs is unclear}
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{AGENTS.md}} is comprehensive and agent\sphinxhyphen{}oriented, but there is no prominent warning in beginner\sphinxhyphen{}facing docs clarifying that it is an expert/automation playbook rather than the recommended first learning resource for humans.
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstylestrong{No documented single source of truth for doc metadata drift\sphinxhyphen{}prone fields}
+
+\sphinxAtStartPar
+Counts and path catalogs (examples totals, folder maps, quickstart file paths) are repeated in multiple places without a clearly designated canonical source, causing recurring drift.
+
+\end{enumerate}
 
 
 \paragraph{Vote on Features}

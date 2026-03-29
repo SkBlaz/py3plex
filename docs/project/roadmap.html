@@ -113,7 +113,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#research-directions">Research Directions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#community-requests">Community Requests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#community-requests">Community Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-gaps-blocking-new-user-adoption">Documentation Gaps Blocking New-User Adoption</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#vote-on-features">Vote on Features</a></li>
 </ul>
 </li>
@@ -273,6 +274,40 @@
 <li><p>Enhanced performance for centrality computations - <strong>Planned</strong></p></li>
 <li><p>Integration with popular graph databases - <strong>Under consideration</strong></p></li>
 </ul>
+</section>
+<section id="documentation-gaps-blocking-new-user-adoption">
+<h2>Documentation Gaps Blocking New-User Adoption<a class="headerlink" href="#documentation-gaps-blocking-new-user-adoption" title="Link to this heading"></a></h2>
+<p>After reviewing <code class="docutils literal notranslate"><span class="pre">README.md</span></code>, <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>, and the current docs tree, these are the highest-impact documentation gaps for first-time users:</p>
+<ol class="arabic">
+<li><p><strong>Conflicting example inventory and scale claims</strong></p>
+<ul class="simple">
+<li><p>README says <strong>170+</strong> examples <em>(as observed on 2026-03-28 in ``README.md``)</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> says <strong>267</strong> examples <em>(as observed on 2026-03-28 in ``AGENTS.md``)</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docfiles/getting_started/tutorial_10min.rst</span></code> says <strong>26 focused examples</strong> <em>(as observed on 2026-03-28 in that file’s “Next Steps” section)</em>.</p></li>
+</ul>
+<p>New users cannot quickly trust which navigation map is current.</p>
+</li>
+<li><p><strong>Broken or stale example path references in onboarding docs</strong></p>
+<p>Several onboarding pages reference example folders that are not present in the current top-level <code class="docutils literal notranslate"><span class="pre">examples/</span></code> layout. For example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">docfiles/getting_started/tutorial_10min.rst</span></code> references <code class="docutils literal notranslate"><span class="pre">examples/00_quickstart/...</span></code> and category folders such as <code class="docutils literal notranslate"><span class="pre">examples/communities/</span></code> and <code class="docutils literal notranslate"><span class="pre">examples/temporal/</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docfiles/examples/index.rst</span></code> describes a folder taxonomy that includes categories not present in the current top-level examples tree.</p></li>
+</ul>
+<p>This blocks copy-paste adoption because the first command often fails with “file not found”.</p>
+</li>
+<li><p><strong>No single canonical “start here” path across README and docs</strong></p>
+<p>README, docs homepage, and tutorial pages each present different starting flows. The project has strong content depth, but first-time users lack one authoritative linear path from install -&gt; first successful query -&gt; next steps.</p>
+</li>
+<li><p><strong>README flagship snippet is advanced before a minimal validated success case</strong></p>
+<p>The first large code sample is feature-rich (community detection + UQ + grouping + explainability), which is valuable for power users but can overwhelm new adopters who need a shortest possible “first success” script first.</p>
+</li>
+<li><p><strong>Audience boundary between AGENTS.md and human docs is unclear</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> is comprehensive and agent-oriented, but there is no prominent warning in beginner-facing docs clarifying that it is an expert/automation playbook rather than the recommended first learning resource for humans.</p>
+</li>
+<li><p><strong>No documented single source of truth for doc metadata drift-prone fields</strong></p>
+<p>Counts and path catalogs (examples totals, folder maps, quickstart file paths) are repeated in multiple places without a clearly designated canonical source, causing recurring drift.</p>
+</li>
+</ol>
 <section id="vote-on-features">
 <h3>Vote on Features<a class="headerlink" href="#vote-on-features" title="Link to this heading"></a></h3>
 <p>Help prioritize development by:</p>
