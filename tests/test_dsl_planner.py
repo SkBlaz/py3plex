@@ -324,6 +324,29 @@ def test_explain_plan_method(small_network):
     assert q._explain_plan_flag is True
 
 
+def test_explain_plan_method_populates_plan_metadata(small_network):
+    """Test that .explain_plan() affects the next execute() call."""
+    q = Q.nodes().compute("degree").explain_plan()
+    assert q._explain_plan_flag is True
+    result = q.execute(small_network)
+
+    # Plan metadata should be populated without passing explain_plan=True.
+    assert "plan" in result.meta
+    assert "plan_hash" in result.meta["plan"]
+
+    # Flag should be consumed after one execution.
+    assert not hasattr(q, "_explain_plan_flag")
+
+    # A subsequent execute() call should not include plan metadata unless
+    # explain_plan is explicitly requested again.
+    result_second = q.execute(small_network)
+    assert "plan" not in result_second.meta
+
+    # Builder remains reusable: re-enabling explain_plan should work again.
+    result_third = q.explain_plan().execute(small_network)
+    assert "plan" in result_third.meta
+
+
 def test_planner_config_method(small_network):
     """Test the planner() builder method."""
     q = Q.nodes().compute("degree").planner(compute_policy="minimal", enable_cache=False)
