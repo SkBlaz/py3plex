@@ -12,7 +12,7 @@
 
 ** New to py3plex?** 
 - **5 minutes**: See [dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) for 7 copy-paste patterns
-- **15 minutes**: Jump to [Quick Start: Golden Paths](#quick-start-golden-paths) for 5 essential patterns that cover 80% of use cases
+- **15 minutes**: Jump to [Quick Start: Golden Paths](#quick-start-golden-paths) for 5 high-value patterns that cover common workflows
 - **Deep dive**: Continue reading this comprehensive guide
 
 ---
@@ -97,6 +97,10 @@ q = q.compute("degree").hint()  # Get new suggestions
 - Building complex queries and unsure of next steps
 - Learning new DSL features
 - Debugging query construction issues
+
+**Validation status**:
+- Execution and chaining behavior are covered by `tests/test_agents_ergonomics_features.py`
+- Exact hint text and formatting may evolve between versions; rely on API behavior, not exact output text
 
 ### Enhanced QueryResult Introspection
 
@@ -247,6 +251,10 @@ with suppress_warnings("degree_ambiguity", "node_replica_confusion"):
 - **React to warnings**: Warnings are actionable — apply suggested alternatives when applicable
 - **Don't ignore**: Warnings indicate potential correctness or performance issues
 
+**Validation status**:
+- Warning suppression behavior (`suppress_warnings`) is tested in `tests/test_agents_ergonomics_features.py`
+- Warning triggering thresholds and exact warning text are implementation details and may vary across releases
+
 ### Multilayer Semantics Mental Model
 
 **Core concepts LLM agents must understand**:
@@ -336,11 +344,15 @@ result = (
 result.export_bundle("analysis.bundle.json.gz", compress=True)
 ```
 
-**LLM agent guidance**: When user asks "how do I...", search these recipes first. They represent tested, best-practice patterns.
+**LLM agent guidance**: When user asks "how do I...", search these recipes first and then validate in the current environment.
 
 ---
 
 ## Quick Start: Golden Paths
+
+**Validation status**:
+- Path 1 and Path 2 are exercised in `tests/test_agents_golden_paths.py`
+- Path 3, Path 4, and Path 5 are advanced workflows and may require optional modules or setup in the current environment
 
 ### Path 1: Network Analysis from CSV
 
