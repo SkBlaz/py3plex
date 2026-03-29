@@ -123,6 +123,7 @@ from py3plex.profiling import (
     profile_performance,
     timed_section,
 )
+import py3plex.config as config
 
 # Plugin system - import for easy access
 from py3plex.plugins import (
@@ -163,7 +164,6 @@ from py3plex.datasets import (
     make_random_multiplex,
     make_social_network,
 )
-
 # Dynamics module for simulating dynamical processes
 from py3plex.dynamics import (
     D,
@@ -198,6 +198,34 @@ from py3plex.uncertainty import (
     uncertainty_enabled,
     estimate_uncertainty,
 )
+
+
+def save_to_arrow(network, path, **kwargs):
+    """Lazy top-level alias for :func:`py3plex.io.save_to_arrow`."""
+    from py3plex.io import save_to_arrow as _save_to_arrow
+
+    return _save_to_arrow(network, path, **kwargs)
+
+
+def load_from_arrow(path, as_multinet=True, **kwargs):
+    """Lazy top-level alias for :func:`py3plex.io.load_from_arrow`."""
+    from py3plex.io import load_from_arrow as _load_from_arrow
+
+    return _load_from_arrow(path, as_multinet=as_multinet, **kwargs)
+
+
+def save_network_to_parquet(network, path, **kwargs):
+    """Lazy top-level alias for :func:`py3plex.io.save_network_to_parquet`."""
+    from py3plex.io import save_network_to_parquet as _save_network_to_parquet
+
+    return _save_network_to_parquet(network, path, **kwargs)
+
+
+def load_network_from_parquet(path, **kwargs):
+    """Lazy top-level alias for :func:`py3plex.io.load_network_from_parquet`."""
+    from py3plex.io import load_network_from_parquet as _load_network_from_parquet
+
+    return _load_network_from_parquet(path, **kwargs)
 
 __all__ = [
     # Version info
@@ -299,6 +327,13 @@ __all__ = [
     "make_social_network",
     "list_datasets",
     "get_data_dir",
+    # Config module
+    "config",
+    # I/O convenience functions
+    "save_to_arrow",
+    "load_from_arrow",
+    "save_network_to_parquet",
+    "load_network_from_parquet",
     # Dynamics (simulation)
     "D",
     "SimulationBuilder",
