@@ -139,6 +139,33 @@ pip install py3plex[viz]
 pip install py3plex[mcp,algos,viz]
 ```
 
+### Contributing (First PR Quick Path)
+
+If this is your first contribution, use this sequence:
+
+```bash
+# 1) Create local dev environment and install package
+make setup
+make dev-install
+
+# 2) Run formatting and checks before opening a PR
+make format
+make lint
+make test
+```
+
+Helpful commands:
+
+```bash
+make help   # List all project commands
+make ci     # Run lint + tests in CI-style order
+```
+
+Safety notes for contributors:
+- Keep changes focused and add tests next to the feature you modify.
+- Do not add new markdown files unless explicitly requested (enforced by `tests/test_link_checker.py` to prevent documentation drift).
+- Prefer running targeted tests first, then broader checks before opening a PR.
+
 ### MCP Integration (AI Agents)
 
 py3plex provides a Model Context Protocol (MCP) server for integration with AI coding assistants:
