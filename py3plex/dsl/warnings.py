@@ -37,6 +37,127 @@ class MultilayerSemanticWarning(Py3plexWarning):
     pass
 
 
+# Stable machine-readable warning catalog used by validation/execution surfaces.
+#
+# Schema per warning code:
+# - severity: "error" | "warning" | "info"
+# - cause: concise root-cause explanation
+# - likely_intent: what an agent/user likely meant
+# - suggested_fixes: list of actionable repair steps
+# - autofixable: whether a deterministic autofix is usually possible
+STRUCTURED_WARNING_CATALOG: Dict[str, Dict[str, Any]] = {
+    "execute_too_early": {
+        "severity": "error",
+        "cause": "Query building method used after execution result creation.",
+        "likely_intent": "Filter or transform before execute().",
+        "suggested_fixes": [
+            "Move where()/compute()/grouping methods before execute().",
+            "Use result.to_pandas() filtering for post-execution filtering.",
+        ],
+        "autofixable": True,
+    },
+    "replica_vs_physical_node_ambiguity": {
+        "severity": "warning",
+        "cause": "Multilayer results return node replicas by default.",
+        "likely_intent": "Count or rank physical nodes rather than replicas.",
+        "suggested_fixes": [
+            "Use QueryResult.physical_nodes() for physical node counts.",
+            "Use per-layer grouping to make replica semantics explicit.",
+        ],
+        "autofixable": True,
+    },
+    "aggregate_degree_ambiguity": {
+        "severity": "warning",
+        "cause": "Degree in multilayer graphs can mean aggregate, intra-layer, or inter-layer.",
+        "likely_intent": "Compute a specific degree variant explicitly.",
+        "suggested_fixes": [
+            "Use compute('degree', kind='aggregate|intra|inter').",
+            "Use from_layers()/per_layer() to constrain semantics.",
+        ],
+        "autofixable": True,
+    },
+    "expensive_centrality": {
+        "severity": "warning",
+        "cause": "Expensive centrality requested on large graph.",
+        "likely_intent": "Complete analysis faster while preserving intent.",
+        "suggested_fixes": [
+            "Use per_layer() or from_layers() to reduce workload.",
+            "Use approximate mode in compute(..., approx=True).",
+        ],
+        "autofixable": True,
+    },
+    "high_uq_cost": {
+        "severity": "warning",
+        "cause": "High uncertainty sample count relative to graph size.",
+        "likely_intent": "Estimate uncertainty with lower runtime.",
+        "suggested_fixes": [
+            "Reduce n_samples.",
+            "Use stratified_perturbation or seed method for quick checks.",
+        ],
+        "autofixable": True,
+    },
+    "missing_metric": {
+        "severity": "error",
+        "cause": "Query references a metric that has not been computed.",
+        "likely_intent": "Use metric in where/order/coverage logic.",
+        "suggested_fixes": [
+            "Add .compute('<metric>') before referencing the metric.",
+            "Enable autocompute if available.",
+        ],
+        "autofixable": True,
+    },
+    "active_grouping_required": {
+        "severity": "error",
+        "cause": "Operation requires grouped context.",
+        "likely_intent": "Apply operation per layer or per group.",
+        "suggested_fixes": [
+            "Call per_layer(), per_layer_pair(), or group_by(...) first.",
+        ],
+        "autofixable": True,
+    },
+    "grouping_not_ended": {
+        "severity": "error",
+        "cause": "Coverage or global operation called while grouping still active.",
+        "likely_intent": "Flatten grouped result before coverage/global operation.",
+        "suggested_fixes": [
+            "Call end_grouping() before coverage()/global operations.",
+        ],
+        "autofixable": True,
+    },
+}
+
+
+def build_structured_warning(
+    code: str,
+    *,
+    message: Optional[str] = None,
+    details: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Build a machine-readable warning dictionary from a stable warning code."""
+    template = STRUCTURED_WARNING_CATALOG.get(
+        code,
+        {
+            "severity": "warning",
+            "cause": "Unknown warning.",
+            "likely_intent": "Inspect warning details.",
+            "suggested_fixes": [],
+            "autofixable": False,
+        },
+    )
+    payload = {
+        "code": code,
+        "severity": template["severity"],
+        "message": message or code.replace("_", " "),
+        "cause": template["cause"],
+        "likely_intent": template["likely_intent"],
+        "suggested_fixes": list(template["suggested_fixes"]),
+        "autofixable": bool(template["autofixable"]),
+    }
+    if details:
+        payload["details"] = details
+    return payload
+
+
 @contextmanager
 def suppress_warnings(*warning_types: str):
     """Context manager to suppress specific warning types.

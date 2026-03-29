@@ -292,6 +292,7 @@ class ComputeItem:
     null_model: Optional[str] = None
     random_state: Optional[int] = None
     approx: Optional["ApproximationSpec"] = None
+    kind: Optional[str] = None
 
     @property
     def result_name(self) -> str:

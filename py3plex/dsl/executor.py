@@ -52,6 +52,7 @@ from .errors import (
     UnknownAttributeError,
     GroupingError,
 )
+from .warnings import build_structured_warning
 
 # Import requirements system for algorithm compatibility checking
 from py3plex.requirements import check_compat, AlgorithmCompatibilityError
@@ -2828,6 +2829,20 @@ def _execute_select(
     result = QueryResult(
         target=select.target.value, items=items, attributes=attributes, meta=meta_dict
     )
+
+    diagnostics: List[Dict[str, Any]] = []
+    if select.target == Target.NODES and not (
+        select.layer_set is not None or select.layer_expr is not None
+    ):
+        diagnostics.append(build_structured_warning("replica_vs_physical_node_ambiguity"))
+    layer_count = len(list(network.get_layers())) if hasattr(network, "get_layers") else 1
+    if layer_count > 1 and any(
+        ci.name == "degree" and not getattr(ci, "kind", None) for ci in select.compute
+    ):
+        diagnostics.append(build_structured_warning("aggregate_degree_ambiguity"))
+    if diagnostics:
+        result.meta["warnings"] = diagnostics
+
     _record_timing("materialize", (time.monotonic() - stage_start) * 1000)
 
     # Step 6.7: Compute embeddings if requested

@@ -198,6 +198,16 @@ from py3plex.uncertainty import (
     uncertainty_enabled,
     estimate_uncertainty,
 )
+from py3plex.agent import (
+    load_network_from_path,
+    top_hubs_by_layer,
+    uncertainty_centrality,
+    community_detection_with_uq,
+    temporal_slice,
+    reproducible_export_bundle,
+    compare_networks,
+    summarize_result,
+)
 
 
 def save_to_arrow(network, path, **kwargs):
@@ -361,4 +371,13 @@ __all__ = [
     "capabilities",
     "capabilities_flat",
     "capabilities_fingerprint",
+    # Agent-facing stable API
+    "load_network_from_path",
+    "top_hubs_by_layer",
+    "uncertainty_centrality",
+    "community_detection_with_uq",
+    "temporal_slice",
+    "reproducible_export_bundle",
+    "compare_networks",
+    "summarize_result",
 ]
