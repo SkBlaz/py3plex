@@ -3588,8 +3588,8 @@ class QueryBuilder:
         # requiring explain_plan=True in execute().
         if getattr(self, "_explain_plan_flag", False):
             explain_plan = True
-            # Apply to the next execute() call only.
-            delattr(self, "_explain_plan_flag")
+        # Apply to the next execute() call only (safe even if already absent).
+        self.__dict__.pop("_explain_plan_flag", None)
 
         ast = Query(explain=False, select=self._select)
         return execute_ast(network, ast, params=params, progress=progress, explain_plan=explain_plan, planner_config=planner)
