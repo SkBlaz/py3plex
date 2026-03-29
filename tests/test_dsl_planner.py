@@ -324,6 +324,19 @@ def test_explain_plan_method(small_network):
     assert q._explain_plan_flag is True
 
 
+def test_explain_plan_method_populates_plan_metadata(small_network):
+    """Test that .explain_plan() affects the next execute() call."""
+    q = Q.nodes().compute("degree").explain_plan()
+    result = q.execute(small_network)
+
+    # Plan metadata should be populated without passing explain_plan=True.
+    assert "plan" in result.meta
+    assert "plan_hash" in result.meta["plan"]
+
+    # Flag should be consumed after one execution.
+    assert not hasattr(q, "_explain_plan_flag")
+
+
 def test_planner_config_method(small_network):
     """Test the planner() builder method."""
     q = Q.nodes().compute("degree").planner(compute_policy="minimal", enable_cache=False)

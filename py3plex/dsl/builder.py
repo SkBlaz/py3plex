@@ -3584,6 +3584,13 @@ class QueryBuilder:
                 # Node is already a tuple (node, layer) in the partition
                 network.set_node_attribute((node, layer), community_id_attr, comm_id)
 
+        # Allow .explain_plan() builder modifier to enable plan capture without
+        # requiring explain_plan=True in execute().
+        if getattr(self, "_explain_plan_flag", False):
+            explain_plan = True
+            # Apply to the next execute() call only.
+            delattr(self, "_explain_plan_flag")
+
         ast = Query(explain=False, select=self._select)
         return execute_ast(network, ast, params=params, progress=progress, explain_plan=explain_plan, planner_config=planner)
     
