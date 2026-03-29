@@ -255,3 +255,22 @@ class TestCLIDocumentation:
         
         # Check that edgelist is mentioned as a recommended format
         assert "edgelist" in help_text.lower() or ".txt" in help_text.lower()
+
+    def test_help_text_without_redundant_possible_values(self, capsys):
+        """Test that help text avoids redundant 'Possible values' phrasing."""
+        with pytest.raises(SystemExit):
+            cli.main(["create", "--help"])
+
+        captured = capsys.readouterr()
+        help_text = captured.out
+        assert "Possible values:" not in help_text
+
+    def test_file_input_commands_document_stdin(self, capsys):
+        """Test that file-input commands consistently document stdin support."""
+        commands = ["load", "community", "centrality", "stats", "visualize", "aggregate", "convert", "query"]
+        for command in commands:
+            with pytest.raises(SystemExit):
+                cli.main([command, "--help"])
+            captured = capsys.readouterr()
+            help_text = captured.out
+            assert "Input network file (use '-' for stdin)" in help_text
