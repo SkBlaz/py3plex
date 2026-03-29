@@ -111,6 +111,44 @@ The following features have been requested by the community. For the full list a
 * Enhanced performance for centrality computations - **Planned**
 * Integration with popular graph databases - **Under consideration**
 
+Documentation Gaps Blocking New-User Adoption
+---------------------------------------------
+
+After reviewing ``README.md``, ``AGENTS.md``, and the current docs tree, these are the highest-impact documentation gaps for first-time users:
+
+1. **Conflicting example inventory and scale claims**
+
+   * README says **170+** examples *(as observed on 2026-03-28 in ``README.md``)*.
+   * ``AGENTS.md`` says **267** examples *(as observed on 2026-03-28 in ``AGENTS.md``)*.
+   * ``docfiles/getting_started/tutorial_10min.rst`` says **26 focused examples** *(as observed on 2026-03-28 in that file's "Next Steps" section)*.
+
+   New users cannot quickly trust which navigation map is current.
+
+2. **Broken or stale example path references in onboarding docs**
+
+   Several onboarding pages reference example folders that are not present in the current top-level ``examples/`` layout. For example:
+
+   * ``docfiles/getting_started/tutorial_10min.rst`` references ``examples/00_quickstart/...`` and category folders such as ``examples/communities/`` and ``examples/temporal/``.
+   * ``docfiles/examples/index.rst`` describes a folder taxonomy that includes categories not present in the current top-level examples tree.
+
+   This blocks copy-paste adoption because the first command often fails with "file not found".
+
+3. **No single canonical "start here" path across README and docs**
+
+   README, docs homepage, and tutorial pages each present different starting flows. The project has strong content depth, but first-time users lack one authoritative linear path from install -> first successful query -> next steps.
+
+4. **README flagship snippet is advanced before a minimal validated success case**
+
+   The first large code sample is feature-rich (community detection + UQ + grouping + explainability), which is valuable for power users but can overwhelm new adopters who need a shortest possible "first success" script first.
+
+5. **Audience boundary between AGENTS.md and human docs is unclear**
+
+   ``AGENTS.md`` is comprehensive and agent-oriented, but there is no prominent warning in beginner-facing docs clarifying that it is an expert/automation playbook rather than the recommended first learning resource for humans.
+
+6. **No documented single source of truth for doc metadata drift-prone fields**
+
+   Counts and path catalogs (examples totals, folder maps, quickstart file paths) are repeated in multiple places without a clearly designated canonical source, causing recurring drift.
+
 Vote on Features
 ~~~~~~~~~~~~~~~~
 
