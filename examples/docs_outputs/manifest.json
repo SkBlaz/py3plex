@@ -1,7 +1,7 @@
 {
   "examples": {
     "01_basic_query": {
-      "has_stderr": false,
+      "has_stderr": true,
       "output_file": "01_basic_query.txt",
       "success": true
     },
@@ -11,7 +11,7 @@
       "success": true
     },
     "dsl_patterns_quick_reference": {
-      "has_stderr": false,
+      "has_stderr": true,
       "output_file": "dsl_patterns_quick_reference.txt",
       "success": true
     },
@@ -21,7 +21,7 @@
       "success": true
     },
     "example_ergonomics_demo": {
-      "has_stderr": false,
+      "has_stderr": true,
       "output_file": "example_ergonomics_demo.txt",
       "success": true
     },
@@ -79,7 +79,7 @@
       "success": true
     },
     "user_journey_simulation": {
-      "has_stderr": false,
+      "has_stderr": true,
       "output_file": "user_journey_simulation.txt",
       "success": true
     }

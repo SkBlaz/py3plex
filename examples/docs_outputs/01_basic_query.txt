@@ -4,11 +4,41 @@ Added 5 edges
 
 Network Statistics:
 ========================================
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 Total node instances: 6
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 Total edges: 5
 
 Node Degrees:
 ========================================
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
   0          (social  ): 2
   1          (social  ): 2
   2          (social  ): 2

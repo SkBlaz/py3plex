@@ -50,6 +50,16 @@ Repulsion forces  took  0.00  seconds
 Gravitational forces  took  0.00  seconds
 Attraction forces  took  0.00  seconds
 AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 OK Analysis complete: 5 nodes analyzed
   Network: 8 nodes, 5 edges, 3 layers

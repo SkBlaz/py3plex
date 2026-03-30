@@ -26,6 +26,21 @@ Code:
          .execute(net)
     )
     
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 Result: Found 2 high-degree nodes in social layer
 
@@ -51,6 +66,21 @@ Code:
          .execute(net)
     )
     
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 Result: Found 8 cross-layer hubs
 
@@ -78,6 +108,21 @@ Code:
     
     df = result.to_pandas(expand_uncertainty=True)
     
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 Result: Computed PageRank with confidence intervals for 18 nodes
 
@@ -109,9 +154,54 @@ Code:
          .execute(net)
     )
     
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 Social | Work: 12 node replicas
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 All - Hobby: 12 node replicas
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 Social only: 6 node replicas
 
 ======================================================================
@@ -130,6 +220,21 @@ Code:
          .execute(net)
     )
     
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 Result: Created 2 derived columns for 18 nodes
 
@@ -165,6 +270,21 @@ Code:
          .execute(net)
     )
     
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 Result: Computed per-layer statistics
 
@@ -193,6 +313,21 @@ Code:
     # CSV file
     df.to_csv("results.csv", index=False)
     
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 OK Pandas DataFrame: 18 rows x 3 columns
 OK NetworkX graph: 18 nodes, 0 edges

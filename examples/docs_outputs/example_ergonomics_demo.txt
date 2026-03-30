@@ -126,12 +126,32 @@ Demo 1: Interactive Query Building with .hint()
    Example: Q.nodes().where(...).compute(...).order_by(...).limit(...).execute(net)
 ============================================================
 
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 Query executed successfully, got 4 results
 
 ============================================================
 Demo 2: Enhanced QueryResult Introspection
 ============================================================
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 QueryResult representation shows full context:
 QueryResult(
@@ -156,15 +176,45 @@ Known measures: betweenness, betweenness_centrality, closeness, closeness_centra
 Note: Error message includes suggestions and examples
 
 2. Unknown layer error:
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 
 ============================================================
 Demo 4: Performance and Semantic Warnings
 ============================================================
 
 1. Multilayer context (may show warnings):
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 Computed degree for 8 node replicas
 
 2. Suppress warnings:
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 Query executed without warnings: 8 results
 
 ============================================================
@@ -172,11 +222,31 @@ Demo 5: Multilayer Semantics Awareness
 ============================================================
 
 1. Understanding node replicas:
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 Total node replicas: 8
 Physical nodes: 4
 Physical node names: ['Alice', 'Bob', 'Charlie', 'David']
 
 2. Per-layer operations:
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took  0.00  seconds
+Repulsion forces  took  0.00  seconds
+Gravitational forces  took  0.00  seconds
+Attraction forces  took  0.00  seconds
+AdjustSpeedAndApplyForces step  took  0.00  seconds
 Computed per-layer metrics
 Grouping mode: unknown
 
