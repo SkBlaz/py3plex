@@ -322,7 +322,7 @@ class TestCommunityAutoNodeAnnotation:
 
     def test_community_auto_writes_stability_attribute(self, simple_network):
         """community_auto() should write node confidence as community_stability."""
-        def mock_auto_select(**kwargs):
+        def mock_auto_select(*args, **kwargs):
             result = MagicMock()
             result.partition = {
                 ('A', 'layer1'): 0,
@@ -351,7 +351,7 @@ class TestCommunityAutoNodeAnnotation:
 
     def test_community_auto_missing_stats_does_not_fail(self, simple_network):
         """community_auto() should still write community IDs when stats are missing."""
-        def mock_auto_select(**kwargs):
+        def mock_auto_select(*args, **kwargs):
             result = MagicMock()
             result.partition = {
                 ('A', 'layer1'): 0,
