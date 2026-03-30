@@ -24,9 +24,19 @@ Connection = Union[IntraLayerConnection, InterLayerConnection]
 
 
 def _extract_layer_names(network: Any) -> List[str]:
-    """Extract layer names from different `get_layers()` return shapes."""
+    """Extract layer names from supported `get_layers()` return shapes.
+
+    In py3plex, `multi_layer_network.get_layers()` may return:
+    - a list-like of layer names, or
+    - a tuple where the first element is the list-like of layer names
+      (e.g., visualization-oriented multi-value return from core API).
+
+    This helper normalizes those supported shapes to `List[str]`.
+    """
     layers = network.get_layers()
     if isinstance(layers, tuple):
+        if not layers:
+            return []
         candidate = layers[0]
     else:
         candidate = layers
@@ -385,7 +395,8 @@ def show_network_summary(network: Any) -> None:
 
     print("\nStructure:")
     print(f"  • Nodes (replicas): {len(nodes)}")
-    print(f"  • Physical nodes: {len({n[0] for n in nodes})}")
+    physical_nodes = {n[0] for n in nodes}
+    print(f"  • Physical nodes: {len(physical_nodes)}")
     print(f"  • Edges: {len(edges)}")
     print(f"  • Layers: {len(layers)}")
 

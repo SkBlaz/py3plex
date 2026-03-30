@@ -6,6 +6,7 @@ import pytest
 
 import py3plex.algorithms.community_detection as cd
 from py3plex.ergonomics import (
+    _extract_layer_names,
     quick_analysis,
     quick_communities,
     quick_network,
@@ -54,7 +55,7 @@ def test_quick_analysis_returns_expected_shape():
     assert result["count"] <= 2
     assert result["network_stats"]["nodes"] == 3
     assert result["network_stats"]["edges"] == 2
-    assert result["network_stats"]["layers"] == 1
+    assert result["network_stats"]["layers"] == len(_extract_layer_names(net))
     assert "degree" in result["dataframe"].columns
 
 
