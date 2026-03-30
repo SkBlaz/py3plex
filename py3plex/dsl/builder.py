@@ -3555,44 +3555,72 @@ class QueryBuilder:
         
         # Check if auto-detection is configured
         if hasattr(self, "_auto_detect_config"):
-            config = self._auto_detect_config
-            mode = config.get("mode")
-            params_dict = config.get("params", {})
-            write_attrs = config.get("write_attrs", {})
-            
-            # Import auto_select_community
-            from py3plex.algorithms.community_detection import auto_select_community
-            
-            # Run auto-detection
-            result = auto_select_community(network, mode=mode, **params_dict)
-            
-            # Assign partition to network
-            network.assign_partition(result.partition)
-            
-            # Write additional attributes if community stats are available
-            if hasattr(result, 'community_stats') and result.community_stats is not None:
-                # Write community stability if available
-                if hasattr(result.community_stats, 'node_confidence') and result.community_stats.node_confidence:
-                    stability_attr = write_attrs.get("community_stability", "community_stability")
-                    for (node, layer), conf in result.community_stats.node_confidence.items():
-                        # Node is already a tuple (node, layer) in the partition
-                        network.set_node_attribute((node, layer), stability_attr, conf)
-            
-            # Write community ID
-            community_id_attr = write_attrs.get("community_id", "community_id")
-            for (node, layer), comm_id in result.partition.items():
-                # Node is already a tuple (node, layer) in the partition
-                network.set_node_attribute((node, layer), community_id_attr, comm_id)
+            self._run_auto_detection(network)
 
         # Allow .explain_plan() builder modifier to enable plan capture without
         # requiring explain_plan=True in execute().
-        if getattr(self, "_explain_plan_flag", False):
+        if self._consume_explain_plan_flag():
             explain_plan = True
-        # Apply to the next execute() call only (safe even if already absent).
-        self.__dict__.pop("_explain_plan_flag", None)
 
         ast = Query(explain=False, select=self._select)
         return execute_ast(network, ast, params=params, progress=progress, explain_plan=explain_plan, planner_config=planner)
+
+    def _run_auto_detection(self, network: Any) -> None:
+        """Run auto community detection and write annotations to the network."""
+        from py3plex.algorithms.community_detection import auto_select_community
+        from .errors import DslExecutionError
+
+        config = self._auto_detect_config
+        mode = config.get("mode")
+        params_dict = config.get("params", {})
+        write_attrs = config.get("write_attrs", {})
+
+        try:
+            result = auto_select_community(network, mode=mode, **params_dict)
+        except Exception as exc:
+            raise DslExecutionError(
+                f"Community auto-detection failed for mode '{mode}': {exc}",
+                intent="Run community auto-detection before executing the node query",
+                why_failed="The auto_select_community call raised an exception during detection.",
+            ) from exc
+
+        partition = getattr(result, "partition", None)
+        if not partition:
+            raise DslExecutionError(
+                f"Community auto-detection produced an empty partition for mode '{mode}'.",
+                intent="Annotate nodes with detected communities",
+                why_failed="Auto-detection must return a non-empty partition mapping (node, layer) -> community_id.",
+            )
+
+        network.assign_partition(partition)
+        self._write_community_stability(network, result, write_attrs)
+        self._write_community_ids(network, partition, write_attrs)
+
+    def _write_community_stability(self, network: Any, result: Any, write_attrs: Dict[str, Any]) -> None:
+        """Write community stability annotations if available."""
+        community_stats = getattr(result, "community_stats", None)
+        if community_stats is None:
+            return
+
+        node_confidence = getattr(community_stats, "node_confidence", None)
+        if not node_confidence:
+            return
+
+        stability_attr = write_attrs.get("community_stability", "community_stability")
+        for (node, layer), confidence in node_confidence.items():
+            network.set_node_attribute((node, layer), stability_attr, confidence)
+
+    def _write_community_ids(self, network: Any, partition: Dict[Any, Any], write_attrs: Dict[str, Any]) -> None:
+        """Write detected community IDs as node attributes."""
+        community_id_attr = write_attrs.get("community_id", "community_id")
+        for (node, layer), community_id in partition.items():
+            network.set_node_attribute((node, layer), community_id_attr, community_id)
+
+    def _consume_explain_plan_flag(self) -> bool:
+        """Return one-shot explain_plan flag and clear it."""
+        enabled = bool(getattr(self, "_explain_plan_flag", False))
+        self.__dict__.pop("_explain_plan_flag", None)
+        return enabled
     
     def explain_plan(self) -> "QueryBuilder":
         """Enable plan explanation in the next execute() call.

@@ -320,6 +320,64 @@ class TestCommunityAutoNodeAnnotation:
         assert 'community' in df.columns
         assert 'community_size' in df.columns
 
+    def test_community_auto_writes_stability_attribute(self, simple_network):
+        """community_auto() should write node confidence as community_stability."""
+        def mock_auto_select(**kwargs):
+            result = MagicMock()
+            result.partition = {
+                ('A', 'layer1'): 0,
+                ('B', 'layer1'): 0,
+                ('C', 'layer1'): 0,
+                ('D', 'layer1'): 1,
+                ('E', 'layer1'): 1,
+                ('F', 'layer1'): 1,
+            }
+            result.community_stats = MagicMock()
+            result.community_stats.node_confidence = {
+                ('A', 'layer1'): 0.91,
+                ('B', 'layer1'): 0.87,
+                ('C', 'layer1'): 0.86,
+                ('D', 'layer1'): 0.95,
+                ('E', 'layer1'): 0.89,
+                ('F', 'layer1'): 0.88,
+            }
+            return result
+
+        with patch('py3plex.algorithms.community_detection.auto_select_community', side_effect=mock_auto_select):
+            Q.communities(mode="pareto").nodes().execute(simple_network)
+
+        assert simple_network.get_node_attribute(('A', 'layer1'), 'community_stability') == pytest.approx(0.91)
+        assert simple_network.get_node_attribute(('F', 'layer1'), 'community_stability') == pytest.approx(0.88)
+
+    def test_community_auto_missing_stats_does_not_fail(self, simple_network):
+        """community_auto() should still write community IDs when stats are missing."""
+        def mock_auto_select(**kwargs):
+            result = MagicMock()
+            result.partition = {
+                ('A', 'layer1'): 0,
+                ('B', 'layer1'): 0,
+                ('C', 'layer1'): 0,
+            }
+            result.community_stats = None
+            return result
+
+        with patch('py3plex.algorithms.community_detection.auto_select_community', side_effect=mock_auto_select):
+            Q.communities(mode="pareto").nodes().execute(simple_network)
+
+        assert simple_network.get_node_attribute(('A', 'layer1'), 'community_id') == 0
+        assert simple_network.get_node_attribute(('C', 'layer1'), 'community_stability') is None
+
+    def test_community_auto_detection_failure_raises_dsl_error(self, simple_network):
+        """community_auto() should surface a typed DSL error on detection failures."""
+        from py3plex.dsl.errors import DslExecutionError
+
+        with patch(
+            'py3plex.algorithms.community_detection.auto_select_community',
+            side_effect=RuntimeError("boom"),
+        ):
+            with pytest.raises(DslExecutionError, match="Community auto-detection failed"):
+                Q.communities(mode="pareto").nodes().execute(simple_network)
+
 
 class TestAutoCommunityNoRerun:
     """Test caching semantics: auto community runs once per execute()."""
