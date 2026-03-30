@@ -54,8 +54,23 @@ def test_quick_analysis_returns_expected_shape():
     assert result["count"] <= 2
     assert result["network_stats"]["nodes"] == 3
     assert result["network_stats"]["edges"] == 2
-    assert result["network_stats"]["layers"] == len(list(net.get_layers()))
+    assert result["network_stats"]["layers"] == 1
     assert "degree" in result["dataframe"].columns
+
+
+def test_quick_network_invalid_connection_arity_raises():
+    with pytest.raises(ValueError, match="Connections must be 3-tuples"):
+        quick_network(
+            people=["Alice", "Bob"],
+            layers=["work"],
+            connections=[("Alice", "Bob")],
+        )
+
+
+def test_quick_analysis_empty_metrics_raises():
+    net = quick_network(people=["A", "B"], layers=["layer1"])
+    with pytest.raises(ValueError, match="metrics must contain at least one"):
+        quick_analysis(net, metrics=[])
 
 
 def test_quick_communities_invalid_algorithm_raises():
@@ -87,6 +102,18 @@ def test_quick_communities_uses_leiden(monkeypatch):
     mock_leiden.assert_called_once_with(net, random_state=7)
     assert result["n_communities"] == 1
     assert result["sizes"] == {3: 2}
+
+
+def test_quick_communities_normalizes_algorithm_name(monkeypatch):
+    net = quick_network(people=["A", "B"], layers=["layer1"])
+
+    mock_louvain = Mock(return_value={("A", "layer1"): 0, ("B", "layer1"): 0})
+    monkeypatch.setattr(cd, "louvain_multilayer", mock_louvain)
+
+    result = quick_communities(net, algorithm="  LouVAIN  ", seed=11)
+
+    mock_louvain.assert_called_once_with(net, random_state=11)
+    assert result["n_communities"] == 1
 
 
 def test_show_network_summary_prints_core_sections(capsys):
