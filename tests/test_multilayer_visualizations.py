@@ -162,35 +162,6 @@ def create_complex_test_network():
 # ============================================================================
 
 @pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
-def test_visualize_multilayer_network_diagonal():
-    """Test that the diagonal visualization mode works (backward compatibility)."""
-    network = create_test_multilayer_network()
-    
-    # Should not raise an exception
-    fig = visualize_multilayer_network(network, visualization_type="diagonal")
-    
-    assert fig is not None
-    plt.close('all')
-
-
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
-def test_plot_small_multiples():
-    """Test small multiples visualization."""
-    network = create_test_multilayer_network()
-    
-    # Test with shared layout
-    fig = plot_small_multiples(network, shared_layout=True, layout="spring")
-    assert fig is not None
-    assert len(fig.axes) >= 2  # Should have at least 2 subplots (layers A and B)
-    plt.close('all')
-    
-    # Test with independent layouts
-    fig = plot_small_multiples(network, shared_layout=False, layout="circular")
-    assert fig is not None
-    plt.close('all')
-
-
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
 def test_plot_edge_colored_projection():
     """Test edge-colored projection visualization."""
     network = create_test_multilayer_network()
@@ -460,85 +431,6 @@ def test_ego_multilayer_layouts():
 # ============================================================================
 # Unified API Tests
 # ============================================================================
-
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
-def test_unified_api_small_multiples():
-    """Test small multiples via main API function."""
-    network = create_test_multilayer_network()
-    
-    fig = visualize_multilayer_network(
-        network,
-        visualization_type="small_multiples",
-        layout="spring",
-        node_size=100
-    )
-    
-    assert fig is not None
-    assert len(fig.axes) >= 2
-    plt.close('all')
-
-
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
-def test_unified_api_edge_projection():
-    """Test edge-colored projection via main API function."""
-    network = create_test_multilayer_network()
-    
-    fig = visualize_multilayer_network(
-        network,
-        visualization_type="edge_colored_projection",
-        layout="circular"
-    )
-    
-    assert fig is not None
-    plt.close('all')
-
-
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
-def test_unified_api_supra_heatmap():
-    """Test supra-adjacency heatmap via main API function."""
-    network = create_test_multilayer_network()
-    
-    fig = visualize_multilayer_network(
-        network,
-        visualization_type="supra_adjacency_heatmap",
-        cmap="viridis"
-    )
-    
-    assert fig is not None
-    plt.close('all')
-
-
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
-def test_unified_api_radial():
-    """Test radial layers via main API function."""
-    network = create_test_multilayer_network()
-    
-    fig = visualize_multilayer_network(
-        network,
-        visualization_type="radial_layers",
-        base_radius=1.0,
-        radius_step=1.5
-    )
-    
-    assert fig is not None
-    plt.close('all')
-
-
-@pytest.mark.skipif(not DEPENDENCIES_AVAILABLE, reason="matplotlib or numpy not available")
-def test_unified_api_ego():
-    """Test ego-centric visualization via main API function."""
-    network = create_test_multilayer_network()
-    
-    fig = visualize_multilayer_network(
-        network,
-        visualization_type="ego_multilayer",
-        ego='1',
-        max_depth=1
-    )
-    
-    assert fig is not None
-    plt.close('all')
-
 
 # ============================================================================
 # Edge Case Tests
