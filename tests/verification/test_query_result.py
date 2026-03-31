@@ -15,6 +15,8 @@ import pandas as pd
 from py3plex.core import multinet
 from py3plex.dsl import Q, L
 from py3plex.dsl.executor import execute_ast
+from py3plex.dsl.result import QueryResult
+from py3plex.dsl.errors import GroupingError
 
 
 def create_test_network():
@@ -315,3 +317,78 @@ def test_finite_computed_values():
     # All betweenness values should be finite
     assert np.all(np.isfinite(df['betweenness_centrality'].values)), \
         "All computed values should be finite (not NaN or inf)"
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_queryresult_nodes_and_edges_property_guards():
+    """nodes/edges properties should enforce target type contracts."""
+    nodes_result = QueryResult(target="nodes", items=[("A", "layer1")], attributes={})
+    edges_result = QueryResult(
+        target="edges",
+        items=[(("A", "layer1"), ("B", "layer1"), {"weight": 1.0})],
+        attributes={},
+    )
+
+    assert nodes_result.nodes == [("A", "layer1")]
+    assert edges_result.edges == [(("A", "layer1"), ("B", "layer1"), {"weight": 1.0})]
+
+    with pytest.raises(ValueError):
+        _ = nodes_result.edges
+    with pytest.raises(ValueError):
+        _ = edges_result.nodes
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_queryresult_uq_detection_for_dict_and_list_columns():
+    """has_uq()/uq_columns should recognize both dict-style and list-style UQ payloads."""
+    result = QueryResult(
+        target="nodes",
+        items=[("A", "layer1"), ("B", "layer1")],
+        attributes={
+            "degree": {
+                ("A", "layer1"): {"mean": 1.0, "std": 0.1},
+                ("B", "layer1"): {"mean": 2.0, "std": 0.2},
+            },
+            "pagerank": [
+                {"value": 0.4, "std": 0.05},
+                {"value": 0.6, "std": 0.05},
+            ],
+            "label": ["x", "y"],
+        },
+    )
+
+    assert result.has_uq("degree")
+    assert result.has_uq("pagerank")
+    assert not result.has_uq("label")
+    assert not result.has_uq("missing")
+    assert set(result.uq_columns) == {"degree", "pagerank"}
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_group_summary_happy_path_and_guard():
+    """group_summary should return grouped rows and fail clearly without grouping metadata."""
+    grouped = QueryResult(
+        target="nodes",
+        items=[("A", "layer1"), ("B", "layer2")],
+        attributes={},
+        meta={
+            "grouping": {
+                "groups": [
+                    {"key": {"layer": "layer1"}, "n_items": 1, "coverage": 1.0},
+                    {"key": {"layer": "layer2"}, "n_items": 1, "coverage": 0.5},
+                ]
+            }
+        },
+    )
+    summary = grouped.group_summary()
+
+    assert list(summary["layer"]) == ["layer1", "layer2"]
+    assert list(summary["n_items"]) == [1, 1]
+    assert list(summary["coverage"]) == [1.0, 0.5]
+
+    ungrouped = QueryResult(target="nodes", items=[], attributes={}, meta={})
+    with pytest.raises(GroupingError):
+        ungrouped.group_summary()
