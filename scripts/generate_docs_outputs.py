@@ -32,6 +32,7 @@ MANIFEST_FILE = OUTPUTS_DIR / "manifest.json"
 _LOG_TIMESTAMP_RE = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
 _HEX_ADDRESS_RE = re.compile(r"0x[0-9a-fA-F]+")
 _ELAPSED_SECONDS_RE = re.compile(r"\bin \d+\.\d+s\b")
+_TOOK_SECONDS_RE = re.compile(r"\btook\s+\d+(?:\.\d+)?\s+seconds?\b")
 
 
 def should_skip(example_path: Path) -> Tuple[bool, str]:
@@ -70,6 +71,15 @@ def run_example(example_path: Path, timeout: int = 30) -> Tuple[bool, str, str]:
             **subprocess.os.environ,
             'TQDM_DISABLE': '1',
             'PYTHONWARNINGS': 'ignore',
+            # Ensure deterministic hashing and locale-dependent formatting.
+            'PYTHONHASHSEED': '0',
+            'LC_ALL': 'C.UTF-8',
+            'LANG': 'C.UTF-8',
+            # Reduce numerical library runtime variance from thread scheduling.
+            'OMP_NUM_THREADS': '1',
+            'OPENBLAS_NUM_THREADS': '1',
+            'MKL_NUM_THREADS': '1',
+            'NUMEXPR_NUM_THREADS': '1',
         }
         existing_pythonpath = env.get("PYTHONPATH", "")
         env["PYTHONPATH"] = (
@@ -104,6 +114,7 @@ def normalize_output(text: str) -> str:
         line = _LOG_TIMESTAMP_RE.sub("<TIMESTAMP>", line)
         line = _HEX_ADDRESS_RE.sub("0xADDR", line)
         line = _ELAPSED_SECONDS_RE.sub("in <TIME>s", line)
+        line = _TOOK_SECONDS_RE.sub("took <TIME> seconds", line)
         normalized_lines.append(line)
 
     # Preserve final newline if original text had one
