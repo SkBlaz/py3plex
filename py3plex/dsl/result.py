@@ -7,6 +7,7 @@ and includes metadata about the query execution.
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, Tuple
 import math
+import json
 
 
 # Tolerance for matching quantile keys when finding CI bounds
@@ -1098,6 +1099,65 @@ class QueryResult:
             "count": len(self.items),
             "computed": self.attributes,
             "meta": self.meta,
+        }
+
+    def replica_nodes(self) -> List[Any]:
+        """Return replica nodes (node, layer pairs) for node results."""
+        if self.target != "nodes":
+            raise ValueError("replica_nodes() is only available for node results.")
+        return list(self.items)
+
+    def physical_nodes(self) -> List[Any]:
+        """Return unique physical nodes for node results."""
+        if self.target != "nodes":
+            raise ValueError("physical_nodes() is only available for node results.")
+        ordered: Dict[Any, bool] = {}
+        for item in self.items:
+            if isinstance(item, tuple) and len(item) >= 1:
+                node_id = item[0]
+            else:
+                node_id = item
+            ordered[node_id] = True
+        return list(ordered.keys())
+
+    def summary_dict(self) -> Dict[str, Any]:
+        """Return a compact, machine-readable summary for agent workflows."""
+        prov = self.meta.get("provenance", {}) if isinstance(self.meta, dict) else {}
+        query_prov = prov.get("query", {}) if isinstance(prov, dict) else {}
+        random_prov = prov.get("randomness", {}) if isinstance(prov, dict) else {}
+        return {
+            "target": self.target,
+            "count": len(self.items),
+            "replica_count": len(self.items) if self.target == "nodes" else None,
+            "physical_count": len(self.physical_nodes()) if self.target == "nodes" else None,
+            "attributes": sorted(list(self.attributes.keys())),
+            "grouping": self.meta.get("grouping") if isinstance(self.meta, dict) else None,
+            "warnings": self.meta.get("warnings", []) if isinstance(self.meta, dict) else [],
+            "provenance": {
+                "seed": random_prov.get("seed"),
+                "ast_hash": query_prov.get("ast_hash"),
+                "network_fingerprint": prov.get("network_fingerprint"),
+                "network_version": prov.get("network_version"),
+                "replayable": self.is_replayable,
+            },
+        }
+
+    def inspect_json(self) -> str:
+        """Return stable JSON payload suitable for machine handoff."""
+        return json.dumps(self.summary_dict(), sort_keys=True, ensure_ascii=False)
+
+    def canonical_export_dict(self) -> Dict[str, Any]:
+        """Return canonical, stable serialization for agent handoff."""
+        return {
+            "target": self.target,
+            "items": self.items,
+            "attributes": self.attributes,
+            "meta": {
+                "grouping": self.meta.get("grouping") if isinstance(self.meta, dict) else None,
+                "warnings": self.meta.get("warnings", []) if isinstance(self.meta, dict) else [],
+                "provenance": self.meta.get("provenance") if isinstance(self.meta, dict) else None,
+            },
+            "summary": self.summary_dict(),
         }
 
     def record_as_experiment(

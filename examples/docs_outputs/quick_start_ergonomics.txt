@@ -40,16 +40,26 @@ OK Using ergonomic helper:
       metrics=['degree', 'betweenness_centrality'],
       top_k=5
   )
-BarnesHut Approximation  took  0.00  seconds
-Repulsion forces  took  0.00  seconds
-Gravitational forces  took  0.00  seconds
-Attraction forces  took  0.00  seconds
-AdjustSpeedAndApplyForces step  took  0.00  seconds
-BarnesHut Approximation  took  0.00  seconds
-Repulsion forces  took  0.00  seconds
-Gravitational forces  took  0.00  seconds
-Attraction forces  took  0.00  seconds
-AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 
 OK Analysis complete: 5 nodes analyzed
   Network: 8 nodes, 5 edges, 3 layers
@@ -94,16 +104,16 @@ OK Using ergonomic helper:
 ============================================================
 NETWORK SUMMARY
 ============================================================
-BarnesHut Approximation  took  0.00  seconds
-Repulsion forces  took  0.00  seconds
-Gravitational forces  took  0.00  seconds
-Attraction forces  took  0.00  seconds
-AdjustSpeedAndApplyForces step  took  0.00  seconds
-BarnesHut Approximation  took  0.00  seconds
-Repulsion forces  took  0.00  seconds
-Gravitational forces  took  0.00  seconds
-Attraction forces  took  0.00  seconds
-AdjustSpeedAndApplyForces step  took  0.00  seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 
 Structure:
   • Nodes (replicas): 8

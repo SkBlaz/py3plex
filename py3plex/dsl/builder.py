@@ -66,6 +66,7 @@ from .ast import (
     DistanceSpec,
 )
 from .result import QueryResult
+from .warnings import build_structured_warning
 
 from py3plex.uncertainty import (
     get_uncertainty_config,
@@ -676,6 +677,7 @@ class QueryBuilder:
         *measures: str,
         alias: Optional[str] = None,
         aliases: Optional[Dict[str, str]] = None,
+        kind: Optional[str] = None,
         uncertainty: Optional[bool] = None,
         method: Optional[str] = None,
         n_samples: Optional[int] = None,
@@ -698,6 +700,7 @@ class QueryBuilder:
             *measures: Measure names to compute
             alias: Alias for single measure
             aliases: Dictionary mapping measure names to aliases
+            kind: Optional metric semantic kind (e.g., degree kind: aggregate|intra|inter)
             uncertainty: Whether to compute uncertainty for these measures. If None,
                 uses Q.uncertainty defaults or the global uncertainty context.
             method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
@@ -889,6 +892,7 @@ class QueryBuilder:
                         null_model=null_model,
                         random_state=random_state,
                         approx=measure_approx_spec,
+                        kind=kind,
                     )
                 )
         elif alias and len(measures) == 1:
@@ -918,6 +922,7 @@ class QueryBuilder:
                     null_model=null_model,
                     random_state=random_state,
                     approx=measure_approx_spec,
+                    kind=kind,
                 )
             )
         else:
@@ -947,11 +952,145 @@ class QueryBuilder:
                         null_model=null_model,
                         random_state=random_state,
                         approx=measure_approx_spec,
+                        kind=kind,
                     )
                 )
 
         self._select.compute.extend(items)
         return self
+
+    def validate(self) -> Dict[str, Any]:
+        """Return structured machine-readable validation diagnostics."""
+        select = self._select
+        selected_layers: List[str] = []
+        if getattr(select, "layer_set", None) is not None:
+            layer_set_obj = select.layer_set
+            try:
+                selected_layers = list(layer_set_obj.layers)  # type: ignore[attr-defined]
+            except Exception:
+                selected_layers = [str(layer_set_obj)]
+        elif getattr(select, "layer_expr", None) is not None:
+            try:
+                selected_layers = [term.name for term in select.layer_expr.terms]
+            except Exception:
+                selected_layers = []
+
+        computed_measures = [item.name for item in select.compute]
+        grouping_mode: Optional[str] = None
+        if select.group_by:
+            if select.group_by == ["layer"]:
+                grouping_mode = "per_layer"
+            elif select.group_by == ["src_layer", "dst_layer"]:
+                grouping_mode = "per_layer_pair"
+            else:
+                grouping_mode = "group_by"
+
+        uq_cfg = getattr(select, "uq_config", None)
+        uq_summary = {
+            "enabled": bool(uq_cfg and uq_cfg.method),
+            "method": getattr(uq_cfg, "method", None),
+            "n_samples": getattr(uq_cfg, "n_samples", None),
+            "ci": getattr(uq_cfg, "ci", None),
+            "seed": getattr(uq_cfg, "seed", None),
+            "mode": getattr(uq_cfg, "mode", None),
+        }
+
+        provenance_cfg = getattr(select, "provenance_config", None) or {}
+        provenance_mode = provenance_cfg.get("mode")
+
+        ambiguity_flags: List[str] = []
+        performance_risk_flags: List[str] = []
+        missing_prerequisites: List[Dict[str, Any]] = []
+        recommended_fixes: List[str] = []
+        warnings_structured: List[Dict[str, Any]] = []
+
+        if select.target == Target.NODES and not selected_layers:
+            ambiguity_flags.append("replica_vs_physical_node_ambiguity")
+            warnings_structured.append(
+                build_structured_warning(
+                    "replica_vs_physical_node_ambiguity",
+                    message="Node results are replica-based unless layer scope is explicit.",
+                )
+            )
+
+        if any(item.name == "degree" for item in select.compute):
+            has_kind = any(bool(getattr(item, "kind", None)) for item in select.compute)
+            if select.target == Target.NODES and not has_kind:
+                ambiguity_flags.append("aggregate_degree_ambiguity")
+                warnings_structured.append(
+                    build_structured_warning(
+                        "aggregate_degree_ambiguity",
+                        message="Degree kind is not explicit for multilayer analysis.",
+                    )
+                )
+
+        for order_item in select.order_by:
+            key = order_item.key.lstrip("-")
+            if key not in computed_measures:
+                missing_prerequisites.append(
+                    {
+                        "code": "missing_metric",
+                        "detail": f"order_by references '{key}' before it is computed.",
+                    }
+                )
+                recommended_fixes.append(f"Add .compute('{key}') before .order_by(...).")
+
+        if select.coverage_mode and not select.group_by:
+            missing_prerequisites.append(
+                {
+                    "code": "active_grouping_required",
+                    "detail": "coverage requires active grouping.",
+                }
+            )
+            recommended_fixes.append(
+                "Call per_layer()/per_layer_pair()/group_by(...) before coverage(...)."
+            )
+
+        if uq_summary["enabled"] and isinstance(uq_summary["n_samples"], int):
+            if uq_summary["n_samples"] > 200:
+                performance_risk_flags.append("high_uq_cost")
+                recommended_fixes.append("Reduce n_samples or use fast UQ mode.")
+
+        expensive = {"betweenness_centrality", "closeness_centrality", "eigenvector_centrality"}
+        if any(m in expensive for m in computed_measures):
+            performance_risk_flags.append("expensive_centrality")
+            recommended_fixes.append(
+                "Use per_layer()/from_layers() or approx=True for expensive centralities."
+            )
+
+        return {
+            "target": select.target.value if hasattr(select.target, "value") else str(select.target),
+            "selected_layers": selected_layers,
+            "computed_measures": computed_measures,
+            "grouping_mode": grouping_mode,
+            "uncertainty_config": uq_summary,
+            "provenance_mode": provenance_mode,
+            "ambiguity_flags": sorted(set(ambiguity_flags)),
+            "performance_risk_flags": sorted(set(performance_risk_flags)),
+            "missing_prerequisites": missing_prerequisites,
+            "recommended_fixes": sorted(set(recommended_fixes)),
+            "warnings": warnings_structured,
+            "status": "ok" if not missing_prerequisites else "needs_attention",
+        }
+
+    def explain_plan_json(self) -> Dict[str, Any]:
+        """Return machine-readable plan/introspection information."""
+        return {
+            "machine": True,
+            "validation": self.validate(),
+            "query": {
+                "dsl": self.to_dsl(),
+                "target": self._select.target.value
+                if hasattr(self._select.target, "value")
+                else str(self._select.target),
+            },
+            "planner": {
+                "enabled": True,
+                "compute_policy": getattr(self, "_planner_config", {}).get("compute_policy", "explicit"),
+                "enable_cache": getattr(self, "_planner_config", {}).get("enable_cache", True),
+            },
+            "next_action": "Call .explain_plan().execute(network) to attach full planned stages in result.meta['plan'].",
+        }
 
     def order_by(self, *keys: str, desc: bool = False) -> "QueryBuilder":
         """Add ORDER BY clause.
@@ -1835,6 +1974,27 @@ class QueryBuilder:
         # Store the per-group limit
         self._select.limit_per_group = int(k)
         return self
+
+    def top_k_global(self, k: int, key: str) -> "QueryBuilder":
+        """Explicit global top-k helper for machine-facing clarity."""
+        self._select.limit_per_group = None
+        self._select.group_by = []
+        return self.order_by(f"-{key}").limit(int(k))
+
+    def top_k_per_layer(self, k: int, key: str) -> "QueryBuilder":
+        """Explicit per-layer top-k helper for machine-facing clarity."""
+        return self.per_layer().top_k(int(k), key)
+
+    def top_k_across_layers(
+        self, k: int, key: str, *, coverage_mode: str = "at_least", coverage_k: int = 2
+    ) -> "QueryBuilder":
+        """Explicit across-layer top-k helper with coverage semantics."""
+        return (
+            self.per_layer()
+            .top_k(int(k), key)
+            .end_grouping()
+            .coverage(mode=coverage_mode, k=coverage_k)
+        )
 
     def end_grouping(self) -> "QueryBuilder":
         """Marker for the end of grouping configuration.
@@ -3601,7 +3761,7 @@ class QueryBuilder:
         showing stage order, costs, and optimization rewrites.
         
         Returns:
-            Self for chaining
+            Self for chaining.
             
         Example:
             >>> result = Q.nodes().compute("degree").explain_plan().execute(net)
