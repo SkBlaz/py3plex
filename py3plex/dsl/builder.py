@@ -3585,13 +3585,12 @@ class QueryBuilder:
             ) from exc
 
         partition = getattr(result, "partition", None)
-        if not partition:
+        if partition is None:
             raise DslExecutionError(
-                f"Community auto-detection produced an empty partition for mode '{mode}'.",
+                f"Community auto-detection result is missing a partition for mode '{mode}'.",
                 intent="Annotate nodes with detected communities",
-                why_failed="Auto-detection must return a non-empty partition mapping (node, layer) -> community_id.",
+                why_failed="Auto-detection must return a partition attribute mapping (node, layer) -> community_id.",
             )
-
         network.assign_partition(partition)
         self._write_community_stability(network, result, write_attrs)
         self._write_community_ids(network, partition, write_attrs)
@@ -3603,7 +3602,7 @@ class QueryBuilder:
             return
 
         node_confidence = getattr(community_stats, "node_confidence", None)
-        if not node_confidence:
+        if node_confidence is None or len(node_confidence) == 0:
             return
 
         stability_attr = write_attrs.get("community_stability", "community_stability")

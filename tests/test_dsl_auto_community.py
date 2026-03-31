@@ -344,10 +344,21 @@ class TestCommunityAutoNodeAnnotation:
             return result
 
         with patch('py3plex.algorithms.community_detection.auto_select_community', side_effect=mock_auto_select):
-            Q.communities(mode="pareto").nodes().execute(simple_network)
+            result = Q.communities(mode="pareto").nodes().execute(simple_network)
 
-        assert simple_network.get_node_attribute(('A', 'layer1'), 'community_stability') == pytest.approx(0.91)
-        assert simple_network.get_node_attribute(('F', 'layer1'), 'community_stability') == pytest.approx(0.88)
+        assert result is not None
+        assert result.target == "nodes"
+
+        expected_confidence = {
+            ('A', 'layer1'): 0.91,
+            ('B', 'layer1'): 0.87,
+            ('C', 'layer1'): 0.86,
+            ('D', 'layer1'): 0.95,
+            ('E', 'layer1'): 0.89,
+            ('F', 'layer1'): 0.88,
+        }
+        for node, expected_value in expected_confidence.items():
+            assert simple_network.get_node_attribute(node, 'community_stability') == pytest.approx(expected_value)
 
     def test_community_auto_missing_stats_does_not_fail(self, simple_network):
         """community_auto() should still write community IDs when stats are missing."""
@@ -362,9 +373,14 @@ class TestCommunityAutoNodeAnnotation:
             return result
 
         with patch('py3plex.algorithms.community_detection.auto_select_community', side_effect=mock_auto_select):
-            Q.communities(mode="pareto").nodes().execute(simple_network)
+            result = Q.communities(mode="pareto").nodes().execute(simple_network)
+
+        assert result is not None
+        assert result.target == "nodes"
 
         assert simple_network.get_node_attribute(('A', 'layer1'), 'community_id') == 0
+        assert simple_network.get_node_attribute(('B', 'layer1'), 'community_id') == 0
+        assert simple_network.get_node_attribute(('C', 'layer1'), 'community_id') == 0
         assert simple_network.get_node_attribute(('C', 'layer1'), 'community_stability') is None
 
     def test_community_auto_detection_failure_raises_dsl_error(self, simple_network):
