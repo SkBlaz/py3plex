@@ -74,6 +74,32 @@ print(df[["id", "layer", "community_id",
           "betweenness_centrality_ci95_high", "score", "top_neighbors"]].head(10))
 ```
 
+### Safe chaining order (DSL v2)
+
+Use a strict two-phase flow:
+
+1. **Build query** on `Q...` (`.where()`, `.compute()`, `.order_by()`, `.per_layer()`, `.coverage()`, ...)
+2. **Execute once** with `.execute(network)`
+3. **Handle results** on `QueryResult` (`.to_pandas()`, `.group_summary()`, `.to_json()`, ...)
+
+```python
+# Correct
+result = (
+    Q.nodes()
+     .where(degree__gt=3)
+     .compute("degree")
+     .order_by("degree", desc=True)
+     .execute(network)
+)
+df = result.to_pandas()
+```
+
+```python
+# Incorrect (builder method after execute)
+result = Q.nodes().execute(network)
+# result.where(layer="social")  # raises clear pedagogical DSL error
+```
+
 **Example output:**
 ```
     id  layer  community_id  betweenness_centrality__mean  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high     score  top_neighbors

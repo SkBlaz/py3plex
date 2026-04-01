@@ -474,6 +474,39 @@ class TestQueryResult:
         assert "QueryResult" in s
         assert "nodes" in s
 
+    def test_builder_method_guardrail_after_execute_where(self, sample_network):
+        """Calling a builder method on QueryResult should raise pedagogical DSL error."""
+        result = Q.nodes().execute(sample_network)
+        with pytest.raises(Exception) as excinfo:
+            result.where(layer="social")
+
+        msg = str(excinfo.value)
+        assert "Cannot call .where() on QueryResult" in msg
+        assert "[INTENT]" in msg
+        assert "[ERROR] Why this failed:" in msg
+        assert "[CORRECT] Corrected examples:" in msg
+
+    def test_builder_method_guardrail_after_execute_compute(self, sample_network):
+        """Calling compute() on QueryResult should raise same pedagogical guidance."""
+        result = Q.nodes().execute(sample_network)
+        with pytest.raises(Exception) as excinfo:
+            result.compute("degree")
+
+        msg = str(excinfo.value)
+        assert "Cannot call .compute() on QueryResult" in msg
+        assert "[INTENT]" in msg
+        assert "[CORRECT] Corrected examples:" in msg
+
+    def test_builder_method_guardrail_after_execute_order_by(self, sample_network):
+        """Calling order_by() on QueryResult should raise same pedagogical guidance."""
+        result = Q.nodes().execute(sample_network)
+        with pytest.raises(Exception) as excinfo:
+            result.order_by("degree")
+
+        msg = str(excinfo.value)
+        assert "Cannot call .order_by() on QueryResult" in msg
+        assert "[ERROR] Why this failed:" in msg
+
 
 class TestExplain:
     """Test EXPLAIN mode."""

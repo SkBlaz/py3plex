@@ -504,6 +504,50 @@ class QueryResult:
         """Iterate over items."""
         return iter(self.items)
 
+    # QueryBuilder-only methods that users often call after `.execute(...)`.
+    _BUILDER_ONLY_METHODS = {
+        "where",
+        "compute",
+        "order_by",
+        "per_layer",
+        "per_layer_pair",
+        "coverage",
+        "from_layers",
+        "limit",
+        "top_k",
+        "group_by",
+        "end_grouping",
+        "execute",
+    }
+
+    def _raise_builder_method_error(self, method_name: str) -> None:
+        """Raise pedagogical error for builder-only method misuse on QueryResult."""
+        from .errors import DslExecutionError
+
+        raise DslExecutionError(
+            f"Cannot call .{method_name}() on QueryResult",
+            intent="Continue building your DSL query before execution",
+            why_failed=(
+                ".execute() returns a QueryResult, which is an immutable result object. "
+                "Builder methods like .where(), .compute(), and .order_by() must be called "
+                "on QueryBuilder before .execute()."
+            ),
+            examples=[
+                "Q.nodes().where(degree__gt=3).compute('degree').execute(net)",
+                "result = Q.nodes().execute(net); df = result.to_pandas()",
+            ],
+            pitfall=(
+                "A query has two phases: build (Q... chain) and result handling "
+                "(QueryResult export/inspection). Don't mix them in one chain."
+            ),
+        )
+
+    def __getattr__(self, name: str) -> Any:
+        """Catch common QueryBuilder-method calls on QueryResult with clear guidance."""
+        if name in self._BUILDER_ONLY_METHODS:
+            self._raise_builder_method_error(name)
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+
     @property
     def benchmark(self):
         """Get benchmark result helper.
@@ -1236,8 +1280,12 @@ class QueryResult:
             from .errors import GroupingError
 
             raise GroupingError(
-                "group_summary() is only defined for grouped results. "
-                "Use .per_layer() or .per_layer_pair() to create a grouped query."
+                "group_summary() is only defined for grouped results.\n\n"
+                "[INTENT] You probably wanted to: summarize groups created by per_layer()/per_layer_pair()\n\n"
+                "[ERROR] Why this failed: this QueryResult has no grouping metadata, so there are no groups to summarize.\n\n"
+                "[CORRECT] Corrected examples:\n"
+                "  1. Q.nodes().per_layer().top_k(5, 'degree').end_grouping().execute(net).group_summary()\n"
+                "  2. Q.edges().per_layer_pair().top_k(3, 'weight').end_grouping().execute(net).group_summary()"
             )
 
         grouping_info = self.meta["grouping"]
