@@ -14,9 +14,11 @@ import numpy as np
 from py3plex.core import multinet
 from py3plex.uncertainty import (
     ResamplingStrategy,
+    UncertaintyMode,
     UncertaintyConfig,
     set_uncertainty_config,
     get_uncertainty_config,
+    estimate_uncertainty,
 )
 
 try:
@@ -61,10 +63,9 @@ def test_seed_strategy_deterministic():
     
     # Configure SEED strategy
     config = UncertaintyConfig(
-        enabled=True,
-        strategy=ResamplingStrategy.SEED,
-        n_samples=5,
-        seed=42,
+        mode=UncertaintyMode.ON,
+        default_resampling=ResamplingStrategy.SEED,
+        default_n_runs=5,
     )
     set_uncertainty_config(config)
     
@@ -85,7 +86,7 @@ def test_seed_strategy_deterministic():
                     f"SEED strategy with deterministic measure should have std≈0, got {stds}"
     finally:
         # Reset config
-        set_uncertainty_config(UncertaintyConfig(enabled=False))
+        set_uncertainty_config(UncertaintyConfig(mode=UncertaintyMode.OFF))
 
 
 @pytest.mark.verification
@@ -100,19 +101,17 @@ def test_uq_config_context():
     try:
         # Set new config
         config = UncertaintyConfig(
-            enabled=True,
-            strategy=ResamplingStrategy.BOOTSTRAP,
-            n_samples=10,
-            seed=123,
+            mode=UncertaintyMode.ON,
+            default_resampling=ResamplingStrategy.BOOTSTRAP,
+            default_n_runs=10,
         )
         set_uncertainty_config(config)
         
         # Retrieve and verify
         retrieved = get_uncertainty_config()
-        assert retrieved.enabled == True, "Config should be enabled"
-        assert retrieved.strategy == ResamplingStrategy.BOOTSTRAP
-        assert retrieved.n_samples == 10
-        assert retrieved.seed == 123
+        assert retrieved.mode == UncertaintyMode.ON, "Config should be enabled"
+        assert retrieved.default_resampling == ResamplingStrategy.BOOTSTRAP
+        assert retrieved.default_n_runs == 10
     finally:
         # Restore original
         set_uncertainty_config(original)
@@ -133,10 +132,9 @@ def test_uq_metadata_in_provenance():
     network = create_deterministic_network()
     
     config = UncertaintyConfig(
-        enabled=True,
-        strategy=ResamplingStrategy.SEED,
-        n_samples=3,
-        seed=42,
+        mode=UncertaintyMode.ON,
+        default_resampling=ResamplingStrategy.SEED,
+        default_n_runs=3,
     )
     set_uncertainty_config(config)
     
@@ -153,7 +151,7 @@ def test_uq_metadata_in_provenance():
                 # This is a placeholder for when UQ provenance is implemented
                 assert isinstance(prov, dict), "Provenance should be a dict"
     finally:
-        set_uncertainty_config(UncertaintyConfig(enabled=False))
+        set_uncertainty_config(UncertaintyConfig(mode=UncertaintyMode.OFF))
 
 
 @pytest.mark.verification
@@ -168,11 +166,9 @@ def test_ci_bounds_monotonic():
     network = create_deterministic_network()
     
     config = UncertaintyConfig(
-        enabled=True,
-        strategy=ResamplingStrategy.SEED,
-        n_samples=5,
-        seed=42,
-        ci_level=0.95,
+        mode=UncertaintyMode.ON,
+        default_resampling=ResamplingStrategy.SEED,
+        default_n_runs=5,
     )
     set_uncertainty_config(config)
     
@@ -204,7 +200,7 @@ def test_ci_bounds_monotonic():
                 assert low <= mean, f"CI low ({low}) should be ≤ mean ({mean})"
                 assert mean <= high, f"Mean ({mean}) should be ≤ CI high ({high})"
     finally:
-        set_uncertainty_config(UncertaintyConfig(enabled=False))
+        set_uncertainty_config(UncertaintyConfig(mode=UncertaintyMode.OFF))
 
 
 @pytest.mark.verification
@@ -214,12 +210,12 @@ def test_n_samples_positive():
     Test that n_samples must be positive.
     """
     config = UncertaintyConfig(
-        enabled=True,
-        strategy=ResamplingStrategy.BOOTSTRAP,
-        n_samples=10,
+        mode=UncertaintyMode.ON,
+        default_resampling=ResamplingStrategy.BOOTSTRAP,
+        default_n_runs=10,
     )
     
-    assert config.n_samples > 0, "n_samples must be positive"
+    assert config.default_n_runs > 0, "default_n_runs must be positive"
 
 
 @pytest.mark.verification
@@ -239,17 +235,16 @@ def test_resampling_strategy_enum():
         assert strategy is not None, f"Strategy {strategy} should be defined"
         # Should be able to create config with each strategy
         config = UncertaintyConfig(
-            enabled=True,
-            strategy=strategy,
-            n_samples=5,
+            mode=UncertaintyMode.ON,
+            default_resampling=strategy,
+            default_n_runs=5,
         )
-        assert config.strategy == strategy
+        assert config.default_resampling == strategy
 
 
 @pytest.mark.verification
 @pytest.mark.fast
 @pytest.mark.skipif(not DSL_AVAILABLE, reason="DSL not available")
-@pytest.mark.flaky(reruns=3, reruns_delay=1)
 def test_perturbation_produces_variance():
     """
     Test that PERTURBATION strategy produces nonzero std when edge_drop_p > 0.
@@ -275,30 +270,28 @@ def test_perturbation_produces_variance():
         })
     network.add_edges(edges)
     
-    config = UncertaintyConfig(
-        enabled=True,
-        strategy=ResamplingStrategy.PERTURBATION,
-        n_samples=10,
-        seed=42,
-        edge_drop_p=0.2,  # Drop 20% of edges
+    # Use direct uncertainty estimation API with fixed seed to avoid flakiness.
+    def degree_metric(net):
+        values = {}
+        for node in net.get_nodes():
+            values[node] = net.core_network.degree(node)
+        return values
+
+    result = estimate_uncertainty(
+        network,
+        degree_metric,
+        n_runs=30,
+        resampling=ResamplingStrategy.PERTURBATION,
+        random_seed=42,
+        perturbation_params={"edge_drop_p": 0.5},
     )
-    set_uncertainty_config(config)
-    
-    try:
-        query = Q.nodes().compute('degree').to_ast()
-        result = execute_ast(network, query)
-        
-        # Check if std exists and is non-zero for at least some nodes
-        if hasattr(result, 'uncertainty_summary'):
-            summary = result.uncertainty_summary()
-            if 'degree_std' in summary.columns:
-                stds = summary['degree_std'].values
-                # At least some nodes should have non-zero std
-                # (since we're randomly dropping edges)
-                # This is a weak test - may need adjustment
-                assert len(stds) > 0, "Should have std values"
-    finally:
-        set_uncertainty_config(UncertaintyConfig(enabled=False))
+
+    assert result.std is not None, "Perturbation should produce std values"
+    assert np.all(np.isfinite(result.std)), "Std values must be finite"
+    assert np.any(result.std > 0), "At least one node should have non-zero std under perturbation"
+    baseline = np.array([network.core_network.degree(node) for node in result.index], dtype=float)
+    assert np.all(result.mean >= 0), "Mean perturbed degrees should be non-negative"
+    assert np.all(result.mean <= baseline + 1e-9), "Mean perturbed degree should not exceed baseline degree"
 
 
 @pytest.mark.verification
@@ -311,7 +304,7 @@ def test_disabled_uq_no_overhead():
     network = create_deterministic_network()
     
     # Ensure UQ is disabled
-    set_uncertainty_config(UncertaintyConfig(enabled=False))
+    set_uncertainty_config(UncertaintyConfig(mode=UncertaintyMode.OFF))
     
     query = Q.nodes().compute('degree').to_ast()
     result = execute_ast(network, query)
