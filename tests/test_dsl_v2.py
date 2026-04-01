@@ -477,7 +477,7 @@ class TestQueryResult:
     def test_builder_method_guardrail_after_execute_where(self, sample_network):
         """Calling a builder method on QueryResult should raise pedagogical DSL error."""
         result = Q.nodes().execute(sample_network)
-        with pytest.raises(Exception) as excinfo:
+        with pytest.raises(DslExecutionError) as excinfo:
             result.where(layer="social")
 
         msg = str(excinfo.value)
@@ -485,11 +485,14 @@ class TestQueryResult:
         assert "[INTENT]" in msg
         assert "[ERROR] Why this failed:" in msg
         assert "[CORRECT] Corrected examples:" in msg
+        assert ".where(degree__gt=3)" in msg
+        assert ".execute(net)" in msg
+        assert "result = Q.nodes().execute(net); df = result.to_pandas()" in msg
 
     def test_builder_method_guardrail_after_execute_compute(self, sample_network):
         """Calling compute() on QueryResult should raise same pedagogical guidance."""
         result = Q.nodes().execute(sample_network)
-        with pytest.raises(Exception) as excinfo:
+        with pytest.raises(DslExecutionError) as excinfo:
             result.compute("degree")
 
         msg = str(excinfo.value)
@@ -500,7 +503,7 @@ class TestQueryResult:
     def test_builder_method_guardrail_after_execute_order_by(self, sample_network):
         """Calling order_by() on QueryResult should raise same pedagogical guidance."""
         result = Q.nodes().execute(sample_network)
-        with pytest.raises(Exception) as excinfo:
+        with pytest.raises(DslExecutionError) as excinfo:
             result.order_by("degree")
 
         msg = str(excinfo.value)

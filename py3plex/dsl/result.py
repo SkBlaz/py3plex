@@ -505,6 +505,8 @@ class QueryResult:
         return iter(self.items)
 
     # QueryBuilder-only methods that users often call after `.execute(...)`.
+    # Keep this list aligned with high-frequency user-facing QueryBuilder chain methods.
+    # It intentionally focuses on common mistakes rather than mirroring every builder API.
     _BUILDER_ONLY_METHODS = {
         "where",
         "compute",
