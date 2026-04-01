@@ -15,6 +15,8 @@ import pandas as pd
 from py3plex.core import multinet
 from py3plex.dsl import Q, L
 from py3plex.dsl.executor import execute_ast
+from py3plex.dsl.result import QueryResult
+from py3plex.dsl.errors import GroupingError
 
 
 def create_test_network():
@@ -315,3 +317,163 @@ def test_finite_computed_values():
     # All betweenness values should be finite
     assert np.all(np.isfinite(df['betweenness_centrality'].values)), \
         "All computed values should be finite (not NaN or inf)"
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_queryresult_nodes_and_edges_property_guards():
+    """nodes/edges properties should enforce target type contracts."""
+    nodes_result = QueryResult(target="nodes", items=[("A", "layer1")], attributes={})
+    edges_result = QueryResult(
+        target="edges",
+        items=[(("A", "layer1"), ("B", "layer1"), {"weight": 1.0})],
+        attributes={},
+    )
+
+    assert nodes_result.nodes == [("A", "layer1")]
+    assert edges_result.edges == [(("A", "layer1"), ("B", "layer1"), {"weight": 1.0})]
+
+    with pytest.raises(ValueError, match="target is 'nodes'"):
+        _ = nodes_result.edges
+    with pytest.raises(ValueError, match="target is 'edges'"):
+        _ = edges_result.nodes
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_queryresult_initializes_with_explicit_empty_meta():
+    """Explicit meta={} should be preserved and yield no provenance by default."""
+    result = QueryResult(
+        target="nodes",
+        items=[("A", "layer1")],
+        attributes={},
+        meta={},
+    )
+
+    assert result.meta == {}
+    assert result.provenance is None
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_queryresult_uq_detection_for_dict_and_list_columns():
+    """has_uq()/uq_columns should recognize both dict-style and list-style UQ payloads."""
+    result = QueryResult(
+        target="nodes",
+        items=[("A", "layer1"), ("B", "layer1")],
+        attributes={
+            "degree": {
+                ("A", "layer1"): {"mean": 1.0, "std": 0.1},
+                ("B", "layer1"): {"mean": 2.0, "std": 0.2},
+            },
+            "pagerank": [
+                {"value": 0.4, "std": 0.05},
+                {"value": 0.6, "std": 0.05},
+            ],
+            "label": ["x", "y"],
+        },
+    )
+
+    assert result.has_uq("degree")
+    assert result.has_uq("pagerank")
+    assert not result.has_uq("label")
+    assert not result.has_uq("missing")
+    assert set(result.uq_columns) == {"degree", "pagerank"}
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_queryresult_uq_detection_ignores_malformed_payloads():
+    """UQ helpers should ignore dict payloads that lack UQ marker keys."""
+    malformed = QueryResult(
+        target="nodes",
+        items=[("A", "layer1"), ("B", "layer1")],
+        attributes={
+            "bad_dict_column": {
+                ("A", "layer1"): {"std": 0.1},  # missing mean/value
+                ("B", "layer1"): {"ci_low": 0.0},  # missing mean/value
+            },
+            "bad_list_column": [{"std": 0.1}, {"ci_high": 0.8}],
+        },
+    )
+
+    assert not malformed.has_uq("bad_dict_column")
+    assert not malformed.has_uq("bad_list_column")
+    assert malformed.uq_columns == []
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_queryresult_uq_detection_mixed_payload_column():
+    """Column is considered UQ when its first payload entry carries mean/value markers."""
+    mixed = QueryResult(
+        target="nodes",
+        items=[("A", "layer1"), ("B", "layer1")],
+        attributes={
+            "mixed_dict_column": {
+                ("A", "layer1"): {"mean": 1.0, "std": 0.1},
+                ("B", "layer1"): {"std": 0.2},  # malformed trailing entry
+            },
+            "mixed_list_column": [
+                {"value": 0.5, "std": 0.1},
+                {"std": 0.2},  # malformed trailing entry
+            ],
+        },
+    )
+
+    assert mixed.has_uq("mixed_dict_column")
+    assert mixed.has_uq("mixed_list_column")
+    assert set(mixed.uq_columns) == {"mixed_dict_column", "mixed_list_column"}
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_group_summary_happy_path_and_guard():
+    """group_summary should return grouped rows and fail clearly without grouping metadata."""
+    grouped = QueryResult(
+        target="nodes",
+        items=[("A", "layer1"), ("B", "layer2")],
+        attributes={},
+        meta={
+            "grouping": {
+                "groups": [
+                    {"key": {"layer": "layer1"}, "n_items": 1, "coverage": 1.0},
+                    {"key": {"layer": "layer2"}, "n_items": 1, "coverage": 0.5},
+                ]
+            }
+        },
+    )
+    summary = grouped.group_summary()
+
+    assert list(summary["layer"]) == ["layer1", "layer2"]
+    assert list(summary["n_items"]) == [1, 1]
+    assert list(summary["coverage"]) == [1.0, 0.5]
+
+    ungrouped = QueryResult(target="nodes", items=[], attributes={}, meta={})
+    with pytest.raises(GroupingError):
+        ungrouped.group_summary()
+
+
+@pytest.mark.verification
+@pytest.mark.fast
+def test_group_summary_handles_missing_or_sparse_group_metadata():
+    """group_summary should tolerate sparse grouping structures and default missing values."""
+    missing_groups = QueryResult(
+        target="nodes",
+        items=[],
+        attributes={},
+        meta={"grouping": {}},
+    )
+    empty_summary = missing_groups.group_summary()
+    assert empty_summary.empty
+
+    sparse_group = QueryResult(
+        target="nodes",
+        items=[],
+        attributes={},
+        meta={"grouping": {"groups": [{"extra_flag": True}]}},
+    )
+    sparse_summary = sparse_group.group_summary()
+    assert len(sparse_summary) == 1
+    assert sparse_summary.iloc[0]["n_items"] == 0
+    assert bool(sparse_summary.iloc[0]["extra_flag"]) is True
