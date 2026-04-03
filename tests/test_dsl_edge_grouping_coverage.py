@@ -320,6 +320,20 @@ class TestGroupSummary:
         with pytest.raises(GroupingError, match="group_summary.*only.*grouped"):
             result.group_summary()
 
+    def test_group_summary_error_is_pedagogical_without_grouping(self, edge_test_network):
+        """Test grouped-lifecycle guidance text for group_summary misuse."""
+        net = edge_test_network
+        result = Q.edges().from_layers(L["layer0"]).execute(net)
+
+        with pytest.raises(GroupingError) as excinfo:
+            result.group_summary()
+
+        msg = str(excinfo.value)
+        assert "[INTENT]" in msg
+        assert "[ERROR] Why this failed:" in msg
+        assert "[CORRECT] Corrected examples:" in msg
+        assert "per_layer" in msg or "per_layer_pair" in msg
+
 
 class TestToPandasWithGrouping:
     """Test to_pandas() with grouping metadata."""
