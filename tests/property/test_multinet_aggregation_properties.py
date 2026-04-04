@@ -1,10 +1,25 @@
 """Property-based tests for py3plex.multinet.aggregation."""
 
+import importlib.util
+from pathlib import Path
+
 import numpy as np
 import pytest
 from hypothesis import given, settings, strategies as st
 
-from py3plex.multinet.aggregation import aggregate_layers
+
+def _load_aggregate_layers():
+    root = Path(__file__).resolve().parents[2]
+    module_path = root / "py3plex" / "multinet" / "aggregation.py"
+    spec = importlib.util.spec_from_file_location("multinet_aggregation", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Could not load py3plex.multinet.aggregation module")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.aggregate_layers
+
+
+aggregate_layers = _load_aggregate_layers()
 
 
 @st.composite
@@ -95,4 +110,3 @@ def test_unweighted_sum_equals_occurrence_counts(edges):
         expected[int(src), int(dst)] += 1.0
 
     np.testing.assert_allclose(got, expected, atol=1e-10, rtol=0.0)
-
