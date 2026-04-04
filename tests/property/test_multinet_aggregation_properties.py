@@ -25,6 +25,10 @@ aggregate_layers = _load_aggregate_layers()
 @st.composite
 def weighted_edges(draw):
     """Generate valid weighted multilayer edge arrays."""
+    # Keep bounds modest so Hypothesis runs fast while still exercising:
+    # - repeated edges across layers
+    # - varied node-id ranges
+    # - dense enough collisions for reducer semantics
     n_nodes = draw(st.integers(min_value=2, max_value=30))
     n_layers = draw(st.integers(min_value=1, max_value=6))
     n_edges = draw(st.integers(min_value=1, max_value=120))
@@ -42,6 +46,11 @@ def weighted_edges(draw):
     return np.array(rows, dtype=np.float64)
 
 
+def _expected_n_from_edges(edges: np.ndarray) -> int:
+    """Compute expected square adjacency dimension from src/dst node ids."""
+    return int(max(edges[:, 1].max(), edges[:, 2].max())) + 1
+
+
 @pytest.mark.property
 @given(weighted_edges())
 @settings(max_examples=80, deadline=None)
@@ -57,7 +66,7 @@ def test_sparse_dense_sum_equivalent(edges):
 @settings(max_examples=80, deadline=None)
 def test_shape_matches_max_node_id(edges):
     """Output shape must be max(node_id)+1 on each axis."""
-    expected_n = int(max(edges[:, 1].max(), edges[:, 2].max())) + 1
+    expected_n = _expected_n_from_edges(edges)
     out = aggregate_layers(edges, reducer="sum", to_sparse=True)
     assert out.shape == (expected_n, expected_n)
 
@@ -92,8 +101,8 @@ def test_reducer_ordering_mean_le_max_le_sum(edges):
     max_mat = aggregate_layers(edges, reducer="max", to_sparse=False)
     sum_mat = aggregate_layers(edges, reducer="sum", to_sparse=False)
 
-    assert np.all(mean_mat <= max_mat + 1e-10)
-    assert np.all(max_mat <= sum_mat + 1e-10)
+    np.testing.assert_array_less(mean_mat, max_mat + 1e-10)
+    np.testing.assert_array_less(max_mat, sum_mat + 1e-10)
 
 
 @pytest.mark.property
@@ -104,7 +113,7 @@ def test_unweighted_sum_equals_occurrence_counts(edges):
     unweighted = edges[:, :3]
     got = aggregate_layers(unweighted, reducer="sum", to_sparse=False)
 
-    n = int(max(unweighted[:, 1].max(), unweighted[:, 2].max())) + 1
+    n = _expected_n_from_edges(unweighted)
     expected = np.zeros((n, n), dtype=np.float64)
     for _, src, dst in unweighted:
         expected[int(src), int(dst)] += 1.0
