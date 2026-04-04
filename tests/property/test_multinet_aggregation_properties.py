@@ -48,6 +48,7 @@ def weighted_edges(draw):
 
 def _expected_n_from_edges(edges: np.ndarray) -> int:
     """Compute expected square adjacency dimension from src/dst node ids."""
+    # Property strategy guarantees at least one edge in all current call sites.
     return int(max(edges[:, 1].max(), edges[:, 2].max())) + 1
 
 
@@ -101,8 +102,8 @@ def test_reducer_ordering_mean_le_max_le_sum(edges):
     max_mat = aggregate_layers(edges, reducer="max", to_sparse=False)
     sum_mat = aggregate_layers(edges, reducer="sum", to_sparse=False)
 
-    np.testing.assert_array_less(mean_mat, max_mat + 1e-10)
-    np.testing.assert_array_less(max_mat, sum_mat + 1e-10)
+    assert np.all(mean_mat <= max_mat + 1e-10)
+    assert np.all(max_mat <= sum_mat + 1e-10)
 
 
 @pytest.mark.property
@@ -115,7 +116,8 @@ def test_unweighted_sum_equals_occurrence_counts(edges):
 
     n = _expected_n_from_edges(unweighted)
     expected = np.zeros((n, n), dtype=np.float64)
-    for _, src, dst in unweighted:
+    for layer, src, dst in unweighted:
+        _ = layer  # layer index intentionally ignored for collapsed aggregation
         expected[int(src), int(dst)] += 1.0
 
     np.testing.assert_allclose(got, expected, atol=1e-10, rtol=0.0)
