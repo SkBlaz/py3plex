@@ -39,3 +39,24 @@ def test_readme_mentions_contributor_safety_policy(readme_content: str):
     """README should surface key contributor safety constraints."""
     assert "Do not add new markdown files unless explicitly requested" in readme_content
     assert "make ci" in readme_content
+
+
+def test_readme_lists_supported_load_network_input_types(readme_content: str):
+    """README TL;DR should list canonical supported load_network input types."""
+    required_input_types = [
+        "edgelist",
+        "multiedgelist",
+        "multiplex_edges",
+        "multiplex_folder",
+        "gml",
+        "graphml",
+        "gpickle",
+        "gpickle_biomine",
+        "nx",
+        "sparse",
+    ]
+
+    assert "TL;DR: Public API and supported load formats" in readme_content
+    assert "multi_layer_network.load_network" in readme_content
+    missing = [item for item in required_input_types if f"`{item}`" not in readme_content]
+    assert not missing, f"README is missing supported input_type values: {missing}"

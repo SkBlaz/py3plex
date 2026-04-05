@@ -129,6 +129,27 @@ Alternatively, use pip:
 pip install py3plex
 ```
 
+### TL;DR: Public API and supported load formats
+
+Public API entry points:
+
+- `py3plex.multi_layer_network`
+- `py3plex.dsl` builder API (`Q`, `L`, `UQ`, `Param`, `F`)
+- `py3plex.execute_query` (legacy string DSL)
+
+Supported `multi_layer_network.load_network(..., input_type=...)` formats:
+
+- `edgelist`
+- `multiedgelist`
+- `multiplex_edges`
+- `multiplex_folder`
+- `gml`
+- `graphml`
+- `gpickle`
+- `gpickle_biomine`
+- `nx`
+- `sparse`
+
 ### Optional Features
 
 Install additional features as needed:
