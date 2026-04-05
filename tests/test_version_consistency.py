@@ -15,6 +15,11 @@ def _project_version() -> str:
     return data["project"]["version"]
 
 
+def _project_optional_deps() -> dict:
+    data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    return data["project"]["optional-dependencies"]
+
+
 def _extract(pattern: str, text: str, label: str) -> str:
     match = re.search(pattern, text, re.MULTILINE)
     assert match, f"Missing version pattern for {label}"
@@ -42,3 +47,15 @@ def test_version_is_consistent_across_release_files():
     assert _extract(r"^release\s*=\s*'([^']+)'", book_conf, "book/conf.py::release") == version
     assert _extract(r"^version:\s*([0-9]+\.[0-9]+\.[0-9]+)", citation, "CITATION.cff::version") == version
 
+
+def test_optional_extra_contains_common_feature_extras():
+    optional = _project_optional_deps()
+    assert "optional" in optional
+
+    optional_deps = set(optional["optional"])
+    for extra_name in ("algos", "viz", "workflows", "arrow"):
+        for dep in optional[extra_name]:
+            assert dep in optional_deps
+
+    for dep in optional["mcp"]:
+        assert dep in optional_deps
