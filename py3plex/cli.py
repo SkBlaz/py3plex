@@ -1923,7 +1923,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
     # Test 1b: Optional dependencies (informational only)
     print("\n1b. Checking optional dependencies...")
-    optional_status = True
     optional_deps = {
         "community": "python-louvain",
         "leidenalg": "leidenalg",
@@ -1931,7 +1930,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         "igraph": "python-igraph",
         "pyarrow": "pyarrow",
         "yaml": "pyyaml",
-        "mcp": "mcp (Python >=3.10)",
+        "mcp": "mcp",
     }
     optional_available = 0
     for module_name, package_name in optional_deps.items():
@@ -1950,7 +1949,6 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         f"   [OK] Optional dependencies available: "
         f"{optional_available}/{len(optional_deps)}"
     )
-    test_results.append(("Optional dependencies", optional_status))
 
     # Test 2: Graph creation
     print("\n2. Testing graph creation...")

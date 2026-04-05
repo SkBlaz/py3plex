@@ -53,9 +53,14 @@ def test_optional_extra_contains_common_feature_extras():
     assert "optional" in optional
 
     optional_deps = set(optional["optional"])
-    for extra_name in ("algos", "viz", "workflows", "arrow"):
+    expected = set()
+    for extra_name in ("algos", "viz", "workflows", "arrow", "infomap"):
         for dep in optional[extra_name]:
             assert dep in optional_deps
+            expected.add(dep)
 
     for dep in optional["mcp"]:
         assert dep in optional_deps
+        expected.add(dep)
+
+    assert optional_deps == expected
