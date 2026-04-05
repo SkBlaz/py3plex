@@ -207,6 +207,34 @@ class GraphFileLinter:
             return lines[line_number - 1]
         return None
 
+    @staticmethod
+    def _looks_like_edgelist_header(parts: List[str]) -> bool:
+        """Heuristic for accidental header row in whitespace edgelists."""
+        if len(parts) < 2:
+            return False
+        lowered = [p.lower() for p in parts]
+        header_weight = {"weight", "w", "value", "score"}
+        return (
+            lowered[0] in {"src", "source", "from", "node1"}
+            and lowered[1] in {"dst", "destination", "target", "to", "node2"}
+            and (len(parts) == 2 or (len(parts) >= 3 and lowered[2] in header_weight))
+        )
+
+    @staticmethod
+    def _looks_like_multiedgelist_header(parts: List[str]) -> bool:
+        """Heuristic for accidental header row in whitespace multiedgelists."""
+        if len(parts) < 4:
+            return False
+        lowered = [p.lower() for p in parts]
+        header_weight = {"weight", "w", "value", "score"}
+        return (
+            lowered[0] in {"src", "source", "from", "node1"}
+            and lowered[1] in {"src_layer", "source_layer", "layer1", "layer"}
+            and lowered[2] in {"dst", "destination", "target", "to", "node2"}
+            and lowered[3] in {"dst_layer", "destination_layer", "target_layer", "layer2", "layer"}
+            and (len(parts) == 4 or (len(parts) >= 5 and lowered[4] in header_weight))
+        )
+
     def _add_issue(
         self,
         severity: str,
@@ -303,6 +331,8 @@ class GraphFileLinter:
         Returns:
             Format string: 'csv', 'edgelist', or 'multiedgelist'
         """
+        # Extension-first detection improves common-case accuracy for files that
+        # are intentionally named with known graph-data suffixes.
         suffix = self.file_path.suffix.lower()
         if suffix == ".csv":
             return "csv"
@@ -559,12 +589,11 @@ class GraphFileLinter:
 
                     if not first_data_line_checked:
                         first_data_line_checked = True
-                        lowered = [p.lower() for p in parts]
-                        if (
-                            len(parts) >= 2
-                            and lowered[0] in {"src", "source", "from", "node1"}
-                            and lowered[1] in {"dst", "destination", "target", "to", "node2"}
-                        ):
+                        # Header detection is only attempted on the first non-comment
+                        # record because accidental headers are expected at file start.
+                        # Header detection is intentionally conservative to avoid
+                        # flagging legitimate node IDs such as "src" or "dst".
+                        if self._looks_like_edgelist_header(parts):
                             self._add_issue(
                                 LintIssue.SEVERITY_WARNING,
                                 "Potential header row detected in edge list",
@@ -643,7 +672,8 @@ class GraphFileLinter:
 
                     # Check for duplicates
                     edge_key = (src, dst)
-                    if edge_key in seen_edges:
+                    is_exact_duplicate = edge_key in seen_edges
+                    if is_exact_duplicate:
                         self._add_issue(
                             LintIssue.SEVERITY_WARNING,
                             f"Duplicate edge: {src} -> {dst}",
@@ -651,8 +681,10 @@ class GraphFileLinter:
                             suggestion="Remove duplicate edges or use weights",
                             code="PX205",
                         )
+                    # Use a sorted node pair to catch reverse-direction duplicates
+                    # in likely undirected edge-list inputs (A B vs B A).
                     undirected_edge = tuple(sorted((src, dst)))
-                    if undirected_edge in seen_undirected_edges and edge_key not in seen_edges:
+                    if undirected_edge in seen_undirected_edges and not is_exact_duplicate:
                         self._add_issue(
                             LintIssue.SEVERITY_WARNING,
                             f"Potential undirected duplicate edge: {src} -> {dst}",
@@ -693,13 +725,9 @@ class GraphFileLinter:
 
                     if not first_data_line_checked:
                         first_data_line_checked = True
-                        lowered = [p.lower() for p in parts]
-                        if (
-                            len(parts) >= 4
-                            and lowered[0] in {"src", "source", "from", "node1"}
-                            and lowered[1] in {"src_layer", "source_layer", "layer1", "layer"}
-                            and lowered[2] in {"dst", "destination", "target", "to", "node2"}
-                        ):
+                        # Header detection is only attempted on the first non-comment
+                        # record because accidental headers are expected at file start.
+                        if self._looks_like_multiedgelist_header(parts):
                             self._add_issue(
                                 LintIssue.SEVERITY_WARNING,
                                 "Potential header row detected in multiedgelist",
