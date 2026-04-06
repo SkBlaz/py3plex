@@ -13,7 +13,7 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/py3plex)](https://pypistats.org/packages/py3plex)
 ![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 ![Docker](https://img.shields.io/badge/Docker-Available-blue)
-![Lines of Code](https://img.shields.io/badge/lines-210.1K-blue)
+![Lines of Code](https://img.shields.io/badge/lines-210.2K-blue)
 ![Test Count](https://img.shields.io/badge/tests-9.1K-blue)
 
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
