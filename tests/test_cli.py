@@ -963,6 +963,14 @@ class TestCLISelftest:
         assert "Core dependencies" in captured.out
         assert "[OK]" in captured.out
 
+    def test_selftest_checks_optional_dependencies(self, capsys):
+        """Test that selftest reports optional dependency availability."""
+        result = cli.main(["selftest"])
+        assert result == 0
+        captured = capsys.readouterr()
+        assert "optional dependencies" in captured.out.lower()
+        assert "Optional dependencies available:" in captured.out
+
     def test_selftest_checks_graph_creation(self, capsys):
         """Test that selftest checks graph creation."""
         result = cli.main(["selftest"])
@@ -1264,4 +1272,3 @@ class TestCLITutorial:
         # Should include code snippets
         assert "from py3plex.core import multinet" in captured.out
         assert "network.add_edges" in captured.out
-

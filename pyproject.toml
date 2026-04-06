@@ -121,6 +121,17 @@ dgl_compat = [
 mcp = [
     "mcp>=0.9.0; python_version>='3.10'",
 ]
+# Convenience meta-extra for common optional features (without heavy ML backends)
+optional = [
+    "infomap>=2.0.0",
+    "python-louvain>=0.16",
+    "cdlib>=0.3.0",
+    "plotly>=5.0.0",
+    "python-igraph>=0.10.0",
+    "pyyaml>=5.1",
+    "pyarrow>=10.0.0",
+    "mcp>=0.9.0; python_version>='3.10'",
+]
 
 [project.urls]
 Homepage = "https://github.com/SkBlaz/py3plex"

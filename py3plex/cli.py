@@ -1921,6 +1921,35 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         print("   [X] Some dependencies missing")
     test_results.append(("Core dependencies", deps_status))
 
+    # Test 1b: Optional dependencies (informational only)
+    print("\n1b. Checking optional dependencies...")
+    optional_deps = {
+        "community": "python-louvain",
+        "leidenalg": "leidenalg",
+        "infomap": "infomap",
+        "igraph": "python-igraph",
+        "pyarrow": "pyarrow",
+        "yaml": "pyyaml",
+        "mcp": "mcp",
+    }
+    optional_available = 0
+    for module_name, package_name in optional_deps.items():
+        try:
+            module = importlib.import_module(module_name)
+            optional_available += 1
+            if verbose:
+                print(
+                    f"   [OK] {package_name}: {getattr(module, '__version__', 'available')}"
+                )
+        except Exception:
+            if verbose:
+                print(f"   [!] {package_name}: not installed")
+
+    print(
+        f"   [OK] Optional dependencies available: "
+        f"{optional_available}/{len(optional_deps)}"
+    )
+
     # Test 2: Graph creation
     print("\n2. Testing graph creation...")
     graph_status = False

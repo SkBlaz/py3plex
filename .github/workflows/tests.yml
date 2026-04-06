@@ -225,3 +225,38 @@ jobs:
         source .venv/bin/activate
         uv run pytest -v -k metamorphic tests/test_metamorphic.py --tb=short
       timeout-minutes: 50
+
+  optional-features:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    name: "Optional features smoke (Python 3.11)"
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    - name: Install optional feature bundle
+      run: |
+        uv venv --clear .venv
+        source .venv/bin/activate
+        uv pip install -e ".[optional]"
+        uv pip install pytest
+
+    - name: Run selftest and optional capability checks
+      env:
+        MPLBACKEND: Agg
+      run: |
+        source .venv/bin/activate
+        uv run python -m py3plex.cli selftest
+        uv run pytest tests/test_cli.py -k selftest -q
+        uv run pytest tests/test_capabilities_optional_missing.py -q

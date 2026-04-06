@@ -145,6 +145,9 @@ pip install py3plex[viz]
 
 # All optional features
 pip install py3plex[mcp,algos,viz]
+
+# Common optional feature bundle (algorithms + visualization + workflows + arrow + mcp)
+pip install py3plex[optional]
 ```
 
 ### Contributing (First PR Quick Path)
