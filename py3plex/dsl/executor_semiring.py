@@ -80,7 +80,7 @@ def execute_semiring_path_stmt(
     
     # Convert to QueryResult
     items = []
-    for node, value in path_result.distances.items():
+    for node, value in sorted(path_result.distances.items(), key=lambda pair: str(pair[0])):
         item = {
             'node': node,
             'value': value,
@@ -190,7 +190,7 @@ def execute_semiring_closure_stmt(
     
     # Convert to QueryResult
     items = []
-    for (src, dst), value in closure_result.items():
+    for (src, dst), value in sorted(closure_result.items(), key=lambda pair: (str(pair[0][0]), str(pair[0][1]))):
         # Skip zero values for sparse output
         if stmt.output_format == "sparse" and value == semiring.zero():
             continue
@@ -267,33 +267,15 @@ def _extract_graph_data(
         # All layers
         included_layers = set(all_layer_names)
     
-    # Collect nodes
-    nodes = []
-    for layer in included_layers:
-        try:
-            layer_nodes = network.get_nodes(layer)
-            for node in layer_nodes:
-                # Use simple node identifiers (not tuples)
-                nodes.append(node)
-        except Exception:
-            # Fallback: iterate over all nodes and filter by layer
-            pass
-    
-    # Deduplicate
-    nodes = list(set(nodes))
-    
-    # If no nodes collected via get_nodes, collect from edges
-    if not nodes:
-        # Collect all unique node IDs from edges
-        node_set = set()
-        for edge_data in network.get_edges(data=True):
-            if len(edge_data) == 3:
-                (u_node, u_layer), (v_node, v_layer), data = edge_data
-                if u_layer in included_layers:
-                    node_set.add(u_node)
-                if v_layer in included_layers:
-                    node_set.add(v_node)
-        nodes = list(node_set)
+    # Collect physical node identifiers from the full replica list.
+    node_set = set()
+    for node in network.get_nodes():
+        if not (isinstance(node, tuple) and len(node) >= 2):
+            continue
+        node_id, layer = node[0], node[1]
+        if layer in included_layers:
+            node_set.add(node_id)
+    nodes = sorted(node_set, key=str)
     
     # Collect edges
     edges = []

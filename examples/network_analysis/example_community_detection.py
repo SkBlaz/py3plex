@@ -235,14 +235,14 @@ Options:
         print("\nInfomap detection complete!")
         print(f"  Total communities found: {len(community_sizes)}")
 
-        visualize_partition(
-            network,
-            partition,
-            iterations=iterations,
-            plot_path=plot_path,
-            title="Infomap communities",
-            skip_visualization=skip_visualization,
-        )
+        visualize_kwargs = {
+            "iterations": iterations,
+            "plot_path": plot_path,
+            "title": "Infomap communities",
+        }
+        if skip_visualization:
+            visualize_kwargs["skip_visualization"] = True
+        visualize_partition(network, partition, **visualize_kwargs)
     except FileNotFoundError as exc:
         print(f"[X] Infomap binary not found: {exc}")
         print("  Using Louvain results from above instead.")
@@ -288,14 +288,15 @@ def main() -> int:
 
     network = load_network(args.input_network, args.input_type)
     partition = run_louvain(network)
-    visualize_partition(
-        network,
-        partition,
-        iterations=args.iterations,
-        plot_path=args.plot_path,
-        title="Louvain communities",
-        skip_visualization=args.skip_visualization,
-    )
+    skip_visualization = getattr(args, "skip_visualization", False)
+    visualize_kwargs = {
+        "iterations": args.iterations,
+        "plot_path": args.plot_path,
+        "title": "Louvain communities",
+    }
+    if skip_visualization:
+        visualize_kwargs["skip_visualization"] = True
+    visualize_partition(network, partition, **visualize_kwargs)
 
     if not args.skip_infomap:
         try_infomap(
@@ -304,7 +305,7 @@ def main() -> int:
             iterations=args.iterations,
             seed=args.seed,
             plot_path=args.infomap_plot_path,
-            skip_visualization=args.skip_visualization,
+            skip_visualization=skip_visualization,
         )
     else:
         print("Infomap step skipped by user request.")

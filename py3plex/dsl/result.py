@@ -668,6 +668,20 @@ class QueryResult:
                 "pandas is required for to_pandas(). Install with: pip install pandas"
             )
 
+        if self.target == "paths":
+            rows = [dict(item) if isinstance(item, dict) else {"value": item} for item in self.items]
+            df = pd.DataFrame(rows)
+            if expand_embeddings:
+                df = _expand_embeddings_into_df(df, self.embeddings, self.items, embedding_prefix)
+            return df
+
+        if self.target == "closure":
+            rows = [dict(item) if isinstance(item, dict) else {"value": item} for item in self.items]
+            df = pd.DataFrame(rows)
+            if expand_embeddings:
+                df = _expand_embeddings_into_df(df, self.embeddings, self.items, embedding_prefix)
+            return df
+
         if self.target == "communities":
             # Build community dataframe
             rows = []

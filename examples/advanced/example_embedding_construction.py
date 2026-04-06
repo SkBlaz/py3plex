@@ -43,9 +43,7 @@ input_network = get_dataset_path("imdb_gml.gml")
 edgelist_file = get_dataset_path("test.edgelist")
 embedding_file = get_dataset_path("test_embedding.emb")
 cached_json_output = get_dataset_path("embedding_coordinates.json")
-json_output = os.path.join(
-    tempfile.gettempdir(), "py3plex_example_embedding_coordinates.json"
-)
+json_output = get_dataset_path("embedding_coordinates.json")
 
 # Check if input file exists
 if not os.path.exists(input_network):
@@ -120,19 +118,19 @@ try:
 
 except (FileNotFoundError, ExternalToolError) as e:
     if os.path.exists(embedding_file):
-        print(f"  [!] Node2Vec generation unavailable: {e}")
+        print(f"  [!] Node2Vec binary not found: {e}")
         print("  [OK] Falling back to existing embedding file already present in datasets/")
     else:
-        print(f"  [!] Node2Vec generation unavailable: {e}")
+        print(f"  [!] Node2Vec binary not found: {e}")
         print("  Skipping the rest of the example because no embedding file is available.")
-        raise SystemExit(0)
+        raise SystemExit(1)
 except Exception as e:
     print(f"  [X] Error generating embeddings: {e}")
     if os.path.exists(embedding_file):
         print("  [OK] Falling back to the existing embedding file.")
     else:
         print("  Skipping the rest of the example.")
-        raise SystemExit(0)
+        raise SystemExit(1)
 
 print(f"\nStep 4: Loading embeddings into network object")
 print("-" * 70)

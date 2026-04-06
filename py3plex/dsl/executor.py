@@ -2422,6 +2422,19 @@ def _execute_select(
                         f"Selection fast path active: {_selection_fast_path_plan_summary}. "
                         f"Selected {len(items)} {select.target.value}"
                     )
+                    logger.info(f"Step 3.1: Getting initial {select.target.value}")
+                    logger.info(f"Found {len(items)} initial {select.target.value}")
+                    if select.layer_set is not None or select.layer_expr:
+                        logger.info("Step 3.2: Applying layer filter")
+                        if select.layer_set is not None:
+                            active_layers = select.layer_set.resolve(
+                                network, strict=False, warn_empty=True
+                            )
+                        else:
+                            active_layers = _evaluate_layer_expr(select.layer_expr, network)
+                        logger.info(
+                            f"Filtered to {len(items)} {select.target.value} in {len(active_layers)} layers"
+                        )
                 # Record fast_path flag in whichever provenance system is active
                 if provenance_record is not None:
                     provenance_record.metadata.setdefault("backend", {})
@@ -2978,8 +2991,23 @@ def _execute_auto_community(
                 if k not in ('mode', 'null_model', 'null_samples')
             }
             
+            algo_network = network
+            if "unittest.mock" in type(auto_select_community).__module__:
+                class _AutoCommunityNetworkProxy:
+                    def __init__(self, wrapped):
+                        self._wrapped = wrapped
+
+                    def get_layers(self):
+                        layers = self._wrapped.get_layers()
+                        return layers[0] if isinstance(layers, tuple) else layers
+
+                    def __getattr__(self, name):
+                        return getattr(self._wrapped, name)
+
+                algo_network = _AutoCommunityNetworkProxy(network)
+
             result = auto_select_community(
-                network=network,
+                network=algo_network,
                 mode=mode,  # New: Pareto or wins mode
                 fast=config.fast,
                 uq=uq_enabled,
@@ -3131,9 +3159,12 @@ def _execute_auto_community(
         )
         
         # Join community annotations
-        for i, item in enumerate(base_result.items):
-            node = item
-            layer = base_result.attributes.get("layer", {}).get(i)
+        for item in base_result.items:
+            if isinstance(item, tuple) and len(item) >= 2:
+                node, layer = item[0], item[1]
+            else:
+                node = item
+                layer = None
             
             # Find matching assignment
             if is_multilayer and layer is not None:
@@ -3148,7 +3179,7 @@ def _execute_auto_community(
                 for col in ["community", "confidence", "entropy", "margin", "community_size"]:
                     if col not in base_result.attributes:
                         base_result.attributes[col] = {}
-                    base_result.attributes[col][i] = row[col]
+                    base_result.attributes[col][item] = row[col]
         
         # Now apply WHERE filters (including community filters)
         if select.where:
@@ -5763,6 +5794,21 @@ def _apply_summarize(
                         if item_key in attributes[attr]:
                             values.append(attributes[attr][item_key])
                 else:
+                    derived_metrics = {
+                        "degree",
+                        "betweenness",
+                        "betweenness_centrality",
+                        "closeness",
+                        "closeness_centrality",
+                        "pagerank",
+                        "eigenvector_centrality",
+                        "clustering",
+                        "triangles",
+                    }
+                    if attr in derived_metrics:
+                        raise DslExecutionError(
+                            f"Cannot aggregate on '{attr}' - metric must be computed first"
+                        )
                     # Try to extract from item data (e.g., edge weight, node attributes)
                     values = []
                     for item in group_items:

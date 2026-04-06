@@ -36,6 +36,7 @@ A = multinet.multi_layer_network()
 simple_node = {"source": "node1", "type": "t1"}
 A.add_nodes(simple_node)
 A.monitor("Added a single node.")
+print("Printing a single node.")
 print("Nodes:", list(A.get_nodes(data=True)))
 
 # ===============================================================================
@@ -57,6 +58,7 @@ simple_edge = {
 
 A.add_edges(simple_edge)
 A.monitor("Added a single edge with weight attribute.")
+print("Printing a single edge.")
 print("Edges:", list(A.get_edges(data=True)))
 
 # ===============================================================================
@@ -106,6 +108,7 @@ print(f"Total edges after list additions: {len(list(A.get_edges()))}")
 print("\n[5] Generating random Erdos-Renyi multilayer network...")
 print("-" * 70)
 
+print("Random ER multilayer graph in progress")
 A.monitor("Generating random ER multilayer graph...")
 ER_multilayer = random_generators.random_multilayer_ER(300,
                                                        6,
@@ -158,11 +161,11 @@ print("\n[8] Working with coupled edges in multiplex networks...")
 print("-" * 70)
 # Coupled edges (inter-layer connections between same node)
 coupled_edges = list(B.get_edges(multiplex_edges=True))
-B.monitor(f"Coupled edges (inter-layer): {len(coupled_edges)} edges")
+B.monitor(coupled_edges)
 
 # Non-coupled edges (intra-layer connections)
 non_coupled_edges = list(B.get_edges(multiplex_edges=False))
-B.monitor(f"Non-coupled edges (intra-layer): {len(non_coupled_edges)} edges")
+B.monitor(non_coupled_edges)
 
 # Visualization: B.visualize_network(show=True, resolution=0.01)
 
@@ -195,4 +198,3 @@ print("  [OK] Multiplex networks enforce shared node sets across layers")
 print("  [OK] Subnetworks can be extracted by layers, nodes, or tuples")
 print("  [OK] Coupled edges automatically created between same nodes across layers")
 print("  [OK] Random network generators available for testing")
-

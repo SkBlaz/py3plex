@@ -20,139 +20,59 @@ Prerequisites:
 SKIP_CI: external_deps - Requires node2vec binary
 """
 
+import json
+import os
+
 from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.embedding_visualization import embedding_visualization, embedding_tools
-import json
-import os
-import tempfile
 from py3plex.exceptions import ExternalToolError
 from py3plex.utils import get_dataset_path, get_data_path
-
-print("=" * 70)
-print("NETWORK EMBEDDING WITH NODE2VEC")
-print("=" * 70)
 
 # ===============================================================================
 # Step 1: Load network and prepare for embedding
 # ===============================================================================
 
-print("\n[1] Loading IMDB collaboration network...")
-print("-" * 70)
 multilayer_network = multinet.multi_layer_network().load_network(
     get_dataset_path("imdb_gml.gml"), directed=True, input_type="gml")
-print("Network loaded successfully!")
 
 # Get the datasets directory for output files
 datasets_dir = get_data_path("datasets")
-cached_json_output = os.path.join(datasets_dir, "embedding_coordinates.json")
-json_output_path = os.path.join(
-    tempfile.gettempdir(), "py3plex_example_n2v_embedding_coordinates.json"
-)
+json_output_path = os.path.join(datasets_dir, "embedding_coordinates.json")
 
 # ===============================================================================
 # Step 2: Export network to edgelist format for Node2Vec
 # ===============================================================================
 
-print("\n[2] Exporting network to edgelist format...")
-print("-" * 70)
 edgelist_path = os.path.join(datasets_dir, "test.edgelist")
 multilayer_network.save_network(edgelist_path)
-print(f"Edgelist saved to: {edgelist_path}")
 
 # ===============================================================================
 # Step 3: Run Node2Vec embedding (requires binary or pure Python alternative)
 # ===============================================================================
 
-print("\n[3] Running Node2Vec embedding...")
-print("-" * 70)
-print("Note: Node2Vec binary is no longer bundled with py3plex.")
-print("Install options:")
-print("  1. SNAP Node2Vec: https://github.com/snap-stanford/snap")
-print("  2. Pure Python: pip install node2vec")
-print("  3. Fast Python: pip install pecanpy")
-print()
 try:
     # Define embedding output path
     embedding_path = os.path.join(datasets_dir, "test_embedding.emb")
 
     # Call Node2Vec binary (assumes binary is in PATH or current directory)
-    print(f"Calling Node2Vec binary...")
     train_node2vec_embedding.call_node2vec_binary(edgelist_path,
                                                   embedding_path,
                                                   binary="./node2vec",  # Assumes in PATH
                                                   weighted=False)
-    print(f"Embedding saved to: {embedding_path}")
 
-    # ===============================================================================
-    # Step 4: Load and visualize embedding
-    # ===============================================================================
-
-    print("\n[4] Loading and visualizing embedding...")
-    print("-" * 70)
-    
     # Preprocess and check embedding
     multilayer_network.load_embedding(embedding_path)
-    print("Embedding loaded successfully!")
 
-    use_cached_projection = os.path.exists(cached_json_output)
-    if use_cached_projection:
-        print("Using cached 2D projection from datasets/ to keep the example fast.")
-    else:
-        print("Generating visualization (using t-SNE)...")
-        embedding_visualization.visualize_embedding(multilayer_network)
-        print("Visualization complete!")
-
-    # ===============================================================================
-    # Step 5: Export embedding coordinates to JSON
-    # ===============================================================================
-
-    print("\n[5] Exporting 2D coordinates to JSON...")
-    print("-" * 70)
-    
-    # Output embedded coordinates as JSON
-    if use_cached_projection:
-        with open(cached_json_output) as infile:
-            output_json = json.load(infile)
-    else:
-        output_json = embedding_tools.get_2d_coordinates_tsne(
-            multilayer_network,
-            output_format="json"
-        )
+    embedding_visualization.visualize_embedding(multilayer_network)
+    output_json = embedding_tools.get_2d_coordinates_tsne(
+        multilayer_network,
+        output_format="json"
+    )
     with open(json_output_path, 'w') as outfile:
         json.dump(output_json, outfile)
-    print(f"Coordinates saved to: {json_output_path}")
-    
-    print("\n" + "=" * 70)
-    print("NODE2VEC EMBEDDING COMPLETE")
-    print("=" * 70)
-    print("\nKey takeaways:")
-    print("  [OK] Node2Vec learns low-dimensional node representations")
-    print("  [OK] Embeddings preserve network structural properties")
-    print("  [OK] t-SNE reduces embeddings to 2D for visualization")
-    print("  [OK] Embeddings can be exported for downstream tasks")
-    
 except (FileNotFoundError, ExternalToolError) as e:
     print(f"[ERROR] Node2Vec binary not found: {e}")
-    print("\nAlternative approaches:")
-    print("  1. Install pure Python Node2Vec:")
-    print("     pip install node2vec")
-    print("\n  2. Install fast Python alternative:")
-    print("     pip install pecanpy")
-    print("\n  3. Use py3plex built-in embedding methods")
-    if os.path.exists(os.path.join(datasets_dir, "test_embedding.emb")):
-        print("\nUsing the pre-computed embedding already stored in datasets/ instead.")
-        embedding_path = os.path.join(datasets_dir, "test_embedding.emb")
-        multilayer_network.load_embedding(embedding_path)
-        if os.path.exists(cached_json_output):
-            with open(cached_json_output) as infile:
-                output_json = json.load(infile)
-        else:
-            output_json = embedding_tools.get_2d_coordinates_tsne(
-                multilayer_network, output_format="json"
-            )
-        with open(json_output_path, 'w') as outfile:
-            json.dump(output_json, outfile)
-        print(f"Coordinates saved to: {json_output_path}")
-    else:
-        print("\nSkipping example because no embedding file is available.")
+    print("Consider using pure Python alternatives:")
+    print("pip install node2vec")
+    print("pip install pecanpy")
