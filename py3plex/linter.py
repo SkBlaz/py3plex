@@ -207,6 +207,34 @@ class GraphFileLinter:
             return lines[line_number - 1]
         return None
 
+    @staticmethod
+    def _looks_like_edgelist_header(parts: List[str]) -> bool:
+        """Heuristic for accidental header row in whitespace edgelists."""
+        if len(parts) < 2:
+            return False
+        lowered = [p.lower() for p in parts]
+        header_weight = {"weight", "w", "value", "score"}
+        return (
+            lowered[0] in {"src", "source", "from", "node1"}
+            and lowered[1] in {"dst", "destination", "target", "to", "node2"}
+            and (len(parts) == 2 or (len(parts) >= 3 and lowered[2] in header_weight))
+        )
+
+    @staticmethod
+    def _looks_like_multiedgelist_header(parts: List[str]) -> bool:
+        """Heuristic for accidental header row in whitespace multiedgelists."""
+        if len(parts) < 4:
+            return False
+        lowered = [p.lower() for p in parts]
+        header_weight = {"weight", "w", "value", "score"}
+        return (
+            lowered[0] in {"src", "source", "from", "node1"}
+            and lowered[1] in {"src_layer", "source_layer", "layer1", "layer"}
+            and lowered[2] in {"dst", "destination", "target", "to", "node2"}
+            and lowered[3] in {"dst_layer", "destination_layer", "target_layer", "layer2", "layer"}
+            and (len(parts) == 4 or (len(parts) >= 5 and lowered[4] in header_weight))
+        )
+
     def _add_issue(
         self,
         severity: str,
@@ -303,6 +331,14 @@ class GraphFileLinter:
         Returns:
             Format string: 'csv', 'edgelist', or 'multiedgelist'
         """
+        # Extension-first detection improves common-case accuracy for files that
+        # are intentionally named with known graph-data suffixes.
+        suffix = self.file_path.suffix.lower()
+        if suffix == ".csv":
+            return "csv"
+        if suffix in {".edgelist", ".edges"}:
+            return "edgelist"
+
         # Try to detect by reading first few lines
         try:
             with open(self.file_path) as f:
@@ -535,7 +571,9 @@ class GraphFileLinter:
     def _lint_edgelist(self) -> None:
         """Lint a simple edgelist format file (node1 node2 [weight])."""
         seen_edges: Set[Tuple[str, str]] = set()
+        seen_undirected_edges: Set[Tuple[str, str]] = set()
         line_num = 0
+        first_data_line_checked = False
 
         try:
             with open(self.file_path) as f:
@@ -549,6 +587,25 @@ class GraphFileLinter:
 
                     parts = line.split()
 
+                    if not first_data_line_checked:
+                        first_data_line_checked = True
+                        # Header detection is only attempted on the first non-comment
+                        # record because accidental headers are expected at file start.
+                        # Header detection is intentionally conservative to avoid
+                        # flagging legitimate node IDs such as "src" or "dst".
+                        if self._looks_like_edgelist_header(parts):
+                            self._add_issue(
+                                LintIssue.SEVERITY_WARNING,
+                                "Potential header row detected in edge list",
+                                line_number=line_num,
+                                suggestion=(
+                                    "Remove the header row for whitespace-delimited edge lists, "
+                                    "or use CSV with a header (src,dst,...)"
+                                ),
+                                code="PX103",
+                            )
+                            continue
+
                     if len(parts) < 2:
                         self._add_issue(
                             LintIssue.SEVERITY_ERROR,
@@ -558,6 +615,18 @@ class GraphFileLinter:
                             code="PX103",
                         )
                         continue
+
+                    if len(parts) > 3:
+                        self._add_issue(
+                            LintIssue.SEVERITY_WARNING,
+                            f"Extra columns detected ({len(parts)} columns); only first 3 are used",
+                            line_number=line_num,
+                            suggestion=(
+                                "Use 'node1 node2 [weight]' format, or switch to CSV/multiedgelist "
+                                "if you need additional attributes"
+                            ),
+                            code="PX103",
+                        )
 
                     src, dst = parts[0], parts[1]
 
@@ -603,7 +672,8 @@ class GraphFileLinter:
 
                     # Check for duplicates
                     edge_key = (src, dst)
-                    if edge_key in seen_edges:
+                    is_exact_duplicate = edge_key in seen_edges
+                    if is_exact_duplicate:
                         self._add_issue(
                             LintIssue.SEVERITY_WARNING,
                             f"Duplicate edge: {src} -> {dst}",
@@ -611,7 +681,22 @@ class GraphFileLinter:
                             suggestion="Remove duplicate edges or use weights",
                             code="PX205",
                         )
+                    # Use a sorted node pair to catch reverse-direction duplicates
+                    # in likely undirected edge-list inputs (A B vs B A).
+                    undirected_edge = tuple(sorted((src, dst)))
+                    if undirected_edge in seen_undirected_edges and not is_exact_duplicate:
+                        self._add_issue(
+                            LintIssue.SEVERITY_WARNING,
+                            f"Potential undirected duplicate edge: {src} -> {dst}",
+                            line_number=line_num,
+                            suggestion=(
+                                "For undirected networks, keep only one of A->B or B->A, "
+                                "or set network as directed if both are intentional"
+                            ),
+                            code="PX205",
+                        )
                     seen_edges.add(edge_key)
+                    seen_undirected_edges.add(undirected_edge)
 
         except Exception as e:
             self._add_issue(
@@ -624,6 +709,7 @@ class GraphFileLinter:
         """Lint a multiedgelist format file (node1 layer1 node2 layer2 [weight])."""
         seen_edges: Set[Tuple[str, str, str, str]] = set()
         line_num = 0
+        first_data_line_checked = False
 
         try:
             with open(self.file_path) as f:
@@ -637,6 +723,23 @@ class GraphFileLinter:
 
                     parts = line.split()
 
+                    if not first_data_line_checked:
+                        first_data_line_checked = True
+                        # Header detection is only attempted on the first non-comment
+                        # record because accidental headers are expected at file start.
+                        if self._looks_like_multiedgelist_header(parts):
+                            self._add_issue(
+                                LintIssue.SEVERITY_WARNING,
+                                "Potential header row detected in multiedgelist",
+                                line_number=line_num,
+                                suggestion=(
+                                    "Remove the header row for whitespace-delimited multiedgelists, "
+                                    "or use CSV with header columns"
+                                ),
+                                code="PX103",
+                            )
+                            continue
+
                     if len(parts) < 4:
                         self._add_issue(
                             LintIssue.SEVERITY_ERROR,
@@ -646,6 +749,18 @@ class GraphFileLinter:
                             code="PX103",
                         )
                         continue
+
+                    if len(parts) > 5:
+                        self._add_issue(
+                            LintIssue.SEVERITY_WARNING,
+                            f"Extra columns detected ({len(parts)} columns); only first 5 are used",
+                            line_number=line_num,
+                            suggestion=(
+                                "Use 'node1 layer1 node2 layer2 [weight]' format, "
+                                "or switch to CSV if you need extra attributes"
+                            ),
+                            code="PX103",
+                        )
 
                     src, src_layer, dst, dst_layer = parts[0], parts[1], parts[2], parts[3]
 

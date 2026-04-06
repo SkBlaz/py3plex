@@ -3,8 +3,6 @@
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from py3plex.linter import GraphFileLinter, LintIssue
 
 
@@ -369,5 +367,78 @@ class TestGraphFileLinter:
             issues = linter.lint()
             # Comments should be skipped, no issues expected
             assert len(issues) == 0
+        finally:
+            Path(temp_file).unlink()
+
+    def test_lint_edgelist_header_row_warning(self):
+        """Test linting warns about accidental header row in whitespace edgelist."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".edgelist", delete=False) as f:
+            f.write("src dst weight\n")
+            f.write("A B 1.0\n")
+            temp_file = f.name
+
+        try:
+            linter = GraphFileLinter(temp_file)
+            issues = linter.lint()
+            warnings = [i for i in issues if i.severity == LintIssue.SEVERITY_WARNING]
+            assert any("header row" in w.message.lower() for w in warnings)
+        finally:
+            Path(temp_file).unlink()
+
+    def test_lint_edgelist_extra_columns_warning(self):
+        """Test linting warns when edgelist lines include extra ignored columns."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".edgelist", delete=False) as f:
+            f.write("A B 1.0 metadata\n")
+            temp_file = f.name
+
+        try:
+            linter = GraphFileLinter(temp_file)
+            issues = linter.lint()
+            warnings = [i for i in issues if i.severity == LintIssue.SEVERITY_WARNING]
+            assert any("extra columns" in w.message.lower() for w in warnings)
+        finally:
+            Path(temp_file).unlink()
+
+    def test_lint_edgelist_reverse_duplicate_warning(self):
+        """Test linting warns on reverse duplicate for likely undirected input."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".edgelist", delete=False) as f:
+            f.write("A B\n")
+            f.write("B A\n")
+            temp_file = f.name
+
+        try:
+            linter = GraphFileLinter(temp_file)
+            issues = linter.lint()
+            warnings = [i for i in issues if i.severity == LintIssue.SEVERITY_WARNING]
+            assert any("undirected duplicate" in w.message.lower() for w in warnings)
+        finally:
+            Path(temp_file).unlink()
+
+    def test_lint_multiedgelist_header_row_warning(self):
+        """Test linting warns about accidental header row in whitespace multiedgelist."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+            f.write("src src_layer dst dst_layer weight\n")
+            f.write("A layer1 B layer1 1.0\n")
+            temp_file = f.name
+
+        try:
+            linter = GraphFileLinter(temp_file)
+            issues = linter.lint()
+            warnings = [i for i in issues if i.severity == LintIssue.SEVERITY_WARNING]
+            assert any("header row" in w.message.lower() for w in warnings)
+        finally:
+            Path(temp_file).unlink()
+
+    def test_lint_multiedgelist_extra_columns_warning(self):
+        """Test linting warns when multiedgelist lines include extra ignored columns."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+            f.write("A layer1 B layer2 1.0 extra\n")
+            temp_file = f.name
+
+        try:
+            linter = GraphFileLinter(temp_file)
+            issues = linter.lint()
+            warnings = [i for i in issues if i.severity == LintIssue.SEVERITY_WARNING]
+            assert any("extra columns" in w.message.lower() for w in warnings)
         finally:
             Path(temp_file).unlink()
