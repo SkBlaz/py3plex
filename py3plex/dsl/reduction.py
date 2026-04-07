@@ -212,9 +212,21 @@ def _compute_distance_matrix(network: Any, layers: list[str], distance_name: str
 def _cluster_layers(distance_matrix: np.ndarray, target_k: int, seed: int | None = None) -> np.ndarray:
     if distance_matrix.shape[0] <= 1:
         return np.ones((distance_matrix.shape[0],), dtype=int)
+    if target_k <= 1:
+        return np.ones((distance_matrix.shape[0],), dtype=int)
     condensed = squareform(distance_matrix, checks=False)
     z = linkage(condensed, method="average")
     clusters = fcluster(z, t=target_k, criterion="maxclust")
+    if len(set(clusters.tolist())) > target_k:
+        remap = {}
+        next_label = 1
+        normalized = []
+        for cluster in clusters.tolist():
+            if cluster not in remap:
+                remap[cluster] = next_label
+                next_label += 1
+            normalized.append(remap[cluster])
+        clusters = np.asarray(normalized, dtype=int)
     return clusters.astype(int)
 
 

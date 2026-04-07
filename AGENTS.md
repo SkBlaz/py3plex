@@ -8,7 +8,7 @@
 - A set of known-good pipeline blueprints ("Golden Paths")
 - A reproducibility + performance policy manual
 
-**Version**: py3plex 1.1.4 | DSL v2.1 | Python 3.8+
+**Version**: py3plex 1.1.5 | DSL v2.1 | Python 3.8+
 
 ** New to py3plex?** 
 - **5 minutes**: See [dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) for 7 copy-paste patterns

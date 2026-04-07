@@ -128,7 +128,7 @@ class Type:
         return type_cls()
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, repr=False)
 class GraphType(Type):
     """Type representing the full multilayer network.
     
@@ -1015,6 +1015,10 @@ class TypeSystem:
         # ScalarType is more general than NumericType, so it's the correct LUB.
         # Example: unify(NumericType, StringType) would fail, but
         #          unify(NumericType, ScalarType) succeeds with ScalarType.
+        if isinstance(t1, NumericType) and isinstance(t2, ScalarType):
+            return NumericType()
+        if isinstance(t1, ScalarType) and isinstance(t2, NumericType):
+            return NumericType()
         if isinstance(t1, (NumericType, ScalarType)) and isinstance(t2, (NumericType, ScalarType)):
             return ScalarType()
         

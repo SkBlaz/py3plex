@@ -291,14 +291,12 @@ def resolve_uq_config(
     ])
     
     if compute_item.uncertainty is False and not has_metric_uq_params:
-        # uncertainty=False and no UQ params at metric level
-        # Check if query-level UQ should override
-        if query_uq_config is not None and query_uq_config.method is not None:
-            # Query-level UQ is set, so enable UQ
-            pass  # Continue to resolution
-        else:
-            # No UQ at any level
+        # uncertainty=False is the default, so we only skip UQ when there is
+        # also no query-level UQ config.  If the caller set .uq(...) at the
+        # query level, that should still propagate down to this metric.
+        if query_uq_config is None or query_uq_config.method is None:
             return None
+        # else: fall through so query-level UQ takes effect
     
     # Check if UQ is explicitly enabled at metric or query level
     uq_enabled = (

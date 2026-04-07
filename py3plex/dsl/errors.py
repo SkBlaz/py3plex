@@ -50,7 +50,8 @@ def _suggest_similar(name: str, known_names: List[str], max_distance: int = 3) -
     
     for known in known_names:
         distance = _levenshtein_distance(name.lower(), known.lower())
-        if distance < best_distance:
+        max_len = max(len(name), len(known))
+        if distance < best_distance and distance < max_len:
             best_distance = distance
             best_match = known
     

@@ -118,7 +118,7 @@ hedwig_input_parameters = {
     "adjust": "none"
 }
 
-network.monitor("Starting rule learning...")
+network.monitor("Starting rule learning")
 print("\n[6] Running Hedwig rule learner (this may take a while)...")
 print("-" * 70)
 
@@ -133,4 +133,3 @@ print("  [OK] Communities detected in protein interaction network")
 print("  [OK] Communities linked to Gene Ontology annotations")
 print("  [OK] Semantic rules learned to characterize communities")
 print("  [OK] Useful for discovering biological meaning in network structure")
-
