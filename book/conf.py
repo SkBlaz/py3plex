@@ -17,8 +17,8 @@ copyright = '2025, Blaž Škrlj'
 author = 'Blaž Škrlj'
 
 # The version info for the project
-version = '1.1.5'
-release = '1.1.5'
+version = '1.1.6'
+release = '1.1.6'
 
 # -- General configuration ---------------------------------------------------
 
