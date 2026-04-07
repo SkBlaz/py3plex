@@ -19,10 +19,10 @@ Recommended Path (Controlled Environment)
     docker build --build-arg PYTHON_VERSION=3.11 -t py3plex:3.11 .
     
     # Build with version tag matching book release
-    docker build -t py3plex:1.1.5 .
+    docker build -t py3plex:1.1.6 .
     
     # Run a pinned reproducible analysis
-    docker run --rm -v $(pwd)/data:/data -v $(pwd)/results:/results py3plex:1.1.5 python script.py
+    docker run --rm -v $(pwd)/data:/data -v $(pwd)/results:/results py3plex:1.1.6 python script.py
 
 For multi-service local orchestration:
 
