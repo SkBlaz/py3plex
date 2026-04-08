@@ -1933,15 +1933,18 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         "mcp": "mcp",
     }
     optional_available = 0
+    optional_status = {}
     for module_name, package_name in optional_deps.items():
         try:
             module = importlib.import_module(module_name)
             optional_available += 1
+            optional_status[module_name] = True
             if verbose:
                 print(
                     f"   [OK] {package_name}: {getattr(module, '__version__', 'available')}"
                 )
         except Exception:
+            optional_status[module_name] = False
             if verbose:
                 print(f"   [!] {package_name}: not installed")
 
@@ -2048,25 +2051,29 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
     # Test 5: Community detection
     print("\n5. Testing community detection...")
-    community_status = False
-    try:
-        from py3plex.algorithms.community_detection import community_wrapper
+    if not optional_status.get("community", False):
+        print("   [-] Community detection skipped: python-louvain is not installed")
+        community_status = None
+    else:
+        community_status = False
+        try:
+            from py3plex.algorithms.community_detection import community_wrapper
 
-        # Create simple test graph
-        G = nx.karate_club_graph()
-        partition = community_wrapper.louvain_communities(G)
+            # Create simple test graph
+            G = nx.karate_club_graph()
+            partition = community_wrapper.louvain_communities(G)
 
-        if partition and len(set(partition.values())) > 1:
-            print("   [OK] Community detection test passed")
+            if partition and len(set(partition.values())) > 1:
+                print("   [OK] Community detection test passed")
+                if verbose:
+                    print(f"      Communities found: {len(set(partition.values()))}")
+                community_status = True
+            else:
+                print("   [X] Community detection failed: no communities found")
+        except Exception as e:
+            print(f"   [X] Community detection failed: {e}")
             if verbose:
-                print(f"      Communities found: {len(set(partition.values()))}")
-            community_status = True
-        else:
-            print("   [X] Community detection failed: no communities found")
-    except Exception as e:
-        print(f"   [X] Community detection failed: {e}")
-        if verbose:
-            traceback.print_exc()
+                traceback.print_exc()
     test_results.append(("Community detection", community_status))
 
     # Test 6: File I/O
@@ -2807,21 +2814,30 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     print("TEST SUMMARY")
     print(f"{'='*60}")
 
-    passed = sum(1 for _, status in test_results if status)
-    total = len(test_results)
+    passed = sum(1 for _, status in test_results if status is True)
+    failed = sum(1 for _, status in test_results if status is False)
+    skipped = sum(1 for _, status in test_results if status is None)
+    total = passed + failed
 
     for test_name, status in test_results:
-        status_icon = "OK" if status else "X"
+        if status is True:
+            status_icon = "OK"
+        elif status is None:
+            status_icon = "-"
+        else:
+            status_icon = "X"
         print(f"  [{status_icon}] {test_name}")
 
     print(f"\n  Tests passed: {passed}/{total}")
+    if skipped:
+        print(f"  Tests skipped: {skipped}")
     print(f"  Time elapsed: {elapsed:.2f}s")
 
-    if passed == total:
+    if failed == 0:
         print("\n[OK] All tests completed successfully!")
         return 0
     else:
-        print(f"\n[X] {total - passed} test(s) failed")
+        print(f"\n[X] {failed} test(s) failed")
         return 1
 
 

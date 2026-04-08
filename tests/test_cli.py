@@ -1055,6 +1055,26 @@ class TestCLISelftest:
         passed, total = match.groups()
         assert passed == total, f"All tests should pass: {passed}/{total}"
 
+    def test_selftest_skips_optional_community_when_missing(self, capsys, monkeypatch):
+        """Test that selftest skips (not fails) community check if python-louvain is absent."""
+        import importlib as _importlib
+
+        real_import_module = _importlib.import_module
+
+        def _mocked_import_module(name, *args, **kwargs):
+            if name == "community":
+                raise ImportError("mocked missing optional dependency: community")
+            return real_import_module(name, *args, **kwargs)
+
+        monkeypatch.setattr(_importlib, "import_module", _mocked_import_module)
+
+        result = cli.main(["selftest"])
+        assert result == 0
+
+        captured = capsys.readouterr()
+        assert "Community detection skipped" in captured.out
+        assert "Tests skipped:" in captured.out
+
 
 class TestCLIQuickstart:
     """Test the 'quickstart' command."""
