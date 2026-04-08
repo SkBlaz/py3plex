@@ -2052,7 +2052,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
     # Test 5: Community detection
     print("\n5. Testing community detection...")
-    if optional_status.get("community") is not True:
+    if not optional_status.get("community"):
         print("   [-] Community detection skipped: python-louvain is not installed")
         community_status = None
     else:
