@@ -1933,6 +1933,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         "mcp": "mcp",
     }
     optional_available = 0
+    # Track optional dependency availability by module name (True/False importability).
     optional_status = {}
     for module_name, package_name in optional_deps.items():
         try:
@@ -2051,7 +2052,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
     # Test 5: Community detection
     print("\n5. Testing community detection...")
-    if not optional_status.get("community", False):
+    if optional_status.get("community") is not True:
         print("   [-] Community detection skipped: python-louvain is not installed")
         community_status = None
     else:
@@ -2814,10 +2815,17 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     print("TEST SUMMARY")
     print(f"{'='*60}")
 
-    passed = sum(1 for _, status in test_results if status is True)
-    failed = sum(1 for _, status in test_results if status is False)
-    skipped = sum(1 for _, status in test_results if status is None)
-    total = passed + failed
+    passed = 0
+    failed = 0
+    skipped = 0
+    for _, status in test_results:
+        if status is True:
+            passed += 1
+        elif status is False:
+            failed += 1
+        else:
+            skipped += 1
+    total_required = passed + failed
 
     for test_name, status in test_results:
         if status is True:
@@ -2828,13 +2836,16 @@ def cmd_selftest(args: argparse.Namespace) -> int:
             status_icon = "X"
         print(f"  [{status_icon}] {test_name}")
 
-    print(f"\n  Tests passed: {passed}/{total}")
+    print(f"\n  Tests passed: {passed}/{total_required} (required tests)")
     if skipped:
         print(f"  Tests skipped: {skipped}")
     print(f"  Time elapsed: {elapsed:.2f}s")
 
     if failed == 0:
-        print("\n[OK] All tests completed successfully!")
+        if skipped:
+            print("\n[OK] All required tests passed (some optional tests were skipped).")
+        else:
+            print("\n[OK] All tests completed successfully!")
         return 0
     else:
         print(f"\n[X] {failed} test(s) failed")
