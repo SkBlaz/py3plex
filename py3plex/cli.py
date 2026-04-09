@@ -1933,15 +1933,19 @@ def cmd_selftest(args: argparse.Namespace) -> int:
         "mcp": "mcp",
     }
     optional_available = 0
+    # Track optional dependency availability by module name (True/False importability).
+    optional_status = {}
     for module_name, package_name in optional_deps.items():
         try:
             module = importlib.import_module(module_name)
             optional_available += 1
+            optional_status[module_name] = True
             if verbose:
                 print(
                     f"   [OK] {package_name}: {getattr(module, '__version__', 'available')}"
                 )
         except Exception:
+            optional_status[module_name] = False
             if verbose:
                 print(f"   [!] {package_name}: not installed")
 
@@ -2048,25 +2052,29 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
     # Test 5: Community detection
     print("\n5. Testing community detection...")
-    community_status = False
-    try:
-        from py3plex.algorithms.community_detection import community_wrapper
+    if not optional_status.get("community"):
+        print("   [-] Community detection skipped: python-louvain is not installed")
+        community_status = None
+    else:
+        community_status = False
+        try:
+            from py3plex.algorithms.community_detection import community_wrapper
 
-        # Create simple test graph
-        G = nx.karate_club_graph()
-        partition = community_wrapper.louvain_communities(G)
+            # Create simple test graph
+            G = nx.karate_club_graph()
+            partition = community_wrapper.louvain_communities(G)
 
-        if partition and len(set(partition.values())) > 1:
-            print("   [OK] Community detection test passed")
+            if partition and len(set(partition.values())) > 1:
+                print("   [OK] Community detection test passed")
+                if verbose:
+                    print(f"      Communities found: {len(set(partition.values()))}")
+                community_status = True
+            else:
+                print("   [X] Community detection failed: no communities found")
+        except Exception as e:
+            print(f"   [X] Community detection failed: {e}")
             if verbose:
-                print(f"      Communities found: {len(set(partition.values()))}")
-            community_status = True
-        else:
-            print("   [X] Community detection failed: no communities found")
-    except Exception as e:
-        print(f"   [X] Community detection failed: {e}")
-        if verbose:
-            traceback.print_exc()
+                traceback.print_exc()
     test_results.append(("Community detection", community_status))
 
     # Test 6: File I/O
@@ -2807,21 +2815,40 @@ def cmd_selftest(args: argparse.Namespace) -> int:
     print("TEST SUMMARY")
     print(f"{'='*60}")
 
-    passed = sum(1 for _, status in test_results if status)
-    total = len(test_results)
+    passed = 0
+    failed = 0
+    skipped = 0
+    for _, status in test_results:
+        if status is True:
+            passed += 1
+        elif status is False:
+            failed += 1
+        else:
+            skipped += 1
+    total_required = passed + failed
 
     for test_name, status in test_results:
-        status_icon = "OK" if status else "X"
+        if status is True:
+            status_icon = "OK"
+        elif status is None:
+            status_icon = "-"
+        else:
+            status_icon = "X"
         print(f"  [{status_icon}] {test_name}")
 
-    print(f"\n  Tests passed: {passed}/{total}")
+    print(f"\n  Tests passed: {passed}/{total_required} (required tests)")
+    if skipped:
+        print(f"  Tests skipped: {skipped}")
     print(f"  Time elapsed: {elapsed:.2f}s")
 
-    if passed == total:
-        print("\n[OK] All tests completed successfully!")
+    if failed == 0:
+        if skipped:
+            print("\n[OK] All required tests passed (some optional tests were skipped).")
+        else:
+            print("\n[OK] All tests completed successfully!")
         return 0
     else:
-        print(f"\n[X] {total - passed} test(s) failed")
+        print(f"\n[X] {failed} test(s) failed")
         return 1
 
 
