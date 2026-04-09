@@ -33,7 +33,8 @@ try:
     print(" Plotly is available")
 except ImportError:
     print(" Plotly not found. Install with: pip install plotly")
-    exit(1)
+    print(" Skipping interactive visualization example")
+    exit(0)
 
 # Create a multilayer network
 print("\nStep 1: Creating multilayer network...")
