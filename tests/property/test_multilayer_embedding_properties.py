@@ -21,13 +21,12 @@ StateNode = Tuple[str, str]
 
 @st.composite
 def state_nodes_strategy(draw) -> List[StateNode]:
-    n = draw(st.integers(min_value=1, max_value=40))
     atom = st.text(
         alphabet=st.characters(min_codepoint=48, max_codepoint=122),
         min_size=1,
         max_size=6,
     )
-    return draw(st.lists(st.tuples(atom, atom), min_size=n, max_size=n))
+    return draw(st.lists(st.tuples(atom, atom), min_size=1, max_size=40))
 
 
 @pytest.mark.property
@@ -57,7 +56,7 @@ def state_embedding_inputs(draw) -> Tuple[np.ndarray, List[StateNode]]:
     item_ids = draw(
         st.lists(st.tuples(atom, atom), min_size=n_rows, max_size=n_rows, unique=True)
     )
-    floats = st.floats(min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False, width=32)
+    floats = st.floats(min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False)
     matrix_list = draw(st.lists(st.lists(floats, min_size=dim, max_size=dim), min_size=n_rows, max_size=n_rows))
     matrix = np.asarray(matrix_list, dtype=np.float32)
     return matrix, item_ids
@@ -67,7 +66,8 @@ def _manual_group_reduce(
     matrix: np.ndarray, item_ids: List[StateNode], reducer: str
 ) -> Tuple[List[str], Dict[str, np.ndarray]]:
     grouped: Dict[str, List[np.ndarray]] = {}
-    for row, (node, _layer) in zip(matrix, item_ids):
+    for row, (node, layer) in zip(matrix, item_ids):
+        _ = layer
         grouped.setdefault(node, []).append(row)
     expected_nodes = sorted(grouped, key=str)
     reduced: Dict[str, np.ndarray] = {}
