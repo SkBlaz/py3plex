@@ -21,12 +21,12 @@ StateNode = Tuple[str, str]
 
 @st.composite
 def state_nodes_strategy(draw) -> List[StateNode]:
-    atom = st.text(
+    text_element = st.text(
         alphabet=st.characters(min_codepoint=48, max_codepoint=122),
         min_size=1,
         max_size=6,
     )
-    return draw(st.lists(st.tuples(atom, atom), min_size=1, max_size=40))
+    return draw(st.lists(st.tuples(text_element, text_element), min_size=1, max_size=40))
 
 
 @pytest.mark.property
@@ -48,13 +48,18 @@ def test_node_layer_indexer_is_order_and_roundtrip_stable(state_nodes: List[Stat
 def state_embedding_inputs(draw) -> Tuple[np.ndarray, List[StateNode]]:
     n_rows = draw(st.integers(min_value=1, max_value=30))
     dim = draw(st.integers(min_value=1, max_value=12))
-    atom = st.text(
+    text_element = st.text(
         alphabet=st.characters(min_codepoint=97, max_codepoint=122),
         min_size=1,
         max_size=4,
     )
     item_ids = draw(
-        st.lists(st.tuples(atom, atom), min_size=n_rows, max_size=n_rows, unique=True)
+        st.lists(
+            st.tuples(text_element, text_element),
+            min_size=n_rows,
+            max_size=n_rows,
+            unique=True,
+        )
     )
     floats = st.floats(min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False)
     matrix_list = draw(st.lists(st.lists(floats, min_size=dim, max_size=dim), min_size=n_rows, max_size=n_rows))
