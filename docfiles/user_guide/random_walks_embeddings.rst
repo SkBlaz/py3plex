@@ -1041,6 +1041,54 @@ Memory Issues with Large Graphs
     # Option 3: Use disk-based storage
     # Write walks to file, then load for training
 
+Native Multilayer Embedding API
+-------------------------------
+
+Beyond low-level walker primitives, py3plex exposes first-class embedding models
+for multilayer and multiplex networks in ``py3plex.ml.embedding`` and via
+``multi_layer_network.embed(...)``.
+
+Available multilayer-focused methods include:
+
+- ``supra_node2vec`` (:class:`py3plex.ml.embedding.SupraNode2VecEmbedding`)
+- ``supra_spectral`` (:class:`py3plex.ml.embedding.SupraSpectralEmbedding`)
+- ``supra_netmf`` (:class:`py3plex.ml.embedding.SupraNetMFEmbedding`)
+- ``mne`` (:class:`py3plex.ml.embedding.MNEEmbedding`)
+- ``mell`` (:class:`py3plex.ml.embedding.MELLEmbedding`)
+- ``multilayer_gnn`` (:class:`py3plex.ml.embedding.MultiLayerGNNEmbedding`, experimental scaffold)
+
+These models use ``(node, layer)`` state nodes as the canonical internal target.
+Physical-node embeddings can be derived with ``target="both"`` and
+``node_reduce`` set to one of ``"mean"``, ``"sum"``, or ``"max"``.
+
+.. code-block:: python
+
+    from py3plex.ml.embedding import SupraNode2VecEmbedding
+
+    model = SupraNode2VecEmbedding(
+        dimensions=128,
+        walk_length=80,
+        num_walks=10,
+        cross_layer_prob=0.2,
+        target="both",
+        node_reduce="mean",
+        seed=42,
+    )
+    result_state = model.fit_transform(net)
+    result_node = model.node_embeddings()
+
+You can access the same models through ``multi_layer_network.embed``:
+
+.. code-block:: python
+
+    result = net.embed(
+        method="supra_node2vec",
+        dimensions=128,
+        walk_length=80,
+        num_walks=10,
+        seed=42,
+    )
+
 References
 ----------
 

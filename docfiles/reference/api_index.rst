@@ -529,6 +529,21 @@ Core Embedding APIs
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: py3plex.ml.embedding.multiplex
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.ml.embedding.evaluation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: py3plex.ml.embedding.similarity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Wrapper Entry Points
 ~~~~~~~~~~~~~~~~~~~~
 
