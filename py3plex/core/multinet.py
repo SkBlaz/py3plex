@@ -2114,13 +2114,19 @@ class multi_layer_network:
         import py3plex
 
         from py3plex.ml.embedding import (
+            MELLEmbedding,
+            MNEEmbedding,
             DeepWalkEmbedding,
             LINEEmbedding,
+            MultiLayerGNNEmbedding,
             MetaPath2VecEmbedding,
             MultiplexNode2Vec,
             NetMFEmbedding,
             Node2VecEmbedding,
             SupraAdjacencyEmbedding,
+            SupraNetMFEmbedding,
+            SupraNode2VecEmbedding,
+            SupraSpectralEmbedding,
             LayerRegularizedEmbedding,
         )
 
@@ -2284,6 +2290,111 @@ class multi_layer_network:
                 gamma=float(kwargs.pop("gamma", 1.0)),
                 seed=seed,
             )
+        elif method_key in {"supra_node2vec", "supra-node2vec"}:
+            model = SupraNode2VecEmbedding(
+                dimensions=dimensions,
+                walk_length=walk_length,
+                num_walks=num_walks,
+                p=float(kwargs.pop("p", 1.0)),
+                q=float(kwargs.pop("q", 1.0)),
+                window_size=window_size,
+                negative_samples=int(kwargs.pop("negative_samples", 5)),
+                workers=workers,
+                cross_layer_prob=kwargs.pop("cross_layer_prob", None),
+                coupling_weight_multiplier=float(
+                    kwargs.pop("coupling_weight_multiplier", 1.0)
+                ),
+                seed=seed,
+                backend=backend,
+                target=str(kwargs.pop("target", "state")),
+                node_reduce=str(kwargs.pop("node_reduce", "mean")),
+                include_interlayer_edges=bool(
+                    kwargs.pop("include_interlayer_edges", True)
+                ),
+                negative_sampling_domain=str(
+                    kwargs.pop("negative_sampling_domain", "all_state_nodes")
+                ),
+                coupling_edge_type=str(kwargs.pop("coupling_edge_type", "identity")),
+            )
+        elif method_key in {"supra_spectral", "supra-spectral"}:
+            model = SupraSpectralEmbedding(
+                dimensions=dimensions,
+                laplacian=str(kwargs.pop("laplacian", "sym")),
+                solver=str(kwargs.pop("solver", "eigsh")),
+                which=str(kwargs.pop("which", "SM")),
+                tol=float(kwargs.pop("tol", 1e-5)),
+                maxiter=int(kwargs.pop("maxiter", 2000)),
+                seed=seed,
+                target=str(kwargs.pop("target", "state")),
+                node_reduce=str(kwargs.pop("node_reduce", "mean")),
+                include_interlayer_edges=bool(
+                    kwargs.pop("include_interlayer_edges", True)
+                ),
+                coupling_weight_multiplier=float(
+                    kwargs.pop("coupling_weight_multiplier", 1.0)
+                ),
+                coupling_edge_type=str(kwargs.pop("coupling_edge_type", "identity")),
+            )
+        elif method_key in {"supra_netmf", "supra-netmf"}:
+            model = SupraNetMFEmbedding(
+                dimensions=dimensions,
+                window=int(kwargs.pop("window", context_size)),
+                negative=float(kwargs.pop("negative", 1.0)),
+                multilayer=str(kwargs.pop("multilayer", "supra")),
+                approx=str(kwargs.pop("approx", "randomized_svd")),
+                gamma=float(kwargs.pop("gamma", 1.0)),
+                seed=seed,
+            )
+        elif method_key == "mne":
+            model = MNEEmbedding(
+                dimensions_common=dimensions,
+                dimensions_relation=int(kwargs.pop("dimensions_relation", 16)),
+                window_size=window_size,
+                negative_samples=int(kwargs.pop("negative_samples", 5)),
+                layer_weights=kwargs.pop("layer_weights", None),
+                transform_norm_bound=float(kwargs.pop("transform_norm_bound", 1000.0)),
+                walk_length=walk_length,
+                num_walks=num_walks,
+                seed=seed,
+                optimizer=str(kwargs.pop("optimizer", "adam")),
+                lr=float(kwargs.pop("lr", 0.01)),
+                epochs=int(kwargs.pop("epochs", 5)),
+                target=str(kwargs.pop("target", "state")),
+                node_reduce=str(kwargs.pop("node_reduce", "mean")),
+            )
+        elif method_key == "mell":
+            model = MELLEmbedding(
+                dimensions=dimensions,
+                directed=bool(kwargs.pop("directed", False)),
+                negative_ratio=int(kwargs.pop("negative_ratio", 5)),
+                lambda_nodes=float(kwargs.pop("lambda_nodes", 1e-4)),
+                beta_variance=float(kwargs.pop("beta_variance", 1.0)),
+                gamma_layers=float(kwargs.pop("gamma_layers", 1e-4)),
+                epochs=int(kwargs.pop("epochs", 50)),
+                lr=float(kwargs.pop("lr", 1e-3)),
+                seed=seed,
+                target=str(kwargs.pop("target", "state")),
+                node_reduce=str(kwargs.pop("node_reduce", "mean")),
+            )
+        elif method_key in {"multilayer_gnn", "multilayer-gnn"}:
+            model = MultiLayerGNNEmbedding(
+                dimensions=dimensions,
+                layers=int(kwargs.pop("layers", 2)),
+                hidden_dim=int(kwargs.pop("hidden_dim", 128)),
+                dropout=float(kwargs.pop("dropout", 0.1)),
+                model=str(kwargs.pop("model", "mgnn")),
+                objective=str(kwargs.pop("objective", "lp")),
+                epochs=int(kwargs.pop("epochs", 50)),
+                lr=float(kwargs.pop("lr", 1e-3)),
+                weight_decay=float(kwargs.pop("weight_decay", 0.0)),
+                batch_size=int(kwargs.pop("batch_size", 512)),
+                negative_samples=int(kwargs.pop("negative_samples", 5)),
+                backend=str(kwargs.pop("backend", "torch_sparse")),
+                seed=seed,
+                device=str(kwargs.pop("device", "cpu")),
+                target=str(kwargs.pop("target", "state")),
+                node_reduce=str(kwargs.pop("node_reduce", "mean")),
+            )
         elif method_key in {"layer_regularized", "layer-regularized"}:
             model = LayerRegularizedEmbedding(
                 dimensions=dimensions,
@@ -2294,7 +2405,9 @@ class multi_layer_network:
             raise ValueError(
                 f"Unknown embedding method '{method}'. "
                 "Expected one of: node2vec, deepwalk, netmf, line, "
-                "metapath2vec, multiplex_node2vec, supra_adjacency, layer_regularized."
+                "metapath2vec, multiplex_node2vec, supra_adjacency, "
+                "supra_node2vec, supra_spectral, supra_netmf, "
+                "mne, mell, multilayer_gnn, layer_regularized."
             )
 
         embedding = model.fit_transform(self)
