@@ -17,15 +17,16 @@ from py3plex.exceptions import EmbeddingError
 
 
 StateNode = Tuple[str, str]
+ALPHANUMERIC = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+
+def _text_element(max_size: int):
+    return st.text(alphabet=ALPHANUMERIC, min_size=1, max_size=max_size)
 
 
 @st.composite
 def state_nodes_strategy(draw) -> List[StateNode]:
-    text_element = st.text(
-        alphabet=st.characters(min_codepoint=48, max_codepoint=122),
-        min_size=1,
-        max_size=6,
-    )
+    text_element = _text_element(max_size=6)
     return draw(st.lists(st.tuples(text_element, text_element), min_size=1, max_size=40))
 
 
@@ -35,7 +36,7 @@ def state_nodes_strategy(draw) -> List[StateNode]:
 def test_node_layer_indexer_is_order_and_roundtrip_stable(state_nodes: List[StateNode]) -> None:
     indexer = NodeLayerIndexer.from_nodes(state_nodes)
 
-    expected = sorted(set(state_nodes), key=lambda n: (str(n[1]), str(n[0])))
+    expected = sorted(set(state_nodes), key=lambda n: (n[1], n[0]))
     assert indexer.state_nodes == expected
     assert len(indexer.to_index) == len(indexer.state_nodes)
 
@@ -48,11 +49,7 @@ def test_node_layer_indexer_is_order_and_roundtrip_stable(state_nodes: List[Stat
 def state_embedding_inputs(draw) -> Tuple[np.ndarray, List[StateNode]]:
     n_rows = draw(st.integers(min_value=1, max_value=30))
     dim = draw(st.integers(min_value=1, max_value=12))
-    text_element = st.text(
-        alphabet=st.characters(min_codepoint=97, max_codepoint=122),
-        min_size=1,
-        max_size=4,
-    )
+    text_element = _text_element(max_size=4)
     item_ids = draw(
         st.lists(
             st.tuples(text_element, text_element),
