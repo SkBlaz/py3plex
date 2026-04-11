@@ -66,8 +66,7 @@ def _manual_group_reduce(
     matrix: np.ndarray, item_ids: List[StateNode], reducer: str
 ) -> Tuple[List[str], Dict[str, np.ndarray]]:
     grouped: Dict[str, List[np.ndarray]] = {}
-    for row, (node, layer) in zip(matrix, item_ids):
-        _ = layer
+    for row, (node, _) in zip(matrix, item_ids):
         grouped.setdefault(node, []).append(row)
     expected_nodes = sorted(grouped, key=str)
     reduced: Dict[str, np.ndarray] = {}
