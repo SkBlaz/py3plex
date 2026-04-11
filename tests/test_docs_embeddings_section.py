@@ -27,7 +27,29 @@ def test_api_index_documents_core_embedding_modules():
         "py3plex.ml.embedding.netmf",
         "py3plex.ml.embedding.line",
         "py3plex.ml.embedding.metapath2vec",
+        "py3plex.ml.embedding.multiplex",
+        "py3plex.ml.embedding.evaluation",
+        "py3plex.ml.embedding.similarity",
     ]
 
     for module in expected_modules:
         assert module in content, f"Module {module} not found in API index"
+
+
+def test_random_walks_embeddings_docs_include_multilayer_embedding_api():
+    guide_path = REPO_ROOT / "docfiles" / "user_guide" / "random_walks_embeddings.rst"
+    assert guide_path.exists()
+    content = guide_path.read_text(encoding="utf-8")
+
+    expected_markers = [
+        "Native Multilayer Embedding API",
+        "SupraNode2VecEmbedding",
+        "supra_spectral",
+        "supra_netmf",
+        "mne",
+        "mell",
+        "multilayer_gnn",
+    ]
+
+    for marker in expected_markers:
+        assert marker in content, f"Marker {marker} not found in embedding guide"
