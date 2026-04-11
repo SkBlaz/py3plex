@@ -1059,7 +1059,7 @@ Available multilayer-focused methods include:
 
 These models use ``(node, layer)`` state nodes as the canonical internal target.
 Physical-node embeddings can be derived with ``target="both"`` and
-``node_reduce="mean" | "sum" | "max"``.
+``node_reduce`` set to one of ``"mean"``, ``"sum"``, or ``"max"``.
 
 .. code-block:: python
 

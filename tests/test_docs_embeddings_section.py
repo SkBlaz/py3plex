@@ -36,7 +36,7 @@ def test_api_index_documents_core_embedding_modules():
         assert module in content, f"Module {module} not found in API index"
 
 
-def test_random_walks_embeddings_docs_include_multilayer_embedding_api():
+def test_multilayer_embedding_api_documented():
     guide_path = REPO_ROOT / "docfiles" / "user_guide" / "random_walks_embeddings.rst"
     assert guide_path.exists()
     content = guide_path.read_text(encoding="utf-8")
