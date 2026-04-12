@@ -1,7 +1,5 @@
 from types import SimpleNamespace
 
-import pytest
-
 from py3plex.optimizer.cost_model import CostEstimate, CostModel, NetworkStats
 from py3plex.optimizer.logical_plan import (
     LogicalPlanBuilder,
@@ -19,7 +17,6 @@ from py3plex.optimizer.physical_plan import (
 from py3plex.optimizer.plan_nodes import (
     LogicalAggregate,
     LogicalCompute,
-    LogicalCoverage,
     LogicalFilter,
     LogicalGroupByLayer,
     LogicalLayerFilter,
@@ -44,17 +41,17 @@ from py3plex.optimizer.rules import (
 )
 
 
-class _LayerExprNames:
+class _MockLayerExprPublic:
     def __init__(self, names):
         self.names = names
 
 
-class _LayerExprUnderscoreNames:
+class _MockLayerExprPrivate:
     def __init__(self, names):
         self._names = names
 
 
-class _Net:
+class _MockNetwork:
     def __init__(self):
         self.layers = ["a", "b"]
         self._nodes = [("n1", "a"), ("n2", "a"), ("n1", "b")]
@@ -71,6 +68,7 @@ class _Net:
 
 
 def _first_child_chain(root):
+    """Return node type names by following only the first-child pointer chain."""
     out = []
     cur = root
     while cur is not None:
@@ -84,13 +82,13 @@ def test_logical_helpers_for_conditions_and_layers():
     assert _get_condition_list(s1) == []
     assert _get_layer_list(s1) == []
 
-    s2 = SimpleNamespace(where_clause={"a": 1}, layer_expr=_LayerExprNames(["x", "y"]))
+    s2 = SimpleNamespace(where_clause={"a": 1}, layer_expr=_MockLayerExprPublic(["x", "y"]))
     assert _get_condition_list(s2) == [{"a": 1}]
     assert _get_layer_list(s2) == ["x", "y"]
 
     s3 = SimpleNamespace(
         where_clause=[{"a": 1}, {"b": 2}],
-        layer_expr=_LayerExprUnderscoreNames(("k", "m")),
+        layer_expr=_MockLayerExprPrivate(("k", "m")),
     )
     assert _get_condition_list(s3) == [{"a": 1}, {"b": 2}]
     assert _get_layer_list(s3) == ["k", "m"]
@@ -105,7 +103,7 @@ def test_logical_plan_builder_fallback_without_select():
 def test_logical_plan_builder_builds_expected_chain():
     select = SimpleNamespace(
         target="nodes",
-        layer_expr=_LayerExprNames(["social"]),
+        layer_expr=_MockLayerExprPublic(["social"]),
         where_clause=[{"field": "degree", "op": ">", "value": 2}],
         compute_spec=["degree", "pagerank"],
         group_mode="per_layer",
@@ -132,7 +130,7 @@ def test_logical_plan_builder_builds_expected_chain():
 
 
 def test_network_stats_from_network_and_fallback():
-    stats = NetworkStats.from_network(_Net())
+    stats = NetworkStats.from_network(_MockNetwork())
     assert stats.node_count == 3
     assert stats.edge_count == 2
     assert stats.layer_count == 2
@@ -207,11 +205,12 @@ def test_cost_model_estimates_cover_key_operator_types():
 
 
 def test_physical_layer_pushdown_topk_limit_and_plan_to_dict():
-    net = _Net()
+    net = _MockNetwork()
     pushed = PhysicalLayerPushdown(layers=["a"]).execute({"network": net})
     assert pushed == [("n1", "a"), ("n2", "a")]
 
     items = ["a", "b", "c"]
+    # Mix scalar and UQ-style dict values to exercise both supported key formats.
     attrs = {"score": {"a": 1.0, "b": {"mean": 5.0}, "c": 2.0}}
     top_desc = PhysicalTopKHeap(k=2, key="score", desc=True).execute(
         {"items": items, "attributes": attrs}
@@ -223,6 +222,7 @@ def test_physical_layer_pushdown_topk_limit_and_plan_to_dict():
     assert len(top_asc) == 2
 
     assert PhysicalLimitEarly(n=2).execute({"items": [1, 2, 3]}) == [1, 2]
+    # n=0 is treated as "no truncation" in the operator implementation.
     assert PhysicalLimitEarly(n=0).execute({"items": [1, 2, 3]}) == [1, 2, 3]
 
     plan = PhysicalPlan(root=PhysicalLimitEarly(n=1), estimated_cost=1.2, plan_hash="abc")
@@ -314,7 +314,7 @@ def test_merge_compute_rule_and_rule_engine_rewrite():
 def test_optimizer_optimize_and_optimize_query_end_to_end():
     # Build logical plan directly and optimize.
     logical = LogicalLimit(n=3, children=[LogicalScanNodes()])
-    opt = Optimizer()
+    opt = Optimizer(enable_rule_based=False)
     plan, metadata = opt.optimize(logical, NetworkStats(node_count=9, edge_count=11, layer_count=2))
     assert len(plan.plan_hash) == 16
     assert metadata["enabled"] is True
@@ -323,8 +323,7 @@ def test_optimizer_optimize_and_optimize_query_end_to_end():
 
     # One-shot optimize_query from a tiny AST-like object.
     ast = SimpleNamespace(select=SimpleNamespace(target="nodes"))
-    physical, meta = optimize_query(ast, network=_Net())
+    physical, meta = optimize_query(ast, network=_MockNetwork(), enable_rule_based=False)
     assert physical.backend == "networkx"
     assert isinstance(meta["rules_applied"], list)
     assert meta["enabled"] is True
-
