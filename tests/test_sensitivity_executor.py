@@ -114,6 +114,8 @@ def test_compute_local_influence_per_node_has_descending_scores(sensitivity_modu
         scope="per_node",
     )
 
+    # Influence in current implementation is 1 / (rank + 1):
+    # rank 0 -> 1.0, rank 1 -> 0.5, rank 2 -> 1/3.
     scores = [x.influence_score for x in influence["node"]]
     assert scores == pytest.approx([1.0, 0.5, 1.0 / 3.0])
     assert [x.entity_id for x in influence["node"]] == ["n1", "n2", "n3"]
@@ -133,9 +135,9 @@ def test_run_sensitivity_analysis_with_monkeypatched_perturbation(
     def query_executor(_network):
         return {"data": [{"id": "n1"}, {"id": "n2"}, {"id": "n3"}]}
 
-    network_sentinel = SimpleNamespace(kind="unused_in_monkeypatched_test")
+    dummy_network = SimpleNamespace(kind="unused_in_monkeypatched_test")
     result = sensitivity_executor.run_sensitivity_analysis(
-        network=network_sentinel,
+        network=dummy_network,
         query_executor=query_executor,
         query_ast={"dummy": True},
         perturb="edge_drop",
@@ -152,6 +154,39 @@ def test_run_sensitivity_analysis_with_monkeypatched_perturbation(
     assert result.curves["jaccard_at_k(2)"].values == [1.0, 1.0]
     assert result.meta["provenance"]["seed"] == 7
     assert result.meta["n_samples"] == 2
+
+
+def test_run_sensitivity_analysis_detects_instability(sensitivity_modules, monkeypatch):
+    sensitivity_executor, _ = sensitivity_modules
+
+    def fake_apply_perturbation(network, method, strength, seed=None, **kwargs):
+        return {"strength": strength}
+
+    monkeypatch.setattr(
+        sensitivity_executor, "apply_perturbation", fake_apply_perturbation
+    )
+
+    baseline_ranking = ["n1", "n2", "n3"]
+    perturbed_ranking = ["n3", "n2", "n1"]
+
+    def query_executor(network_obj):
+        strength = network_obj.get("strength", 0.0) if isinstance(network_obj, dict) else 0.0
+        ranking = baseline_ranking if strength == 0.0 else perturbed_ranking
+        return {"data": [{"id": node_id} for node_id in ranking]}
+
+    result = sensitivity_executor.run_sensitivity_analysis(
+        network=SimpleNamespace(kind="baseline"),
+        query_executor=query_executor,
+        query_ast={"dummy": True},
+        perturb="edge_drop",
+        grid=[0.0, 0.3],
+        n_samples=1,
+        seed=11,
+        metrics=["kendall_tau"],
+    )
+
+    assert result.curves["kendall_tau"].values[0] == pytest.approx(1.0)
+    assert result.curves["kendall_tau"].values[1] < 1.0
 
 
 def test_parse_metric_spec_variants(sensitivity_modules):
