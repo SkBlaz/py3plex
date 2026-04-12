@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Apr 09, 2026}
+\date{Apr 12, 2026}
 \release{1.1.6}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -90681,6 +90681,809 @@ Transform nodes into embedding vectors.
 
 \end{fulllineitems}\end{savenotes}
 
+\index{module@\spxentry{module}!py3plex.ml.embedding.multiplex@\spxentry{py3plex.ml.embedding.multiplex}}\index{py3plex.ml.embedding.multiplex@\spxentry{py3plex.ml.embedding.multiplex}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.multiplex}}
+\sphinxAtStartPar
+Multiplex\sphinxhyphen{}aware and supra\sphinxhyphen{}graph embedding variants.
+\index{BaseMultiLayerEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{BaseMultiLayerEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{BaseMultiLayerEmbedding}}}
+{\sphinxparam{\DUrole{n}{config}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig}]{\sphinxcrossref{MultiLayerEmbeddingConfig}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.BaseEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseEmbedding}}}}}
+
+\sphinxAtStartPar
+Base class for state\sphinxhyphen{}node\sphinxhyphen{}first multilayer embedding models.
+\index{fit\_transform() (py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method)@\spxentry{fit\_transform()}\spxextra{py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding.fit_transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit\_transform}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit and transform in one call.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{get\_embedding() (py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method)@\spxentry{get\_embedding()}\spxextra{py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding.get_embedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{get\_embedding}}}
+{\sphinxparam{\DUrole{n}{node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Get vector for a single node.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}multilayer\_base\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{node\_embeddings() (py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method)@\spxentry{node\_embeddings()}\spxextra{py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding.node_embeddings}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{node\_embeddings}}}
+{}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_numpy() (py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method)@\spxentry{to\_numpy()}\spxextra{py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding.to_numpy}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_numpy}}}
+{}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to NumPy matrix.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_pandas() (py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method)@\spxentry{to\_pandas()}\spxextra{py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding.to_pandas}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_pandas}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Convert embeddings to pandas DataFrame.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{transform() (py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method)@\spxentry{transform()}\spxextra{py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding.transform}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{transform}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Any\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Transform nodes into embedding vectors.
+
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{LayerRegularizedEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{LayerRegularizedEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.LayerRegularizedEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{LayerRegularizedEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{alpha}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{NetMFEmbedding}}}}}
+
+\sphinxAtStartPar
+Layer\sphinxhyphen{}regularized embedding that blends per\sphinxhyphen{}layer and supra vectors.
+\index{fit() (py3plex.ml.embedding.multiplex.LayerRegularizedEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.multiplex.LayerRegularizedEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.LayerRegularizedEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.LayerRegularizedEmbedding}]{\sphinxcrossref{LayerRegularizedEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.multiplex.LayerRegularizedEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.LayerRegularizedEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.LayerRegularizedEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}layer\_regularized\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{MELLEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{MELLEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MELLEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{MELLEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{directed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_ratio}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{lambda\_nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.0001}}\sphinxparamcomma \sphinxparam{\DUrole{n}{beta\_variance}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{gamma\_layers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.0001}}\sphinxparamcomma \sphinxparam{\DUrole{n}{epochs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{50}}\sphinxparamcomma \sphinxparam{\DUrole{n}{lr}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.001}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}state\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}node\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}both\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}state\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_reduce}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}mean\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sum\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}max\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}attention\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}mean\textquotesingle{}}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseMultiLayerEmbedding}}}}}
+
+\sphinxAtStartPar
+Multiplex embedding with layer vectors and variance regularization.
+\index{fit() (py3plex.ml.embedding.multiplex.MELLEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.multiplex.MELLEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MELLEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MELLEmbedding}]{\sphinxcrossref{MELLEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.multiplex.MELLEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.MELLEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MELLEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}mell\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{MNEEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{MNEEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MNEEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{MNEEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions\_common}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dimensions\_relation}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{16}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layer\_weights}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{transform\_norm\_bound}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1000.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{80}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{optimizer}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}adam\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{lr}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.01}}\sphinxparamcomma \sphinxparam{\DUrole{n}{epochs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}state\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}node\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}both\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}state\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_reduce}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}mean\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sum\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}max\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}attention\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}mean\textquotesingle{}}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{SupraNode2VecEmbedding}}}}}
+
+\sphinxAtStartPar
+Multiplex embedding with shared + relation\sphinxhyphen{}specific factors.
+\index{fit() (py3plex.ml.embedding.multiplex.MNEEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.multiplex.MNEEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MNEEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MNEEmbedding}]{\sphinxcrossref{MNEEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.multiplex.MNEEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.MNEEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MNEEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}mne\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{MultiLayerEmbeddingConfig (class in py3plex.ml.embedding.multiplex)@\spxentry{MultiLayerEmbeddingConfig}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{MultiLayerEmbeddingConfig}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}state\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}node\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}both\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}state\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_reduce}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}mean\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sum\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}max\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}attention\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}mean\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{include\_interlayer\_edges}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coupling\_weight\_multiplier}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coupling\_edge\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}identity\textquotesingle{}}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Shared multilayer embedding configuration.
+\index{coupling\_edge\_type (py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute)@\spxentry{coupling\_edge\_type}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig.coupling_edge_type}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{coupling\_edge\_type}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}identity\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{coupling\_weight\_multiplier (py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute)@\spxentry{coupling\_weight\_multiplier}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig.coupling_weight_multiplier}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{coupling\_weight\_multiplier}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }float}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }1.0}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{dimensions (py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute)@\spxentry{dimensions}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig.dimensions}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{dimensions}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }128}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{include\_interlayer\_edges (py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute)@\spxentry{include\_interlayer\_edges}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig.include_interlayer_edges}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{include\_interlayer\_edges}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }bool}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }True}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{node\_reduce (py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute)@\spxentry{node\_reduce}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig.node_reduce}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{node\_reduce}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}mean\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sum\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}max\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}attention\textquotesingle{}}\DUrole{p}{{]}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}mean\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{seed (py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute)@\spxentry{seed}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig.seed}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{seed}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }None}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{target (py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute)@\spxentry{target}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerEmbeddingConfig.target}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{target}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}state\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}node\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}both\textquotesingle{}}\DUrole{p}{{]}}}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}state\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{MultiLayerGNNEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{MultiLayerGNNEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerGNNEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{MultiLayerGNNEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2}}\sphinxparamcomma \sphinxparam{\DUrole{n}{hidden\_dim}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{dropout}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{model}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}mgnn\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}mpxgat\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}gatne\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}mgnn\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{objective}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}lp\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}nc\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}contrastive\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}lp\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{epochs}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{50}}\sphinxparamcomma \sphinxparam{\DUrole{n}{lr}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.001}}\sphinxparamcomma \sphinxparam{\DUrole{n}{weight\_decay}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{batch\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{512}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{backend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}dgl\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}torch\_sparse\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}torch\_sparse\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{device}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}cpu\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}state\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}node\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}both\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}state\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_reduce}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}mean\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sum\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}max\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}attention\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}mean\textquotesingle{}}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseMultiLayerEmbedding}}}}}
+
+\sphinxAtStartPar
+Experimental deep backend extension point for multilayer embeddings.
+\index{fit() (py3plex.ml.embedding.multiplex.MultiLayerGNNEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerGNNEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerGNNEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerGNNEmbedding}]{\sphinxcrossref{MultiLayerGNNEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.multiplex.MultiLayerGNNEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.MultiLayerGNNEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiLayerGNNEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}multilayer\_gnn\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{MultiplexNode2Vec (class in py3plex.ml.embedding.multiplex)@\spxentry{MultiplexNode2Vec}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiplexNode2Vec}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{MultiplexNode2Vec}}}
+{\sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}\sphinxparamcomma \sphinxparam{\DUrole{n}{layer\_weight}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{SupraNode2VecEmbedding}}}}}
+
+\sphinxAtStartPar
+Backward\sphinxhyphen{}compatible multiplex Node2Vec alias.
+\index{fit() (py3plex.ml.embedding.multiplex.MultiplexNode2Vec method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.multiplex.MultiplexNode2Vec method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiplexNode2Vec.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiplexNode2Vec}]{\sphinxcrossref{MultiplexNode2Vec}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.multiplex.MultiplexNode2Vec attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.MultiplexNode2Vec attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.MultiplexNode2Vec.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}multiplex\_node2vec\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{NodeLayerIndexer (class in py3plex.ml.embedding.multiplex)@\spxentry{NodeLayerIndexer}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.NodeLayerIndexer}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{NodeLayerIndexer}}}
+{\sphinxparam{\DUrole{n}{state\_nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Tuple\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }Hashable\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{to\_index}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Dict\DUrole{p}{{[}}Tuple\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }Hashable\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{to\_state}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}Tuple\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }Hashable\DUrole{p}{{]}}\DUrole{p}{{]}}}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: \sphinxcode{\sphinxupquote{object}}
+
+\sphinxAtStartPar
+Deterministic state\sphinxhyphen{}node indexing with layer\sphinxhyphen{}major ordering.
+\index{from\_nodes() (py3plex.ml.embedding.multiplex.NodeLayerIndexer class method)@\spxentry{from\_nodes()}\spxextra{py3plex.ml.embedding.multiplex.NodeLayerIndexer class method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.NodeLayerIndexer.from_nodes}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{classmethod\DUrole{w}{ }}}\sphinxbfcode{\sphinxupquote{from\_nodes}}}
+{\sphinxparam{\DUrole{n}{nodes}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Iterable\DUrole{p}{{[}}Any\DUrole{p}{{]}}}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.NodeLayerIndexer}]{\sphinxcrossref{NodeLayerIndexer}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{index\_of() (py3plex.ml.embedding.multiplex.NodeLayerIndexer method)@\spxentry{index\_of()}\spxextra{py3plex.ml.embedding.multiplex.NodeLayerIndexer method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.NodeLayerIndexer.index_of}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{index\_of}}}
+{\sphinxparam{\DUrole{n}{state\_node}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Tuple\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }Hashable\DUrole{p}{{]}}}}}
+{{ $\rightarrow$ int}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{state\_nodes (py3plex.ml.embedding.multiplex.NodeLayerIndexer attribute)@\spxentry{state\_nodes}\spxextra{py3plex.ml.embedding.multiplex.NodeLayerIndexer attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.NodeLayerIndexer.state_nodes}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{state\_nodes}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Tuple\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }Hashable\DUrole{p}{{]}}\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{state\_of() (py3plex.ml.embedding.multiplex.NodeLayerIndexer method)@\spxentry{state\_of()}\spxextra{py3plex.ml.embedding.multiplex.NodeLayerIndexer method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.NodeLayerIndexer.state_of}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{state\_of}}}
+{\sphinxparam{\DUrole{n}{index}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}}}
+{{ $\rightarrow$ Tuple\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }Hashable\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_index (py3plex.ml.embedding.multiplex.NodeLayerIndexer attribute)@\spxentry{to\_index}\spxextra{py3plex.ml.embedding.multiplex.NodeLayerIndexer attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.NodeLayerIndexer.to_index}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{to\_index}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }Dict\DUrole{p}{{[}}Tuple\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }Hashable\DUrole{p}{{]}}\DUrole{p}{,}\DUrole{w}{ }int\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+\index{to\_state (py3plex.ml.embedding.multiplex.NodeLayerIndexer attribute)@\spxentry{to\_state}\spxextra{py3plex.ml.embedding.multiplex.NodeLayerIndexer attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.NodeLayerIndexer.to_state}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{to\_state}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }List\DUrole{p}{{[}}Tuple\DUrole{p}{{[}}Hashable\DUrole{p}{,}\DUrole{w}{ }Hashable\DUrole{p}{{]}}\DUrole{p}{{]}}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{SupraAdjacencyEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{SupraAdjacencyEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraAdjacencyEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{SupraAdjacencyEmbedding}}}
+{\sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}\sphinxparamcomma \sphinxparam{\DUrole{n}{gamma}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNetMFEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{SupraNetMFEmbedding}}}}}
+
+\sphinxAtStartPar
+Backward\sphinxhyphen{}compatible name for NetMF over supra adjacency.
+\index{name (py3plex.ml.embedding.multiplex.SupraAdjacencyEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.SupraAdjacencyEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraAdjacencyEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}supra\_adjacency\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{SupraNetMFEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{SupraNetMFEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNetMFEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{SupraNetMFEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{multilayer}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}supra\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{approx}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}randomized\_svd\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{gamma}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.netmf.NetMFEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{NetMFEmbedding}}}}}
+
+\sphinxAtStartPar
+NetMF with explicit supra\sphinxhyphen{}graph defaults.
+\index{name (py3plex.ml.embedding.multiplex.SupraNetMFEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.SupraNetMFEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNetMFEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}supra\_netmf\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{SupraNode2VecEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{SupraNode2VecEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{SupraNode2VecEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{walk\_length}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{80}}\sphinxparamcomma \sphinxparam{\DUrole{n}{num\_walks}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{p}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{q}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{window\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{10}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_samples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{5}}\sphinxparamcomma \sphinxparam{\DUrole{n}{workers}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1}}\sphinxparamcomma \sphinxparam{\DUrole{n}{cross\_layer\_prob}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coupling\_weight\_multiplier}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{backend}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}numpy\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}state\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}node\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}both\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}state\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_reduce}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}mean\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sum\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}max\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}attention\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}mean\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{include\_interlayer\_edges}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_sampling\_domain}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}same\_layer\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}all\_state\_nodes\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}aligned\_nodes\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}all\_state\_nodes\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coupling\_edge\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}identity\textquotesingle{}}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseMultiLayerEmbedding}}}}}
+
+\sphinxAtStartPar
+Node2Vec over a supra\sphinxhyphen{}graph of \sphinxtitleref{(node, layer)} state nodes.
+\index{fit() (py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding}]{\sphinxcrossref{SupraNode2VecEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraNode2VecEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}supra\_node2vec\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{SupraSpectralEmbedding (class in py3plex.ml.embedding.multiplex)@\spxentry{SupraSpectralEmbedding}\spxextra{class in py3plex.ml.embedding.multiplex}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraSpectralEmbedding}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{class\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.ml.embedding.multiplex.}}\sphinxbfcode{\sphinxupquote{SupraSpectralEmbedding}}}
+{\sphinxparam{\DUrole{n}{dimensions}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{128}}\sphinxparamcomma \sphinxparam{\DUrole{n}{laplacian}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}sym\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}unnorm\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}rw\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}sym\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{solver}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}eigsh\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{which}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}SM\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{tol}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1e\sphinxhyphen{}05}}\sphinxparamcomma \sphinxparam{\DUrole{n}{maxiter}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{2000}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{target}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}state\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}node\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}both\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}state\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{node\_reduce}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Literal\DUrole{p}{{[}}\DUrole{s}{\textquotesingle{}mean\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}sum\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}max\textquotesingle{}}\DUrole{p}{,}\DUrole{w}{ }\DUrole{s}{\textquotesingle{}attention\textquotesingle{}}\DUrole{p}{{]}}}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}mean\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{include\_interlayer\_edges}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{bool}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{True}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coupling\_weight\_multiplier}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{1.0}}\sphinxparamcomma \sphinxparam{\DUrole{n}{coupling\_edge\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}identity\textquotesingle{}}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.BaseMultiLayerEmbedding}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{BaseMultiLayerEmbedding}}}}}
+
+\sphinxAtStartPar
+Deterministic spectral embedding on supra\sphinxhyphen{}graph Laplacians.
+\index{fit() (py3plex.ml.embedding.multiplex.SupraSpectralEmbedding method)@\spxentry{fit()}\spxextra{py3plex.ml.embedding.multiplex.SupraSpectralEmbedding method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraSpectralEmbedding.fit}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{fit}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}}
+{{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraSpectralEmbedding}]{\sphinxcrossref{SupraSpectralEmbedding}}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Fit embedding model.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{name (py3plex.ml.embedding.multiplex.SupraSpectralEmbedding attribute)@\spxentry{name}\spxextra{py3plex.ml.embedding.multiplex.SupraSpectralEmbedding attribute}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.multiplex.SupraSpectralEmbedding.name}}
+\pysigstartsignatures
+\pysigline
+{\sphinxbfcode{\sphinxupquote{name}}\sphinxbfcode{\sphinxupquote{\DUrole{p}{:}\DUrole{w}{ }str}}\sphinxbfcode{\sphinxupquote{\DUrole{w}{ }\DUrole{p}{=}\DUrole{w}{ }\textquotesingle{}supra\_spectral\textquotesingle{}}}}
+\pysigstopsignatures
+\end{fulllineitems}\end{savenotes}
+
+
+\end{fulllineitems}\end{savenotes}
+
+\index{module@\spxentry{module}!py3plex.ml.embedding.evaluation@\spxentry{py3plex.ml.embedding.evaluation}}\index{py3plex.ml.embedding.evaluation@\spxentry{py3plex.ml.embedding.evaluation}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.evaluation}}
+\sphinxAtStartPar
+Embedding evaluation utilities.
+\index{build\_edge\_features() (in module py3plex.ml.embedding.evaluation)@\spxentry{build\_edge\_features()}\spxextra{in module py3plex.ml.embedding.evaluation}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.evaluation.build_edge_features}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.evaluation.}}\sphinxbfcode{\sphinxupquote{build\_edge\_features}}}
+{\sphinxparam{\DUrole{n}{embedding}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{edges}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}tuple\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{operator}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}hadamard\textquotesingle{}}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Build edge feature matrix from an embedding and edge list.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{edge\_operator() (in module py3plex.ml.embedding.evaluation)@\spxentry{edge\_operator()}\spxextra{in module py3plex.ml.embedding.evaluation}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.evaluation.edge_operator}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.evaluation.}}\sphinxbfcode{\sphinxupquote{edge\_operator}}}
+{\sphinxparam{\DUrole{n}{u}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{v}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{operator}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}hadamard\textquotesingle{}}}}
+{{ $\rightarrow$ ndarray}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Combine two node embeddings into an edge feature vector.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{evaluate\_clustering() (in module py3plex.ml.embedding.evaluation)@\spxentry{evaluate\_clustering()}\spxextra{in module py3plex.ml.embedding.evaluation}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.evaluation.evaluate_clustering}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.evaluation.}}\sphinxbfcode{\sphinxupquote{evaluate\_clustering}}}
+{\sphinxparam{\DUrole{n}{y\_true}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}int\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{y\_pred}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}int\DUrole{p}{{]}}}}}
+{{ $\rightarrow$ dict}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Evaluate clustering with NMI and ARI.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{evaluate\_link\_prediction() (in module py3plex.ml.embedding.evaluation)@\spxentry{evaluate\_link\_prediction()}\spxextra{in module py3plex.ml.embedding.evaluation}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.evaluation.evaluate_link_prediction}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.evaluation.}}\sphinxbfcode{\sphinxupquote{evaluate\_link\_prediction}}}
+{\sphinxparam{\DUrole{n}{y\_true}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}int\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{y\_score}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}float\DUrole{p}{{]}}}}}
+{{ $\rightarrow$ float}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Evaluate link prediction with ROC\sphinxhyphen{}AUC.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{evaluate\_link\_prediction\_embeddings() (in module py3plex.ml.embedding.evaluation)@\spxentry{evaluate\_link\_prediction\_embeddings()}\spxextra{in module py3plex.ml.embedding.evaluation}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.evaluation.evaluate_link_prediction_embeddings}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.evaluation.}}\sphinxbfcode{\sphinxupquote{evaluate\_link\_prediction\_embeddings}}}
+{\sphinxparam{\DUrole{n}{embedding}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.ml.embedding.base.EmbeddingResult}]{\sphinxcrossref{EmbeddingResult}}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{positive\_edges}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}tuple\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{negative\_edges}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}tuple\DUrole{p}{{[}}Any\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{operator}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}hadamard\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{random\_state}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{42}}}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Evaluate link prediction with logistic probe on edge features.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{evaluate\_node\_classification() (in module py3plex.ml.embedding.evaluation)@\spxentry{evaluate\_node\_classification()}\spxextra{in module py3plex.ml.embedding.evaluation}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.evaluation.evaluate_node_classification}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.evaluation.}}\sphinxbfcode{\sphinxupquote{evaluate\_node\_classification}}}
+{\sphinxparam{\DUrole{n}{X}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{y}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}int\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{test\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.3}}\sphinxparamcomma \sphinxparam{\DUrole{n}{random\_state}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{42}}}
+{{ $\rightarrow$ float}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Evaluate node classification with macro\sphinxhyphen{}F1.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{evaluate\_node\_classification\_report() (in module py3plex.ml.embedding.evaluation)@\spxentry{evaluate\_node\_classification\_report()}\spxextra{in module py3plex.ml.embedding.evaluation}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.evaluation.evaluate_node_classification_report}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.evaluation.}}\sphinxbfcode{\sphinxupquote{evaluate\_node\_classification\_report}}}
+{\sphinxparam{\DUrole{n}{X}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{y}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Sequence\DUrole{p}{{[}}int\DUrole{p}{{]}}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{test\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{float}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{0.3}}\sphinxparamcomma \sphinxparam{\DUrole{n}{random\_state}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{42}}}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }float\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Evaluate node classification with linear probe metrics.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{module@\spxentry{module}!py3plex.ml.embedding.similarity@\spxentry{py3plex.ml.embedding.similarity}}\index{py3plex.ml.embedding.similarity@\spxentry{py3plex.ml.embedding.similarity}!module@\spxentry{module}}\phantomsection\label{\detokenize{reference/api_index:module-py3plex.ml.embedding.similarity}}
+\sphinxAtStartPar
+Similarity helpers for embedding vectors.
+\index{cosine\_similarity() (in module py3plex.ml.embedding.similarity)@\spxentry{cosine\_similarity()}\spxextra{in module py3plex.ml.embedding.similarity}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.similarity.cosine_similarity}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.similarity.}}\sphinxbfcode{\sphinxupquote{cosine\_similarity}}}
+{\sphinxparam{\DUrole{n}{a}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{b}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}}
+{{ $\rightarrow$ float}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compute cosine similarity.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{dot\_similarity() (in module py3plex.ml.embedding.similarity)@\spxentry{dot\_similarity()}\spxextra{in module py3plex.ml.embedding.similarity}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.similarity.dot_similarity}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.similarity.}}\sphinxbfcode{\sphinxupquote{dot\_similarity}}}
+{\sphinxparam{\DUrole{n}{a}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{b}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}}
+{{ $\rightarrow$ float}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compute dot\sphinxhyphen{}product similarity.
+
+\end{fulllineitems}\end{savenotes}
+
+\index{euclidean\_distance() (in module py3plex.ml.embedding.similarity)@\spxentry{euclidean\_distance()}\spxextra{in module py3plex.ml.embedding.similarity}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.ml.embedding.similarity.euclidean_distance}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{py3plex.ml.embedding.similarity.}}\sphinxbfcode{\sphinxupquote{euclidean\_distance}}}
+{\sphinxparam{\DUrole{n}{a}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}\sphinxparamcomma \sphinxparam{\DUrole{n}{b}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{ndarray}}}
+{{ $\rightarrow$ float}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compute Euclidean distance.
+
+\end{fulllineitems}\end{savenotes}
+
 
 
 \paragraph{Wrapper Entry Points}
@@ -95236,6 +96039,77 @@ System becomes unresponsive
 
 \PYG{c+c1}{\PYGZsh{} Option 3: Use disk\PYGZhy{}based storage}
 \PYG{c+c1}{\PYGZsh{} Write walks to file, then load for training}
+\end{sphinxVerbatim}
+
+
+\subsubsection{Native Multilayer Embedding API}
+\label{\detokenize{user_guide/random_walks_embeddings:native-multilayer-embedding-api}}
+\sphinxAtStartPar
+Beyond low\sphinxhyphen{}level walker primitives, py3plex exposes first\sphinxhyphen{}class embedding models
+for multilayer and multiplex networks in \sphinxcode{\sphinxupquote{py3plex.ml.embedding}} and via
+\sphinxcode{\sphinxupquote{multi\_layer\_network.embed(...)}}.
+
+\sphinxAtStartPar
+Available multilayer\sphinxhyphen{}focused methods include:
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{supra\_node2vec}} (\sphinxcode{\sphinxupquote{py3plex.ml.embedding.SupraNode2VecEmbedding}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{supra\_spectral}} (\sphinxcode{\sphinxupquote{py3plex.ml.embedding.SupraSpectralEmbedding}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{supra\_netmf}} (\sphinxcode{\sphinxupquote{py3plex.ml.embedding.SupraNetMFEmbedding}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{mne}} (\sphinxcode{\sphinxupquote{py3plex.ml.embedding.MNEEmbedding}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{mell}} (\sphinxcode{\sphinxupquote{py3plex.ml.embedding.MELLEmbedding}})
+
+\item {} 
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{multilayer\_gnn}} (\sphinxcode{\sphinxupquote{py3plex.ml.embedding.MultiLayerGNNEmbedding}}, experimental scaffold)
+
+\end{itemize}
+
+\sphinxAtStartPar
+These models use \sphinxcode{\sphinxupquote{(node, layer)}} state nodes as the canonical internal target.
+Physical\sphinxhyphen{}node embeddings can be derived with \sphinxcode{\sphinxupquote{target="both"}} and
+\sphinxcode{\sphinxupquote{node\_reduce}} set to one of \sphinxcode{\sphinxupquote{"mean"}}, \sphinxcode{\sphinxupquote{"sum"}}, or \sphinxcode{\sphinxupquote{"max"}}.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{ml}\PYG{n+nn}{.}\PYG{n+nn}{embedding}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{SupraNode2VecEmbedding}
+
+\PYG{n}{model} \PYG{o}{=} \PYG{n}{SupraNode2VecEmbedding}\PYG{p}{(}
+    \PYG{n}{dimensions}\PYG{o}{=}\PYG{l+m+mi}{128}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{80}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{cross\PYGZus{}layer\PYGZus{}prob}\PYG{o}{=}\PYG{l+m+mf}{0.2}\PYG{p}{,}
+    \PYG{n}{target}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{both}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{node\PYGZus{}reduce}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mean}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}
+\PYG{p}{)}
+\PYG{n}{result\PYGZus{}state} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{fit\PYGZus{}transform}\PYG{p}{(}\PYG{n}{net}\PYG{p}{)}
+\PYG{n}{result\PYGZus{}node} \PYG{o}{=} \PYG{n}{model}\PYG{o}{.}\PYG{n}{node\PYGZus{}embeddings}\PYG{p}{(}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+You can access the same models through \sphinxcode{\sphinxupquote{multi\_layer\_network.embed}}:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{result} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{embed}\PYG{p}{(}
+    \PYG{n}{method}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{supra\PYGZus{}node2vec}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+    \PYG{n}{dimensions}\PYG{o}{=}\PYG{l+m+mi}{128}\PYG{p}{,}
+    \PYG{n}{walk\PYGZus{}length}\PYG{o}{=}\PYG{l+m+mi}{80}\PYG{p}{,}
+    \PYG{n}{num\PYGZus{}walks}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}
+    \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{42}\PYG{p}{,}
+\PYG{p}{)}
 \end{sphinxVerbatim}
 
 
@@ -107087,10 +107961,13 @@ If you use py3plex in your research, please cite:
 \item\relax\sphinxstyleindexentry{py3plex.logging\_config}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.logging_config}}
 \item\relax\sphinxstyleindexentry{py3plex.ml.embedding.base}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.base}}
 \item\relax\sphinxstyleindexentry{py3plex.ml.embedding.deepwalk}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.deepwalk}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.evaluation}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.evaluation}}
 \item\relax\sphinxstyleindexentry{py3plex.ml.embedding.line}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.line}}
 \item\relax\sphinxstyleindexentry{py3plex.ml.embedding.metapath2vec}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.metapath2vec}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.multiplex}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.multiplex}}
 \item\relax\sphinxstyleindexentry{py3plex.ml.embedding.netmf}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.netmf}}
 \item\relax\sphinxstyleindexentry{py3plex.ml.embedding.node2vec}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.node2vec}}
+\item\relax\sphinxstyleindexentry{py3plex.ml.embedding.similarity}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.similarity}}
 \item\relax\sphinxstyleindexentry{py3plex.ml.embedding.trainer}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.ml.embedding.trainer}}
 \item\relax\sphinxstyleindexentry{py3plex.multinet.aggregation}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.multinet.aggregation}}
 \item\relax\sphinxstyleindexentry{py3plex.profiling}\sphinxstyleindexpageref{reference/api_index:\detokenize{module-py3plex.profiling}}

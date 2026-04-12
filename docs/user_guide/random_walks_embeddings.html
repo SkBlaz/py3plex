@@ -165,6 +165,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#memory-issues-with-large-graphs">Memory Issues with Large Graphs</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#native-multilayer-embedding-api">Native Multilayer Embedding API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
@@ -1225,6 +1226,49 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 </pre></div>
 </div>
 </section>
+</section>
+<section id="native-multilayer-embedding-api">
+<h2>Native Multilayer Embedding API<a class="headerlink" href="#native-multilayer-embedding-api" title="Link to this heading"></a></h2>
+<p>Beyond low-level walker primitives, py3plex exposes first-class embedding models
+for multilayer and multiplex networks in <code class="docutils literal notranslate"><span class="pre">py3plex.ml.embedding</span></code> and via
+<code class="docutils literal notranslate"><span class="pre">multi_layer_network.embed(...)</span></code>.</p>
+<p>Available multilayer-focused methods include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">supra_node2vec</span></code> (<code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.ml.embedding.SupraNode2VecEmbedding</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">supra_spectral</span></code> (<code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.ml.embedding.SupraSpectralEmbedding</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">supra_netmf</span></code> (<code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.ml.embedding.SupraNetMFEmbedding</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mne</span></code> (<code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.ml.embedding.MNEEmbedding</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mell</span></code> (<code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.ml.embedding.MELLEmbedding</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">multilayer_gnn</span></code> (<code class="xref py py-class docutils literal notranslate"><span class="pre">py3plex.ml.embedding.MultiLayerGNNEmbedding</span></code>, experimental scaffold)</p></li>
+</ul>
+<p>These models use <code class="docutils literal notranslate"><span class="pre">(node,</span> <span class="pre">layer)</span></code> state nodes as the canonical internal target.
+Physical-node embeddings can be derived with <code class="docutils literal notranslate"><span class="pre">target=&quot;both&quot;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">node_reduce</span></code> set to one of <code class="docutils literal notranslate"><span class="pre">&quot;mean&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;sum&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;max&quot;</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.ml.embedding</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupraNode2VecEmbedding</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SupraNode2VecEmbedding</span><span class="p">(</span>
+    <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">cross_layer_prob</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+    <span class="n">node_reduce</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">result_state</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+<span class="n">result_node</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">node_embeddings</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can access the same models through <code class="docutils literal notranslate"><span class="pre">multi_layer_network.embed</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;supra_node2vec&quot;</span><span class="p">,</span>
+    <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
+    <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
