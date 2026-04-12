@@ -1,11 +1,36 @@
 """Unit tests for sensitivity executor helper logic."""
 
-from types import SimpleNamespace
+import importlib
+import sys
+from pathlib import Path
+from types import ModuleType, SimpleNamespace
 
 import pytest
 
-from py3plex.sensitivity import executor as sensitivity_executor
-from py3plex.sensitivity.metrics import parse_metric_spec
+
+def _load_sensitivity_modules():
+    """Load sensitivity modules without importing top-level py3plex package."""
+    repo_root = Path(__file__).resolve().parents[1]
+    py3plex_root = repo_root / "py3plex"
+    sensitivity_root = py3plex_root / "sensitivity"
+
+    if "py3plex" not in sys.modules:
+        py3plex_pkg = ModuleType("py3plex")
+        py3plex_pkg.__path__ = [str(py3plex_root)]
+        sys.modules["py3plex"] = py3plex_pkg
+
+    if "py3plex.sensitivity" not in sys.modules:
+        sensitivity_pkg = ModuleType("py3plex.sensitivity")
+        sensitivity_pkg.__path__ = [str(sensitivity_root)]
+        sys.modules["py3plex.sensitivity"] = sensitivity_pkg
+
+    metrics = importlib.import_module("py3plex.sensitivity.metrics")
+    executor = importlib.import_module("py3plex.sensitivity.executor")
+    return executor, metrics
+
+
+sensitivity_executor, sensitivity_metrics = _load_sensitivity_modules()
+parse_metric_spec = sensitivity_metrics.parse_metric_spec
 
 
 def test_extract_conclusion_data_with_uncertainty_wrapped_values():
