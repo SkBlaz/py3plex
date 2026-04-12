@@ -8,32 +8,35 @@ from types import ModuleType, SimpleNamespace
 import pytest
 
 
-def _load_sensitivity_modules():
+@pytest.fixture
+def sensitivity_modules(monkeypatch):
     """Load sensitivity modules without importing top-level py3plex package."""
     repo_root = Path(__file__).resolve().parents[1]
     py3plex_root = repo_root / "py3plex"
     sensitivity_root = py3plex_root / "sensitivity"
 
-    if "py3plex" not in sys.modules:
-        py3plex_pkg = ModuleType("py3plex")
-        py3plex_pkg.__path__ = [str(py3plex_root)]
-        sys.modules["py3plex"] = py3plex_pkg
+    py3plex_pkg = ModuleType("py3plex")
+    py3plex_pkg.__path__ = [str(py3plex_root)]
+    sensitivity_pkg = ModuleType("py3plex.sensitivity")
+    sensitivity_pkg.__path__ = [str(sensitivity_root)]
 
-    if "py3plex.sensitivity" not in sys.modules:
-        sensitivity_pkg = ModuleType("py3plex.sensitivity")
-        sensitivity_pkg.__path__ = [str(sensitivity_root)]
-        sys.modules["py3plex.sensitivity"] = sensitivity_pkg
+    monkeypatch.setitem(sys.modules, "py3plex", py3plex_pkg)
+    monkeypatch.setitem(sys.modules, "py3plex.sensitivity", sensitivity_pkg)
+    for module_name in [
+        "py3plex.sensitivity.types",
+        "py3plex.sensitivity.perturbations",
+        "py3plex.sensitivity.metrics",
+        "py3plex.sensitivity.executor",
+    ]:
+        monkeypatch.delitem(sys.modules, module_name, raising=False)
 
     metrics = importlib.import_module("py3plex.sensitivity.metrics")
     executor = importlib.import_module("py3plex.sensitivity.executor")
     return executor, metrics
 
 
-sensitivity_executor, sensitivity_metrics = _load_sensitivity_modules()
-parse_metric_spec = sensitivity_metrics.parse_metric_spec
-
-
-def test_extract_conclusion_data_with_uncertainty_wrapped_values():
+def test_extract_conclusion_data_with_uncertainty_wrapped_values(sensitivity_modules):
+    sensitivity_executor, _ = sensitivity_modules
     query_result = {
         "data": [
             {"id": "n1", "layer": "L1", "degree": {"mean": 3.5}, "community_id": 1},
@@ -49,7 +52,8 @@ def test_extract_conclusion_data_with_uncertainty_wrapped_values():
     assert extracted["raw"] is query_result
 
 
-def test_extract_conclusion_data_uses_to_dict_when_available():
+def test_extract_conclusion_data_uses_to_dict_when_available(sensitivity_modules):
+    sensitivity_executor, _ = sensitivity_modules
     query_result_obj = SimpleNamespace(
         to_dict=lambda: {"data": [{"id": "x"}, {"id": "y"}]}
     )
@@ -57,7 +61,8 @@ def test_extract_conclusion_data_uses_to_dict_when_available():
     assert extracted["ranking"] == ["x", "y"]
 
 
-def test_compute_stability_metric_dispatch_and_unknown_metric():
+def test_compute_stability_metric_dispatch_and_unknown_metric(sensitivity_modules):
+    sensitivity_executor, _ = sensitivity_modules
     baseline = {
         "ranking": ["a", "b", "c"],
         "partition": {"a": 0, "b": 0, "c": 1},
@@ -84,7 +89,8 @@ def test_compute_stability_metric_dispatch_and_unknown_metric():
     assert unknown == 0.0
 
 
-def test_find_collapse_point_found_and_not_found():
+def test_find_collapse_point_found_and_not_found(sensitivity_modules):
+    sensitivity_executor, _ = sensitivity_modules
     assert (
         sensitivity_executor._find_collapse_point(
             values=[0.9, 0.7, 0.4], grid=[0.0, 0.1, 0.2], threshold=0.5
@@ -99,7 +105,8 @@ def test_find_collapse_point_found_and_not_found():
     )
 
 
-def test_compute_local_influence_per_node_has_descending_scores():
+def test_compute_local_influence_per_node_has_descending_scores(sensitivity_modules):
+    sensitivity_executor, _ = sensitivity_modules
     baseline = {"ranking": ["n1", "n2", "n3"]}
     influence = sensitivity_executor._compute_local_influence(
         baseline_data=baseline,
@@ -108,11 +115,14 @@ def test_compute_local_influence_per_node_has_descending_scores():
     )
 
     scores = [x.influence_score for x in influence["node"]]
-    assert scores == [1.0, 0.5, pytest.approx(1.0 / 3.0)]
+    assert scores == pytest.approx([1.0, 0.5, 1.0 / 3.0])
     assert [x.entity_id for x in influence["node"]] == ["n1", "n2", "n3"]
 
 
-def test_run_sensitivity_analysis_with_monkeypatched_perturbation(monkeypatch):
+def test_run_sensitivity_analysis_with_monkeypatched_perturbation(
+    monkeypatch, sensitivity_modules
+):
+    sensitivity_executor, _ = sensitivity_modules
     # Keep perturbation behavior deterministic and lightweight.
     monkeypatch.setattr(
         sensitivity_executor,
@@ -123,8 +133,9 @@ def test_run_sensitivity_analysis_with_monkeypatched_perturbation(monkeypatch):
     def query_executor(_network):
         return {"data": [{"id": "n1"}, {"id": "n2"}, {"id": "n3"}]}
 
+    network_sentinel = SimpleNamespace(kind="unused_in_monkeypatched_test")
     result = sensitivity_executor.run_sensitivity_analysis(
-        network=object(),
+        network=network_sentinel,
         query_executor=query_executor,
         query_ast={"dummy": True},
         perturb="edge_drop",
@@ -143,7 +154,9 @@ def test_run_sensitivity_analysis_with_monkeypatched_perturbation(monkeypatch):
     assert result.meta["n_samples"] == 2
 
 
-def test_parse_metric_spec_variants():
+def test_parse_metric_spec_variants(sensitivity_modules):
+    _, sensitivity_metrics = sensitivity_modules
+    parse_metric_spec = sensitivity_metrics.parse_metric_spec
     assert parse_metric_spec("jaccard_at_k(20)") == ("jaccard_at_k", {"k": 20})
     assert parse_metric_spec(" kendall_tau ") == ("kendall_tau", {})
     assert parse_metric_spec("jaccard_at_k(not_an_int)") == ("jaccard_at_k", {})
