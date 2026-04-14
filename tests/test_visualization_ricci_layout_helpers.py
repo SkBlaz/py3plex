@@ -43,7 +43,7 @@ def test_compute_mds_layout_handles_disconnected_graph() -> None:
         assert np.isfinite(coords).all()
 
 
-def test_compute_spectral_layout_with_dim3_falls_back_to_2d() -> None:
+def test_compute_spectral_layout_with_dim3_falls_back_to_2d(caplog) -> None:
     graph = nx.Graph()
     graph.add_edge("A", "B", weight=1.0)
     graph.add_edge("B", "C", weight=1.0)
@@ -54,3 +54,4 @@ def test_compute_spectral_layout_with_dim3_falls_back_to_2d() -> None:
     for coords in pos.values():
         assert isinstance(coords, np.ndarray)
         assert coords.shape == (2,)
+    assert "only supports dim=2" in caplog.text

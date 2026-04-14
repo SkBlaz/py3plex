@@ -24,7 +24,7 @@ from py3plex.embeddings.netmf import (
 from py3plex.exceptions import EmbeddingError
 
 
-class _MinimalTestNetwork:
+class MinimalTestNetwork:
     def __init__(self, edges):
         self._edges = list(edges)
 
@@ -55,7 +55,7 @@ def _sample_embedding_result() -> EmbeddingResult:
 
 
 def test_build_union_adjacency_merges_physical_nodes_and_weights() -> None:
-    network = _MinimalTestNetwork(
+    network = MinimalTestNetwork(
         [
             ("A", "B", "social", "social", 2.0),
             ("A", "B", "work", "work", 1.0),
@@ -74,7 +74,7 @@ def test_build_union_adjacency_merges_physical_nodes_and_weights() -> None:
 
 
 def test_build_supra_adjacency_adds_gamma_coupling() -> None:
-    network = _MinimalTestNetwork(
+    network = MinimalTestNetwork(
         [
             ("A", "B", "social", "social", 1.0),
             ("A", "A", "social", "work", 2.0),
@@ -154,7 +154,7 @@ def test_netmf_embedder_validates_inputs() -> None:
 
     embedder = NetMFEmbedder(multilayer="union", approx="eigsh", seed=1)
     with pytest.raises(EmbeddingError, match="empty item set"):
-        embedder.fit_transform(_MinimalTestNetwork([]), item_ids=[])
+        embedder.fit_transform(MinimalTestNetwork([]), item_ids=[])
 
 
 def test_apply_link_op_hadamard_with_layer_and_plain_fallback() -> None:
@@ -222,8 +222,8 @@ def test_global_cache_get_put_clear_and_stats() -> None:
     cache_put(key, emb)
     assert cache_get(key) is emb
     stats = cache_stats()
-    assert stats["hits"] >= 1
-    assert stats["misses"] >= 1
+    assert stats["hits"] == 1
+    assert stats["misses"] == 1
 
     clear_cache()
     assert cache_stats() == {"hits": 0, "misses": 0}

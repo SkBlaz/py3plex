@@ -286,7 +286,6 @@ jobs:
         MPLBACKEND: Agg
         HYPOTHESIS_PROFILE: ci
       run: |
-        source .venv/bin/activate
         # Intentionally run sequentially for stable coverage output.
         uv run pytest tests/ --cov=py3plex --cov-report=term --cov-report=xml
 

@@ -94,6 +94,7 @@ def test_execute_query_passes_approximate_params_to_compute(
     captured = {}
 
     def _capture_compute_measure(network, measure, nodes=None, approx_spec=None):
+        captured["network"] = network
         captured["measure"] = measure
         captured["approx_spec"] = approx_spec
         if nodes is None:
@@ -113,6 +114,7 @@ def test_execute_query_passes_approximate_params_to_compute(
         ),
     )
 
+    assert captured["network"] is tiny_network
     assert captured["measure"] == "degree"
     assert captured["approx_spec"]["enabled"] is True
     assert captured["approx_spec"]["method"] == "sampling"
