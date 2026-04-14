@@ -56,7 +56,7 @@ def _sample_embedding_result() -> EmbeddingResult:
     )
 
 
-def test_build_union_adjacency_merges_physical_nodes_and_weights() -> None:
+def test_build_union_adjacency_merges_nodes_and_weights() -> None:
     network = MinimalTestNetwork(
         [
             ("A", "B", "social", "social", 2.0),
@@ -159,7 +159,7 @@ def test_netmf_embedder_validates_inputs() -> None:
         embedder.fit_transform(MinimalTestNetwork([]), item_ids=[])
 
 
-def test_apply_link_op_hadamard_with_layer_and_plain_fallback() -> None:
+def test_apply_link_op_hadamard_handles_layered_and_plain_nodes() -> None:
     node_embedding = EmbeddingResult(
         matrix=np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]], dtype=np.float32),
         item_ids=[("A", "social"), ("B", "social"), "C"],

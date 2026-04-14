@@ -11,7 +11,7 @@ from py3plex.dsl_legacy import DSLSyntaxError, _parse_approx_kwargs, execute_que
 
 
 @pytest.fixture
-def tiny_network():
+def tiny_network() -> multinet.multi_layer_network:
     network = multinet.multi_layer_network(directed=False)
     network.add_edges(
         [
