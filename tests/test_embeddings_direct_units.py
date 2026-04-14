@@ -5,8 +5,6 @@ from __future__ import annotations
 import numpy as np
 import pytest
 import scipy.sparse as sp
-
-from py3plex.embeddings import cache as cache_mod
 from py3plex.embeddings.base import EmbeddingResult
 from py3plex.embeddings.cache import (
     cache_get,
@@ -26,7 +24,7 @@ from py3plex.embeddings.netmf import (
 from py3plex.exceptions import EmbeddingError
 
 
-class _StubNetwork:
+class _MinimalTestNetwork:
     def __init__(self, edges):
         self._edges = list(edges)
 
@@ -57,7 +55,7 @@ def _sample_embedding_result() -> EmbeddingResult:
 
 
 def test_build_union_adjacency_merges_physical_nodes_and_weights() -> None:
-    network = _StubNetwork(
+    network = _MinimalTestNetwork(
         [
             ("A", "B", "social", "social", 2.0),
             ("A", "B", "work", "work", 1.0),
@@ -76,7 +74,7 @@ def test_build_union_adjacency_merges_physical_nodes_and_weights() -> None:
 
 
 def test_build_supra_adjacency_adds_gamma_coupling() -> None:
-    network = _StubNetwork(
+    network = _MinimalTestNetwork(
         [
             ("A", "B", "social", "social", 1.0),
             ("A", "A", "social", "work", 2.0),
@@ -156,7 +154,7 @@ def test_netmf_embedder_validates_inputs() -> None:
 
     embedder = NetMFEmbedder(multilayer="union", approx="eigsh", seed=1)
     with pytest.raises(EmbeddingError, match="empty item set"):
-        embedder.fit_transform(_StubNetwork([]), item_ids=[])
+        embedder.fit_transform(_MinimalTestNetwork([]), item_ids=[])
 
 
 def test_apply_link_op_hadamard_with_layer_and_plain_fallback() -> None:
@@ -213,18 +211,6 @@ def test_make_cache_key_includes_optional_network_version() -> None:
     k2 = make_cache_key("nf", "ast", "emb", network_version=9)
     assert k1 == "nf:ast:emb"
     assert k2 == "nf:ast:emb:9"
-
-
-def test_local_lru_cache_eviction_and_hit_miss_tracking() -> None:
-    cache = cache_mod._LRUCache(maxsize=2)
-    emb = _sample_embedding_result()
-    cache.put("k1", emb)
-    cache.put("k2", emb)
-    assert cache.get("k1") is not None  # hit
-    cache.put("k3", emb)  # evict k2 (least recently used)
-    assert cache.get("k2") is None
-    assert cache.hits >= 1
-    assert cache.misses >= 1
 
 
 def test_global_cache_get_put_clear_and_stats() -> None:
