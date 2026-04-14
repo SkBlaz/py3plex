@@ -116,9 +116,10 @@ def test_netmf_embed_eigsh_returns_finite_matrix() -> None:
     adj = sp.csr_matrix(
         np.array(
             [
-                [0.0, 1.0, 0.0],
-                [1.0, 0.0, 1.0],
-                [0.0, 1.0, 0.0],
+                [0.0, 1.0, 0.0, 0.0],
+                [1.0, 0.0, 1.0, 0.0],
+                [0.0, 1.0, 0.0, 1.0],
+                [0.0, 0.0, 1.0, 0.0],
             ],
             dtype=np.float32,
         )
@@ -131,7 +132,7 @@ def test_netmf_embed_eigsh_returns_finite_matrix() -> None:
         approx="eigsh",
         seed=7,
     )
-    assert emb.shape == (3, 2)
+    assert emb.shape == (4, 2)
     assert np.isfinite(emb).all()
 
 

@@ -89,5 +89,5 @@ def test_execute_query_supports_approximate_kwargs(tiny_network) -> None:
 
 
 def test_execute_query_rejects_too_short_query(tiny_network) -> None:
-    with pytest.raises(DSLSyntaxError, match="must have at least"):
+    with pytest.raises(DSLSyntaxError, match="requires a target"):
         execute_query(tiny_network, "SELECT")
