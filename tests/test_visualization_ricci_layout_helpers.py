@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 import networkx as nx
+import pytest
 
 from py3plex.visualization.ricci_layout import (
     _compute_mds_layout,
@@ -43,7 +44,9 @@ def test_compute_mds_layout_handles_disconnected_graph() -> None:
         assert np.isfinite(coords).all()
 
 
-def test_compute_spectral_layout_with_dim3_falls_back_to_2d(caplog) -> None:
+def test_compute_spectral_layout_with_dim3_falls_back_to_2d(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     graph = nx.Graph()
     graph.add_edge("A", "B", weight=1.0)
     graph.add_edge("B", "C", weight=1.0)

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any, Iterable
+
 import numpy as np
 import pytest
 import scipy.sparse as sp
@@ -25,20 +27,20 @@ from py3plex.exceptions import EmbeddingError
 
 
 class MinimalTestNetwork:
-    def __init__(self, edges):
+    def __init__(self, edges: Iterable[tuple[Any, ...]]) -> None:
         self._edges = list(edges)
 
-    def get_edges(self):
+    def get_edges(self) -> list[tuple[Any, ...]]:
         return list(self._edges)
 
-    def get_nodes(self):
+    def get_nodes(self) -> list[Any]:
         nodes = []
         for edge in self._edges:
             if len(edge) >= 2:
                 nodes.extend([edge[0], edge[1]])
         return list(dict.fromkeys(nodes))
 
-    def get_layers(self):
+    def get_layers(self) -> list[Any]:
         layers = []
         for edge in self._edges:
             if len(edge) >= 4:

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any, Optional
+
 import pytest
 
 from py3plex.core import multinet
@@ -93,7 +95,12 @@ def test_execute_query_passes_approximate_params_to_compute(
 ) -> None:
     captured = {}
 
-    def _capture_compute_measure(network, measure, nodes=None, approx_spec=None):
+    def _capture_compute_measure(
+        network: Any,
+        measure: str,
+        nodes: Optional[list[Any]] = None,
+        approx_spec: Optional[dict[str, Any]] = None,
+    ) -> dict[Any, float]:
         captured["network"] = network
         captured["measure"] = measure
         captured["approx_spec"] = approx_spec
