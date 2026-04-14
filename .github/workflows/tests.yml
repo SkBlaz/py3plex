@@ -281,7 +281,6 @@ jobs:
         uv venv --clear .venv
         source .venv/bin/activate
         uv pip install -e ".[tests]"
-        uv pip install pytest-cov
 
     - name: Run tests with coverage
       env:

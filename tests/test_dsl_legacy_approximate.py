@@ -88,6 +88,38 @@ def test_execute_query_supports_approximate_kwargs(tiny_network) -> None:
     assert len(result["computed"]["betweenness_centrality"]) > 0
 
 
+def test_execute_query_passes_approximate_params_to_compute(
+    tiny_network, monkeypatch
+) -> None:
+    captured = {}
+
+    def _capture_compute_measure(network, measure, nodes=None, approx_spec=None):
+        captured["measure"] = measure
+        captured["approx_spec"] = approx_spec
+        if nodes is None:
+            nodes = []
+        return {node: 0.0 for node in nodes}
+
+    monkeypatch.setattr(
+        "py3plex.dsl_legacy._compute_measure",
+        _capture_compute_measure,
+    )
+
+    execute_query(
+        tiny_network,
+        (
+            'SELECT nodes COMPUTE degree '
+            'APPROXIMATE(method="sampling", n_samples=16, seed=42)'
+        ),
+    )
+
+    assert captured["measure"] == "degree"
+    assert captured["approx_spec"]["enabled"] is True
+    assert captured["approx_spec"]["method"] == "sampling"
+    assert captured["approx_spec"]["params"]["n_samples"] == 16
+    assert captured["approx_spec"]["params"]["seed"] == 42
+
+
 def test_execute_query_rejects_too_short_query(tiny_network) -> None:
     with pytest.raises(DSLSyntaxError, match="requires a target"):
         execute_query(tiny_network, "SELECT")

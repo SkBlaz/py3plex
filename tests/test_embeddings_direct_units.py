@@ -33,6 +33,20 @@ class _StubNetwork:
     def get_edges(self):
         return list(self._edges)
 
+    def get_nodes(self):
+        nodes = []
+        for edge in self._edges:
+            if len(edge) >= 2:
+                nodes.extend([edge[0], edge[1]])
+        return list(dict.fromkeys(nodes))
+
+    def get_layers(self):
+        layers = []
+        for edge in self._edges:
+            if len(edge) >= 4:
+                layers.extend([edge[2], edge[3]])
+        return list(dict.fromkeys(layers))
+
 
 def _sample_embedding_result() -> EmbeddingResult:
     return EmbeddingResult(
