@@ -65,13 +65,22 @@ except ImportError:
 
 logger = get_logger(__name__)
 
+try:
+    from py3plex.dsl.errors import DslSyntaxError as _DslSyntaxError
+    from py3plex.dsl.errors import DslExecutionError as _DslExecutionError
+    _dsl_syntax_base: type = _DslSyntaxError
+    _dsl_exec_base: type = _DslExecutionError
+except Exception:
+    _dsl_syntax_base = Exception  # type: ignore[assignment]
+    _dsl_exec_base = Exception  # type: ignore[assignment]
 
-class DSLSyntaxError(Exception):
+
+class DSLSyntaxError(_dsl_syntax_base):  # type: ignore[misc]
     """Exception raised for DSL syntax errors."""
     pass
 
 
-class DSLExecutionError(Exception):
+class DSLExecutionError(_dsl_exec_base):  # type: ignore[misc]
     """Exception raised for DSL execution errors."""
     pass
 
