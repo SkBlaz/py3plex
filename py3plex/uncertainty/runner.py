@@ -138,9 +138,19 @@ def run_uq(plan: UQPlan, network: Any) -> UQResult:
     
     # Step 3: Finalize all reducers
     reducer_outputs = {}
-    for reducer in plan.reducers:
-        reducer_name = reducer.__class__.__name__
-        reducer_outputs[reducer_name] = reducer.finalize()
+    _used_keys: set = set()
+    for idx, reducer in enumerate(plan.reducers):
+        # Prefer an explicit `name` attribute, fall back to class name + idx
+        base_name = (
+            getattr(reducer, "name", None)
+            or type(reducer).__name__
+        )
+        # Disambiguate duplicate class names
+        key = base_name
+        if key in _used_keys:
+            key = f"{base_name}#{idx}"
+        _used_keys.add(key)
+        reducer_outputs[key] = reducer.finalize()
     
     # Step 4: Assemble UQResult
     result = UQResult(
@@ -160,7 +170,10 @@ def run_uq(plan: UQPlan, network: Any) -> UQResult:
         "execution": {
             "storage_mode": plan.storage_mode,
             "backend": plan.backend,
-            "reducers": [r.__class__.__name__ for r in plan.reducers],
+            "reducers": [
+                getattr(r, "name", None) or type(r).__name__
+                for r in plan.reducers
+            ],
         },
     }
     

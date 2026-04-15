@@ -52,9 +52,21 @@ def assert_network_semantic_equal(net_a, net_b, *, check_attrs=True, check_order
     assert len(edges_a) == len(edges_b), f"Edge count mismatch: {len(edges_a)} vs {len(edges_b)}"
     assert edges_a == edges_b, "Edge replica sets differ"
     
-    # Check layers
-    layers_a = set(net_a.get_layers())
-    layers_b = set(net_b.get_layers())
+    # Check layers (use .layer_names if available, else fall back to unique
+    # 'type' values from node attributes)
+    def _layer_name_set(net):
+        if hasattr(net, "layer_names"):
+            return set(net.layer_names)
+        if hasattr(net, "layers"):
+            return set(net.layers)
+        # Last resort: scan node 'type' attributes
+        return {
+            data.get("type", "unknown")
+            for _, data in net.core_network.nodes(data=True)
+        }
+
+    layers_a = _layer_name_set(net_a)
+    layers_b = _layer_name_set(net_b)
     assert layers_a == layers_b, f"Layer sets differ: {layers_a ^ layers_b}"
     
     if check_attrs:
@@ -468,6 +480,14 @@ class TestLimitedQueryRoundTrip:
             "Limited query should have same or subset of columns"
 
 
+try:
+    import pyarrow as _pyarrow  # noqa: F401
+    _PYARROW_AVAILABLE = True
+except ImportError:
+    _PYARROW_AVAILABLE = False
+
+
+@pytest.mark.skipif(not _PYARROW_AVAILABLE, reason="pyarrow not installed")
 class TestArrowFormatRoundTrip:
     """Test Arrow format zero-loss roundtrip."""
     
@@ -638,6 +658,7 @@ class TestArrowFormatRoundTrip:
             assert set(loaded_fp["layers"]) == set(orig_fp["layers"])
 
 
+@pytest.mark.skipif(not _PYARROW_AVAILABLE, reason="pyarrow not installed")
 class TestArrowRoundtripZeroLoss:
     """Test Arrow format roundtrips with zero loss of multilayer identity and attributes."""
     
@@ -858,6 +879,7 @@ class TestArrowRoundtripZeroLoss:
             assert 'layer1' in layer_names
 
 
+@pytest.mark.skipif(not _PYARROW_AVAILABLE, reason="pyarrow not installed")
 class TestParquetRoundtrip:
     """Test Parquet format roundtrips."""
     

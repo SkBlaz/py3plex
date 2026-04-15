@@ -207,7 +207,7 @@ class LayerReductionError(DslExecutionError):
     """Raised when layer reduction execution fails."""
 
 
-class UnknownAttributeError(DslError):
+class UnknownAttributeError(DslExecutionError):
     """Exception raised when an unknown attribute is referenced.
     
     Attributes:
@@ -242,7 +242,7 @@ class UnknownAttributeError(DslError):
         super().__init__(message, query, line, column, diagnostic=diagnostic)
 
 
-class UnknownMeasureError(DslError):
+class UnknownMeasureError(DslExecutionError):
     """Exception raised when an unknown measure is referenced.
     
     Attributes:

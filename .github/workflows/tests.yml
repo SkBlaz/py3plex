@@ -100,7 +100,7 @@ jobs:
         else
           source .venv/bin/activate
         fi
-        uv pip install pytest hypothesis
+        uv pip install pytest hypothesis pyarrow
         if [ -f "run_tests.py" ]; then
           timeout 600 uv run python run_tests.py || echo " Tests timed out after 10 minutes"
         else
@@ -279,7 +279,7 @@ jobs:
     - name: Install dependencies with test extras
       run: |
         uv venv --clear .venv
-        uv pip install -e ".[tests]"
+        uv pip install -e ".[tests,arrow]"
 
     - name: Run tests with coverage
       env:

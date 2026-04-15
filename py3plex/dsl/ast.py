@@ -13,7 +13,7 @@ import json
 import copy
 
 
-class Target(Enum):
+class Target(str, Enum):
     """Query target - what to select from the network."""
 
     NODES = "nodes"
@@ -775,6 +775,85 @@ class Query:
     explain: bool
     select: SelectStmt
     dsl_version: str = "2.0"
+
+    def summary(self) -> Dict[str, Any]:
+        """Return a stable structural summary with an AST hash.
+
+        The ``ast_hash`` field is a 16-character hex prefix of the SHA-256 of
+        the canonical JSON-serialised AST.  Identical queries always produce the
+        same hash; different queries almost always produce different hashes.
+
+        Returns
+        -------
+        dict
+            Dictionary with at minimum an ``ast_hash`` key plus human-readable
+            structural information (target, layers, compute, etc.).
+        """
+
+        def _default(obj: Any) -> Any:  # JSON serialisation helper
+            if isinstance(obj, Enum):
+                return obj.value
+            if hasattr(obj, "__dataclass_fields__"):
+                import dataclasses
+                return dataclasses.asdict(obj)
+            return str(obj)
+
+        try:
+            raw = json.dumps(
+                {
+                    "explain": self.explain,
+                    "select": _serialize(self.select),
+                    "dsl_version": self.dsl_version,
+                },
+                sort_keys=True,
+                default=_default,
+            )
+        except Exception:  # pragma: no cover – fallback for unusual AST shapes
+            raw = repr(self)
+
+        ast_hash = hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+        # Build human-readable parts
+        sel = self.select
+        target_val = sel.target.value if isinstance(sel.target, Enum) else str(sel.target)
+        layers: List[str] = []
+        if getattr(sel, "layer_expr", None) is not None:
+            for term in getattr(sel.layer_expr, "terms", []):
+                layers.append(getattr(term, "name", str(term)))
+        compute_names: List[str] = [
+            getattr(c, "measure", getattr(c, "name", str(c)))
+            for c in getattr(sel, "compute", [])
+        ]
+        order_fields: List[str] = [
+            getattr(o, "field", str(o)) for o in getattr(sel, "order_by", [])
+        ]
+
+        return {
+            "ast_hash": ast_hash,
+            "target": target_val,
+            "layers": layers,
+            "compute": compute_names,
+            "where": str(getattr(sel, "where", None)),
+            "order_by": order_fields,
+            "limit": getattr(sel, "limit", None),
+        }
+
+
+def _serialize(obj: Any) -> Any:
+    """Recursively convert dataclass objects to JSON-safe dicts."""
+    import dataclasses
+    if dataclasses.is_dataclass(obj) and not isinstance(obj, type):
+        return {
+            k: _serialize(v)
+            for k, v in dataclasses.asdict(obj).items()
+        }
+    if isinstance(obj, Enum):
+        return obj.value
+    if isinstance(obj, (list, tuple)):
+        return [_serialize(i) for i in obj]
+    if isinstance(obj, dict):
+        return {k: _serialize(v) for k, v in obj.items()}
+    return obj
 
 
 @dataclass

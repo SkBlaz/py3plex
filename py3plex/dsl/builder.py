@@ -575,14 +575,16 @@ class QueryBuilder:
         self._select = SelectStmt(target=target, autocompute=autocompute)
 
     def from_layers(
-        self, layer_expr: Union[LayerExprBuilder, "LayerSet"]
+        self, layer_expr: Union[LayerExprBuilder, "LayerSet", list]
     ) -> "QueryBuilder":
         """Filter by layers using layer algebra.
 
         Supports both LayerExprBuilder (backward compatible) and LayerSet (new).
+        Also accepts a plain list of layer name strings for convenience.
 
         Args:
-            layer_expr: Layer expression (e.g., L["social"] + L["work"] or L["* - coupling"])
+            layer_expr: Layer expression (e.g., L["social"] + L["work"],
+                        L["* - coupling"], or ["social", "work"])
 
         Returns:
             Self for chaining
@@ -594,10 +596,26 @@ class QueryBuilder:
             >>> # New style with string expressions
             >>> Q.nodes().from_layers(L["* - coupling"])
             >>> Q.nodes().from_layers(L["(ppi | gene) & disease"])
+            >>>
+            >>> # Plain list of strings
+            >>> Q.nodes().from_layers(["social", "work"])
+            >>> Q.nodes().from_layers([])  # empty → no layer filter
         """
         from .layers import LayerSet
+        from .ast import LayerExpr, LayerTerm
 
-        if isinstance(layer_expr, LayerSet):
+        if isinstance(layer_expr, list):
+            # Convert list of strings to a LayerExpr
+            if len(layer_expr) == 0:
+                # Empty list → treat as "select nothing" by setting an empty LayerExpr
+                self._select.layer_expr = LayerExpr(terms=[], ops=[])
+            else:
+                terms = [LayerTerm(name=str(name)) for name in layer_expr]
+                ops = ["+"] * (len(terms) - 1)
+                self._select.layer_expr = LayerExpr(terms=terms, ops=ops)
+            if hasattr(self._select, "layer_set"):
+                self._select.layer_set = None
+        elif isinstance(layer_expr, LayerSet):
             # Store LayerSet directly in a new field
             self._select.layer_set = layer_expr
             # Clear the old layer_expr to avoid conflicts
