@@ -606,11 +606,17 @@ class QueryBuilder:
 
         if isinstance(layer_expr, list):
             # Convert list of strings to a LayerExpr
+            invalid = [x for x in layer_expr if not isinstance(x, str)]
+            if invalid:
+                raise ValueError(
+                    f"from_layers() list elements must be strings; "
+                    f"got {[type(x).__name__ for x in invalid]}"
+                )
             if len(layer_expr) == 0:
                 # Empty list → treat as "select nothing" by setting an empty LayerExpr
                 self._select.layer_expr = LayerExpr(terms=[], ops=[])
             else:
-                terms = [LayerTerm(name=str(name)) for name in layer_expr]
+                terms = [LayerTerm(name=name) for name in layer_expr]
                 ops = ["+"] * (len(terms) - 1)
                 self._select.layer_expr = LayerExpr(terms=terms, ops=ops)
             if hasattr(self._select, "layer_set"):
