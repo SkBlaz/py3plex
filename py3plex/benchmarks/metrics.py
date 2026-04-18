@@ -125,13 +125,13 @@ def _compute_modularity(
         Modularity score
     """
     from py3plex.algorithms.community_detection.multilayer_modularity import (
-        compute_multilayer_modularity,
+        multilayer_modularity,
     )
 
     try:
         # Try multilayer-aware modularity first
-        if hasattr(network, "get_layers") and layers:
-            return compute_multilayer_modularity(network, partition, layers)
+        if hasattr(network, "layers") and layers:
+            return multilayer_modularity(network, partition)
     except Exception:
         pass
 

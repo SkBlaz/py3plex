@@ -258,8 +258,8 @@ def example_full_pipeline() -> None:
         directed=False,
     )
 
-    print(f"Network: {len(network.get_layers())} layers, "
-          f"{len(list(network.get_nodes()))} nodes, "
+    print(f"Network: {network.layer_count} layers, "
+          f"{network.node_count} nodes, "
           f"{network.edge_count} edges")
 
     # Run full pipeline

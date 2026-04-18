@@ -21,7 +21,7 @@ if __name__ == "__main__":
 from py3plex.core import multinet
 from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DATASET_PATH = REPO_ROOT / "datasets" / "synthetic_multilayer.txt"
 EXAMPLE_IMAGES_DIR = REPO_ROOT / "example_images"
 DEFAULT_SEED = 42
@@ -106,7 +106,7 @@ def example_3_explore_structure(network):
     if nodes:
         # Nodes are tuples like ('1', '1') where first is node name, second is layer
         node_of_interest = nodes[0][0] if isinstance(nodes[0], tuple) else str(nodes[0])
-        layer_names = network.get_layers()
+        layer_names = network.layers
         if layer_names:
             layer_id = str(layer_names[0])
             try:
@@ -116,7 +116,7 @@ def example_3_explore_structure(network):
                 print(f"\nCouldn't get neighbors: {e}")
 
     # Extract subnetworks
-    layer_names = network.get_layers()
+    layer_names = network.layers
     if layer_names:
         try:
             first_layer = [str(layer_names[0])]
@@ -136,7 +136,7 @@ def example_4_compute_metrics(network):
     print("Example 4: Computing Network Metrics")
     print("="*60)
 
-    layer_names = network.get_layers()
+    layer_names = network.layers
     if not layer_names:
         print("No layers found in network")
         return
@@ -176,7 +176,7 @@ def example_5_multilayer_statistics(network):
     try:
         from py3plex.algorithms.statistics import multilayer_statistics as mls
 
-        layer_names = network.get_layers()
+        layer_names = network.layers
         if len(layer_names) < 2:
             print("Need at least 2 layers for multilayer statistics")
             return
@@ -373,7 +373,7 @@ def complete_example():
     network.basic_stats()
 
     # Compute centrality for one layer
-    layer_names = network.get_layers()
+    layer_names = network.layers
     if layer_names:
         try:
             first_layer = [str(layer_names[0])]

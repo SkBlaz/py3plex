@@ -56,7 +56,7 @@ def main():
     print("\n1. Loading multilayer biological network...")
     net = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
     print(
-        f"   OK Loaded {len(list(net.get_nodes()))} nodes across {len(net.get_layers())} layers"
+        f"   OK Loaded {net.node_count} nodes across {net.layer_count} layers"
     )
     print(f"   OK Total edges: {net.edge_count}")
 

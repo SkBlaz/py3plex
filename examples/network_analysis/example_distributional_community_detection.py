@@ -123,11 +123,11 @@ def print_network_stats(net: multinet.multi_layer_network):
 
     nodes = list(net.get_nodes())
     edges = list(net.get_edges())
-    layers = list(net.get_layers())
+    layers = net.layers
 
-    print(f"  Nodes: {len(nodes)}")
-    print(f"  Edges: {len(edges)}")
-    print(f"  Layers: {len(layers)} {layers}")
+    print(f"  Nodes: {net.node_count}")
+    print(f"  Edges: {net.edge_count}")
+    print(f"  Layers: {net.layer_count} {layers}")
     print()
 
 

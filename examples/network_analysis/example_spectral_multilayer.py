@@ -72,9 +72,9 @@ work_edges = [
 network.add_edges(work_edges)
 
 print(f"Network created:")
-print(f" Nodes: {len(list(network.get_nodes()))}")
-print(f" Edges: {len(list(network.get_edges()))}")
-print(f" Layers: {list(network.get_layers())}")
+print(f" Nodes: {network.node_count}")
+print(f" Edges: {network.edge_count}")
+print(f" Layers: {network.layers}")
 
 # ===============================================================================
 # Example A: Supra-Laplacian Spectral Clustering via DSL

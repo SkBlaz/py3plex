@@ -196,8 +196,8 @@ def example_multilayer_network() -> None:
     ]
     network.add_edges(edges_work)
 
-    print(f"Network: {len(network.get_layers())} layers, "
-          f"{len(list(network.get_nodes()))} node-layer pairs")
+    print(f"Network: {network.layer_count} layers, "
+          f"{network.node_count} node-layer pairs")
 
     # Run auto-select
     print("\nRunning auto-select on multilayer network...")

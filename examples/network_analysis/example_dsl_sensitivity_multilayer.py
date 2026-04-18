@@ -66,9 +66,9 @@ def main():
     net.add_edges(all_edges, input_type="list")
 
     print(
-        f"Network: {len(list(net.get_nodes()))} nodes, {len(list(net.get_edges()))} edges"
+        f"Network: {net.node_count} nodes, {net.edge_count} edges"
     )
-    print(f"Layers: {list(net.get_layers())}")
+    print(f"Layers: {net.layers}")
 
     # Example 1: Aggregate centrality across layers
     print("\n" + "-" * 70)

@@ -19,6 +19,12 @@ Patterns covered:
 import csv
 import os
 import tempfile
+import sys
+from pathlib import Path
+
+# Add parent directory to path if running as script
+if __name__ == "__main__":
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from py3plex.dsl import L, Q
 from py3plex.out_of_core import OutOfCoreNetwork, UnsupportedOutOfCoreOperation
