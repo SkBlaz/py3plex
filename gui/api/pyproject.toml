@@ -9,7 +9,7 @@ dependencies = [
     "celery==5.3.4",
     "redis==5.0.1",
     "flower==2.0.1",
-    "python-multipart==0.0.22",
+    "python-multipart==0.0.26",
     "pydantic==2.5.3",
     "pydantic-settings==2.1.0",
     "networkx==3.2.1",
