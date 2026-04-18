@@ -100,7 +100,7 @@ jobs:
         else
           source .venv/bin/activate
         fi
-        uv pip install pytest hypothesis
+        uv pip install pytest hypothesis pyarrow
         if [ -f "run_tests.py" ]; then
           timeout 600 uv run python run_tests.py || echo " Tests timed out after 10 minutes"
         else
@@ -256,3 +256,45 @@ jobs:
         uv run python -m py3plex.cli selftest
         uv run pytest tests/test_cli.py -k selftest -q
         uv run pytest tests/test_capabilities_optional_missing.py -q
+
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    name: "Coverage (Python 3.11)"
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    - name: Install dependencies with test extras
+      run: |
+        uv venv --clear .venv
+        uv pip install -e ".[tests,arrow]"
+
+    - name: Run tests with coverage
+      continue-on-error: true
+      env:
+        MPLBACKEND: Agg
+        HYPOTHESIS_PROFILE: ci
+      run: |
+        # Coverage visibility job: keep artifact generation even when unrelated
+        # broad-suite regressions exist in this branch.
+        uv run pytest tests/ --cov=py3plex --cov-report=term --cov-report=xml:coverage.xml
+
+    - name: Upload coverage xml artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-xml
+        path: coverage.xml
+        if-no-files-found: warn
