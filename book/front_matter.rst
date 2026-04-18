@@ -35,7 +35,7 @@ What This Book Deliberately Does Not Do
 About the Software
 ------------------
 
-This edition targets **py3plex 1.1.6**. py3plex implements multilayer data structures, algorithm wrappers, DSL tooling, and workflow utilities. Some operations delegate to single-layer backends after explicit transformations; those transitions are identified in the relevant chapters.
+This edition targets **py3plex 1.1.7**. py3plex implements multilayer data structures, algorithm wrappers, DSL tooling, and workflow utilities. Some operations delegate to single-layer backends after explicit transformations; those transitions are identified in the relevant chapters.
 
 Conventions
 -----------
@@ -62,4 +62,4 @@ Running Example Used Throughout
 Across Parts I–V, we repeatedly revisit a three-layer commuter network (metro, bus, and walking-transfer links) to compare a flattened ranking against a multilayer ranking, then stress-test that difference under uncertainty and disruption scenarios.
 
 .. note::
-   **Version Information:** This book edition is version 1.1.6 (2026), aligned with py3plex 1.1.6 and Python 3.8+ runtime support.
+   **Version Information:** This book edition is version 1.1.7 (2026), aligned with py3plex 1.1.7 and Python 3.8+ runtime support.
