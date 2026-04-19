@@ -331,7 +331,7 @@ AdjustSpeedAndApplyForces step  took <TIME> seconds
 
 OK Pandas DataFrame: 18 rows x 3 columns
 OK NetworkX graph: 18 nodes, 0 edges
-OK Apache Arrow table: 18 rows x 2 columns
+OK Apache Arrow: (skipped - pyarrow not installed)
 
 DataFrame preview:
       id   layer  degree
