@@ -76,8 +76,8 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Apr 18, 2026}
-\release{1.1.6}
+\date{Apr 19, 2026}
+\release{1.1.7}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
 \renewcommand{\releasename}{Release}
@@ -41910,11 +41910,13 @@ Dict{[}str, int{]}
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.DSLExecutionError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{DSLExecutionError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{intent}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{why\_failed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{examples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{pitfall}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
-Bases: \sphinxcode{\sphinxupquote{Exception}}
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslExecutionError}}}}}
 
 \sphinxAtStartPar
 Exception raised for DSL execution errors.
@@ -42060,11 +42062,13 @@ str | None
 \begin{savenotes}\begin{fulllineitems}
 \phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.DSLSyntaxError}}
 \pysigstartsignatures
-\pysigline
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{exception\DUrole{w}{ }}}\sphinxcode{\sphinxupquote{py3plex.dsl.}}\sphinxbfcode{\sphinxupquote{DSLSyntaxError}}}
+{\sphinxparam{\DUrole{n}{message}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}\sphinxparamcomma \sphinxparam{\DUrole{n}{intent}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{why\_failed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{examples}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{List\DUrole{p}{{[}}str\DUrole{p}{{]}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{pitfall}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{}
 \pysigstopsignatures
 \sphinxAtStartPar
-Bases: \sphinxcode{\sphinxupquote{Exception}}
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslSyntaxError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslSyntaxError}}}}}
 
 \sphinxAtStartPar
 Exception raised for DSL syntax errors.
@@ -52224,6 +52228,37 @@ str
 \pysigstopsignatures
 \end{fulllineitems}\end{savenotes}
 
+\index{summary() (py3plex.dsl.Query method)@\spxentry{summary()}\spxextra{py3plex.dsl.Query method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.Query.summary}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{summary}}}
+{}
+{{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Return a stable structural summary with an AST hash.
+
+\sphinxAtStartPar
+The \sphinxcode{\sphinxupquote{ast\_hash}} field is a 16\sphinxhyphen{}character hex prefix of the SHA\sphinxhyphen{}256 of
+the canonical JSON\sphinxhyphen{}serialised AST.  Identical queries always produce the
+same hash; different queries almost always produce different hashes.
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+Dictionary with at minimum an \sphinxcode{\sphinxupquote{ast\_hash}} key plus human\sphinxhyphen{}readable
+structural information (target, layers, compute, etc.).
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+dict
+
+\end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
 
 \end{fulllineitems}\end{savenotes}
 
@@ -54134,7 +54169,7 @@ Self for chaining
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{from\_layers}}}
-{\sphinxparam{\DUrole{n}{layer\_expr}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExprBuilder}]{\sphinxcrossref{LayerExprBuilder}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerSet}]{\sphinxcrossref{LayerSet}}}}}}
+{\sphinxparam{\DUrole{n}{layer\_expr}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerExprBuilder}]{\sphinxcrossref{LayerExprBuilder}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }{\hyperref[\detokenize{reference/api_index:py3plex.dsl.LayerSet}]{\sphinxcrossref{LayerSet}}}\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }list}}}
 {{ $\rightarrow$ {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder}]{\sphinxcrossref{QueryBuilder}}}}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -54142,10 +54177,12 @@ Filter by layers using layer algebra.
 
 \sphinxAtStartPar
 Supports both LayerExprBuilder (backward compatible) and LayerSet (new).
+Also accepts a plain list of layer name strings for convenience.
 \begin{quote}\begin{description}
 \sphinxlineitem{Parameters}
 \sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{layer\_expr}} \textendash{} Layer expression (e.g., L{[}“social”{]} + L{[}“work”{]} or L{[}”* \sphinxhyphen{} coupling”{]})
+\sphinxstyleliteralstrong{\sphinxupquote{layer\_expr}} \textendash{} Layer expression (e.g., L{[}“social”{]} + L{[}“work”{]},
+L{[}”* \sphinxhyphen{} coupling”{]}, or {[}“social”, “work”{]})
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
@@ -54161,6 +54198,10 @@ Self for chaining
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} New style with string expressions}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{* \PYGZhy{} coupling}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{n}{L}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{(ppi | gene) \PYGZam{} disease}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{}}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Plain list of strings}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{social}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{work}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{from\PYGZus{}layers}\PYG{p}{(}\PYG{p}{[}\PYG{p}{]}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} empty \(\rightarrow\) no layer filter}
 \end{sphinxVerbatim}
 
 \end{fulllineitems}\end{savenotes}
@@ -61199,7 +61240,7 @@ Tuple{[}int, int{]}
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
-Bases: \sphinxcode{\sphinxupquote{Enum}}
+Bases: \sphinxcode{\sphinxupquote{str}}, \sphinxcode{\sphinxupquote{Enum}}
 
 \sphinxAtStartPar
 Query target \sphinxhyphen{} what to select from the network.
@@ -62532,7 +62573,7 @@ Error raised when UQ is requested for unsupported context.
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
-Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslError}}}}}
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslExecutionError}}}}}
 
 \sphinxAtStartPar
 Exception raised when an unknown attribute is referenced.
@@ -62646,7 +62687,7 @@ Suggested alternative, if any
 {}
 \pysigstopsignatures
 \sphinxAtStartPar
-Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslError}}}}}
+Bases: {\hyperref[\detokenize{reference/api_index:py3plex.dsl.DslExecutionError}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{DslExecutionError}}}}}
 
 \sphinxAtStartPar
 Exception raised when an unknown measure is referenced.

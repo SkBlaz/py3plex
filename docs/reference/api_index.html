@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Documentation &mdash; py3plex 1.1.6 documentation</title>
+  <title>API Documentation &mdash; py3plex 1.1.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=937269b5"></script>
+      <script src="../_static/documentation_options.js?v=370aedac"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -7348,8 +7348,8 @@ current selection state, and query parameters.</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="py3plex.dsl.DSLExecutionError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">DSLExecutionError</span></span><a class="headerlink" href="#py3plex.dsl.DSLExecutionError" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">DSLExecutionError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">why_failed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">examples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitfall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.DSLExecutionError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.dsl.DslExecutionError" title="py3plex.dsl.errors.DslExecutionError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DslExecutionError</span></code></a></p>
 <p>Exception raised for DSL execution errors.</p>
 </dd></dl>
 
@@ -7426,8 +7426,8 @@ current selection state, and query parameters.</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="py3plex.dsl.DSLSyntaxError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">DSLSyntaxError</span></span><a class="headerlink" href="#py3plex.dsl.DSLSyntaxError" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">DSLSyntaxError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">why_failed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">examples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitfall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.DSLSyntaxError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.dsl.DslSyntaxError" title="py3plex.dsl.errors.DslSyntaxError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DslSyntaxError</span></code></a></p>
 <p>Exception raised for DSL syntax errors.</p>
 </dd></dl>
 
@@ -12656,6 +12656,24 @@ is passed to compute() but specific parameters are omitted.</p>
 <span class="sig-name descname"><span class="pre">select</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.SelectStmt" title="py3plex.dsl.ast.SelectStmt"><span class="pre">SelectStmt</span></a></em><a class="headerlink" href="#id199" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="py3plex.dsl.Query.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.dsl.Query.summary" title="Link to this definition"></a></dt>
+<dd><p>Return a stable structural summary with an AST hash.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ast_hash</span></code> field is a 16-character hex prefix of the SHA-256 of
+the canonical JSON-serialised AST.  Identical queries always produce the
+same hash; different queries almost always produce different hashes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary with at minimum an <code class="docutils literal notranslate"><span class="pre">ast_hash</span></code> key plus human-readable
+structural information (target, layers, compute, etc.).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -13764,12 +13782,14 @@ Note: This still returns a QueryBuilder for chaining with execute().</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.dsl.QueryBuilder.from_layers">
-<span class="sig-name descname"><span class="pre">from_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_expr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py3plex.dsl.LayerExprBuilder" title="py3plex.dsl.builder.LayerExprBuilder"><span class="pre">LayerExprBuilder</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.LayerSet" title="py3plex.dsl.LayerSet"><span class="pre">LayerSet</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.from_layers" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">from_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_expr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#py3plex.dsl.LayerExprBuilder" title="py3plex.dsl.builder.LayerExprBuilder"><span class="pre">LayerExprBuilder</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#py3plex.dsl.LayerSet" title="py3plex.dsl.LayerSet"><span class="pre">LayerSet</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.dsl.QueryBuilder" title="py3plex.dsl.QueryBuilder"><span class="pre">QueryBuilder</span></a></span></span><a class="headerlink" href="#py3plex.dsl.QueryBuilder.from_layers" title="Link to this definition"></a></dt>
 <dd><p>Filter by layers using layer algebra.</p>
-<p>Supports both LayerExprBuilder (backward compatible) and LayerSet (new).</p>
+<p>Supports both LayerExprBuilder (backward compatible) and LayerSet (new).
+Also accepts a plain list of layer name strings for convenience.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>layer_expr</strong> – Layer expression (e.g., L[“social”] + L[“work”] or L[”* - coupling”])</p>
+<dd class="field-odd"><p><strong>layer_expr</strong> – Layer expression (e.g., L[“social”] + L[“work”],
+L[”* - coupling”], or [“social”, “work”])</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Self for chaining</p>
@@ -13782,6 +13802,10 @@ Note: This still returns a QueryBuilder for chaining with execute().</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># New style with string expressions</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;(ppi | gene) &amp; disease&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Plain list of strings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">([</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">([])</span>  <span class="c1"># empty → no layer filter</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -17639,7 +17663,7 @@ a dict mapping layer names to semiring names</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="py3plex.dsl.Target">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">Target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.Target" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Query target - what to select from the network.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="py3plex.dsl.Target.COMMUNITIES">
@@ -18349,7 +18373,7 @@ strata, bins for stratified_perturbation)</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="py3plex.dsl.UnknownAttributeError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">UnknownAttributeError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.UnknownAttributeError" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#py3plex.dsl.DslError" title="py3plex.dsl.errors.DslError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DslError</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.dsl.DslExecutionError" title="py3plex.dsl.errors.DslExecutionError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DslExecutionError</span></code></a></p>
 <p>Exception raised when an unknown attribute is referenced.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="py3plex.dsl.UnknownAttributeError.attribute">
@@ -18399,7 +18423,7 @@ strata, bins for stratified_perturbation)</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="py3plex.dsl.UnknownMeasureError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">UnknownMeasureError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_measures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.dsl.UnknownMeasureError" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#py3plex.dsl.DslError" title="py3plex.dsl.errors.DslError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DslError</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#py3plex.dsl.DslExecutionError" title="py3plex.dsl.errors.DslExecutionError"><code class="xref py py-class docutils literal notranslate"><span class="pre">DslExecutionError</span></code></a></p>
 <p>Exception raised when an unknown measure is referenced.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="py3plex.dsl.UnknownMeasureError.measure">
