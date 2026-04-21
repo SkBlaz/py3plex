@@ -294,7 +294,9 @@ class ComputeItem:
     approx: Optional["ApproximationSpec"] = None
     kind: Optional[str] = None
     # Tracks whether compute() explicitly received uncertainty=...
-    # None means omitted; True/False means caller explicitly set it.
+    # None: omitted (query-level UQ may apply)
+    # True: explicitly enabled
+    # False: explicitly disabled (query-level UQ opt-out for this metric)
     uncertainty_explicit: Optional[bool] = None
 
     @property
