@@ -41,6 +41,7 @@ def test_edge_operator_hadamard_average_l1_l2():
         evaluation.edge_operator(u, v, "weighted_l2"), np.array([4.0, 4.0])
     )
 
+
 def test_edge_operator_cosine_output():
     u = np.array([1.0, 2.0], dtype=np.float32)
     v = np.array([3.0, 4.0], dtype=np.float32)
@@ -144,3 +145,15 @@ def test_evaluate_node_classification_report_fallback_branch(monkeypatch):
     assert split_mock.call_count == 2
     assert set(report) == {"accuracy", "micro_f1", "macro_f1"}
     assert 0.0 <= report["accuracy"] <= 1.0
+
+
+def test_evaluate_node_classification_report_raises_when_fallback_also_fails(monkeypatch):
+    split_mock = Mock(side_effect=ValueError("split failed"))
+    monkeypatch.setattr(evaluation, "train_test_split", split_mock)
+
+    with pytest.raises(ValueError, match="split failed"):
+        evaluation.evaluate_node_classification_report(
+            np.zeros((6, 2), dtype=np.float32),
+            [0, 1, 0, 1, 0, 1],
+            random_state=0,
+        )
