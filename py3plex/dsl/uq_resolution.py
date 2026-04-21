@@ -290,11 +290,7 @@ def resolve_uq_config(
         compute_item.n_null is not None,
     ])
     
-    if (
-        compute_item.uncertainty_explicit is False
-        and compute_item.uncertainty is False
-        and not has_metric_uq_params
-    ):
+    if compute_item.uncertainty_explicit is False and not has_metric_uq_params:
         # Explicit metric-level uncertainty=False overrides query-level UQ.
         return None
     

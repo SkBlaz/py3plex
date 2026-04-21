@@ -293,6 +293,7 @@ class ComputeItem:
     random_state: Optional[int] = None
     approx: Optional["ApproximationSpec"] = None
     kind: Optional[str] = None
+    # None: not explicitly set on compute(); True/False: explicitly provided.
     uncertainty_explicit: Optional[bool] = None
 
     @property
