@@ -293,9 +293,10 @@ def resolve_uq_config(
     # Tri-state semantics:
     # - uncertainty_explicit is None: not provided, query-level UQ may apply
     # - uncertainty_explicit is True: explicit enable
-    # - uncertainty_explicit is False: explicit disable (unless metric-level UQ params are set)
+    # - uncertainty_explicit is False: explicit disable; metric-level UQ params still
+    #   take precedence and can re-enable UQ for that metric.
     if compute_item.uncertainty_explicit is False and not has_metric_uq_params:
-        # Explicit uncertainty=False with no metric-level UQ params overrides query-level UQ.
+        # Explicit opt-out from query-level .uq(...), unlike the default None case.
         return None
     
     # Check if UQ is explicitly enabled at metric or query level
