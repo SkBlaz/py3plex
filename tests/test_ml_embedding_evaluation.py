@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import Mock
+
 import numpy as np
 import pytest
 
@@ -16,13 +18,17 @@ def _embedding() -> EmbeddingResult:
             [0.9, 0.1, 0.4],
             [0.0, 1.0, 0.2],
             [0.1, 0.9, 0.3],
+            [0.8, 0.2, 0.1],
+            [0.2, 0.8, 0.6],
         ],
         dtype=np.float32,
     )
-    return EmbeddingResult(matrix=matrix, item_ids=["a", "b", "c", "d"], method="test")
+    return EmbeddingResult(
+        matrix=matrix, item_ids=["a", "b", "c", "d", "e", "f"], method="test"
+    )
 
 
-def test_edge_operator_variants_and_invalid_operator():
+def test_edge_operator_hadamard_average_l1_l2():
     u = np.array([1.0, 2.0], dtype=np.float32)
     v = np.array([3.0, 4.0], dtype=np.float32)
 
@@ -35,10 +41,17 @@ def test_edge_operator_variants_and_invalid_operator():
         evaluation.edge_operator(u, v, "weighted_l2"), np.array([4.0, 4.0])
     )
 
+def test_edge_operator_cosine_output():
+    u = np.array([1.0, 2.0], dtype=np.float32)
+    v = np.array([3.0, 4.0], dtype=np.float32)
     cosine = evaluation.edge_operator(u, v, "cosine")
     assert cosine.shape == (1,)
     assert np.isfinite(cosine[0])
 
+
+def test_edge_operator_invalid_operator():
+    u = np.array([1.0, 2.0], dtype=np.float32)
+    v = np.array([3.0, 4.0], dtype=np.float32)
     with pytest.raises(ValueError, match="Unknown edge operator"):
         evaluation.edge_operator(u, v, "invalid")
 
@@ -55,8 +68,8 @@ def test_build_edge_features_handles_empty_input_and_cosine_shape():
 
 def test_evaluate_link_prediction_embeddings_success_and_error():
     emb = _embedding()
-    positive_edges = [("a", "b"), ("a", "d"), ("c", "d"), ("b", "d")]
-    negative_edges = [("a", "c"), ("b", "c"), ("a", "c"), ("b", "c")]
+    positive_edges = [("a", "b"), ("a", "d"), ("c", "d"), ("b", "d"), ("e", "f")]
+    negative_edges = [("a", "c"), ("b", "c"), ("a", "e"), ("b", "f"), ("c", "e")]
 
     metrics = evaluation.evaluate_link_prediction_embeddings(
         emb,
@@ -79,10 +92,12 @@ def test_evaluate_link_prediction_embeddings_success_and_error():
         )
 
 
-def test_evaluate_link_prediction_and_classification_helpers():
+def test_evaluate_link_prediction_helper():
     auc = evaluation.evaluate_link_prediction([0, 0, 1, 1], [0.1, 0.2, 0.8, 0.9])
     assert auc == pytest.approx(1.0)
 
+
+def test_evaluate_node_classification_helper():
     X = np.array(
         [
             [1.0, 0.0],
@@ -99,6 +114,8 @@ def test_evaluate_link_prediction_and_classification_helpers():
     macro_f1 = evaluation.evaluate_node_classification(X, y, test_size=0.33, random_state=7)
     assert 0.0 <= macro_f1 <= 1.0
 
+
+def test_evaluate_clustering_helper():
     clustering = evaluation.evaluate_clustering([0, 0, 1, 1], [0, 0, 1, 1])
     assert clustering["NMI"] == pytest.approx(1.0)
     assert clustering["ARI"] == pytest.approx(1.0)
@@ -110,15 +127,13 @@ def test_evaluate_node_classification_report_fallback_branch(monkeypatch):
     y_train = np.array([0, 1, 0, 1])
     y_test = np.array([0, 1])
 
-    state = {"calls": 0}
-
-    def _fake_split(*args, **kwargs):
-        state["calls"] += 1
-        if state["calls"] == 1:
-            raise ValueError("forced split failure")
-        return X_train, X_test, y_train, y_test
-
-    monkeypatch.setattr(evaluation, "train_test_split", _fake_split)
+    split_mock = Mock(
+        side_effect=[
+            ValueError("forced split failure"),
+            (X_train, X_test, y_train, y_test),
+        ]
+    )
+    monkeypatch.setattr(evaluation, "train_test_split", split_mock)
 
     report = evaluation.evaluate_node_classification_report(
         np.zeros((6, 2), dtype=np.float32),
@@ -126,6 +141,6 @@ def test_evaluate_node_classification_report_fallback_branch(monkeypatch):
         random_state=0,
     )
 
-    assert state["calls"] == 2
+    assert split_mock.call_count == 2
     assert set(report) == {"accuracy", "micro_f1", "macro_f1"}
     assert 0.0 <= report["accuracy"] <= 1.0
