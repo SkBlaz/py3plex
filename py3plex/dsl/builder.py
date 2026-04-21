@@ -917,6 +917,7 @@ class QueryBuilder:
                         random_state=random_state,
                         approx=measure_approx_spec,
                         kind=kind,
+                        uncertainty_explicit=uncertainty,
                     )
                 )
         elif alias and len(measures) == 1:
@@ -947,6 +948,7 @@ class QueryBuilder:
                     random_state=random_state,
                     approx=measure_approx_spec,
                     kind=kind,
+                    uncertainty_explicit=uncertainty,
                 )
             )
         else:
@@ -977,6 +979,7 @@ class QueryBuilder:
                         random_state=random_state,
                         approx=measure_approx_spec,
                         kind=kind,
+                        uncertainty_explicit=uncertainty,
                     )
                 )
 
