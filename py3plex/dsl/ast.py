@@ -293,6 +293,11 @@ class ComputeItem:
     random_state: Optional[int] = None
     approx: Optional["ApproximationSpec"] = None
     kind: Optional[str] = None
+    # Tracks whether compute() explicitly received uncertainty=...
+    # None: omitted (query-level UQ may apply)
+    # True: explicitly enabled
+    # False: explicitly disabled (query-level UQ opt-out for this metric)
+    uncertainty_explicit: Optional[bool] = None
 
     @property
     def result_name(self) -> str:
