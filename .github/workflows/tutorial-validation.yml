@@ -47,9 +47,15 @@ jobs:
 
     - name: Install system dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y gcc g++ build-essential
-      timeout-minutes: 5
+        sudo mkdir -p /etc/apt/apt.conf.d
+        echo 'Acquire::Retries "3";' | sudo tee /etc/apt/apt.conf.d/80-retries
+        echo 'Acquire::http::Timeout "30";' | sudo tee /etc/apt/apt.conf.d/80-timeout
+        echo 'Acquire::https::Timeout "30";' | sudo tee -a /etc/apt/apt.conf.d/80-timeout
+
+        sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+          gcc g++ build-essential
+      timeout-minutes: 10
 
     - name: Install dependencies
       run: |
