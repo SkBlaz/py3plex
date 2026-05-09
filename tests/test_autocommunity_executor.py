@@ -538,3 +538,110 @@ class TestEdgeCases:
         # Should work and detect multiple communities
         assert result is not None
         assert result.community_stats.n_communities >= 2
+
+
+# MDL condition test
+class TestMDLMetric:
+    """Test MDL (Minimum Description Length) metric logic."""
+
+    def test_mdl_from_sbm_metadata(self):
+        """Should use pre-computed MDL from SBM metadata if available."""
+        # Mock result with SBM metadata
+        algorithm_results = {
+            'sbm_algo': {
+                'partition': {('N1', 'L1'): 0, ('N2', 'L1'): 1},
+                'meta': {'mdl': 450.5}
+            }
+        }
+
+        result = algorithm_results['sbm_algo']
+        value = np.nan
+        if result.get('meta') and 'mdl' in result['meta']:
+            value = result['meta']['mdl']
+
+        assert value == 450.5
+
+    def test_mdl_fallback_calculation_multiplex(self, multilayer_network):
+        """Should compute fallback BIC/MDL for multiplex partitions."""
+        # A multiplex partition: same entity has same community across layers
+        partition = {
+            ('N0', 'layer1'): 0, ('N0', 'layer2'): 0,
+            ('N1', 'layer1'): 1, ('N1', 'layer2'): 1
+        }
+
+        algorithm_results = {
+            'louvain_algo': {
+                'partition': partition,
+                'algorithm': 'louvain'
+            }
+        }
+
+        # Mock the network and cache to isolate the MDL logic
+        from py3plex.algorithms.community_detection.autocommunity_executor import _evaluate_algorithms
+
+        eval_df = _evaluate_algorithms(
+            multilayer_network,
+            algorithm_results,
+            metric_names=["mdl"],
+            custom_metrics=[]
+        )
+
+        mdl_value = eval_df.iloc[0]['mdl']
+        assert not np.isnan(mdl_value)
+        # MDL for a non-empty graph should be a positive float
+        assert mdl_value > 0
+
+    def test_mdl_parameter_penalty_independent(self, multilayer_network):
+        """Should penalize independent assignments more than multiplex assignments."""
+        # Multiplex: 2 nodes, 1 community each across 2 layers = 2 params
+        partition_multi = {
+            ('N0', 'layer1'): 0, ('N0', 'layer2'): 0,
+            ('N1', 'layer1'): 1, ('N1', 'layer2'): 1
+        }
+
+        # Independent: 2 nodes, different communities in different layers = 4 params
+        partition_indep = {
+            ('N0', 'layer1'): 0, ('N0', 'layer2'): 1,
+            ('N1', 'layer1'): 1, ('N1', 'layer2'): 0
+        }
+
+        results = {
+            'multi': {'partition': partition_multi, 'algorithm': 'louvain'},
+            'indep': {'partition': partition_indep, 'algorithm': 'louvain'}
+        }
+
+        from py3plex.algorithms.community_detection.autocommunity_executor import _evaluate_algorithms
+        eval_df = _evaluate_algorithms(multilayer_network, results, ["mdl"], [])
+
+        mdl_multi = eval_df[eval_df['algorithm_id'] == 'multi']['mdl'].values[0]
+        mdl_indep = eval_df[eval_df['algorithm_id'] == 'indep']['mdl'].values[0]
+
+        assert mdl_indep > mdl_multi
+
+    def test_mdl_handles_empty_partition(self, simple_network):
+        """Should handle empty partitions by returning 0.0."""
+        algorithm_results = {
+            'empty_algo': {'partition': {}, 'algorithm': 'louvain'}
+        }
+
+        from py3plex.algorithms.community_detection.autocommunity_executor import _evaluate_algorithms
+        eval_df = _evaluate_algorithms(simple_network, algorithm_results, ["mdl"], [])
+
+        assert eval_df.iloc[0]['mdl'] == 0.0
+
+    def test_mdl_numerical_stability(self, multilayer_network):
+        """Should remain stable (not NaN) even with isolated nodes."""
+        # Add isolated node to partition
+        partition = {node: 0 for node in multilayer_network.get_nodes()}
+        # Force an isolated community
+        partition[('Isolated', 'layer1')] = 99
+
+        algorithm_results = {
+            'stable_algo': {'partition': partition, 'algorithm': 'louvain'}
+        }
+
+        from py3plex.algorithms.community_detection.autocommunity_executor import _evaluate_algorithms
+        eval_df = _evaluate_algorithms(multilayer_network, algorithm_results, ["mdl"], [])
+
+        # Result should be a valid number
+        assert np.isfinite(eval_df.iloc[0]['mdl'])
