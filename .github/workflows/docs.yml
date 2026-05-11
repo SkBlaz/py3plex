@@ -48,7 +48,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-latex-recommended latexmk
-      timeout-minutes: 5
+      timeout-minutes: 15
     
     - name: Build Sphinx documentation
       run: |
