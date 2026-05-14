@@ -520,52 +520,14 @@ def _evaluate_algorithms(
 
 
                 elif metric_name == "mdl":
-                    # Minimum Description Length (MDL) / BIC - lower is better
-                    # For SBM algorithms, use pre-computed MDL from metadata
-                    if result.get('meta') and 'mdl' in result['meta']:
-                        value = result['meta']['mdl']
-                    else:
-                        # For other algorithms (Louvain, Leiden), compute simplified BIC
-                        try:
-                            n_nodes = len(partition)
-                            if n_nodes == 0:
-                                value = 0.0
-                            else:
-                                # Get network stats
-                                n_edges = len(network.get_edges())
-                                n_layers = len(network.get_layers())
-                                K = len(set(partition.values()))  # number of communities
-                                
-                                # Estimate modularity as proxy for likelihood
-                                # Higher modularity = better fit = lower MDL
-                                try:
-                                    modularity = multilayer_modularity(
-                                        network=network,
-                                        communities=partition,
-                                    )
-                                except Exception:
-                                    modularity = 0.0
-                                
-                                # Parameter count:
-                                # - Membership parameters: n_nodes * (K - 1)
-                                # - Block affinity parameters: n_layers * K * (K + 1) / 2
-                                membership_params = n_nodes * max(K - 1, 0)
-                                affinity_params = n_layers * K * (K + 1) // 2
-                                n_params = membership_params + affinity_params
-                                
-                                # BIC-like score: -2 * log_likelihood + k * log(n)
-                                # Use modularity as log-likelihood estimate
-                                # MDL = -2 * modularity + n_params * log(max(n_edges, 1))
-                                n_data = max(n_edges, 1) if n_edges > 0 else n_nodes
-                                value = -2.0 * modularity + n_params * np.log(n_data)
-                                
-                        except Exception as exc:
-                            warnings.warn(
-                                f"MDL computation failed for '{algo_id}': {exc}. "
-                                "Assigning 0.0.",
-                                stacklevel=2,
-                            )
-                            value = 0.0
+                    # Extract from algorithm metadata (SBM algorithms compute this)
+                    # For non-SBM algorithms, this metric is not available
+
+                    meta = result.get('meta', {})
+                    mdl_value = meta.get('mdl')
+                    if mdl_value is None:
+                        mdl_value = meta.get('bic')
+                    value = mdl_value if mdl_value is not None else 0.0
                 
                 elif metric_name == "replica_consistency":
                     # Multilayer coherence metric
