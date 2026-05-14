@@ -520,121 +520,45 @@ def _evaluate_algorithms(
 
 
                 elif metric_name == "mdl":
-                    # For SBM algorithms, use the pre-computed MDL from metadata
+                    # Minimum Description Length (MDL) / BIC - lower is better
+                    # For SBM algorithms, use pre-computed MDL from metadata
                     if result.get('meta') and 'mdl' in result['meta']:
                         value = result['meta']['mdl']
-
                     else:
+                        # For other algorithms (Louvain, Leiden), compute simplified BIC
                         try:
-                            all_nodes = list(partition.keys())
-                            if not all_nodes:
-                                value = 0.0  # No nodes = trivial model with perfect likelihood and zero params
+                            n_nodes = len(partition)
+                            if n_nodes == 0:
+                                value = 0.0
                             else:
-                                if "_intra_edges_cache" in vars() or "_intra_edges_cache" in dir():
-                                    intra_edges = _intra_edges_cache  # noqa: F821
-                                else:
-                                    intra_edges = {}
-                                    for u, v in network.core_network.edges():
-                                        u_layer = (u[1] if (isinstance(u, tuple) and len(u) >= 2) else None)
-                                        v_layer = (v[1] if (isinstance(v, tuple) and len(v) >= 2) else None)
-
-                                        if u_layer == v_layer:
-                                            intra_edges.setdefault(u_layer, []).append((u, v))
-
-                                # ── 2. Identify layers.
-                                node_is_tuple = all(
-                                    isinstance(n, tuple) and len(n) >= 2
-                                    for n in all_nodes
-                                )
-
-                                if node_is_tuple:
-                                    layers = list({n[1] for n in all_nodes})
-
-                                else:
-                                    layers = [None]  # flat graph — one implicit layer
-
-                                if node_is_tuple and len(layers) > 1:
-                                    entity_comms: Dict[Any, set] = {}
-                                    for node, comm in partition.items():
-                                        entity = node[0]
-                                        entity_comms.setdefault(entity, set()).add(comm)
-
-                                    is_multiplex = all(
-                                        len(comms) == 1
-                                        for comms in entity_comms.values()
+                                # Get network stats
+                                n_edges = len(network.get_edges())
+                                n_layers = len(network.get_layers())
+                                K = len(set(partition.values()))  # number of communities
+                                
+                                # Estimate modularity as proxy for likelihood
+                                # Higher modularity = better fit = lower MDL
+                                try:
+                                    modularity = multilayer_modularity(
+                                        network=network,
+                                        communities=partition,
                                     )
-
-                                else:
-                                    is_multiplex = True
-
-                                K = len(set(partition.values())) if partition else 1
-                                total_log_lik = 0.0
-                                total_n_edges = 0
-
-                                for layer in layers:
-                                    if node_is_tuple:
-                                        layer_nodes = [n for n in all_nodes if n[1] == layer]
-                                    else:
-                                        layer_nodes = all_nodes
-                                    if not layer_nodes:
-                                        continue
-
-                                    edges_in_layer = intra_edges.get(layer, [])
-                                    total_n_edges += len(edges_in_layer)
-                                    # Per-node intra-layer degree
-                                    degree: Dict[Any, int] = {n: 0 for n in layer_nodes}
-
-                                    for u, v in edges_in_layer:
-                                        if u in degree:
-                                            degree[u] += 1
-                                        if v in degree:
-                                            degree[v] += 1
-
-                                    # Community-level accumulators
-                                    comm_internal_edges: Dict[Any, int] = {}
-                                    comm_degree_sum: Dict[Any, int] = {}
-
-                                    for node in layer_nodes:
-                                        comm = partition.get(node)
-                                        if comm is None:
-                                            continue
-
-                                        comm_degree_sum[comm] = (
-                                                comm_degree_sum.get(comm, 0) + degree[node]
-                                        )
-
-                                    for u, v in edges_in_layer:
-                                        cu = partition.get(u)
-                                        cv = partition.get(v)
-                                        if cu is not None and cu == cv:
-                                            comm_internal_edges[cu] = (
-                                                    comm_internal_edges.get(cu, 0) + 1
-                                            )
-
-                                    for comm, e_c in comm_internal_edges.items():
-                                        a_c = comm_degree_sum.get(comm, 0)
-                                        if e_c > 0 and a_c > 0:
-                                            total_log_lik += e_c * (np.log(e_c) - 2 * np.log(a_c))
-
-                                # ── 5. Parameter count.
-                                n_layers = len(layers)
-                                if is_multiplex:
-                                    n_entities = len({
-                                        n[0] if (isinstance(n, tuple) and len(n) >= 2) else n
-                                        for n in all_nodes
-                                    })
-                                    membership_params = n_entities * max(K - 1, 0)
-
-                                else:
-                                    membership_params = len(all_nodes) * max(K - 1, 0)
-
-                                affinity_params = n_layers * (K * (K + 1) // 2)
+                                except Exception:
+                                    modularity = 0.0
+                                
+                                # Parameter count:
+                                # - Membership parameters: n_nodes * (K - 1)
+                                # - Block affinity parameters: n_layers * K * (K + 1) / 2
+                                membership_params = n_nodes * max(K - 1, 0)
+                                affinity_params = n_layers * K * (K + 1) // 2
                                 n_params = membership_params + affinity_params
-
-                                # ── 6. BIC. n_data = total intra-layer edges (the observations).
-                                n_data = total_n_edges if total_n_edges > 0 else 1
-                                value = -2.0 * total_log_lik + n_params * np.log(n_data)
-
+                                
+                                # BIC-like score: -2 * log_likelihood + k * log(n)
+                                # Use modularity as log-likelihood estimate
+                                # MDL = -2 * modularity + n_params * log(max(n_edges, 1))
+                                n_data = max(n_edges, 1) if n_edges > 0 else n_nodes
+                                value = -2.0 * modularity + n_params * np.log(n_data)
+                                
                         except Exception as exc:
                             warnings.warn(
                                 f"MDL computation failed for '{algo_id}': {exc}. "
