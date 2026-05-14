@@ -517,11 +517,16 @@ def _evaluate_algorithms(
                             value = 0.0
                     else:
                         value = 0.0
-                
+
                 elif metric_name == "mdl":
-                    # Description length (if available)
-                    # Placeholder for now
-                    value = 0.0
+                    # Extract from algorithm metadata (SBM algorithms compute this)
+                    # For non-SBM algorithms, this metric is not available
+
+                    meta = result.get('meta', {})
+                    mdl_value = meta.get('mdl')
+                    if mdl_value is None:
+                        mdl_value = meta.get('bic')
+                    value = mdl_value if mdl_value is not None else 0.0
                 
                 elif metric_name == "replica_consistency":
                     # Multilayer coherence metric
