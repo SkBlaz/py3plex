@@ -64,3 +64,30 @@ def test_optional_extra_contains_common_feature_extras():
         expected.add(dep)
 
     assert optional_deps == expected
+
+
+def test_release_metadata_alignment_in_docs_and_readme():
+    version = _project_version()
+
+    agents = _read("AGENTS.md")
+    readme = _read("README.md")
+    front_matter = _read("book/front_matter.rst")
+    bibliography = _read("book/bibliography.rst")
+    reproducibility_chapter = _read("book/part5_systems/chapter16_reproducible_environments.rst")
+    docker_appendix = _read("book/appendices/appendix_b_docker_deployment.rst")
+
+    assert _extract(
+        r"^\*\*Version\*\*:\s*py3plex\s+([0-9]+\.[0-9]+\.[0-9]+)",
+        agents,
+        "AGENTS.md::header_version",
+    ) == version
+    assert f'print(py3plex.__version__)  # "{version}"' in agents
+    assert f'"py3plex": "{version}"' in agents
+
+    assert f"py3plex {version}" in front_matter
+    assert f"Version {version}" in bibliography
+    assert f"py3plex_version: {version}" in reproducibility_chapter
+    assert f"py3plex:{version}" in docker_appendix
+
+    assert "img.shields.io/badge/lines-171K-blue" in readme
+    assert "img.shields.io/badge/tests-8.9K-blue" in readme
