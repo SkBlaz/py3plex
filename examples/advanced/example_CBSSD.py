@@ -22,10 +22,12 @@ SKIP_CI: slow - Takes more than 10 seconds to complete
 
 # This works for UniProt identifiers (TODO: generalize to other identifier types)
 
+from pathlib import Path
+
 from py3plex.core import multinet
 from py3plex.algorithms import hedwig
 from py3plex.algorithms.community_detection import community_wrapper as cw
-from py3plex.utils import get_dataset_path, get_data_path, get_background_knowledge_dir
+from py3plex.utils import get_dataset_path
 
 print("=" * 70)
 print("COMMUNITY-BASED SEMANTIC SUBGROUP DISCOVERY (CBSSD)")
@@ -76,7 +78,9 @@ print("RDF conversion complete!")
 
 print("\n[4] Converting Gene Ontology to N3 format...")
 print("-" * 70)
-hedwig.obo2n3(get_dataset_path("go.obo.gz"), get_data_path("background_knowledge/bk.n3"),
+bk_path = get_dataset_path("bk.n3")
+bk_dir = str(Path(bk_path).parent)
+hedwig.obo2n3(get_dataset_path("go.obo.gz"), bk_path,
               get_dataset_path("goa_human.gaf.gz"))
 print("Gene Ontology conversion complete!")
 
@@ -94,7 +98,7 @@ print("  - Max rule depth: 8")
 print("  - Beam width: 300")
 
 hedwig_input_parameters = {
-    "bk_dir": get_background_knowledge_dir(),
+    "bk_dir": bk_dir,
     "data": get_dataset_path("example_partition_inputs.n3"),
     "format": "n3",
     "output": None,
