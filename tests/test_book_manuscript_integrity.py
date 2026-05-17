@@ -11,7 +11,7 @@ def _read(path: str) -> str:
 
 def test_front_matter_uses_canonical_version():
     text = _read("front_matter.rst")
-    assert "version 1.1.7 (2026)" in text
+    assert "version 2.0.0 (2026)" in text
     assert "version 1.0 (2025)" not in text
 
 
