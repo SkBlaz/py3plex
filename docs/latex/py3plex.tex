@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{May 17, 2026}
+\date{May 18, 2026}
 \release{2.0.0}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -35884,77 +35884,6 @@ Decorator function
 {\sphinxparam{\DUrole{o}{*}\DUrole{n}{args}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
 {}
 \pysigstopsignatures
-\end{fulllineitems}\end{savenotes}
-
-\index{get\_background\_knowledge\_dir() (in module py3plex.utils)@\spxentry{get\_background\_knowledge\_dir()}\spxextra{in module py3plex.utils}}
-
-\begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:py3plex.utils.get_background_knowledge_dir}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxcode{\sphinxupquote{py3plex.utils.}}\sphinxbfcode{\sphinxupquote{get\_background\_knowledge\_dir}}}
-{}
-{{ $\rightarrow$ str}}
-\pysigstopsignatures
-\sphinxAtStartPar
-Get the absolute path to the background knowledge directory.
-\begin{quote}\begin{description}
-\sphinxlineitem{Returns}
-\sphinxAtStartPar
-Absolute path to the background\_knowledge directory
-
-\sphinxlineitem{Return type}
-\sphinxAtStartPar
-str
-
-\end{description}\end{quote}
-\subsubsection*{Examples}
-
-\begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{utils}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{get\PYGZus{}background\PYGZus{}knowledge\PYGZus{}dir}
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{dir\PYGZus{}path} \PYG{o}{=} \PYG{n}{get\PYGZus{}background\PYGZus{}knowledge\PYGZus{}dir}\PYG{p}{(}\PYG{p}{)}
-\end{sphinxVerbatim}
-
-\end{fulllineitems}\end{savenotes}
-
-\index{get\_background\_knowledge\_path() (in module py3plex.utils)@\spxentry{get\_background\_knowledge\_path()}\spxextra{in module py3plex.utils}}
-
-\begin{savenotes}\begin{fulllineitems}
-\phantomsection\label{\detokenize{reference/api_index:py3plex.utils.get_background_knowledge_path}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxcode{\sphinxupquote{py3plex.utils.}}\sphinxbfcode{\sphinxupquote{get\_background\_knowledge\_path}}}
-{\sphinxparam{\DUrole{n}{filename}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}}}
-{{ $\rightarrow$ str}}
-\pysigstopsignatures
-\sphinxAtStartPar
-Get the absolute path to a background knowledge file or directory.
-
-\sphinxAtStartPar
-Convenience wrapper around get\_data\_path() specifically for background knowledge files.
-\begin{quote}\begin{description}
-\sphinxlineitem{Parameters}
-\sphinxAtStartPar
-\sphinxstyleliteralstrong{\sphinxupquote{filename}} \textendash{} Name or relative path of the background knowledge file.
-Use empty string or ‘.’ to get the background\_knowledge directory itself.
-
-\sphinxlineitem{Returns}
-\sphinxAtStartPar
-Absolute path to the background knowledge file or directory
-
-\sphinxlineitem{Return type}
-\sphinxAtStartPar
-str
-
-\end{description}\end{quote}
-\subsubsection*{Examples}
-
-\begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{utils}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{get\PYGZus{}background\PYGZus{}knowledge\PYGZus{}path}
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{path} \PYG{o}{=} \PYG{n}{get\PYGZus{}background\PYGZus{}knowledge\PYGZus{}path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{bk.n3}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
-\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{dir\PYGZus{}path} \PYG{o}{=} \PYG{n}{get\PYGZus{}background\PYGZus{}knowledge\PYGZus{}path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{.}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
-\end{sphinxVerbatim}
-
 \end{fulllineitems}\end{savenotes}
 
 \index{get\_data\_path() (in module py3plex.utils)@\spxentry{get\_data\_path()}\spxextra{in module py3plex.utils}}
