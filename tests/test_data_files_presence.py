@@ -15,10 +15,10 @@ import pytest
     "relative_path",
     [
         "datasets/community.dat",
+        "datasets/bk.n3",
         "datasets/cora.mat",
         "multilayer_datasets/aarhusCS/CS-Aarhus_multiplex.edges",
         "multilayer_datasets/MLKing/MLKing2013_multiplex.edges",
-        "background_knowledge/bk.n3",
         "example_images/communities.png",
     ],
 )

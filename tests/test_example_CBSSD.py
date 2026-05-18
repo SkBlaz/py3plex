@@ -15,7 +15,6 @@ def load_example_with_fakes(monkeypatch):
     """Load the CBSSD example with lightweight fakes to observe side effects."""
     record = []
     dataset_calls = []
-    data_calls = []
     context = {}
     fake_partition = {"P12345": 1, "Q8ABC1": 2}
 
@@ -53,16 +52,6 @@ def load_example_with_fakes(monkeypatch):
         dataset_calls.append((name, path))
         record.append(("get_dataset_path", name, path))
         return path
-
-    def get_data_path(name):
-        path = f"/data/{name}"
-        data_calls.append((name, path))
-        record.append(("get_data_path", name, path))
-        return path
-
-    def get_background_knowledge_dir():
-        record.append(("get_background_knowledge_dir",))
-        return "/bkdir"
 
     def louvain_communities(network):
         record.append(("louvain_communities", network))
@@ -106,8 +95,6 @@ def load_example_with_fakes(monkeypatch):
 
     utils_mod = types.ModuleType("py3plex.utils")
     utils_mod.get_dataset_path = get_dataset_path
-    utils_mod.get_data_path = get_data_path
-    utils_mod.get_background_knowledge_dir = get_background_knowledge_dir
 
     algorithms_mod.hedwig = hedwig_mod
     algorithms_mod.community_detection = community_detection_mod
@@ -135,7 +122,6 @@ def load_example_with_fakes(monkeypatch):
         "module": module,
         "record": record,
         "dataset_calls": dataset_calls,
-        "data_calls": data_calls,
         "context": context,
         "fake_network": fake_network,
         "fake_partition": fake_partition,
@@ -146,7 +132,6 @@ def test_cbssd_example_triggers_pipeline(monkeypatch, capsys):
     result = load_example_with_fakes(monkeypatch)
     record = result["record"]
     dataset_calls = result["dataset_calls"]
-    data_calls = result["data_calls"]
     fake_network = result["fake_network"]
     fake_partition = result["fake_partition"]
     out = capsys.readouterr().out
@@ -161,6 +146,7 @@ def test_cbssd_example_triggers_pipeline(monkeypatch, capsys):
         "intact02.gpickle",
         "example_partition_inputs.n3",
         "goa_human.gaf.gz",
+        "bk.n3",
         "go.obo.gz",
         "goa_human.gaf.gz",
         "example_partition_inputs.n3",
@@ -179,18 +165,17 @@ def test_cbssd_example_triggers_pipeline(monkeypatch, capsys):
     rdf = result["context"]["rdf"]
     assert rdf.serialized == [("/datasets/example_partition_inputs.n3", "n3")]
 
-    # background knowledge and OBO conversion use derived paths
-    assert data_calls == [("background_knowledge/bk.n3", "/data/background_knowledge/bk.n3")]
+    # background knowledge and OBO conversion use derived dataset paths
     obo_call = next(entry for entry in record if entry[0] == "obo2n3")
     assert obo_call[1:] == (
         "/datasets/go.obo.gz",
-        "/data/background_knowledge/bk.n3",
+        "/datasets/bk.n3",
         "/datasets/goa_human.gaf.gz",
     )
 
     # rule learning parameters are propagated intact
     run_params = result["context"]["run_params"]
-    assert run_params["bk_dir"] == "/bkdir"
+    assert run_params["bk_dir"] == "/datasets"
     assert run_params["data"] == "/datasets/example_partition_inputs.n3"
     assert run_params["format"] == "n3"
     assert run_params["beam"] == 300

@@ -32,8 +32,6 @@ try:
         get_dataset_path,
         get_example_image_path,
         get_multilayer_dataset_path,
-        get_background_knowledge_path,
-        get_background_knowledge_dir,
     )
     from py3plex.exceptions import Py3plexIOError
     UTILS_AVAILABLE = True
@@ -293,42 +291,6 @@ def test_get_multilayer_dataset_path_structure(path_part):
         except Py3plexIOError as e:
             assert "multilayer_datasets" in str(e)
             raise
-
-
-@pytest.mark.property
-@settings(deadline=None, max_examples=10)
-@given(filename=st.sampled_from(["", ".", "bk.n3", "test.txt"]))
-def test_get_background_knowledge_path_empty_handling(filename):
-    """Test background knowledge path with empty string and dot.
-    
-    This catches mutations that:
-    - Change empty string/dot checks
-    - Skip conditional branches
-    """
-    try:
-        result = get_background_knowledge_path(filename)
-        
-        # Should return a path
-        assert result is not None
-        assert isinstance(result, str)
-        assert "background_knowledge" in result
-        
-        # Empty string or '.' should request directory itself  
-        if not filename or filename == '.':
-            # Should NOT have a double path (catching += vs = mutation)
-            assert "background_knowledge/background_knowledge" not in result
-            # Should end with just "background_knowledge"
-            assert result.endswith("background_knowledge")
-        else:
-            # For actual files, should have filename in path
-            if filename != "bk.n3":  # bk.n3 actually exists
-                # test.txt doesn't exist, so this should have raised Py3plexIOError
-                # but if it didn't raise, at least check the path structure
-                pass
-    except Py3plexIOError as e:
-        # This is expected for files that don't exist
-        error_msg = str(e)
-        assert "background_knowledge" in error_msg
 
 
 # ============================================================================

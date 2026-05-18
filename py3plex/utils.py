@@ -407,48 +407,6 @@ def get_multilayer_dataset_path(relative_path: str) -> str:
     return get_data_path(f"multilayer_datasets/{relative_path}")
 
 
-def get_background_knowledge_path(filename: str) -> str:
-    """
-    Get the absolute path to a background knowledge file or directory.
-
-    Convenience wrapper around get_data_path() specifically for background knowledge files.
-
-    Args:
-        filename: Name or relative path of the background knowledge file.
-                 Use empty string or '.' to get the background_knowledge directory itself.
-
-    Returns:
-        str: Absolute path to the background knowledge file or directory
-
-    Examples:
-        >>> from py3plex.utils import get_background_knowledge_path
-        >>> path = get_background_knowledge_path("bk.n3")
-        >>> dir_path = get_background_knowledge_path(".")
-    """
-    # If the filename already includes "background_knowledge/", use it as-is
-    if filename.startswith("background_knowledge/"):
-        return get_data_path(filename)
-    # If empty string or '.', return the directory itself
-    if not filename or filename == '.':
-        return get_data_path("background_knowledge")
-    # Otherwise, prepend "background_knowledge/"
-    return get_data_path(f"background_knowledge/{filename}")
-
-
-def get_background_knowledge_dir() -> str:
-    """
-    Get the absolute path to the background knowledge directory.
-
-    Returns:
-        str: Absolute path to the background_knowledge directory
-
-    Examples:
-        >>> from py3plex.utils import get_background_knowledge_dir
-        >>> dir_path = get_background_knowledge_dir()
-    """
-    return get_data_path("background_knowledge")
-
-
 def get_layer_names(network) -> list:
     """
     Extract layer names from a multilayer network.
