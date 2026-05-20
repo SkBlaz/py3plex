@@ -45,22 +45,6 @@ def _type_name(op: LogicalOp) -> str:
     return type(op).__name__
 
 
-def _wrap(op: LogicalOp, new_child: LogicalOp) -> LogicalOp:
-    """Return *op* with its first child replaced by *new_child*."""
-    result = copy.copy(op)
-    result.children = [new_child] + list(op.children[1:])
-    return result
-
-
-def _swap_children(parent: LogicalOp, child: LogicalOp) -> LogicalOp:
-    """Lift *child* above *parent*, making *parent* a child of *child*."""
-    new_parent = copy.copy(parent)
-    new_parent.children = list(child.children)
-    new_child = copy.copy(child)
-    new_child.children = [new_parent] + list(child.children[1:])
-    return new_child
-
-
 # ---------------------------------------------------------------------------
 # Rule 1: Push layer filter below compute
 # ---------------------------------------------------------------------------
