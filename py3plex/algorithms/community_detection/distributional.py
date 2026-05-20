@@ -52,8 +52,6 @@ from py3plex.uncertainty.resampling_graph import (
 )
 from py3plex._parallel import parallel_map, spawn_seeds
 from py3plex.exceptions import AlgorithmError
-from py3plex import config
-
 
 def _run_louvain_single(args: Tuple) -> Tuple[np.ndarray, float, List[Any]]:
     """Worker function for a single Louvain run (module-level for pickling).

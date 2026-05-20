@@ -82,7 +82,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import scipy.sparse as sp
-from scipy.sparse.linalg import eigsh
 
 from py3plex.exceptions import AlgorithmError, Py3plexException
 

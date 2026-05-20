@@ -6,7 +6,6 @@ compatible with the AutoCommunity framework and DSL integration.
 """
 
 from typing import Any, Dict, List, Optional, Tuple, Union
-import numpy as np
 
 from py3plex.algorithms.sbm import (
     fit_multilayer_sbm,
