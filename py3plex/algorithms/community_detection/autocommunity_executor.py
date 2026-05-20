@@ -660,7 +660,7 @@ def _compute_null_model_scores(
                             null_network,
                             seed=seed,
                         )
-                        null_partition = null_leiden.partition
+                        null_partition = null_leiden.communities
                     elif algo_name == "infomap":
                         from py3plex.algorithms.community_detection.community_wrapper import infomap_communities
                         try:
