@@ -133,13 +133,6 @@ class LogicalNullModel(LogicalOp):
 
 
 @dataclass
-class LogicalJoin(LogicalOp):
-    """Join two streams of items."""
-
-    join_key: str = ""
-
-
-@dataclass
 class LogicalProject(LogicalOp):
     """Project (select) a subset of attributes."""
 

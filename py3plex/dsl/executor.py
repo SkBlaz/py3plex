@@ -358,6 +358,9 @@ CENTRALITY_ALIASES = {
     "eigenvector": "eigenvector",
     "eigenvector_centrality": "eigenvector",
     "pagerank": "pagerank",
+    "clustering": "clustering",
+    "clustering_coefficient": "clustering",
+    "triangles": "triangles",
 }
 
 
