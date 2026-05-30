@@ -225,7 +225,10 @@ def parse_gpickle(
             except (ValueError, AttributeError):
                 pass
     else:
-        A = G
+        if not isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
+            A = nx.MultiDiGraph(G) if directed else nx.MultiGraph(G)
+        else:
+            A = G
 
     todrop = []
     for node in A.nodes(data=True):
