@@ -15,7 +15,7 @@ Run with:
 
 import json
 from py3plex.dsl import Q, L
-from py3plex.dsl.program import GraphProgram, compose
+from py3plex.dsl.program import GraphProgram
 from py3plex.core import multinet
 
 
