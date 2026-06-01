@@ -91,7 +91,6 @@ for enx, time_slice in enumerate(partial_slices):
                                 edge_size=0.01)
         multilayer_network.remove_layer_edges()  # clean the slice edges
 plt.show()
-# plt.savefig("../images/temporal.png",dpi=300)
 sns.set_style("whitegrid")
 clx = {"RT": "red", "MT": "green", "RE": "blue"}
 
@@ -99,7 +98,7 @@ plt.subplot(1, 1, 1)
 plt.title("Temporal edge dynamics")
 slices = []
 for k, v in num_edges.items():
-    sns.lineplot(list(range(len(v))), v, label=k, color=clx[k])
+    sns.lineplot(x=list(range(len(v))), y=v, label=k, color=clx[k])
 plt.legend()
 plt.xlabel("Time slice")
 plt.ylabel("Number of edges")
