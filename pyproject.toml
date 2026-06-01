@@ -122,6 +122,10 @@ dgl_compat = [
 mcp = [
     "mcp>=0.9.0; python_version>='3.10'",
 ]
+# Optional: Dependencies for running advanced examples
+examples = [
+    "sympy>=1.9",
+]
 # Convenience meta-extra for common optional features (without heavy ML backends)
 optional = [
     "infomap>=2.0.0",
@@ -132,6 +136,7 @@ optional = [
     "pyyaml>=5.1",
     "pyarrow>=10.0.0",
     "mcp>=0.9.0; python_version>='3.10'",
+    "sympy>=1.9",
 ]
 
 [project.urls]
