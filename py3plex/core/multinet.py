@@ -58,7 +58,9 @@ try:
     RICCI_AVAILABLE = True
 except ImportError:
     RICCI_AVAILABLE = False
-    RicciBackendNotAvailable = None
+
+    class RicciBackendNotAvailable(ImportError):
+        pass
 
 # Mapping of sparse matrix format names to conversion method names (for get_tensor)
 SPARSE_FORMAT_METHODS = {
@@ -3978,7 +3980,7 @@ class multi_layer_network:
             >>> result = net.compute_ollivier_ricci(mode="supra", inplace=False)  # doctest: +SKIP
         """
         if not RICCI_AVAILABLE:
-            raise RicciBackendNotAvailable()
+            raise RicciBackendNotAvailable("GraphRicciCurvature is not installed. Install with: pip install GraphRicciCurvature")
 
         if mode not in ["core", "layers", "supra"]:
             raise ValueError(f"Invalid mode: {mode}. Must be 'core', 'layers', or 'supra'.")
@@ -4132,7 +4134,7 @@ class multi_layer_network:
             >>> result = net.compute_ollivier_ricci_flow(mode="layers", iterations=10)  # doctest: +SKIP
         """
         if not RICCI_AVAILABLE:
-            raise RicciBackendNotAvailable()
+            raise RicciBackendNotAvailable("GraphRicciCurvature is not installed. Install with: pip install GraphRicciCurvature")
 
         if mode not in ["core", "layers", "supra"]:
             raise ValueError(f"Invalid mode: {mode}. Must be 'core', 'layers', or 'supra'.")
