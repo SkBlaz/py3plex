@@ -125,8 +125,6 @@ try:
 
 except Exception as e:
     print(f"\n Error computing curvature: {e}")
-    import traceback
-    traceback.print_exc()
 
 # ============================================================================
 # Example 2: Compute Curvature Per Layer

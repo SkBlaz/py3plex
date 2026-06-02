@@ -118,15 +118,13 @@ for simulation_id in range(num_simulations):
 
     # Visualize layer visit distribution
     if layer_visit_sequence:
-        sns.distplot(
+        sns.histplot(
             layer_visit_sequence,
             bins=10,
             kde=True,
             label=f"Walker {simulation_id + 1}",
-            hist_kws={
-                "linewidth": 3,
-                "alpha": 0.2
-            }
+            linewidth=3,
+            alpha=0.2,
         )
 
 print("\n" + "=" * 70)
