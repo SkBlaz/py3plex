@@ -70,7 +70,7 @@ def validate_ppr(
     if multiclass_classifier is None:
         multiclass_classifier = SVC(kernel="linear", C=1, probability=True)
 
-    df = pd.DataFrame()
+    rows = []
     for _k in range(repetitions):
 
         # this is relevant for supra-adjacency-based tasks..
@@ -142,7 +142,7 @@ def validate_ppr(
                 "dataset": dataset_name,
                 "time": np.mean(times),
             }
-            df = df.append(outarray, ignore_index=True)
+            rows.append(outarray)
 
-    df = df.reset_index()
+    df = pd.DataFrame(rows).reset_index()
     return df

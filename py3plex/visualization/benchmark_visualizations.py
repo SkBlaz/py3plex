@@ -19,12 +19,12 @@ def plot_core_macro(fname: pd.DataFrame) -> int:
     A very simple visualization of the results..
     """
     sns.pointplot(
-        "percent_train",
-        "macro_F",
+        x="percent_train",
+        y="macro_F",
         hue="setting",
         data=fname,
         markers=["p"] * 10,
-        ci="sd",
+        errorbar="sd",
         linestyles=["-", "--", "-.", ":"] * 5,
     )
     plt.show()
@@ -36,7 +36,7 @@ def plot_core_micro(fname: pd.DataFrame) -> int:
     """
     A very simple visualization of the results..
     """
-    sns.lineplot("percent_train", "micro_F", hue="setting", data=fname)
+    sns.lineplot(x="percent_train", y="micro_F", hue="setting", data=fname)
     plt.show()
 
     return 1
@@ -53,7 +53,7 @@ def plot_core_macro_box(fname: str) -> int:
     fnamex.columns = cnames
     logger.debug("DataFrame head:\n%s", fnamex.head())
 
-    sns.boxplot("percent_train", "macro_F", hue="setting", data=fnamex)
+    sns.boxplot(x="percent_train", y="macro_F", hue="setting", data=fnamex)
     plt.show()
     return 1
 
@@ -128,7 +128,7 @@ def plot_core_time(fnamex: pd.DataFrame) -> int:
 
     fnamex.columns = cnames
     logger.debug("DataFrame head:\n%s", fnamex.head())
-    sns.boxplot("setting", "time", data=fnamex)
+    sns.boxplot(x="setting", y="time", data=fnamex)
     plt.show()
     return 1
 
@@ -236,12 +236,12 @@ def plot_robustness(infile: pd.DataFrame) -> None:
     logger.debug("Input DataFrame head:\n%s", infile.head())
     #    infile['percent_train'] = pd.to_numeric(infile['percent_train'])
     infile = infile[infile["percent_train"] < 0.6]
-    p1 = sns.boxplot("percent_train", "macro_F", data=infile)
+    p1 = sns.boxplot(x="percent_train", y="macro_F", data=infile)
     p1.set_xlabel("Train percent", fontsize=20)
     p1.set_ylabel("Macro F score", fontsize=20)
     plt.show()
 
-    p1 = sns.boxplot("percent_train", "micro_F", data=infile)
+    p1 = sns.boxplot(x="percent_train", y="micro_F", data=infile)
     p1.set_xlabel("Train percent", fontsize=20)
     p1.set_ylabel("Micro F score", fontsize=20)
     plt.show()
