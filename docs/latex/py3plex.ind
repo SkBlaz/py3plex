@@ -735,7 +735,7 @@
 		\hyperpage{719}
   \item \spxentry{edge\_bindings}\spxextra{py3plex.dsl.MatchRow attribute}, \hyperpage{470, 471}
   \item \spxentry{edge\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}, 
-		\hyperpage{363}
+		\hyperpage{364}
   \item \spxentry{edge\_features}\spxextra{py3plex.dsl.LinkPredictionSpec attribute}, 
 		\hyperpage{470}
   \item \spxentry{edge\_features()}\spxextra{py3plex.dsl.LinkPredictionBuilder method}, 
@@ -2756,6 +2756,7 @@
   \item \spxentry{rf\_value()}\spxextra{in module py3plex.core.HINMINE.decomposition}, 
 		\hyperpage{404}
   \item \spxentry{RGB\_to\_hex()}\spxextra{in module py3plex.visualization.colors}, \hyperpage{782}
+  \item \spxentry{RicciBackendNotAvailable}, \hyperpage{355}
   \item \spxentry{right}\spxextra{py3plex.dsl.Comparison attribute}, \hyperpage{435}
   \item \spxentry{right}\spxextra{py3plex.dsl.JoinNode attribute}, \hyperpage{462, 463}
   \item \spxentry{robustness\_check()}\spxextra{py3plex.dsl.QueryBuilder method}, \hyperpage{529}

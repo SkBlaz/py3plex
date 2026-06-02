@@ -91,6 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="uncertainty_first_statistics.html">Uncertainty-First Statistics</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#py3plex.core.multinet.RicciBackendNotAvailable"><code class="docutils literal notranslate"><span class="pre">RicciBackendNotAvailable</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.multinet.ensure"><code class="docutils literal notranslate"><span class="pre">ensure()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.multinet.invariant"><code class="docutils literal notranslate"><span class="pre">invariant()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network"><code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code></a></li>
@@ -785,7 +786,13 @@
 <section id="core-modules">
 <h2>Core Modules<a class="headerlink" href="#core-modules" title="Link to this heading"></a></h2>
 <p>Core data structures and helpers for loading, converting, and working with multilayer networks.</p>
-<dl class="py function" id="module-py3plex.core.multinet">
+<dl class="py exception" id="module-py3plex.core.multinet">
+<dt class="sig sig-object py" id="py3plex.core.multinet.RicciBackendNotAvailable">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.core.multinet.</span></span><span class="sig-name descname"><span class="pre">RicciBackendNotAvailable</span></span><a class="headerlink" href="#py3plex.core.multinet.RicciBackendNotAvailable" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ImportError</span></code></p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="py3plex.core.multinet.ensure">
 <span class="sig-prename descclassname"><span class="pre">py3plex.core.multinet.</span></span><span class="sig-name descname"><span class="pre">ensure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.ensure" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -1204,7 +1211,7 @@ curvatures:
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>RicciBackendNotAvailable</strong> – If GraphRicciCurvature is not installed.</p></li>
+<li><p><a class="reference internal" href="#py3plex.core.multinet.RicciBackendNotAvailable" title="py3plex.core.multinet.RicciBackendNotAvailable"><strong>RicciBackendNotAvailable</strong></a> – If GraphRicciCurvature is not installed.</p></li>
 <li><p><strong>ValueError</strong> – If mode is invalid or layers contains invalid identifiers.</p></li>
 </ul>
 </dd>
@@ -1268,7 +1275,7 @@ applied:
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>RicciBackendNotAvailable</strong> – If GraphRicciCurvature is not installed.</p></li>
+<li><p><a class="reference internal" href="#py3plex.core.multinet.RicciBackendNotAvailable" title="py3plex.core.multinet.RicciBackendNotAvailable"><strong>RicciBackendNotAvailable</strong></a> – If GraphRicciCurvature is not installed.</p></li>
 <li><p><strong>ValueError</strong> – If mode is invalid or layers contains invalid identifiers.</p></li>
 </ul>
 </dd>
@@ -2768,7 +2775,7 @@ geometric structure and communities.</p>
 <dd class="field-even"><p>Tuple of (figure, axes, positions_dict).</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>RicciBackendNotAvailable</strong> – If GraphRicciCurvature is not installed.</p>
+<dd class="field-odd"><p><a class="reference internal" href="#py3plex.core.multinet.RicciBackendNotAvailable" title="py3plex.core.multinet.RicciBackendNotAvailable"><strong>RicciBackendNotAvailable</strong></a> – If GraphRicciCurvature is not installed.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -2813,7 +2820,7 @@ derived from Ricci flow. Layers can share a common coordinate system
 <dd class="field-even"><p>Tuple of (figure, layer_positions_dict).</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>RicciBackendNotAvailable</strong> – If GraphRicciCurvature is not installed.</p>
+<dd class="field-odd"><p><a class="reference internal" href="#py3plex.core.multinet.RicciBackendNotAvailable" title="py3plex.core.multinet.RicciBackendNotAvailable"><strong>RicciBackendNotAvailable</strong></a> – If GraphRicciCurvature is not installed.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -2852,7 +2859,7 @@ layers) using a layout derived from Ricci flow.</p>
 <dd class="field-even"><p>Tuple of (figure, axes, positions_dict).</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>RicciBackendNotAvailable</strong> – If GraphRicciCurvature is not installed.</p>
+<dd class="field-odd"><p><a class="reference internal" href="#py3plex.core.multinet.RicciBackendNotAvailable" title="py3plex.core.multinet.RicciBackendNotAvailable"><strong>RicciBackendNotAvailable</strong></a> – If GraphRicciCurvature is not installed.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

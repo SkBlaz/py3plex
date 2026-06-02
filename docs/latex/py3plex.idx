@@ -1,5 +1,6 @@
 \indexentry{module@\spxentry{module}!py3plex.core.multinet@\spxentry{py3plex.core.multinet}|hyperpage}{355}
 \indexentry{py3plex.core.multinet@\spxentry{py3plex.core.multinet}!module@\spxentry{module}|hyperpage}{355}
+\indexentry{RicciBackendNotAvailable@\spxentry{RicciBackendNotAvailable}|hyperpage}{355}
 \indexentry{ensure() (in module py3plex.core.multinet)@\spxentry{ensure()}\spxextra{in module py3plex.core.multinet}|hyperpage}{355}
 \indexentry{invariant() (in module py3plex.core.multinet)@\spxentry{invariant()}\spxextra{in module py3plex.core.multinet}|hyperpage}{355}
 \indexentry{multi\_layer\_network (class in py3plex.core.multinet)@\spxentry{multi\_layer\_network}\spxextra{class in py3plex.core.multinet}|hyperpage}{355}
@@ -12,7 +13,7 @@
 \indexentry{capabilities() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{capabilities()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{360}
 \indexentry{compute\_ollivier\_ricci() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{compute\_ollivier\_ricci()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{361}
 \indexentry{compute\_ollivier\_ricci\_flow() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{compute\_ollivier\_ricci\_flow()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{362}
-\indexentry{edge\_count (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{edge\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{363}
+\indexentry{edge\_count (py3plex.core.multinet.multi\_layer\_network property)@\spxentry{edge\_count}\spxextra{py3plex.core.multinet.multi\_layer\_network property}|hyperpage}{364}
 \indexentry{edges\_from\_temporal\_table() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{edges\_from\_temporal\_table()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{364}
 \indexentry{embed() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{embed()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{365}
 \indexentry{execute\_query() (py3plex.core.multinet.multi\_layer\_network method)@\spxentry{execute\_query()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}|hyperpage}{365}
