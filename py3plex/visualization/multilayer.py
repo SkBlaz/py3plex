@@ -107,9 +107,6 @@ def _preprocess_network(
     if verbose:
         logger.info(nx_info(network))
 
-    # Calculate degrees
-    degrees = dict(nx.degree(nx.Graph(network)))
-
     # Remove nodes without positions
     no_position = []
     for node in network.nodes(data=True):
@@ -122,6 +119,9 @@ def _preprocess_network(
 
     # Get positions
     positions = nx.get_node_attributes(network, "pos")
+
+    # Calculate degrees after node removal so sizes align with the final nodelist
+    degrees = dict(nx.degree(nx.Graph(network)))
 
     return network, positions, degrees
 

@@ -43,6 +43,7 @@ def normalize_initial_matrix_freq(mat: np.ndarray) -> np.ndarray:
         Normalized matrix
     """
     sums = np.sum(mat, axis=0)
+    sums[sums == 0] = 1
     mat = mat / sums
     return mat
 
@@ -209,8 +210,8 @@ def validate_label_propagation(
                     predictions.append(a)
 
                 predicted_labels = np.asarray(predictions)[X_test]
-                micro = f1_score(true_labels, predicted_labels, average="micro")
-                macro = f1_score(true_labels, predicted_labels, average="macro")
+                micro = f1_score(true_labels, predicted_labels, average="micro", zero_division=0)
+                macro = f1_score(true_labels, predicted_labels, average="macro", zero_division=0)
                 end = time.time()
                 elapsed = end - start
                 micros.append(micro)

@@ -26,7 +26,6 @@ SKIP_CI: external_deps - Requires specific dataset files (cora.gml)
 
 import os
 import json
-import tempfile
 from py3plex.core import multinet
 from py3plex.wrappers import train_node2vec_embedding
 from py3plex.visualization.embedding_visualization import embedding_visualization

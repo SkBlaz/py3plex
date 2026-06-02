@@ -13,7 +13,6 @@ The new classes provide:
 """
 
 import networkx as nx
-import matplotlib.pyplot as plt
 from py3plex.dynamics import (
     RandomWalkDynamics,
     MultiRandomWalkDynamics,
