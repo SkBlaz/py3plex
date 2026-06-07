@@ -9,6 +9,8 @@ Metrics:
   layers are assigned to the same community (multilayer coherence)
 - layer_entropy: Measures the balance of community sizes within each layer,
   averaged across layers (degeneracy guardrail)
+- mdl_score: Minimum Description Length based on SBM two-part description
+  length (lower is better)
 """
 
 from __future__ import annotations
@@ -318,8 +320,155 @@ def layer_entropy(
         return 0.0
     
     mean_entropy = float(np.mean(layer_entropies))
-    
+
     # Apply clipping
     clipped_entropy = np.clip(mean_entropy, clip[0], clip[1])
-    
+
     return float(clipped_entropy)
+
+
+def _mdl_single_layer(
+    layer_partition: Dict[Any, int],
+    layer_edges: List[tuple],
+    directed: bool = False,
+) -> float:
+    """Compute SBM two-part description length for a single flat graph layer.
+
+    Args:
+        layer_partition: Dict mapping node -> community_id for this layer only.
+        layer_edges: List of (u, v) edge pairs within this layer.
+        directed: Whether the underlying graph is directed. Controls the
+            maximum-edge normalization for block pairs. Defaults to False
+            (undirected), preserving backward-compatible behavior for callers
+            that do not pass the flag.
+
+    Returns:
+        Description length in bits for this layer.
+    """
+    communities: Dict[int, List[Any]] = defaultdict(list)
+    for node, comm in layer_partition.items():
+        communities[comm].append(node)
+
+    k = len(communities)
+    n = len(layer_partition)
+
+    if k == 0 or n == 0:
+        return 0.0
+
+    # Count edges between/within each block pair
+    # Self-loops are skipped: they do not fit the n_r*(n_r-1) pair model
+    edge_counts: Dict[tuple, int] = defaultdict(int)
+    for u, v in layer_edges:
+        if u == v:
+            continue
+        r = layer_partition.get(u)
+        s = layer_partition.get(v)
+        if r is None or s is None:
+            continue
+        edge_counts[(min(r, s), max(r, s))] += 1
+
+    comm_ids = list(communities.keys())
+
+    # Part 1: model cost - n * log2(k) bits to encode node assignments
+    model_cost = n * np.log2(k) if k > 1 else 0.0
+
+    # Part 2: data cost - binary entropy per block pair
+    data_cost = 0.0
+    for i, r in enumerate(comm_ids):
+        n_r = len(communities[r])
+        for j, s in enumerate(comm_ids):
+            if j < i:
+                continue
+            n_s = len(communities[s])
+
+            # Maximum possible edges between blocks r and s.
+            # Directed graphs allow both (u->v) and (v->u): the off-diagonal
+            # capacity doubles and the on-diagonal uses n_r*(n_r-1).
+            if r == s:
+                m_rs = n_r * (n_r - 1) if directed else n_r * (n_r - 1) / 2
+            else:
+                m_rs = 2 * n_r * n_s if directed else n_r * n_s
+            if m_rs == 0:
+                continue
+
+            e_rs = edge_counts.get((min(r, s), max(r, s)), 0)
+
+            # Clamp to [0, 1]. Parallel/directional edges can push p above 1,
+            # which makes log2(1 - p) return nan and silently corrupt the score.
+            p = min(e_rs / m_rs, 1.0)
+
+            # Binary entropy H(p); 0 when p == 0 or p == 1
+            if 0.0 < p < 1.0:
+                data_cost += m_rs * (-p * np.log2(p) - (1.0 - p) * np.log2(1.0 - p))
+
+    return model_cost + data_cost
+
+
+def mdl_score(
+    partition: Dict[Any, int],
+    network: Any,
+) -> float:
+    """Compute MDL (Minimum Description Length) score for a multilayer partition.
+
+    Computes the SBM two-part description length independently per layer and
+    sums the results. Operating per layer avoids the flattening problem where
+    pooling all layers into core_network inflates block sizes with
+    cross-layer node-layer pairs that share no edges, corrupting the edge
+    density estimates that drive the data cost.
+
+    Per-layer computation:
+      - Part 1 (model cost): n_ℓ * log2(k_ℓ) bits to encode the community
+        assignment of each node in layer ℓ, where n_ℓ is the number of
+        node-layer pairs in that layer and k_ℓ is the number of distinct
+        communities present in that layer.
+      - Part 2 (data cost): for every block pair (r, s) within layer ℓ,
+        the binary entropy of the observed intra-layer edge density times the
+        maximum possible intra-layer edges between those blocks.
+
+    Total MDL = Σ_ℓ (model_cost_ℓ + data_cost_ℓ)
+
+    Lower score is better.
+
+    Args:
+        partition: Dict mapping (node_id, layer) -> community_id.
+        network: Multilayer network with a core_network NetworkX graph.
+
+    Returns:
+        Total description length in bits (float).  Returns 0.0 for empty
+        inputs.
+
+    Examples:
+        >>> # Perfect 2-community split on a clique pair
+        >>> partition = {('A', 'L'): 0, ('B', 'L'): 0, ('C', 'L'): 1, ('D', 'L'): 1}
+        >>> score = mdl_score(partition, net)
+        >>> assert score >= 0.0
+    """
+    if not partition:
+        return 0.0
+
+    G = network.core_network
+    directed = G.is_directed()
+
+    # Collect layers and per-layer node assignments
+    layer_partitions: Dict[Any, Dict[Any, int]] = defaultdict(dict)
+    for node, comm in partition.items():
+        if isinstance(node, tuple) and len(node) >= 2:
+            layer = node[1]
+        else:
+            layer = None
+        layer_partitions[layer][node] = comm
+
+    # Pre-index edges by layer: only keep intra-layer edges
+    layer_edges: Dict[Any, List[tuple]] = defaultdict(list)
+    for u, v in G.edges():
+        u_layer = u[1] if isinstance(u, tuple) and len(u) >= 2 else None
+        v_layer = v[1] if isinstance(v, tuple) and len(v) >= 2 else None
+        if u_layer == v_layer:
+            layer_edges[u_layer].append((u, v))
+
+    # Sum description length across layers
+    total = 0.0
+    for layer, lpartition in layer_partitions.items():
+        total += _mdl_single_layer(lpartition, layer_edges[layer], directed=directed)
+
+    return total
