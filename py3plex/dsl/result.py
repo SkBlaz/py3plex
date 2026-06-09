@@ -6,7 +6,6 @@ and includes metadata about the query execution.
 
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, Tuple
-import math
 import json
 
 
@@ -1755,7 +1754,7 @@ class QueryResult:
         >>> print(plan["applied_rules"])
         """
         optimizer_meta = self.meta.get("optimizer", {})
-        provenance = self.meta.get("provenance", {})
+        self.meta.get("provenance", {})
 
         # Physical plan dict (stored by executor when optimizer is enabled)
         physical_plan = self.meta.get("physical_plan", None)
@@ -1802,11 +1801,8 @@ class QueryResult:
             detect_attribute_conflicts,
             resolve_attribute_conflict,
             merge_uncertainty_info,
-            IdentityStrategy,
-            ConflictResolution,
             AlgebraConfig,
             AmbiguousIdentityError,
-            AttributeConflictError,
         )
         
         check_result_compatibility(self, other)
@@ -1930,8 +1926,6 @@ class QueryResult:
             detect_attribute_conflicts,
             resolve_attribute_conflict,
             merge_uncertainty_info,
-            IdentityStrategy,
-            ConflictResolution,
             AlgebraConfig,
             AmbiguousIdentityError,
         )
@@ -2041,7 +2035,6 @@ class QueryResult:
             check_result_compatibility,
             detect_identity_ambiguity,
             extract_item_identity,
-            IdentityStrategy,
             AlgebraConfig,
             AmbiguousIdentityError,
         )
@@ -2118,7 +2111,6 @@ class QueryResult:
             check_result_compatibility,
             detect_identity_ambiguity,
             extract_item_identity,
-            IdentityStrategy,
             AlgebraConfig,
             AmbiguousIdentityError,
         )

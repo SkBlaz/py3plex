@@ -10,12 +10,11 @@ a single Python process.  Use :func:`clear_cache` to reset it.
 
 from __future__ import annotations
 
-import functools
 import hashlib
 import json
 import logging
 from threading import Lock
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
 
 from .base import EmbeddingResult
 

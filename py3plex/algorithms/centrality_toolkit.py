@@ -287,7 +287,7 @@ def multilayer_eigenvector_centrality(
         # Normalize
         principal_eigenvector = principal_eigenvector / principal_eigenvector.sum()
         
-    except Exception as e:
+    except Exception:
         # Fallback to power iteration if eigs fails
         x = np.ones(n) / n
         

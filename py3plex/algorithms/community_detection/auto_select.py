@@ -183,7 +183,7 @@ def _auto_select_pareto(
     metric_registry = get_metric_registry()
 
     # Build candidate algorithms list
-    is_multilayer = _is_multilayer_network(network)
+    _is_multilayer_network(network)
 
     if custom_candidates:
         # Custom candidates are handled by the wins pipeline above.

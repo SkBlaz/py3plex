@@ -38,15 +38,13 @@ Example Usage:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Callable
-import warnings
 
 import numpy as np
 import pandas as pd
 
 from py3plex.exceptions import AlgorithmError
-from py3plex.uncertainty.partition import CommunityDistribution
 
 
 @dataclass

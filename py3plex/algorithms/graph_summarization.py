@@ -12,11 +12,10 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, Tuple
 import numpy as np
 import networkx as nx
 from collections import defaultdict
-import scipy.sparse as sp
 
 
 def collapse_low_degree_nodes(
@@ -154,7 +153,7 @@ def detect_structural_equivalence(
         n = len(nodes)
         
         # Create adjacency matrix
-        adj_matrix = nx.to_numpy_array(G, nodelist=nodes)
+        nx.to_numpy_array(G, nodelist=nodes)
         
         # Compute node similarities based on neighborhood structure
         similarities = np.zeros((n, n))
@@ -190,7 +189,7 @@ def detect_structural_equivalence(
     elif method == "automorphic":
         # Use NetworkX's faster automorphism detection
         try:
-            import networkx.algorithms.isomorphism as iso
+            __import__("networkx.algorithms.isomorphism")
             
             # This is a simplified version - full automorphism is expensive
             # Group nodes by degree as a first approximation

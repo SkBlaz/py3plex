@@ -13,11 +13,10 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 import numpy as np
 import networkx as nx
 from collections import defaultdict
-import copy
 
 
 def targeted_node_removal(

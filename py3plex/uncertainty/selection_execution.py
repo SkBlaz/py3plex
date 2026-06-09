@@ -4,9 +4,8 @@ This module provides the main execution function that runs a selection query
 multiple times under perturbation/resampling to compute uncertainty.
 """
 
-import copy
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 from .selection_types import SelectionOutput
 from .selection_reducers import (

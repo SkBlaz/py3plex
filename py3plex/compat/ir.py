@@ -13,12 +13,10 @@ The IR is designed to:
 
 import warnings
 from dataclasses import dataclass, field
-from typing import Any, Dict, Hashable, List, Optional, Set, Tuple
+from typing import Any, Dict, Hashable, List, Optional
 
-import numpy as np
 import pandas as pd
 
-from py3plex.exceptions import Py3plexException
 
 from .exceptions import SchemaError
 
@@ -351,7 +349,6 @@ def to_ir(graph: Any) -> GraphIR:
 
 def _multilayer_graph_to_ir(graph) -> GraphIR:
     """Convert MultiLayerGraph to GraphIR."""
-    from py3plex.io.schema import MultiLayerGraph
     
     # Extract nodes - graph.nodes is Dict[NodeID, Node], iterate over .values()
     node_id_list = [node.id for node in graph.nodes.values()]
@@ -448,7 +445,6 @@ def _multinet_to_ir(graph) -> GraphIR:
     """Convert multi_layer_network to GraphIR."""
     # This handles the core.multinet.multi_layer_network class
     # Get NetworkX graph from the multi_layer_network
-    import networkx as nx
     
     if hasattr(graph, "network"):
         G = graph.network

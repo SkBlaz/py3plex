@@ -1,2 +1,5 @@
 include py3plex/algorithms/hedwig/assets/*
 include py3plex/datasets/_data/*
+global-exclude *.py[cod]
+global-exclude __pycache__/*
+prune **/__pycache__

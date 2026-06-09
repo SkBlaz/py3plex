@@ -278,7 +278,7 @@ def _load_human_ppi_gene_disease_drug(directed: bool = False) -> multi_layer_net
     # Create a mapping of layer indices to names
     layer_names = ["protein_protein", "gene_coexpression", "gene_disease", "drug_target"]
     layer_indices = sorted(set(layer for _, layer in nodes))
-    layer_map = {idx: name for idx, name in zip(layer_indices, layer_names)}
+    {idx: name for idx, name in zip(layer_indices, layer_names)}
     
     for node, layer in nodes:
         # Add node_type attribute (simplified - in reality this would be based on actual node IDs)

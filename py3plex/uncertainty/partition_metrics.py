@@ -21,10 +21,19 @@ Examples
 
 from __future__ import annotations
 
-from typing import Dict, Tuple
 import warnings
 
 import numpy as np
+
+
+def _contingency_table(partition1: np.ndarray, partition2: np.ndarray) -> np.ndarray:
+    """Build a label-invariant contingency table for two partitions."""
+    unique1, inverse1 = np.unique(partition1, return_inverse=True)
+    unique2, inverse2 = np.unique(partition2, return_inverse=True)
+    contingency = np.zeros((len(unique1), len(unique2)), dtype=int)
+    for code1, code2 in zip(inverse1, inverse2):
+        contingency[int(code1), int(code2)] += 1
+    return contingency
 
 
 def variation_of_information(
@@ -81,12 +90,7 @@ def variation_of_information(
         return 0.0
     
     # Build contingency table
-    c1_max = int(partition1.max()) + 1
-    c2_max = int(partition2.max()) + 1
-    contingency = np.zeros((c1_max, c2_max), dtype=int)
-    
-    for i in range(n):
-        contingency[int(partition1[i]), int(partition2[i])] += 1
+    contingency = _contingency_table(partition1, partition2)
     
     # Compute marginal probabilities
     p_i = contingency.sum(axis=1) / n  # P(C1=i)
@@ -101,8 +105,8 @@ def variation_of_information(
     # Compute mutual information
     # I(X, Y) = sum_ij p_ij log(p_ij / (p_i * p_j))
     mi = 0.0
-    for i in range(c1_max):
-        for j in range(c2_max):
+    for i in range(contingency.shape[0]):
+        for j in range(contingency.shape[1]):
             if p_ij[i, j] > 0 and p_i[i] > 0 and p_j[j] > 0:
                 mi += p_ij[i, j] * np.log(p_ij[i, j] / (p_i[i] * p_j[j]))
     
@@ -169,12 +173,7 @@ def normalized_mutual_information(
         return 1.0  # Empty partitions are considered identical
     
     # Build contingency table
-    c1_max = int(partition1.max()) + 1
-    c2_max = int(partition2.max()) + 1
-    contingency = np.zeros((c1_max, c2_max), dtype=int)
-    
-    for i in range(n):
-        contingency[int(partition1[i]), int(partition2[i])] += 1
+    contingency = _contingency_table(partition1, partition2)
     
     # Compute marginal probabilities
     p_i = contingency.sum(axis=1) / n
@@ -191,8 +190,8 @@ def normalized_mutual_information(
     
     # Compute mutual information
     mi = 0.0
-    for i in range(c1_max):
-        for j in range(c2_max):
+    for i in range(contingency.shape[0]):
+        for j in range(contingency.shape[1]):
             if p_ij[i, j] > 0 and p_i[i] > 0 and p_j[j] > 0:
                 mi += p_ij[i, j] * np.log(p_ij[i, j] / (p_i[i] * p_j[j]))
     

@@ -30,10 +30,10 @@ import copy
 import hashlib
 import json
 import time
-from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
 
-from ..ast import Query, SelectStmt, Target
+from ..ast import Query, SelectStmt
 from ..executor import execute_ast
 from ..result import QueryResult
 from .types import Type, infer_type, type_check, TypeCheckError
@@ -399,7 +399,6 @@ class GraphProgram:
         
         # If budget is specified, use cost-based optimization
         if budget is not None or objective is not None:
-            from .cost import CostObjective as CO
             from .rewrite import RewriteContext
             
             # Create or update context with objective

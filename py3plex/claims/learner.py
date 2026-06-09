@@ -10,8 +10,6 @@ This module orchestrates the claim learning process:
 
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
-import hashlib
-import json
 
 from py3plex.exceptions import AlgorithmError
 from .types import Claim
@@ -26,7 +24,6 @@ from .scorer import (
     filter_by_thresholds,
     rank_claims,
     build_claims_from_scored,
-    compute_claim_statistics,
 )
 
 

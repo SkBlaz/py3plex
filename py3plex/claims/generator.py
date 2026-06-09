@@ -5,7 +5,7 @@ using quantile-based thresholds for interpretability and determinism.
 """
 
 import numpy as np
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any, Dict, List, Tuple
 
 from .types import Antecedent, Consequent
 

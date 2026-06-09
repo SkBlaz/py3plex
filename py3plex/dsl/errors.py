@@ -575,7 +575,7 @@ class InvalidGroupAggregateError(DSLCompileError):
         message = f"Filtering on raw field '{field}' after grouping is ambiguous"
         
         if available_aggregates:
-            agg_list = ", ".join(available_aggregates[:5])
+            ", ".join(available_aggregates[:5])
             suggestion = f"Use an aggregate (e.g., {field}__mean__gt=3) or move filter before grouping"
         else:
             suggestion = "Move filter before grouping or use aggregated form"

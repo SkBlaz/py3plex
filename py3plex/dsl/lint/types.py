@@ -4,7 +4,7 @@ This module defines the type system used for type checking DSL expressions.
 """
 
 from enum import Enum
-from typing import Dict, Any, Optional
+from typing import Dict
 
 
 class AttrType(Enum):

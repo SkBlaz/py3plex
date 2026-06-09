@@ -33,8 +33,7 @@ Example:
 """
 
 import heapq
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-import networkx as nx
+from typing import Any, Dict, List, Optional, Tuple
 
 from py3plex.exceptions import AlgorithmError, InvalidNodeError
 

@@ -6,6 +6,15 @@ from typing import Tuple
 import numpy as np  # this is used for vectorized bezier computation
 from scipy.interpolate import CubicSpline
 
+_MIN_SPLINE_X_SPAN = 1e-12
+
+
+def _linear_fallback_y(dfx: np.ndarray, y0: float, y1: float) -> np.ndarray:
+    """Return finite y-values for x-ranges too small for stable interpolation."""
+    if len(dfx) == 0:
+        return np.asarray([], dtype=float)
+    return np.linspace(y0, y1, len(dfx), dtype=float)
+
 
 def bezier_calculate_dfy(
     mp_y: float,
@@ -43,10 +52,19 @@ def bezier_calculate_dfy(
         raise ValueError(
             "Unknown mode in dfy calculation (value must be one of 'upper', 'bottom'"
         )
-    x_t = [x0, midpoint_x, x1]
-    y_t = [y0, midpoint_y, y1]
+    x_span = abs(x1 - x0)
+    if x_span <= _MIN_SPLINE_X_SPAN:
+        return _linear_fallback_y(dfx, y0, y1)
+
+    x_t = np.array([x0, midpoint_x, x1], dtype=float)
+    y_t = np.array([y0, midpoint_y, y1], dtype=float)
+    if np.min(np.diff(x_t)) <= np.finfo(float).eps * max(1.0, np.max(np.abs(x_t))):
+        return _linear_fallback_y(dfx, y0, y1)
+
     cs = CubicSpline(x_t, y_t)
     result: np.ndarray = cs(dfx)
+    if not np.all(np.isfinite(result)):
+        return _linear_fallback_y(dfx, y0, y1)
     return result
 
 

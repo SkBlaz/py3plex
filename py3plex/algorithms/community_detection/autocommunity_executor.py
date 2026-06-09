@@ -781,7 +781,7 @@ def _pareto_selection(
             if i == j:
                 continue
             
-            algo_j = row_j['algorithm_id']
+            row_j['algorithm_id']
             
             # Check if j dominates i
             dominates = True
@@ -1174,11 +1174,11 @@ def execute_autocommunity_sh(
         ]
         
         if winner_metrics_records:
-            winner_metrics = winner_metrics_records[0]
+            winner_metrics_records[0]
         else:
-            winner_metrics = {}
+            pass
     else:
-        winner_metrics = {}
+        pass
     
     # Re-run winner with full budget to get partition
     from py3plex.algorithms.community_detection.runner import run_community_algorithm

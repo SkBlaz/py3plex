@@ -10,9 +10,8 @@ Algorithm selection:
 """
 
 import heapq
-import math
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Tuple
+from dataclasses import dataclass
 
 from py3plex.exceptions import Py3plexException
 from .semiring import Semiring

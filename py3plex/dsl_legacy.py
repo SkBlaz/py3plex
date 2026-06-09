@@ -49,7 +49,7 @@ import re
 import time
 from collections import Counter
 import networkx as nx
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple
 from dataclasses import dataclass, field
 from py3plex.logging_config import get_logger
 from py3plex.dsl.registry import _convert_multigraph_to_simple
@@ -807,7 +807,7 @@ def _evaluate_condition(node_or_edge: Any, condition: Dict[str, Any],
     else:
         # Handle node attributes
         if isinstance(node_or_edge, tuple) and len(node_or_edge) >= 2:
-            node_id, layer = node_or_edge[0], node_or_edge[1]
+            _node_id, layer = node_or_edge[0], node_or_edge[1]
         else:
             return False
         
@@ -1625,7 +1625,7 @@ def _node_matches_pattern(node: Any, pattern: NodePattern) -> bool:
     # If pattern has a label, check if it matches the layer or node type
     if pattern.label is not None:
         # Label can match either the layer or node attributes
-        node_id, layer = node[0], node[1]
+        _node_id, layer = node[0], node[1]
         if layer != pattern.label:
             return False
     
@@ -1788,7 +1788,7 @@ def _get_attribute_value(node_or_edge: Any, attribute: str,
     """
     # Handle nodes (tuples of (node_id, layer))
     if isinstance(node_or_edge, tuple) and len(node_or_edge) >= 2:
-        node_id, layer = node_or_edge[0], node_or_edge[1]
+        _node_id, layer = node_or_edge[0], node_or_edge[1]
         
         if attribute == 'layer':
             return str(layer)

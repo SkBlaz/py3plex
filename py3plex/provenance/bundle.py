@@ -6,12 +6,10 @@ portable bundles that can be saved and loaded.
 
 import gzip
 import json
-import os
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union
 
 from .schema import ProvenanceSchema
-from .capture import NetworkCapture, compress_snapshot, decompress_snapshot
 
 
 class BundleError(Exception):

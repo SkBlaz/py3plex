@@ -7,7 +7,6 @@ and computing z-scores and p-values for observed metrics.
 from __future__ import annotations
 
 from typing import Any, Callable, Dict, List, Optional
-import copy
 
 import numpy as np
 import networkx as nx
@@ -440,8 +439,8 @@ def _generate_configuration_null(
     
     # Get degree sequence
     if graph.directed:
-        in_degrees = [d for n, d in G.in_degree()]
-        out_degrees = [d for n, d in G.out_degree()]
+        [d for n, d in G.in_degree()]
+        [d for n, d in G.out_degree()]
         # For simplicity, use degree-preserving rewiring
         return _generate_degree_preserving_null(graph, rng)
     else:

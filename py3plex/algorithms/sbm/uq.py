@@ -8,12 +8,12 @@ This module provides functions for:
 - Deterministic reproducibility
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 from scipy.sparse import spmatrix
 
-from .multilayer_sbm import fit_single_sbm, SBMFittedModel
+from .multilayer_sbm import fit_single_sbm
 
 
 def align_labels_hungarian(

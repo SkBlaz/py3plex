@@ -3,13 +3,11 @@
 from __future__ import annotations
 
 import csv
-import io
 import os
-from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from .errors import OutOfCoreIOError, SchemaError
+from .errors import OutOfCoreIOError
 from .schema import (
-    EDGE_REQUIRED_COLUMNS,
     coerce_edge_row,
     validate_edge_row,
 )

@@ -4,7 +4,7 @@ This module provides ParetoSet for managing Pareto-optimal solutions in
 multiobjective optimization problems.
 """
 
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 from dataclasses import dataclass, field
 
 
@@ -104,7 +104,6 @@ def pareto_semiring_spec(dim: int = 2, max_size: int = 100, epsilon: float = 1e-
         SemiringSpec for Pareto optimization
     """
     from .core import SemiringSpec
-    import math
     
     def plus(a: ParetoSet, b: ParetoSet) -> ParetoSet:
         """Union of Pareto sets with pruning."""

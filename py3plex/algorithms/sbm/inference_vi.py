@@ -377,7 +377,7 @@ class VariationalInference:
         denom = np.zeros(n_nodes)
         
         for l, A_l in enumerate(A_layers):
-            B_l = B_layers[l] if len(B_layers) > 1 else B_layers[0]
+            B_layers[l] if len(B_layers) > 1 else B_layers[0]
             
             # For each node i: sum_j theta_j sum_kl q_ik q_jl B_kl
             # = sum_kl q_ik B_kl sum_j q_jl theta_j

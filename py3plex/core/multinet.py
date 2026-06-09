@@ -85,7 +85,7 @@ except ImportError:
     tqdm = MockTqdm()
 
 try:
-    from py3plex.algorithms.statistics import topology
+    __import__("py3plex.algorithms.statistics.topology")
 except ImportError:
     pass
 
@@ -1395,11 +1395,12 @@ class multi_layer_network:
         
         Examples:
             >>> net = multi_layer_network()
+            >>> _ = net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
             >>> caps = net.capabilities()
             >>> print(caps.mode)
-            'multilayer'
+            single
             >>> print(caps.layer_count)
-            2
+            1
         
         Notes:
             - Results are cached for performance
@@ -1901,7 +1902,6 @@ class multi_layer_network:
             else:
                 # Shouldn't happen, but handle 3-tuple case
                 u, v, attr = edge_data
-                key = 0
             
             # Skip coupling edges if requested
             if remove_coupling and attr.get("type") == "coupling":
@@ -4541,6 +4541,7 @@ class multi_layer_network:
         
         >>> # Named partition for multiple algorithms
         >>> net.assign_partition(partition, name="louvain", meta={"resolution": 1.0})
+        >>> partition2 = {('A', 'L1'): 1, ('B', 'L1'): 1}
         >>> net.assign_partition(partition2, name="infomap")
         """
         # Initialize partitions storage if needed
