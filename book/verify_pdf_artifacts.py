@@ -145,7 +145,7 @@ def check_docker_consistency(pdf_path):
                     port_8000_pages.append(page_num + 1)
                 
                 # Check for version references
-                if 'py3plex:1.1.0' in text:
+                if 'py3plex:2.0.0' in text:
                     version_pages.append(page_num + 1)
             
             print("\nPort References:")
@@ -160,7 +160,7 @@ def check_docker_consistency(pdf_path):
             
             print("\nVersion References:")
             if version_pages:
-                print(f" Version 1.1.0 found on pages: {', '.join(map(str, version_pages))}")
+                print(f" Version 2.0.0 found on pages: {', '.join(map(str, version_pages))}")
             
             if issues:
                 print(f"\n Found {len(issues)} consistency issues")

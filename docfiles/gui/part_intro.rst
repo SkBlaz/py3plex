@@ -55,16 +55,10 @@ Choose one of the following:
 
 .. code-block:: bash
 
-    # Install from PyPI with GUI extras
-    pip install py3plex[gui]
-
-    # Or develop against source
+    # Develop against source
     git clone https://github.com/SkBlaz/py3plex.git
-    cd py3plex
-    pip install -e ".[gui]"
-    
-    # Navigate to GUI directory and start services (uses Docker Compose)
-    cd gui
+    cd py3plex/gui
+    cp .env.example .env
     make up
 
 The GUI will be available at ``http://localhost:8080``. See :doc:`gui_deployment` for detailed setup instructions and troubleshooting.

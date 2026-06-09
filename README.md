@@ -13,8 +13,8 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/py3plex)](https://pypistats.org/packages/py3plex)
 ![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 ![Docker](https://img.shields.io/badge/Docker-Available-blue)
-![Lines of Code](https://img.shields.io/badge/lines-211.4K-blue)
-![Test Count](https://img.shields.io/badge/tests-9.2K-blue)
+![Lines of Code](https://img.shields.io/badge/lines-171K-blue)
+![Test Count](https://img.shields.io/badge/tests-8.9K-blue)
 
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
