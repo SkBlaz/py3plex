@@ -43,7 +43,7 @@ from py3plex.algorithms.multilayer_algorithms.supra_matrix_function_centrality i
 )
 
 # Import algorithm requirements system
-from py3plex.requirements import AlgoRequirements, check_compat, AlgorithmCompatibilityError
+from py3plex.requirements import check_compat, AlgorithmCompatibilityError
 from py3plex.algorithms.requirements_registry import (
     PAGERANK_REQS,
     BETWEENNESS_REQS,

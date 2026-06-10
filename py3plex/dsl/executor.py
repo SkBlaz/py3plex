@@ -9,7 +9,7 @@ import copy
 import logging
 import random
 import time
-from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union, Callable
+from typing import Any, Dict, List, Optional, Set, Tuple, Union, Callable
 
 try:
     from typing import TYPE_CHECKING
@@ -35,7 +35,6 @@ from .ast import (
     PlanStep,
     ExecutionPlan,
     TemporalContext,
-    WindowSpec,
     DynamicsStmt,
     TrajectoriesStmt,
 )
@@ -47,7 +46,6 @@ from .provenance import ProvenanceBuilder
 from .errors import (
     DslExecutionError,
     ParameterMissingError,
-    UnknownLayerError,
     UnknownMeasureError,
     UnknownAttributeError,
     GroupingError,
@@ -61,7 +59,6 @@ from py3plex.requirements import check_compat, AlgorithmCompatibilityError
 from .uq_resolution import (
     resolve_uq_config,
     validate_uq_result_schema,
-    wrap_deterministic_as_uq,
     UQResolutionError,
     UQSchemaValidationError,
 )
@@ -542,7 +539,7 @@ def execute_ast(
 
         # Get provenance parameters
         capture_method_str = provenance_config.get("capture", "auto")
-        max_bytes = provenance_config.get("max_bytes")
+        provenance_config.get("max_bytes")
         base_seed = provenance_config.get("seed")
 
         # Map capture method string to enum
@@ -780,7 +777,6 @@ def execute_ast(
         
         # Import contract evaluation engine
         from py3plex.contracts.engine import evaluate_contract
-        from py3plex.dsl.builder import QueryBuilder
         
         # Infer conclusion type from query structure
         conclusion_type = _infer_conclusion_type(bound_query.select)
@@ -817,7 +813,6 @@ def execute_ast(
         # Check if contract failed in hard mode
         if bound_query.select.contract_spec.contract.mode == "hard" and not contract_result.contract_ok:
             # Raise exception in hard mode
-            from py3plex.contracts.failure_modes import FailureMode
             
             class ContractViolation(Exception):
                 """Contract violation exception (hard mode)."""
@@ -1994,7 +1989,7 @@ def _reduce_replicate_results(
     Returns:
         Combined QueryResult with UQ
     """
-    logger = logging.getLogger(__name__)
+    logging.getLogger(__name__)
     
     if not replicate_results:
         raise DslExecutionError("Cannot reduce zero replicate results")
@@ -2031,10 +2026,9 @@ def _reduce_replicate_results(
     all_metrics = sorted(list(all_metrics))
     
     # Initialize output structures
-    attributes = {}
     
     # Import UQValue for aggregation
-    from .uq_algebra import UQValue, convert_to_uqvalue
+    from .uq_algebra import UQValue
     
     # For each item, aggregate across replicates
     for item in all_items:
@@ -2139,7 +2133,6 @@ def _reduce_replicate_results(
                 std_val = np.std(samples_arr, ddof=1) if len(samples_arr) > 1 else 0.0
                 
                 # Compute quantiles
-                ci_level = resolved_uq.ci
                 quantiles_dict = {}
                 if len(samples_arr) > 1:
                     quantiles_dict[0.025] = np.percentile(samples_arr, 2.5)
@@ -3739,7 +3732,6 @@ def _execute_embedding(
         provenance_builder: Provenance builder for recording metadata.
     """
     import time as _time
-    import hashlib
     import json
 
     t0 = _time.perf_counter()
@@ -3954,7 +3946,6 @@ def _apply_explanations(
         Tuple of (items, enhanced_attributes) with explanation data
     """
     from .explain import explain_rows
-    from .ast import ExplainSpec
     
     logger = logging.getLogger(__name__)
 
@@ -4305,8 +4296,8 @@ def _get_attribute_value(item: Any, attribute: str, network: Any, G: nx.Graph) -
         if isinstance(first_elem, tuple) and isinstance(second_elem, tuple):
             if len(first_elem) >= 2 and len(second_elem) >= 2:
                 # This is an edge
-                source_node, source_layer = first_elem[0], first_elem[1]
-                target_node, target_layer = second_elem[0], second_elem[1]
+                _source_node, source_layer = first_elem[0], first_elem[1]
+                _target_node, target_layer = second_elem[0], second_elem[1]
 
                 # Handle edge-specific attributes
                 if attribute == "source_layer":
@@ -4351,7 +4342,7 @@ def _get_attribute_value(item: Any, attribute: str, network: Any, G: nx.Graph) -
                 return None
 
         # This is a node (tuple of (node_id, layer))
-        node_id, layer = item[0], item[1]
+        _node_id, layer = item[0], item[1]
 
         if attribute == "layer":
             return str(layer)
@@ -5204,7 +5195,7 @@ def _apply_aggregation(
     
     if has_uq:
         # Import UQ algebra for uncertainty-aware aggregation
-        from .uq_algebra import UQValue, UQAlgebra, convert_to_uqvalue
+        from .uq_algebra import UQAlgebra, convert_to_uqvalue
         from .uq_resolution import UQReductionError
         
         # Convert all values to UQValue
@@ -7122,9 +7113,8 @@ def execute_join(
     Raises:
         InvalidJoinKeyError: If join keys don't exist in both schemas
     """
-    from .ast import JoinNode, Query, SelectStmt
+    from .ast import Query
     from .errors import InvalidJoinKeyError
-    import pandas as pd
     import hashlib
     
     params = params or {}

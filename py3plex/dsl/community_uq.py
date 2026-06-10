@@ -25,15 +25,13 @@ Examples
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 import logging
 import warnings
 
-import numpy as np
 
 from py3plex.uncertainty import (
     PartitionUQ,
-    partition_dict_to_array,
 )
 from py3plex.uncertainty.noise_models import NoiseModel, NoNoise
 from py3plex.uncertainty.plan import UQPlan
@@ -41,7 +39,6 @@ from py3plex.uncertainty.runner import run_uq
 from py3plex.uncertainty.partition_types import PartitionOutput
 from py3plex.uncertainty.partition_reducers import (
     NodeMarginalReducer,
-    StabilityReducer,
 )
 from py3plex.exceptions import AlgorithmError
 
@@ -149,7 +146,7 @@ def execute_community_with_uq(
     n_nodes = len(node_ids)
     
     # Create node ID to index mapping for later use
-    node_to_idx = {nid: i for i, nid in enumerate(node_ids)}
+    {nid: i for i, nid in enumerate(node_ids)}
     
     # Define base callable for UQ spine
     def base_callable(net, rng):

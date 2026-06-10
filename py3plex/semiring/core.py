@@ -195,7 +195,7 @@ class SemiringSpec:
                                     'right': f"{a} ⊕ ({b} ⊕ {c}) = {right}",
                                 }
                             )
-                    except (TypeError, ValueError, OverflowError) as e:
+                    except (TypeError, ValueError, OverflowError):
                         # Skip if operations fail (e.g., type errors in samples)
                         pass
     

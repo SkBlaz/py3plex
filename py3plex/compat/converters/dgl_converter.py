@@ -12,7 +12,7 @@ from ..ir import GraphIR
 
 # Try to import DGL
 try:
-    import dgl
+    __import__("dgl")
     
     DGL_AVAILABLE = True
 except ImportError:

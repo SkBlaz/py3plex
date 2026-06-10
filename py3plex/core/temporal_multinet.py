@@ -31,13 +31,12 @@ Example:
 from __future__ import annotations
 
 import bisect
-from collections import defaultdict
 from datetime import timedelta
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple, Union
 
 import pandas as pd
 
-from py3plex.temporal_utils import EdgeTimeInterval, TimeLike, _parse_time, extract_edge_time
+from py3plex.temporal_utils import EdgeTimeInterval, TimeLike, _parse_time
 from .multinet import multi_layer_network
 
 

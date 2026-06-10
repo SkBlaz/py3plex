@@ -13,16 +13,13 @@ Strategy:
 """
 
 import time
-from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any, Dict, Iterator, List, Optional
 
 from .ir import (
     PatternGraph,
-    PatternNode,
     PatternEdge,
     MatchRow,
     Predicate,
-    LayerConstraint,
-    EdgeLayerConstraint,
 )
 from .compiler import PatternPlan, JoinStep
 

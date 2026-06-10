@@ -10,11 +10,8 @@ corresponds to a single experiment (``store_dir / exp_id /``).
 
 from __future__ import annotations
 
-import csv
 import hashlib
-import io
 import json
-import os
 import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional

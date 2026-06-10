@@ -2,7 +2,7 @@
 Custom exceptions for the I/O module.
 """
 
-from py3plex.exceptions import Py3plexException, Py3plexIOError
+from py3plex.exceptions import Py3plexIOError
 
 
 class SchemaValidationError(Py3plexIOError):

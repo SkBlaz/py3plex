@@ -4,8 +4,7 @@ This module implements human-readable explanations of GraphPrograms.
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
-from .types import Type
+from typing import List, Optional
 
 
 @dataclass

@@ -11,8 +11,7 @@ the canonical schema.
 """
 
 from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, List, Optional, Set
-from enum import Enum
+from typing import Any, Dict, Optional
 
 from .ast import UQConfig, ComputeItem
 from .errors import DslExecutionError

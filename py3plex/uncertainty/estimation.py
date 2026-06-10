@@ -14,7 +14,7 @@ from py3plex.core import multinet
 from py3plex.robustness.perturbations import EdgeDrop, NodeDrop, compose
 from py3plex.robustness.experiments import estimate_metric_distribution
 
-from .types import ResamplingStrategy, StatSeries, StatMatrix
+from .types import ResamplingStrategy, StatSeries
 from .context import get_uncertainty_config
 
 
@@ -144,7 +144,7 @@ def _estimate_via_seeds(
     
     for _ in range(n_runs):
         # Generate a random seed for this run
-        seed = int(rng.integers(0, 2**31))
+        int(rng.integers(0, 2**31))
         
         # For now, we can't easily inject seed into arbitrary functions
         # So we just run the function multiple times
@@ -336,8 +336,14 @@ def _estimate_via_stratified_perturbation(
         StratificationSpec,
         auto_select_strata,
         compute_composite_strata,
-        compute_variance_reduction_ratio,
     )
+
+    def _with_stratification_meta(result, spec, n_strata):
+        if isinstance(result, StatSeries):
+            result.meta["stratification"] = spec.to_dict()
+            result.meta["n_strata"] = n_strata
+            result.meta["stratification_fallback"] = True
+        return result
     
     # Default perturbation parameters
     params = {
@@ -349,11 +355,24 @@ def _estimate_via_stratified_perturbation(
     }
     if perturbation_params:
         params.update(perturbation_params)
+
+    import copy
+
+    fallback_rng_state = copy.deepcopy(rng.bit_generator.state)
+
+    def _fallback_rng():
+        fallback_rng = np.random.default_rng()
+        fallback_rng.bit_generator.state = copy.deepcopy(fallback_rng_state)
+        return fallback_rng
     
     # Quick check if we should fall back to regular perturbation
     if params["edge_drop_p"] == 0 and params["node_drop_p"] == 0:
         # No perturbation, fall back to seed strategy
-        return _estimate_via_seeds(network, metric_fn, n_runs, rng)
+        return _with_stratification_meta(
+            _estimate_via_seeds(network, metric_fn, n_runs, _fallback_rng()),
+            StratificationSpec(strata=params["strata"] or []),
+            0,
+        )
     
     # Run once to determine target and get baseline
     baseline_result = metric_fn(network)
@@ -382,17 +401,28 @@ def _estimate_via_stratified_perturbation(
         strata = compute_composite_strata(network, strata_spec, params["target"])
     except Exception:
         # Stratification failed, fall back to regular perturbation
-        return _estimate_via_perturbation(network, metric_fn, n_runs, rng, {
-            "edge_drop_p": params["edge_drop_p"],
-            "node_drop_p": params["node_drop_p"],
-        })
+        return _with_stratification_meta(
+            _estimate_via_perturbation(network, metric_fn, n_runs, _fallback_rng(), {
+                "edge_drop_p": params["edge_drop_p"],
+                "node_drop_p": params["node_drop_p"],
+            }),
+            strata_spec,
+            0,
+        )
     
-    # If no meaningful stratification, fall back
-    if len(strata) <= 1:
-        return _estimate_via_perturbation(network, metric_fn, n_runs, rng, {
-            "edge_drop_p": params["edge_drop_p"],
-            "node_drop_p": params["node_drop_p"],
-        })
+    # If no meaningful stratification, fall back. Very small strata are also
+    # treated as regular perturbation because proportional allocation is too
+    # noisy to be useful there.
+    total_stratified_items = sum(len(items) for items in strata.values())
+    if len(strata) <= 1 or total_stratified_items <= 8:
+        return _with_stratification_meta(
+            _estimate_via_perturbation(network, metric_fn, n_runs, _fallback_rng(), {
+                "edge_drop_p": params["edge_drop_p"],
+                "node_drop_p": params["node_drop_p"],
+            }),
+            strata_spec,
+            len(strata),
+        )
     
     # Build perturbations for each stratum
     from py3plex.robustness.perturbations import EdgeDrop, NodeDrop, compose
@@ -405,7 +435,11 @@ def _estimate_via_stratified_perturbation(
     
     if not perturbations:
         # No perturbation, fall back to seed strategy
-        return _estimate_via_seeds(network, metric_fn, n_runs, rng)
+        return _with_stratification_meta(
+            _estimate_via_seeds(network, metric_fn, n_runs, _fallback_rng()),
+            strata_spec,
+            len(strata),
+        )
     
     if len(perturbations) == 1:
         perturbation = perturbations[0]
@@ -466,7 +500,7 @@ def _estimate_via_stratified_perturbation(
             try:
                 result = metric_fn(perturbed_net)
                 all_samples.append(result)
-            except (ValueError, RuntimeError, ZeroDivisionError) as e:
+            except (ValueError, RuntimeError, ZeroDivisionError):
                 # Expected errors during perturbation (empty network, disconnected graph, etc.)
                 # Skip this sample and continue
                 continue
@@ -507,4 +541,3 @@ def _estimate_via_stratified_perturbation(
         # For now, just store the stratification info
     
     return result
-

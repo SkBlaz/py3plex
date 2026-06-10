@@ -36,14 +36,13 @@ Examples
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple
 import warnings
 
 import numpy as np
 import networkx as nx
 
 from .partition import CommunityDistribution, partition_dict_to_array
-from .resampling_graph import perturb_network_edges, bootstrap_network_edges
 from py3plex.exceptions import AlgorithmError
 
 

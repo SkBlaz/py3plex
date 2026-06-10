@@ -94,11 +94,6 @@ def _degree_safe_preset(strength: str, targets: Optional[any] = None) -> Interve
     # For now, we return a factory that will be resolved later
     # This is a simplification - in practice, the engine should handle this
     
-    swaps_multiplier = {
-        "light": 0.10,
-        "medium": 0.25,
-        "heavy": 0.50,
-    }
     
     # For now, use a heuristic default based on typical network sizes
     # The engine should adjust this based on actual network size

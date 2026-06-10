@@ -5,7 +5,7 @@ modify networks for counterfactual analysis. All specs are immutable,
 hashable, and serializable.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 from abc import ABC, abstractmethod
 import hashlib

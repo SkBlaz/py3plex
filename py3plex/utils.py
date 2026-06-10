@@ -188,7 +188,7 @@ def validate_multilayer_input(network_data: Any) -> None:
         >>> from py3plex.utils import validate_multilayer_input
         >>> validate_multilayer_input(my_network)
     """
-    from py3plex.exceptions import NetworkConstructionError, Py3plexIOError
+    from py3plex.exceptions import NetworkConstructionError
 
     if network_data is None:
         raise NetworkConstructionError("Network data cannot be None")

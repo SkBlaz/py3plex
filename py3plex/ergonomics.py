@@ -12,7 +12,7 @@ Example usage:
     >>> results = quick_analysis(net, metrics=['degree', 'betweenness'])
 """
 
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional
 from py3plex.core import multinet
 from py3plex.dsl import Q
 

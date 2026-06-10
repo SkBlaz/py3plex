@@ -6,9 +6,8 @@ changes over time in temporal multilayer networks.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, Iterator, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Iterator, Optional, Tuple
 
-import networkx as nx
 
 
 def streaming_community_change(
@@ -81,7 +80,7 @@ def streaming_community_change(
         # Apply community detection
         try:
             communities = community_detector(window_net)
-        except Exception as e:
+        except Exception:
             # If detection fails (e.g., empty graph), return empty result
             yield (t_start, t_end, {}, 0.0)
             continue

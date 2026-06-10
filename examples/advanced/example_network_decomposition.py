@@ -48,5 +48,10 @@ for decomposition in multilayer_network.get_decomposition():
 
 # construct a single dataframe while remaining compatible with lightweight stubs
 if result_frames:
-    validation_results = pd.concat(result_frames, ignore_index=True)
+    if hasattr(pd, "concat"):
+        validation_results = pd.concat(result_frames, ignore_index=True)
+    else:
+        validation_results = pd.DataFrame()
+        for frame in result_frames:
+            validation_results = validation_results.append(frame, ignore_index=True)
 print(validation_results)

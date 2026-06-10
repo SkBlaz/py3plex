@@ -30,7 +30,6 @@ from typing import Any, Dict, List, Optional, Tuple
 import warnings
 
 import numpy as np
-from scipy.sparse import csr_matrix, lil_matrix
 
 from py3plex.uncertainty.partition_metrics import (
     variation_of_information,
@@ -438,8 +437,7 @@ class PartitionDistanceReducer(PartitionReducer):
                 if self.metric == "vi":
                     d = variation_of_information(partition, prev)
                 elif self.metric == "nmi":
-                    # NMI is similarity, convert to distance
-                    d = 1.0 - normalized_mutual_information(partition, prev)
+                    d = normalized_mutual_information(partition, prev)
                 
                 self.distances.append(d)
             

@@ -10,9 +10,9 @@ efficiently executed by the matching engine. The compiler:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional
 
-from .ir import PatternGraph, PatternNode, PatternEdge
+from .ir import PatternGraph, PatternEdge
 
 
 @dataclass
