@@ -52,7 +52,6 @@ from .ast import (
     TemporalContext,
     WindowSpec,
     UQConfig,
-    CounterfactualSpec,
     SensitivitySpec,
     PredictStmt,
     LinkPredictionSpec,
@@ -871,7 +870,6 @@ class QueryBuilder:
                     random_state = Q.uncertainty.get("random_state")
 
         # Handle approximation parameters
-        approx_spec = None
         if approx:
             # Extract approximation-specific params from kwargs
             approx_params = {}
@@ -3373,7 +3371,6 @@ class QueryBuilder:
             >>> high_bc = Q.nodes().compute("betweenness_centrality").where(betweenness_centrality__gt=0.1)
             >>> result = high_degree.join(high_bc, on=["node", "layer"], how="inner").execute(network)
         """
-        from .ast import JoinNode
 
         # Validate join type
         valid_join_types = {"inner", "left", "right", "outer", "semi", "anti"}
@@ -4085,7 +4082,7 @@ class QueryBuilder:
             >>> work_hubs = Q.nodes().from_layers(L["work"]).where(degree__gt=5)
             >>> all_hubs = social_hubs | work_hubs
         """
-        from .algebra import check_query_compatibility, AlgebraError
+        from .algebra import check_query_compatibility
         from copy import deepcopy
         
         check_query_compatibility(self, other)
@@ -4847,7 +4844,7 @@ class Q:
             >>> unfiltered = Q.nodes()
             >>> assert Q.assert_subset(filtered, unfiltered, network)
         """
-        from .algebra import check_query_compatibility, extract_item_identity, IdentityStrategy
+        from .algebra import extract_item_identity, IdentityStrategy
         from .result import QueryResult
         
         # Execute queries if needed
@@ -4973,7 +4970,7 @@ class Q:
             >>> Q.assert_disjoint(social, work, network, identity="by_replica")
             True
         """
-        from .algebra import check_query_compatibility, extract_item_identity, IdentityStrategy
+        from .algebra import extract_item_identity, IdentityStrategy
         from .result import QueryResult
         
         # Execute queries if needed

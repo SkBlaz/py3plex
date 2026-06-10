@@ -123,7 +123,7 @@ def suggest_similar_field(
             best_distance = distance
             best_match = known
     
-    return best_match if best_distance <= max_distance else None
+    return best_match if best_distance < max_distance else None
 
 
 def suggest_builder_method(

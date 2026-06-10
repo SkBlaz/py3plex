@@ -8,7 +8,6 @@ The ``env_hash`` field is derived from the *stable* subset of the fingerprint
 """
 
 import platform
-import sys
 from typing import Dict, Optional
 
 from .utils import stable_hash

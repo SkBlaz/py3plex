@@ -28,10 +28,8 @@ Examples
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
-import copy
-import random
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
@@ -167,7 +165,6 @@ class EdgeDrop(NoiseModel):
             Network with edges dropped
         """
         import copy
-        from py3plex.core import multinet
         
         # Set seed
         rng = np.random.default_rng(seed)

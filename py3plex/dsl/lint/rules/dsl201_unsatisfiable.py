@@ -1,7 +1,7 @@
 """DSL201: Unsatisfiable predicate detection."""
 
 from typing import List
-from ...ast import Query, SelectStmt, ConditionExpr, ConditionAtom
+from ...ast import Query, SelectStmt, ConditionExpr
 from ..diagnostic import Diagnostic
 from ..lint_context import LintContext
 

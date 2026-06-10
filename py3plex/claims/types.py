@@ -8,7 +8,7 @@ This module defines core dataclasses for inductive claim discovery:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 @dataclass(frozen=True)

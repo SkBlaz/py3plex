@@ -7,7 +7,7 @@ enriching each result row (typically nodes) with additional context such as:
 - Layer footprint (which layers a node appears in)
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 import logging
 from collections import Counter
 

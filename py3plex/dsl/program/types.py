@@ -28,9 +28,7 @@ Example:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Union, Tuple
-from enum import Enum
-import json
+from typing import Any, Dict, List, Optional, Union, Tuple
 
 from ..ast import (
     Query,
@@ -39,13 +37,7 @@ from ..ast import (
     ExportTarget,
     ComputeItem,
     ConditionExpr,
-    ConditionAtom,
-    Comparison,
-    FunctionCall,
-    SpecialPredicate,
     LayerExpr,
-    OrderItem,
-    UQConfig,
     JoinNode,
 )
 
@@ -768,7 +760,7 @@ def type_check(ast_node: Union[Query, SelectStmt]) -> bool:
 def _type_check_select(stmt: SelectStmt) -> bool:
     """Type check a SELECT statement."""
     # Infer current type
-    current_type = infer_type(stmt)
+    infer_type(stmt)
     
     # Check that order_by references computed metrics
     if stmt.order_by:

@@ -38,12 +38,10 @@ Example:
 
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
-import warnings
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import networkx as nx
-import numpy as np
 
 from py3plex.exceptions import VisualizationError, Py3plexFormatError
 from py3plex.logging_config import get_logger

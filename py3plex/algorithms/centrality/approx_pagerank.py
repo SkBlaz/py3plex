@@ -10,7 +10,6 @@ provides explicit control over convergence criteria and full transparency
 in the provenance record.
 """
 
-import math
 from typing import Any, Dict, Optional, Tuple
 import networkx as nx
 

@@ -5,11 +5,10 @@ This module provides the core SBMFittedModel class and orchestration
 for fitting SBM and DC-SBM to multilayer networks.
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import scipy.sparse as sp
 
-from .conversions import extract_layer_adjacencies, check_node_aligned
 from .utils import (
     init_random_soft_membership,
     init_kmeans_membership,
@@ -18,8 +17,7 @@ from .utils import (
     membership_confidence
 )
 from .inference_vi import VariationalInference
-from .diagnostics import compute_posterior_summary, assess_convergence_quality, compute_uncertainty_metrics
-from .model_selection import compute_bic, compute_icl
+from .diagnostics import compute_posterior_summary, compute_uncertainty_metrics
 
 
 class SBMFittedModel:

@@ -7,7 +7,7 @@ in various formats (CSV, JSON, etc.).
 import csv
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 from .ast import ExportSpec
 from .errors import DslExecutionError
@@ -375,7 +375,7 @@ def load_from_parquet(path: str) -> Any:
     """
     try:
         import pyarrow.parquet as pq
-        import pandas as pd
+        __import__("pandas")
     except ImportError:
         raise ImportError(
             "pyarrow and pandas are required for Parquet import. "
@@ -387,4 +387,3 @@ def load_from_parquet(path: str) -> Any:
         return table.to_pandas()
     except Exception as e:
         raise DslExecutionError(f"Failed to read Parquet file '{path}': {e}")
-

@@ -8,13 +8,10 @@ This converter preserves:
 - Multigraph edge keys mapped to edge_id
 """
 
-import warnings
-from typing import Any, Dict, Optional
 
 import networkx as nx
 import pandas as pd
 
-from ..exceptions import CompatibilityError
 from ..ir import EdgeTable, GraphIR, GraphMeta, NodeTable
 
 

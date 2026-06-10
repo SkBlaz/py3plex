@@ -15,7 +15,7 @@ Date: 2025
 """
 
 import copy
-from typing import Any, Optional
+from typing import Any
 import warnings
 
 

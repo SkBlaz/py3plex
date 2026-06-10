@@ -1563,7 +1563,10 @@ def cmd_query(args: argparse.Namespace) -> int:
             logger.info(f"Loading network from {args.input}...")
             network = _load_network(args.input)
         
-        # Execute query
+        import contextlib
+
+        # Execute query. Some lower-level layout/progress utilities print
+        # diagnostics directly to stdout; keep command stdout parseable.
         if args.dsl:
             # Interpret as Python DSL builder syntax
             from py3plex.dsl import Q, L, Param
@@ -1578,14 +1581,6 @@ def cmd_query(args: argparse.Namespace) -> int:
             }
             
             # Basic validation: only allow expected patterns
-            allowed_patterns = [
-                "Q.", "L[", "Param.",
-                ".nodes(", ".edges(", ".from_layers(", ".where(",
-                ".compute(", ".order_by(", ".limit(", ".execute(",
-                '"', "'", "(", ")", ",", "=", "+", "-", "&", "[", "]",
-                "_", "layer", "degree", "centrality", "clustering",
-                "betweenness", "closeness", "eigenvector", "pagerank",
-            ]
             
             # Check for potentially dangerous patterns
             dangerous_patterns = [
@@ -1604,11 +1599,13 @@ def cmd_query(args: argparse.Namespace) -> int:
             except NameError as e:
                 raise ValueError(f"Invalid DSL syntax: {e}. Only Q, L, and Param are allowed.")
             
-            result = query_builder.execute(network)
+            with contextlib.redirect_stdout(sys.stderr):
+                result = query_builder.execute(network)
         else:
             # Use legacy string DSL parser
             from py3plex.dsl import execute_query
-            result = execute_query(network, query_str)
+            with contextlib.redirect_stdout(sys.stderr):
+                result = execute_query(network, query_str)
         
         # Format output
         if args.dsl:

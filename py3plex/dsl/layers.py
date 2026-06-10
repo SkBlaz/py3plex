@@ -38,8 +38,7 @@ Example:
 
 from __future__ import annotations
 
-import re
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, Optional, Set, Union
 from dataclasses import dataclass
 
 from .errors import UnknownLayerError, DslSyntaxError

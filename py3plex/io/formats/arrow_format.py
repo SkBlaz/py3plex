@@ -11,7 +11,7 @@ Supports:
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Dict, Union
 
 from py3plex.exceptions import Py3plexFormatError
 

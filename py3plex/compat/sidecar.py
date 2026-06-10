@@ -50,7 +50,7 @@ def export_sidecar(
     # Determine table format
     if format == "json+parquet":
         try:
-            import pyarrow
+            __import__("pyarrow")
             
             table_format = "parquet"
         except ImportError:
@@ -172,17 +172,25 @@ def _dict_to_dataframe(data: Dict[str, Any]) -> pd.DataFrame:
     Handles nested structures like attrs which may be a DataFrame or list of dicts.
     """
     result = {}
+    row_count = _infer_table_row_count(data)
     
     for key, value in data.items():
         if isinstance(value, pd.DataFrame):
             # Flatten DataFrame columns into result
-            for col in value.columns:
-                result[f"attrs_{col}"] = value[col].tolist()
-        elif isinstance(value, list) and value and isinstance(value[0], dict):
+            attrs_df = value.reindex(range(row_count)) if row_count is not None else value
+            for col in attrs_df.columns:
+                result[f"attrs_{col}"] = [
+                    _encode_attr_value(item) for item in attrs_df[col].tolist()
+                ]
+        elif isinstance(value, list) and all(isinstance(item, dict) for item in value):
             # List of dicts (attrs as records)
             attrs_df = pd.DataFrame(value)
+            if row_count is not None:
+                attrs_df = attrs_df.reindex(range(row_count))
             for col in attrs_df.columns:
-                result[f"attrs_{col}"] = attrs_df[col].tolist()
+                result[f"attrs_{col}"] = [
+                    _encode_attr_value(item) for item in attrs_df[col].tolist()
+                ]
         else:
             result[key] = value
     
@@ -214,11 +222,45 @@ def _dataframe_to_dict(df: pd.DataFrame) -> Dict[str, Any]:
         num_rows = len(df)
         attrs_records = []
         for i in range(num_rows):
-            record = {k: v[i] for k, v in attrs_data.items()}
+            record = {k: _decode_attr_value(v[i]) for k, v in attrs_data.items()}
             attrs_records.append(record)
         result["attrs"] = attrs_records
     
     return result
+
+
+def _infer_table_row_count(data: Dict[str, Any]) -> Optional[int]:
+    """Infer table row count from non-attribute list columns."""
+    for key, value in data.items():
+        if key == "attrs":
+            continue
+        if isinstance(value, list):
+            return len(value)
+        if isinstance(value, pd.Series):
+            return len(value)
+        if isinstance(value, pd.DataFrame):
+            return len(value)
+    return None
+
+
+def _encode_attr_value(value: Any) -> str:
+    """Encode heterogeneous attribute values as JSON for stable Parquet export."""
+    try:
+        if pd.isna(value):
+            return "null"
+    except (TypeError, ValueError):
+        pass
+    return json.dumps(value, default=_json_serializer)
+
+
+def _decode_attr_value(value: Any) -> Any:
+    """Decode JSON-encoded attribute values from sidecar tables."""
+    if not isinstance(value, str):
+        return value
+    try:
+        return json.loads(value)
+    except json.JSONDecodeError:
+        return value
 
 
 def _json_serializer(obj: Any) -> Any:

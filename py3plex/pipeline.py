@@ -28,7 +28,7 @@ Example:
     >>> result = pipe.run()
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 from abc import ABC, abstractmethod
 import sys as _sys
 import types as _types

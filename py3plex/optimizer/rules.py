@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import copy
 import logging
-from typing import List, Optional, Type
+from typing import List, Optional
 
 from .plan_nodes import LogicalOp
 

@@ -3,7 +3,7 @@
 This module provides the main execution function for comparing multilayer networks.
 """
 
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 
 from .metrics import metric_registry
 from .result import ComparisonResult
@@ -97,7 +97,6 @@ def execute_compare_stmt(
     Raises:
         ValueError: If network names are not found in the dictionary
     """
-    from py3plex.dsl.ast import CompareStmt
     
     # Get networks from the dictionary
     if stmt.network_a not in networks:

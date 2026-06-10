@@ -6,7 +6,7 @@ and restoring networks from captured snapshots.
 
 import hashlib
 import json
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 
 class NetworkCapture:

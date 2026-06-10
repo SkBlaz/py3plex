@@ -17,7 +17,6 @@ Key Classes:
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-import networkx as nx
 import numpy as np
 
 

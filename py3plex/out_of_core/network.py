@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import csv
-import json
 import os
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .errors import OutOfCoreIOError, SchemaError
+from .errors import OutOfCoreIOError
 from .schema import SUPPORTED_EDGE_FORMATS
 
 

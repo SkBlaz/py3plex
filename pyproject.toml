@@ -158,6 +158,9 @@ where = ["."]
 include = ["py3plex*"]
 exclude = ["tests*", "docs*", "examples*"]
 
+[tool.setuptools.exclude-package-data]
+"*" = ["*.pyc", "*.pyo", "__pycache__/*"]
+
 [tool.isort]
 profile = "black"
 line_length = 88

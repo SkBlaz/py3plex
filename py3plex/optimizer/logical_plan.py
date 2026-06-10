@@ -8,7 +8,7 @@ the optimizer rules can reason about it without re-inspecting the raw AST.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, List
 
 from .plan_nodes import (
     LogicalAggregate,

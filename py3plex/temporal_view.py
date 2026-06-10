@@ -40,9 +40,9 @@ Examples:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable, Iterator, Optional
+from typing import Any, Iterator, Optional
 
-from .temporal_utils import EdgeTimeInterval, extract_edge_time
+from .temporal_utils import extract_edge_time
 
 
 @dataclass
