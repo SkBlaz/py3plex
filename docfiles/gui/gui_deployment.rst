@@ -25,35 +25,23 @@ Quickstart
 
     # Clone repository
     git clone https://github.com/SkBlaz/py3plex.git
-    cd py3plex
+    cd py3plex/gui
 
-    # Install with GUI dependencies (prefer a venv)
-    pip install -e ".[gui]"
+    # Copy environment configuration and start services
+    cp .env.example .env
+    make up
 
-    # Start development server (auto-reload)
-    python gui/app.py
-
-The GUI will be available at ``http://localhost:5000``.
+The GUI will be available at ``http://localhost:8080``.
 
 Configuration
 ~~~~~~~~~~~~~
 
-Create a configuration file ``gui/config.py`` (or use environment variables to override). Keep ``SECRET_KEY`` out of source control and store uploads on a path with enough disk space:
+Use ``gui/.env`` (copied from ``gui/.env.example``) to configure runtime behavior. Keep environment files out of source control:
 
-.. code-block:: python
+.. code-block:: bash
 
-    # Development configuration
-    DEBUG = True
-    HOST = '0.0.0.0'
-    PORT = 5000
-    SECRET_KEY = 'dev-secret-key-change-in-production'
-
-    # Upload settings
-    UPLOAD_FOLDER = './uploads'
-    MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100 MB max file size
-
-    # Allowed file extensions
-    ALLOWED_EXTENSIONS = {'txt', 'edgelist', 'graphml', 'gml', 'json', 'arrow'}
+    cp .env.example .env
+    # Edit .env as needed (API_WORKERS, MAX_UPLOAD_MB, CELERY_CONCURRENCY, REDIS_URL, DATA_DIR, VITE_API_URL)
 
 Docker Deployment
 -----------------
@@ -61,63 +49,23 @@ Docker Deployment
 Basic Docker Setup
 ~~~~~~~~~~~~~~~~~~
 
-The repository includes a Dockerfile for the GUI:
+The recommended deployment is the multi-service Docker Compose stack shipped in ``gui/docker-compose.yml``:
 
 .. code-block:: bash
 
-    # Build image
-    docker build -t py3plex-gui:latest -f gui/Dockerfile .
+    cd gui
+    cp .env.example .env
+    docker compose up --build -d
 
-    # Run container
-    docker run -d \
-      -p 5000:5000 \
-      -v $(pwd)/data:/app/data \
-      --name py3plex-gui \
-      py3plex-gui:latest
+The GUI will be available at ``http://localhost:8080``. API docs are available at ``http://localhost:8080/api/docs`` and Flower monitoring at ``http://localhost:5555``.
 
-The GUI will be available at ``http://localhost:5000``. The bind mount keeps uploads and generated artifacts on the host for persistence.
-
-Docker Compose
-~~~~~~~~~~~~~~
-
-Create ``docker-compose.yml`` (ensure ``./data`` and ``./uploads`` exist so Docker can mount them):
-
-.. code-block:: yaml
-
-    version: '3.8'
-    
-    services:
-      gui:
-        build:
-          context: .
-          dockerfile: gui/Dockerfile
-        ports:
-          - "5000:5000"
-        volumes:
-          - ./data:/app/data
-          - ./uploads:/app/uploads
-        environment:
-          - FLASK_ENV=production
-          - SECRET_KEY=${SECRET_KEY}
-        restart: unless-stopped
-        healthcheck:
-          test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
-          interval: 30s
-          timeout: 10s
-          retries: 3
-
-Start with:
+Use the repo Makefile wrappers:
 
 .. code-block:: bash
 
-    # Set secret key
-    export SECRET_KEY=$(python -c 'import secrets; print(secrets.token_hex(32))')
-
-    # Start services
-    docker compose up -d
-
-    # Check logs
-    docker compose logs -f gui
+    make up      # start full stack
+    make logs    # inspect service logs
+    make down    # stop and remove containers
 
 Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~
@@ -131,29 +79,26 @@ Configure via environment variables:
    * - Variable
      - Description
      - Default
-   * - ``FLASK_ENV``
-     - Environment (development/production)
-     - development
-   * - ``SECRET_KEY``
-     - Session secret key (required)
-     - None
-   * - ``HOST``
-     - Bind address
-     - 0.0.0.0
-   * - ``PORT``
-     - Bind port
-     - 5000
-   * - ``MAX_WORKERS``
-     - Worker processes (Gunicorn)
-     - 4 (tune to CPU cores and workload)
-   * - ``UPLOAD_FOLDER``
-     - Upload directory
-     - ./uploads
-   * - ``DATA_FOLDER``
-     - Data directory
-     - ./data
+   * - ``API_WORKERS``
+     - API worker process count
+     - 2
+   * - ``MAX_UPLOAD_MB``
+     - Maximum upload size in MB
+     - 512
+   * - ``CELERY_CONCURRENCY``
+     - Celery worker concurrency
+     - 2
+   * - ``REDIS_URL``
+     - Redis connection URL
+     - redis://redis:6379/0
+   * - ``DATA_DIR``
+     - Shared data directory inside containers
+     - /data
+   * - ``VITE_API_URL``
+     - Frontend API base URL
+     - http://localhost:8080/api
 
-For deployments, prefer setting these in an environment file or secrets manager instead of committing them to version control. Set ``SECRET_KEY`` before starting any service so sessions are secure.
+For deployments, prefer setting these in an environment file or secrets manager instead of committing them to version control.
 
 Production Deployment
 ---------------------
