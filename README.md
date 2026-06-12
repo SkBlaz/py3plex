@@ -74,9 +74,7 @@ print(df[["id", "layer", "community_id",
           "betweenness_centrality_ci95_high", "score", "top_neighbors"]].head(10))
 ```
 
-### Safe chaining order (DSL v2)
-
-Use a strict two-phase flow:
+Uses a strict two-phase flow:
 
 1. **Build query** on `Q...` (`.where()`, `.compute()`, `.order_by()`, `.per_layer()`, `.coverage()`, ...)
 2. **Execute once** with `.execute(network)`
