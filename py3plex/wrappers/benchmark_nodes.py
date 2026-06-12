@@ -7,7 +7,42 @@ from collections import defaultdict
 from typing import Any, Dict, List
 
 import numpy
-from gensim.models import KeyedVectors
+class KeyedVectors:
+    def __init__(self, vocab, vectors):
+        self.vocab = vocab
+        self.vectors = vectors
+
+    @classmethod
+    def load_word2vec_format(cls, path, binary=False):
+        if binary:
+            raise NotImplementedError("Binary word2vec format is not supported in this simplified parser.")
+        vocab = {}
+        vectors = []
+        with open(path, encoding="utf-8") as f:
+            header = f.readline().strip().split()
+            if not header:
+                raise ValueError("Empty embedding file")
+            vector_size = int(header[1])
+            for idx, line in enumerate(f):
+                parts = line.strip().split()
+                if not parts:
+                    continue
+                word = parts[0]
+                vector = [float(x) for x in parts[1:]]
+                if len(vector) != vector_size:
+                    raise ValueError(f"Vector size mismatch at line {idx+2}: expected {vector_size}, got {len(vector)}")
+                vocab[word] = len(vectors)
+                vectors.append(vector)
+        import numpy
+        return cls(vocab, numpy.array(vectors, dtype=numpy.float32))
+
+    def __getitem__(self, key):
+        if key in self.vocab:
+            return self.vectors[self.vocab[key]]
+        raise KeyError(f"Key '{key}' not found in KeyedVectors")
+
+    def __contains__(self, key):
+        return key in self.vocab
 from scipy import sparse
 from scipy.io import loadmat
 from six import iteritems

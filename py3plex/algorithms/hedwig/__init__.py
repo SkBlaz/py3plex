@@ -1,3 +1,11 @@
+try:
+    import rdflib
+except ImportError as e:
+    raise ImportError(
+        "rdflib is required to use the Hedwig algorithm. "
+        "Please install it via `pip install rdflib` or `pip install py3plex[hedwig]`."
+    ) from e
+
 import json
 import logging
 import multiprocessing as mp

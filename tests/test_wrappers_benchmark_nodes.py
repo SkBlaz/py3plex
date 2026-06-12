@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from gensim.models import KeyedVectors
+
 from scipy import sparse
 from sklearn.linear_model import LogisticRegression
 

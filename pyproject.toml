@@ -35,12 +35,10 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.19.0",  # Minimum for Python 3.8+
-    "rdflib>=6.0.0",  # Modern version with Python 3.8+ support
     "scipy>=1.5.0",  # Minimum for Python 3.8+
     "networkx>=2.5",  # Already reasonable
     "tqdm>=4.40.0",  # Modern version with better features
     "matplotlib>=3.3.0",  # Minimum for Python 3.8+
-    "gensim>=4.0.0",  # Modern version
     "scikit-learn>=0.24.0",  # Minimum for Python 3.8+
     "bitarray>=2.0.0",  # Already modern
     "seaborn>=0.11.0",  # Modern version
@@ -126,6 +124,14 @@ mcp = [
 examples = [
     "sympy>=1.9",
 ]
+# Optional: Hedwig algorithm (requires rdflib)
+hedwig = [
+    "rdflib>=6.0.0",
+]
+# Optional: Word2Vec embeddings (requires gensim)
+embeddings = [
+    "gensim>=4.0.0",
+]
 # Convenience meta-extra for common optional features (without heavy ML backends)
 optional = [
     "infomap>=2.0.0",
@@ -137,6 +143,8 @@ optional = [
     "pyarrow>=10.0.0",
     "mcp>=0.9.0; python_version>='3.10'",
     "sympy>=1.9",
+    "rdflib>=6.0.0",
+    "gensim>=4.0.0",
 ]
 
 [project.urls]

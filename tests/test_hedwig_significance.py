@@ -5,8 +5,10 @@ This module tests Fisher's exact test for rule significance.
 """
 
 import pytest
+pytest.importorskip("rdflib")
 from unittest.mock import MagicMock
 import scipy.stats as st
+import numpy as np
 
 
 class TestFisherSignificance:
@@ -111,7 +113,7 @@ class TestFisherSignificance:
         result = is_redundant(rule1, rule2)
         
         # Result should be a boolean
-        assert isinstance(result, bool)
+        assert isinstance(result, (bool, np.bool_))
 
     def test_fisher_with_zero_coverage(self):
         """Test fisher with zero coverage."""
