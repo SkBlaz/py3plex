@@ -165,32 +165,20 @@
 <h3>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone repository</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
-<span class="nb">cd</span><span class="w"> </span>py3plex
+<span class="nb">cd</span><span class="w"> </span>py3plex/gui
 
-<span class="c1"># Install with GUI dependencies (prefer a venv)</span>
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[gui]&quot;</span>
-
-<span class="c1"># Start development server (auto-reload)</span>
-python<span class="w"> </span>gui/app.py
+<span class="c1"># Copy environment configuration and start services</span>
+cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+make<span class="w"> </span>up
 </pre></div>
 </div>
-<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:5000</span></code>.</p>
+<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>.</p>
 </section>
 <section id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h3>
-<p>Create a configuration file <code class="docutils literal notranslate"><span class="pre">gui/config.py</span></code> (or use environment variables to override). Keep <code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code> out of source control and store uploads on a path with enough disk space:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Development configuration</span>
-<span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">HOST</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.0&#39;</span>
-<span class="n">PORT</span> <span class="o">=</span> <span class="mi">5000</span>
-<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;dev-secret-key-change-in-production&#39;</span>
-
-<span class="c1"># Upload settings</span>
-<span class="n">UPLOAD_FOLDER</span> <span class="o">=</span> <span class="s1">&#39;./uploads&#39;</span>
-<span class="n">MAX_CONTENT_LENGTH</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 100 MB max file size</span>
-
-<span class="c1"># Allowed file extensions</span>
-<span class="n">ALLOWED_EXTENSIONS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;txt&#39;</span><span class="p">,</span> <span class="s1">&#39;edgelist&#39;</span><span class="p">,</span> <span class="s1">&#39;graphml&#39;</span><span class="p">,</span> <span class="s1">&#39;gml&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;arrow&#39;</span><span class="p">}</span>
+<p>Use <code class="docutils literal notranslate"><span class="pre">gui/.env</span></code> (copied from <code class="docutils literal notranslate"><span class="pre">gui/.env.example</span></code>) to configure runtime behavior. Keep environment files out of source control:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+<span class="c1"># Edit .env as needed (API_WORKERS, MAX_UPLOAD_MB, CELERY_CONCURRENCY, REDIS_URL, DATA_DIR, VITE_API_URL)</span>
 </pre></div>
 </div>
 </section>
@@ -199,55 +187,17 @@ python<span class="w"> </span>gui/app.py
 <h2>Docker Deployment<a class="headerlink" href="#docker-deployment" title="Link to this heading"></a></h2>
 <section id="basic-docker-setup">
 <h3>Basic Docker Setup<a class="headerlink" href="#basic-docker-setup" title="Link to this heading"></a></h3>
-<p>The repository includes a Dockerfile for the GUI:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build image</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex-gui:latest<span class="w"> </span>-f<span class="w"> </span>gui/Dockerfile<span class="w"> </span>.
-
-<span class="c1"># Run container</span>
-docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-p<span class="w"> </span><span class="m">5000</span>:5000<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data:/app/data<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--name<span class="w"> </span>py3plex-gui<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>py3plex-gui:latest
+<p>The recommended deployment is the multi-service Docker Compose stack shipped in <code class="docutils literal notranslate"><span class="pre">gui/docker-compose.yml</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>gui
+cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>--build<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:5000</span></code>. The bind mount keeps uploads and generated artifacts on the host for persistence.</p>
-</section>
-<section id="docker-compose">
-<h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Link to this heading"></a></h3>
-<p>Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> (ensure <code class="docutils literal notranslate"><span class="pre">./data</span></code> and <code class="docutils literal notranslate"><span class="pre">./uploads</span></code> exist so Docker can mount them):</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
-
-<span class="nt">services</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">gui</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">build</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
-<span class="w">      </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gui/Dockerfile</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;5000:5000&quot;</span>
-<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./data:/app/data</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./uploads:/app/uploads</span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">FLASK_ENV=production</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SECRET_KEY=${SECRET_KEY}</span>
-<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unless-stopped</span>
-<span class="w">    </span><span class="nt">healthcheck</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;CMD&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;curl&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;-f&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;http://localhost:5000/health&quot;</span><span class="p p-Indicator">]</span>
-<span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30s</span>
-<span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
-<span class="w">      </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-</pre></div>
-</div>
-<p>Start with:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set secret key</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SECRET_KEY</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import secrets; print(secrets.token_hex(32))&#39;</span><span class="k">)</span>
-
-<span class="c1"># Start services</span>
-docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
-
-<span class="c1"># Check logs</span>
-docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>gui
+<p>The GUI will be available at <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>. API docs are available at <code class="docutils literal notranslate"><span class="pre">http://localhost:8080/api/docs</span></code> and Flower monitoring at <code class="docutils literal notranslate"><span class="pre">http://localhost:5555</span></code>.</p>
+<p>Use the repo Makefile wrappers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span>up<span class="w">      </span><span class="c1"># start full stack</span>
+make<span class="w"> </span>logs<span class="w">    </span><span class="c1"># inspect service logs</span>
+make<span class="w"> </span>down<span class="w">    </span><span class="c1"># stop and remove containers</span>
 </pre></div>
 </div>
 </section>
@@ -267,37 +217,33 @@ docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FLASK_ENV</span></code></p></td>
-<td><p>Environment (development/production)</p></td>
-<td><p>development</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">API_WORKERS</span></code></p></td>
+<td><p>API worker process count</p></td>
+<td><p>2</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code></p></td>
-<td><p>Session secret key (required)</p></td>
-<td><p>None</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MAX_UPLOAD_MB</span></code></p></td>
+<td><p>Maximum upload size in MB</p></td>
+<td><p>512</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HOST</span></code></p></td>
-<td><p>Bind address</p></td>
-<td><p>0.0.0.0</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CELERY_CONCURRENCY</span></code></p></td>
+<td><p>Celery worker concurrency</p></td>
+<td><p>2</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PORT</span></code></p></td>
-<td><p>Bind port</p></td>
-<td><p>5000</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL</span></code></p></td>
+<td><p>Redis connection URL</p></td>
+<td><p>redis://redis:6379/0</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MAX_WORKERS</span></code></p></td>
-<td><p>Worker processes (Gunicorn)</p></td>
-<td><p>4 (tune to CPU cores and workload)</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DATA_DIR</span></code></p></td>
+<td><p>Shared data directory inside containers</p></td>
+<td><p>/data</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UPLOAD_FOLDER</span></code></p></td>
-<td><p>Upload directory</p></td>
-<td><p>./uploads</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DATA_FOLDER</span></code></p></td>
-<td><p>Data directory</p></td>
-<td><p>./data</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">VITE_API_URL</span></code></p></td>
+<td><p>Frontend API base URL</p></td>
+<td><p><a class="reference external" href="http://localhost:8080/api">http://localhost:8080/api</a></p></td>
 </tr>
 </tbody>
 </table>
-<p>For deployments, prefer setting these in an environment file or secrets manager instead of committing them to version control. Set <code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code> before starting any service so sessions are secure.</p>
+<p>For deployments, prefer setting these in an environment file or secrets manager instead of committing them to version control.</p>
 </section>
 </section>
 <section id="production-deployment">

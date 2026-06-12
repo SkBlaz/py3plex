@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jun 02, 2026}
+\date{Jun 12, 2026}
 \release{2.0.0}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -1612,7 +1612,7 @@ This guide covers all aspects of installing py3plex and setting up your environm
 \subsubsection{Which Docs Should I Use?}
 \label{\detokenize{getting_started/installation:which-docs-should-i-use}}\label{\detokenize{getting_started/installation:which-docs-to-use}}
 \sphinxAtStartPar
-\sphinxstylestrong{Most users should use these docs (py3plex 1.x)}, which you’re reading now at \sphinxurl{https://skblaz.github.io/py3plex/}. They cover:
+\sphinxstylestrong{Most users should use these docs (py3plex 2.x)}, which you’re reading now at \sphinxurl{https://skblaz.github.io/py3plex/}. They cover:
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
@@ -1642,7 +1642,7 @@ You need features that were removed in the 1.x rewrite (very rare)
 \end{itemize}
 
 \sphinxAtStartPar
-The legacy docs are available at \sphinxurl{https://py3plex.readthedocs.io} but are \sphinxstylestrong{no longer maintained or updated} and may have broken examples. We strongly recommend upgrading to 1.x for new projects.
+The legacy docs are available at \sphinxurl{https://py3plex.readthedocs.io} but are \sphinxstylestrong{no longer maintained or updated} and may have broken examples. We strongly recommend using py3plex 2.x for new projects.
 
 
 \subsubsection{Installation Modes}
@@ -30219,6 +30219,7 @@ partitions and access them later.
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{c+c1}{\PYGZsh{} Named partition for multiple algorithms}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net}\PYG{o}{.}\PYG{n}{assign\PYGZus{}partition}\PYG{p}{(}\PYG{n}{partition}\PYG{p}{,} \PYG{n}{name}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{louvain}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{meta}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{resolution}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+m+mf}{1.0}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{partition2} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net}\PYG{o}{.}\PYG{n}{assign\PYGZus{}partition}\PYG{p}{(}\PYG{n}{partition2}\PYG{p}{,} \PYG{n}{name}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{infomap}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
 \end{sphinxVerbatim}
 
@@ -30322,11 +30323,12 @@ NetworkCapabilities
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{net} \PYG{o}{=} \PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{p}{)}
+\PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{A}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{B}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{L1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{]}\PYG{p}{,} \PYG{n}{input\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{list}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{caps} \PYG{o}{=} \PYG{n}{net}\PYG{o}{.}\PYG{n}{capabilities}\PYG{p}{(}\PYG{p}{)}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{caps}\PYG{o}{.}\PYG{n}{mode}\PYG{p}{)}
-\PYG{g+go}{\PYGZsq{}multilayer\PYGZsq{}}
+\PYG{g+go}{single}
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{caps}\PYG{o}{.}\PYG{n}{layer\PYGZus{}count}\PYG{p}{)}
-\PYG{g+go}{2}
+\PYG{g+go}{1}
 \end{sphinxVerbatim}
 \subsubsection*{Notes}
 \begin{itemize}
@@ -105354,16 +105356,10 @@ make\PYG{+w}{ }up
 \sphinxstylestrong{Option 2 — Install from source (contributors):}
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYG{c+c1}{\PYGZsh{} Install from PyPI with GUI extras}
-pip\PYG{+w}{ }install\PYG{+w}{ }py3plex\PYG{o}{[}gui\PYG{o}{]}
-
-\PYG{c+c1}{\PYGZsh{} Or develop against source}
+\PYG{c+c1}{\PYGZsh{} Develop against source}
 git\PYG{+w}{ }clone\PYG{+w}{ }https://github.com/SkBlaz/py3plex.git
-\PYG{n+nb}{cd}\PYG{+w}{ }py3plex
-pip\PYG{+w}{ }install\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}.[gui]\PYGZdq{}}
-
-\PYG{c+c1}{\PYGZsh{} Navigate to GUI directory and start services (uses Docker Compose)}
-\PYG{n+nb}{cd}\PYG{+w}{ }gui
+\PYG{n+nb}{cd}\PYG{+w}{ }py3plex/gui
+cp\PYG{+w}{ }.env.example\PYG{+w}{ }.env
 make\PYG{+w}{ }up
 \end{sphinxVerbatim}
 

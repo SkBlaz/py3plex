@@ -1187,7 +1187,7 @@
   \item \spxentry{get\_superclasses()}\spxextra{py3plex.algorithms.hedwig.learners.learner.Learner method}, 
 		\hyperpage{840}
   \item \spxentry{get\_supra\_adjacency\_matrix()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
-		\hyperpage{372}
+		\hyperpage{373}
   \item \spxentry{get\_tensor()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
 		\hyperpage{373}
   \item \spxentry{get\_top\_ranked()}\spxextra{py3plex.algorithms.multilayer\_algorithms.multixrank.MultiXRank method}, 
@@ -1602,7 +1602,7 @@
   \item \spxentry{load\_edge\_activity\_raw()}\spxextra{in module py3plex.core.parsers}, 
 		\hyperpage{388}
   \item \spxentry{load\_embedding()}\spxextra{py3plex.core.multinet.multi\_layer\_network method}, 
-		\hyperpage{375}
+		\hyperpage{376}
   \item \spxentry{load\_from\_parquet()}\spxextra{in module py3plex.dsl}, \hyperpage{585}
   \item \spxentry{load\_hinmine\_object()}\spxextra{in module py3plex.core.HINMINE.IO}, 
 		\hyperpage{405}

@@ -199,16 +199,10 @@ make<span class="w"> </span>up
 </pre></div>
 </div>
 <p><strong>Option 2 — Install from source (contributors):</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install from PyPI with GUI extras</span>
-pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o">[</span>gui<span class="o">]</span>
-
-<span class="c1"># Or develop against source</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Develop against source</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
-<span class="nb">cd</span><span class="w"> </span>py3plex
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[gui]&quot;</span>
-
-<span class="c1"># Navigate to GUI directory and start services (uses Docker Compose)</span>
-<span class="nb">cd</span><span class="w"> </span>gui
+<span class="nb">cd</span><span class="w"> </span>py3plex/gui
+cp<span class="w"> </span>.env.example<span class="w"> </span>.env
 make<span class="w"> </span>up
 </pre></div>
 </div>

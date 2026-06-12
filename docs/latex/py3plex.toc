@@ -1191,12 +1191,12 @@
 \contentsline {subsubsection}{GUI Actions vs py3plex APIs}{978}{subsubsection*.3958}%
 \contentsline {subsubsection}{When to Use the GUI}{979}{subsubsection*.3959}%
 \contentsline {subsection}{\numberline {3.8.5}Py3plex GUI}{979}{subsection.3.8.5}%
-\contentsline {subsubsection}{Visual Overview}{980}{subsubsection*.3960}%
+\contentsline {subsubsection}{Visual Overview}{979}{subsubsection*.3960}%
 \contentsline {subsubsection}{Prerequisites}{980}{subsubsection*.3961}%
 \contentsline {subsubsection}{Quickstart}{980}{subsubsection*.3962}%
-\contentsline {subsubsection}{Architecture}{981}{subsubsection*.3963}%
-\contentsline {subsubsection}{Features}{982}{subsubsection*.3964}%
-\contentsline {paragraph}{Data Loading}{982}{paragraph*.3965}%
+\contentsline {subsubsection}{Architecture}{980}{subsubsection*.3963}%
+\contentsline {subsubsection}{Features}{981}{subsubsection*.3964}%
+\contentsline {paragraph}{Data Loading}{981}{paragraph*.3965}%
 \contentsline {paragraph}{Visualization}{982}{paragraph*.3966}%
 \contentsline {paragraph}{Analysis (Async via Celery)}{983}{paragraph*.3967}%
 \contentsline {paragraph}{Export}{984}{paragraph*.3968}%
