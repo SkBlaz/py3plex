@@ -6174,6 +6174,41 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
             result.meta['provenance'] = {}
         result.meta['provenance']['dynamics_config_hash'] = dynamics_config.config_hash()
         result.meta['provenance']['dynamics_config'] = dynamics_config.to_dict()
+        result.meta['provenance']['model'] = {
+            'name': stmt.process_name,
+            'parameters': dict(stmt.params or {}),
+        }
+        result.meta['provenance']['randomness'] = {
+            'seed': stmt.seed if stmt.seed is not None else 42,
+        }
+        result.meta['provenance']['run'] = {
+            'steps': stmt.steps or 100,
+            'replicates': stmt.replicates or 1,
+        }
+        if stmt.seed_query is not None:
+            strategy = 'query'
+        elif stmt.seed_fraction is not None:
+            strategy = 'fraction'
+        else:
+            strategy = 'default_fraction'
+        result.meta['provenance']['initial_conditions'] = {
+            'strategy': strategy,
+        }
+        node_count = int(len(getattr(network, "core_network", {}).nodes())) if getattr(network, "core_network", None) is not None else 0
+        edge_count = int(len(getattr(network, "core_network", {}).edges())) if getattr(network, "core_network", None) is not None else 0
+        layers = list(network.get_layers()) if hasattr(network, "get_layers") else []
+        result.meta['provenance']['network_fingerprint'] = {
+            'node_count': node_count,
+            'edge_count': edge_count,
+            'layer_count': len(layers),
+            'layers': sorted(map(str, layers)),
+        }
+        try:
+            from py3plex import __version__ as _py3plex_version
+        except Exception:
+            _py3plex_version = "unknown"
+        result.meta['provenance']['py3plex_version'] = _py3plex_version
+        result.meta['provenance']['backend'] = "dynamics_executor"
 
     return result
 
