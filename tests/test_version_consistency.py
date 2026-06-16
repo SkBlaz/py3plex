@@ -54,7 +54,7 @@ def test_optional_extra_contains_common_feature_extras():
 
     optional_deps = set(optional["optional"])
     expected = set()
-    for extra_name in ("algos", "viz", "workflows", "arrow", "infomap"):
+    for extra_name in ("algos", "viz", "workflows", "arrow", "infomap", "examples"):
         for dep in optional[extra_name]:
             assert dep in optional_deps
             expected.add(dep)
@@ -89,5 +89,5 @@ def test_release_metadata_alignment_in_docs_and_readme():
     assert f"py3plex_version: {version}" in reproducibility_chapter
     assert f"py3plex:{version}" in docker_appendix
 
-    assert "img.shields.io/badge/lines-171K-blue" in readme
-    assert "img.shields.io/badge/tests-8.9K-blue" in readme
+    assert "img.shields.io/badge/lines-211.3K-blue" in readme
+    assert "img.shields.io/badge/tests-9.2K-blue" in readme
