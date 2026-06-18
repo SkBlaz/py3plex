@@ -155,7 +155,7 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["py3plex*"]
+include = ["py3plex*", "py3plex_mcp*"]
 exclude = ["tests*", "docs*", "examples*"]
 
 [tool.setuptools.exclude-package-data]

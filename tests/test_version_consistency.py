@@ -1,6 +1,5 @@
 from pathlib import Path
 import re
-import tomllib
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,13 +10,18 @@ def _read(path: str) -> str:
 
 
 def _project_version() -> str:
-    data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    return data["project"]["version"]
+    pyproject = _read("pyproject.toml")
+    project_block = pyproject.split("[project]", 1)[1].split("\n[", 1)[0]
+    return _extract(r'^version\s*=\s*"([^"]+)"', project_block, "pyproject.toml::project.version")
 
 
 def _project_optional_deps() -> dict:
-    data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    return data["project"]["optional-dependencies"]
+    pyproject = _read("pyproject.toml")
+    block = pyproject.split("[project.optional-dependencies]", 1)[1].split("\n[", 1)[0]
+    optional: dict[str, list[str]] = {}
+    for key, values_block in re.findall(r"^([A-Za-z0-9_-]+)\s*=\s*\[(.*?)\]", block, re.MULTILINE | re.DOTALL):
+        optional[key] = re.findall(r'"([^"]+)"', values_block)
+    return optional
 
 
 def _extract(pattern: str, text: str, label: str) -> str:
@@ -54,7 +58,7 @@ def test_optional_extra_contains_common_feature_extras():
 
     optional_deps = set(optional["optional"])
     expected = set()
-    for extra_name in ("algos", "viz", "workflows", "arrow", "infomap"):
+    for extra_name in ("algos", "viz", "workflows", "arrow", "infomap", "examples"):
         for dep in optional[extra_name]:
             assert dep in optional_deps
             expected.add(dep)
@@ -89,5 +93,5 @@ def test_release_metadata_alignment_in_docs_and_readme():
     assert f"py3plex_version: {version}" in reproducibility_chapter
     assert f"py3plex:{version}" in docker_appendix
 
-    assert "img.shields.io/badge/lines-171K-blue" in readme
-    assert "img.shields.io/badge/tests-8.9K-blue" in readme
+    assert "img.shields.io/badge/lines-211.3K-blue" in readme
+    assert "img.shields.io/badge/tests-9.2K-blue" in readme
