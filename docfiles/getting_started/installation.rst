@@ -268,9 +268,12 @@ These are automatically installed with py3plex:
 * ``matplotlib>=3.3.0`` - Static visualization
 * ``scikit-learn>=0.24.0`` - Machine learning utilities
 * ``tqdm>=4.40.0`` - Progress bars
-* ``rdflib>=6.0.0`` - Semantic web support
 * ``bitarray>=2.0.0`` - Efficient boolean arrays
-* ``gensim>=4.0.0`` - Topic modeling utilities
+
+Optional algorithm extras include:
+
+* ``rdflib>=6.0.0`` - Semantic web support utilities
+* ``gensim>=4.0.0`` - Topic modeling and embedding helpers
 * ``seaborn>=0.11.0`` - Statistical plotting
 * ``cython>=0.29.0`` - Extension compilation support
 
