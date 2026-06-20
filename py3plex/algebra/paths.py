@@ -326,6 +326,6 @@ def _value_as_float(value: Any) -> float:
         # For custom semiring values, try to convert
         try:
             return float(value)
-        except:
+        except (TypeError, ValueError, OverflowError):
             # Fallback: use hash for ordering (not ideal but deterministic)
             return float(hash(value) % 10000)
