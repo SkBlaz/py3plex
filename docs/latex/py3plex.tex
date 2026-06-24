@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jun 19, 2026}
+\date{Jun 24, 2026}
 \release{2.0.0}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -76632,7 +76632,7 @@ De Domenico et al. (2015), “Ranking in interconnected multilayer networks”
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.algorithms.statistics.multilayer\_statistics.}}\sphinxbfcode{\sphinxupquote{interdependence}}}
-{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{sample\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{100}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{sample\_size}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{100}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {{ $\rightarrow$ float}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -76666,6 +76666,10 @@ dᵢⱼᵃᵛᵍ = (1/L) Σₐ dᵢⱼᵅ is the average shortest path across in
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{sample\_size}} \textendash{} Number of node pairs to sample for estimation
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{seed}} \textendash{} Optional random seed for deterministic node\sphinxhyphen{}pair sampling
 
 \end{itemize}
 
@@ -77754,7 +77758,7 @@ Buldyrev et al. (2010), “Catastrophic cascade of failures in interdependent ne
 \pysigstartsignatures
 \pysiglinewithargsret
 {\sphinxcode{\sphinxupquote{py3plex.algorithms.statistics.multilayer\_statistics.}}\sphinxbfcode{\sphinxupquote{resilience}}}
-{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{perturbation\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}layer\_removal\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{perturbation\_param}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
+{\sphinxparam{\DUrole{n}{network}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Any}}\sphinxparamcomma \sphinxparam{\DUrole{n}{perturbation\_type}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{\textquotesingle{}layer\_removal\textquotesingle{}}}\sphinxparamcomma \sphinxparam{\DUrole{n}{perturbation\_param}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }float\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{n}{seed}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{int\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}}
 {{ $\rightarrow$ float}}
 \pysigstopsignatures
 \sphinxAtStartPar
@@ -77803,6 +77807,10 @@ R = 0 indicates complete fragmentation
 \item {} 
 \sphinxAtStartPar
 \sphinxstyleliteralstrong{\sphinxupquote{perturbation\_param}} \textendash{} Layer to remove or fraction of inter\sphinxhyphen{}layer edges
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{seed}} \textendash{} Optional random seed for stochastic perturbation steps
 
 \end{itemize}
 

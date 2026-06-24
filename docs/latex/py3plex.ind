@@ -1486,14 +1486,14 @@
   \item \spxentry{layer\_footprint\_cfg}\spxextra{py3plex.dsl.ExplainSpec attribute}, 
 		\hyperpage{455, 456}
   \item \spxentry{layer\_influence\_centrality()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{699}
+		\hyperpage{700}
   \item \spxentry{layer\_names}\spxextra{py3plex.core.multinet.multi\_layer\_network property}, 
 		\hyperpage{374}
   \item \spxentry{layer\_names}\spxextra{py3plex.core.random\_generators.SBMMetadata attribute}, 
 		\hyperpage{396}
   \item \spxentry{layer\_params}\spxextra{py3plex.dsl.DynamicsStmt attribute}, \hyperpage{451}
   \item \spxentry{layer\_redundancy\_coefficient()}\spxextra{in module py3plex.algorithms.statistics.multilayer\_statistics}, 
-		\hyperpage{700}
+		\hyperpage{701}
   \item \spxentry{LAYER\_REF}\spxextra{py3plex.dsl.AttrType attribute}, \hyperpage{418}
   \item \spxentry{layer\_scope}\spxextra{py3plex.dsl.CommunityRecord attribute}, 
 		\hyperpage{432, 433}
