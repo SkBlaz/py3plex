@@ -344,7 +344,7 @@ def _run_louvain(
     # Compute modularity
     try:
         mod = compute_modularity(partition, G)
-    except:
+    except (ValueError, TypeError, KeyError, nx.NetworkXException):
         mod = None
     
     return partition, mod

@@ -8,6 +8,7 @@ This module provides helper functions for:
 """
 
 import pandas as pd
+import datetime
 from typing import Any, Dict, List, Optional, Union
 from py3plex.exceptions import MetaAnalysisError
 
@@ -279,8 +280,6 @@ def aggregate_provenance(
     Returns:
         Aggregated provenance dictionary
     """
-    import datetime
-
     networks_provenance = []
 
     for net_name in network_names:
@@ -323,12 +322,12 @@ def aggregate_provenance(
         import py3plex
 
         version = py3plex.__version__
-    except:
+    except (ImportError, AttributeError):
         version = "unknown"
 
     return {
         "engine": "dsl_v2_meta",
-        "timestamp_utc": datetime.datetime.utcnow().isoformat() + "Z",
+        "timestamp_utc": datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z"),
         "py3plex_version": version,
         "networks": networks_provenance,
     }

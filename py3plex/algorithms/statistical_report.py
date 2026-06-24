@@ -14,6 +14,7 @@ Date: 2025
 
 from typing import Any, Dict, List, Optional
 import numpy as np
+import networkx as nx
 from collections import defaultdict
 import json
 
@@ -111,9 +112,8 @@ def _compute_basic_stats(network: Any) -> Dict:
     
     # Compute density
     try:
-        import networkx as nx
         stats['density'] = nx.density(G)
-    except:
+    except (nx.NetworkXException, TypeError, ValueError):
         pass
     
     return stats
@@ -203,30 +203,28 @@ def _compute_clustering_stats(network: Any) -> Dict:
     G = network.core_network
     
     try:
-        import networkx as nx
-        
         # Global clustering
         global_clustering = nx.average_clustering(G.to_undirected())
-        
+
         # Per-node clustering
         clustering = nx.clustering(G.to_undirected())
         clustering_values = list(clustering.values())
-        
+
         stats = {
             'global_clustering': global_clustering,
             'mean_clustering': np.mean(clustering_values) if clustering_values else 0,
             'std_clustering': np.std(clustering_values) if clustering_values else 0,
         }
-        
+
         # Try to compute transitivity
         try:
             stats['transitivity'] = nx.transitivity(G.to_undirected())
-        except:
+        except (nx.NetworkXException, TypeError, ValueError):
             pass
-        
+
         return stats
-    
-    except:
+
+    except (nx.NetworkXException, TypeError, ValueError):
         return {}
 
 

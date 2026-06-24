@@ -198,6 +198,13 @@ class TestMultilayerStatistics(unittest.TestCase):
         interdep = mls.interdependence(self.simple_network, sample_size=10)
         # Should be a positive number
         self.assertTrue(interdep > 0)
+
+    @skip_if_no_deps
+    def test_interdependence_seed_is_deterministic(self):
+        """Test that interdependence uses caller-provided seed deterministically."""
+        interdep_1 = mls.interdependence(self.simple_network, sample_size=10, seed=123)
+        interdep_2 = mls.interdependence(self.simple_network, sample_size=10, seed=123)
+        self.assertAlmostEqual(interdep_1, interdep_2)
     
     @skip_if_no_deps
     def test_supra_laplacian_spectrum(self):
@@ -257,6 +264,23 @@ class TestMultilayerStatistics(unittest.TestCase):
         r = mls.resilience(self.simple_network, 'coupling_removal', perturbation_param=0.5)
         # Should be between 0 and 1
         self.assertTrue(0 <= r <= 1)
+
+    @skip_if_no_deps
+    def test_resilience_seed_is_deterministic(self):
+        """Test that resilience coupling perturbation respects provided seed."""
+        r1 = mls.resilience(
+            self.simple_network,
+            'coupling_removal',
+            perturbation_param=0.5,
+            seed=99
+        )
+        r2 = mls.resilience(
+            self.simple_network,
+            'coupling_removal',
+            perturbation_param=0.5,
+            seed=99
+        )
+        self.assertAlmostEqual(r1, r2)
     
     @skip_if_no_deps
     def test_multilayer_modularity_wrapper(self):

@@ -1432,7 +1432,7 @@ def plot_small_multiples(
         try:
             import matplotlib.cm as cm
             color_palette = cm.get_cmap('Set2')
-        except:
+        except (ImportError, AttributeError, ValueError):
             color_palette = None
 
     # Compute shared layout if requested
@@ -1607,7 +1607,7 @@ def plot_edge_colored_projection(
             try:
                 import matplotlib.cm as cm
                 cmap = cm.get_cmap('tab10')
-            except:
+            except (ImportError, AttributeError, ValueError):
                 cmap = None
 
         if cmap:
@@ -1987,7 +1987,7 @@ def plot_radial_layers(
         try:
             import matplotlib.cm as cm
             color_palette = cm.get_cmap('Set2')
-        except:
+        except (ImportError, AttributeError, ValueError):
             color_palette = None
 
     # Draw semi-transparent circular bands around each layer for visual grouping
