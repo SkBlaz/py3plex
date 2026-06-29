@@ -519,13 +519,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.visualization.benchmark_visualizations.table_to_latex"><code class="docutils literal notranslate"><span class="pre">table_to_latex()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#wrappers">Wrappers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.TopKRanker"><code class="docutils literal notranslate"><span class="pre">TopKRanker</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.benchmark_node_classification"><code class="docutils literal notranslate"><span class="pre">benchmark_node_classification()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.sparse2graph"><code class="docutils literal notranslate"><span class="pre">sparse2graph()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#wrappers">Wrappers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-o-operations">I/O Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#aggregation-and-network-operations">Aggregation and Network Operations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#py3plex.multinet.aggregation.aggregate_layers"><code class="docutils literal notranslate"><span class="pre">aggregate_layers()</span></code></a></li>
@@ -636,7 +630,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#embeddings-and-wrappers">Embeddings and Wrappers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-py3plex.ml.embedding.base">Core Embedding APIs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-py3plex.wrappers.train_node2vec_embedding">Wrapper Entry Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wrapper-entry-points">Wrapper Entry Points</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#network-motifs-and-patterns">Network Motifs and Patterns</a></li>
@@ -30721,172 +30715,6 @@ faster layouts (circular, random, spectral) or matrix visualization.</p>
 <section id="wrappers">
 <h2>Wrappers<a class="headerlink" href="#wrappers" title="Link to this heading"></a></h2>
 <p>Convenience wrappers for embedding and benchmarking workflows.</p>
-<dl class="py class" id="module-py3plex.wrappers.benchmark_nodes">
-<dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.TopKRanker">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.benchmark_nodes.</span></span><span class="sig-name descname"><span class="pre">TopKRanker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.TopKRanker" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">OneVsRestClassifier</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.TopKRanker.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.TopKRanker.predict" title="Link to this definition"></a></dt>
-<dd><p>Predict top K labels for each sample.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> – Feature matrix</p></li>
-<li><p><strong>top_k_list</strong> – List of K values for each sample</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of predicted labels for each sample</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.TopKRanker.set_partial_fit_request">
-<span class="sig-name descname"><span class="pre">set_partial_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.TopKRanker" title="py3plex.wrappers.benchmark_nodes.TopKRanker"><span class="pre">TopKRanker</span></a></span></span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.TopKRanker.set_partial_fit_request" title="Link to this definition"></a></dt>
-<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code> method.</p>
-<p>Note that this method is only relevant when this estimator is used as a
-sub-estimator within a <span class="xref std std-term">meta-estimator</span> and metadata routing is enabled
-with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
-Please check the <span class="xref std std-ref">User Guide</span> on how the routing
-mechanism works.</p>
-<p>The options for each parameter are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
-</ul>
-<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
-existing request. This allows you to change the request for some
-parameters and not others.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.3.</span></p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>classes</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">classes</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code>.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>object</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.TopKRanker.set_predict_request">
-<span class="sig-name descname"><span class="pre">set_predict_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.TopKRanker" title="py3plex.wrappers.benchmark_nodes.TopKRanker"><span class="pre">TopKRanker</span></a></span></span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.TopKRanker.set_predict_request" title="Link to this definition"></a></dt>
-<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.</p>
-<p>Note that this method is only relevant when this estimator is used as a
-sub-estimator within a <span class="xref std std-term">meta-estimator</span> and metadata routing is enabled
-with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
-Please check the <span class="xref std std-ref">User Guide</span> on how the routing
-mechanism works.</p>
-<p>The options for each parameter are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">predict</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">predict</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
-</ul>
-<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
-existing request. This allows you to change the request for some
-parameters and not others.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.3.</span></p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>top_k_list</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">top_k_list</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">predict</span></code>.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>object</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.TopKRanker.set_score_request">
-<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.wrappers.benchmark_nodes.TopKRanker" title="py3plex.wrappers.benchmark_nodes.TopKRanker"><span class="pre">TopKRanker</span></a></span></span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.TopKRanker.set_score_request" title="Link to this definition"></a></dt>
-<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
-<p>Note that this method is only relevant when this estimator is used as a
-sub-estimator within a <span class="xref std std-term">meta-estimator</span> and metadata routing is enabled
-with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
-Please check the <span class="xref std std-ref">User Guide</span> on how the routing
-mechanism works.</p>
-<p>The options for each parameter are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
-</ul>
-<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
-existing request. This allows you to change the request for some
-parameters and not others.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.3.</span></p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sample_weight</strong> (<em>str</em><em>, </em><em>True</em><em>, </em><em>False</em><em>, or </em><em>None</em><em>,                     </em><em>default=sklearn.utils.metadata_routing.UNCHANGED</em>) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>object</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.benchmark_node_classification">
-<span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.benchmark_nodes.</span></span><span class="sig-name descname"><span class="pre">benchmark_node_classification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.benchmark_node_classification" title="Link to this definition"></a></dt>
-<dd><p>Benchmark node classification using embeddings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – Path to embeddings file</p></li>
-<li><p><strong>core_network</strong> – Network adjacency matrix</p></li>
-<li><p><strong>labels_matrix</strong> – Labels for nodes</p></li>
-<li><p><strong>percent</strong> – Training percentage or “all” for multiple percentages</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dictionary of classification results</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.main">
-<span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.benchmark_nodes.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.main" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="py3plex.wrappers.benchmark_nodes.sparse2graph">
-<span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.benchmark_nodes.</span></span><span class="sig-name descname"><span class="pre">sparse2graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.wrappers.benchmark_nodes.sparse2graph" title="Link to this definition"></a></dt>
-<dd><p>Convert sparse matrix to graph dictionary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> – Sparse matrix representation of graph</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dictionary mapping node IDs to lists of neighbor IDs</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="i-o-operations">
 <h2>I/O Operations<a class="headerlink" href="#i-o-operations" title="Link to this heading"></a></h2>
@@ -33738,79 +33566,8 @@ This normalization is required for PageRank-style random walk algorithms.</p>
 </dd></dl>
 
 </section>
-<section id="module-py3plex.wrappers.train_node2vec_embedding">
-<span id="wrapper-entry-points"></span><h3>Wrapper Entry Points<a class="headerlink" href="#module-py3plex.wrappers.train_node2vec_embedding" title="Link to this heading"></a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary">
-<span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.train_node2vec_embedding.</span></span><span class="sig-name descname"><span class="pre">call_node2vec_binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.wrappers.train_node2vec_embedding.call_node2vec_binary" title="Link to this definition"></a></dt>
-<dd><p>Call the Node2Vec C++ binary with specified parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_graph</strong> – Path to input graph file</p></li>
-<li><p><strong>output_graph</strong> – Path to output embedding file</p></li>
-<li><p><strong>p</strong> – Return parameter</p></li>
-<li><p><strong>q</strong> – In-out parameter</p></li>
-<li><p><strong>dimension</strong> – Embedding dimension</p></li>
-<li><p><strong>directed</strong> – Whether graph is directed</p></li>
-<li><p><strong>weighted</strong> – Whether graph is weighted</p></li>
-<li><p><strong>binary</strong> – Path to node2vec binary (defaults to PY3PLEX_NODE2VEC_BINARY env var or “./node2vec”)</p></li>
-<li><p><strong>timeout</strong> – Maximum execution time in seconds</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#py3plex.exceptions.ExternalToolError" title="py3plex.exceptions.ExternalToolError"><strong>ExternalToolError</strong></a> – If binary is not found or execution fails</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="py3plex.wrappers.train_node2vec_embedding.learn_embedding">
-<span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.train_node2vec_embedding.</span></span><span class="sig-name descname"><span class="pre">learn_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core_network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_outfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'out.emb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binary_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'[0.25,0.50,1,2,4]'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.wrappers.train_node2vec_embedding.learn_embedding" title="Link to this definition"></a></dt>
-<dd><p>Learn node embeddings for a network.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>core_network</strong> – NetworkX graph</p></li>
-<li><p><strong>labels</strong> – Node labels</p></li>
-<li><p><strong>ssize</strong> – Sample size</p></li>
-<li><p><strong>embedding_outfile</strong> – Output file for embeddings</p></li>
-<li><p><strong>p</strong> – Return parameter</p></li>
-<li><p><strong>q</strong> – In-out parameter</p></li>
-<li><p><strong>binary_path</strong> – Path to node2vec binary (defaults to PY3PLEX_NODE2VEC_BINARY env var or “./node2vec”)</p></li>
-<li><p><strong>parameter_range</strong> – String representation of parameter range list</p></li>
-<li><p><strong>timeout</strong> – Maximum execution time in seconds per call</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of (method_name, elapsed_time)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="py3plex.wrappers.train_node2vec_embedding.n2v_embedding">
-<span class="sig-prename descclassname"><span class="pre">py3plex.wrappers.train_node2vec_embedding.</span></span><span class="sig-name descname"><span class="pre">n2v_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">G</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'test.emb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binary_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_dimension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#py3plex.wrappers.train_node2vec_embedding.n2v_embedding" title="Link to this definition"></a></dt>
-<dd><p>Train Node2Vec embeddings with parameter optimization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>G</strong> – NetworkX graph</p></li>
-<li><p><strong>targets</strong> – Target labels for nodes</p></li>
-<li><p><strong>verbose</strong> – Whether to print verbose output</p></li>
-<li><p><strong>sample_size</strong> – Sample size for training</p></li>
-<li><p><strong>outfile_name</strong> – Output embedding file name</p></li>
-<li><p><strong>p</strong> – Return parameter (None triggers grid search)</p></li>
-<li><p><strong>q</strong> – In-out parameter (None triggers grid search)</p></li>
-<li><p><strong>binary_path</strong> – Path to node2vec binary (defaults to PY3PLEX_NODE2VEC_BINARY env var or “./node2vec”)</p></li>
-<li><p><strong>parameter_range</strong> – Range of parameters to search</p></li>
-<li><p><strong>embedding_dimension</strong> – Dimension of embeddings</p></li>
-<li><p><strong>timeout</strong> – Maximum execution time in seconds per call</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="wrapper-entry-points">
+<h3>Wrapper Entry Points<a class="headerlink" href="#wrapper-entry-points" title="Link to this heading"></a></h3>
 </section>
 </section>
 <section id="network-motifs-and-patterns">
