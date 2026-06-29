@@ -3428,6 +3428,16 @@ class QueryBuilder:
         ast = Query(explain=False, select=self._select)
         return GraphProgram.from_ast(ast)
 
+    def compile(self) -> "GraphProgram":
+        """Compile query into a GraphProgram.
+
+        This is a public alias for :meth:`to_program` and mirrors the
+        executable program workflow:
+
+        ``Q...compile().execute(network)``.
+        """
+        return self.to_program()
+
     def embed(
         self,
         method: str = "netmf",

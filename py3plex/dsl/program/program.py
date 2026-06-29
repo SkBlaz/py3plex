@@ -30,10 +30,11 @@ import copy
 import hashlib
 import json
 import time
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from ..ast import Query, SelectStmt
+from ..ast import Query, SelectStmt, Target, ast_from_json, ast_to_json
 from ..executor import execute_ast
 from ..result import QueryResult
 from .types import Type, infer_type, type_check, TypeCheckError
@@ -416,8 +417,11 @@ class GraphProgram:
         
         return apply_rewrites(self, rules=rules, context=context, fixpoint=fixpoint)
     
-    def explain(self) -> str:
+    def explain(self, network: Optional[Any] = None) -> str:
         """Generate human-readable explanation of the program.
+
+        If ``network`` is provided, this includes static lint/explain information
+        from DSL linting utilities.
         
         Returns:
             Multi-line string explaining what the program does
@@ -468,8 +472,30 @@ class GraphProgram:
         
         # Hash
         lines.append(f"Hash: {self.program_hash[:16]}...")
+
+        if network is not None:
+            try:
+                from ..lint import explain as lint_explain
+
+                explained = lint_explain(self.canonical_ast, graph=network)
+                lines.append("Static cost estimate: " + explained.cost_estimate)
+                if explained.diagnostics:
+                    lines.append(f"Diagnostics: {len(explained.diagnostics)} issue(s)")
+            except Exception:
+                # Keep base explain robust even if lint/explain tools fail.
+                pass
         
         return "\n".join(lines)
+
+    def lint(
+        self,
+        network: Optional[Any] = None,
+        schema: Optional[Any] = None,
+    ) -> List[Any]:
+        """Run DSL lint checks for this program's AST."""
+        from ..lint import lint as lint_query
+
+        return lint_query(self.canonical_ast, graph=network, schema=schema)
     
     def diff(self, other: GraphProgram) -> Dict[str, Any]:
         """Compute structural difference between two programs.
@@ -529,6 +555,18 @@ class GraphProgram:
             "program_hash": self.program_hash,
             "metadata": self.metadata.to_dict(),
         }
+
+    def save(self, path: str) -> None:
+        """Save program to disk as JSON."""
+        payload = {
+            "schema_version": "1.0",
+            "program_hash": self.program_hash,
+            "ast_json": ast_to_json(self.canonical_ast, canonical=False),
+            "metadata": self.metadata.to_dict(),
+        }
+        out_path = Path(path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> GraphProgram:
@@ -554,6 +592,31 @@ class GraphProgram:
             "AST deserialization not yet implemented. "
             "Use GraphProgram.from_ast() to create programs."
         )
+
+    @classmethod
+    def load(cls, path: str) -> GraphProgram:
+        """Load program from disk saved via :meth:`save`."""
+        in_path = Path(path)
+        payload = json.loads(in_path.read_text(encoding="utf-8"))
+        ast = ast_from_json(payload["ast_json"])
+        if isinstance(ast.select.target, str):
+            ast.select.target = Target(ast.select.target)
+
+        loaded = cls.from_ast(
+            ast,
+            provenance=(payload.get("metadata") or {}).get("provenance_chain"),
+            cost_hints=(payload.get("metadata") or {}).get("cost_model_hints"),
+            randomness_meta=(payload.get("metadata") or {}).get("randomness_metadata"),
+        )
+
+        expected_hash = payload.get("program_hash")
+        if expected_hash is not None and loaded.program_hash != expected_hash:
+            raise ValueError(
+                "Loaded GraphProgram hash mismatch: "
+                f"expected {expected_hash}, got {loaded.program_hash}"
+            )
+
+        return loaded
 
 
 def compose(p1: GraphProgram, p2: GraphProgram) -> GraphProgram:
