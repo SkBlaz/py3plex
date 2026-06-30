@@ -14,6 +14,8 @@ import pytest
 from hypothesis import given, settings, assume, strategies as st, example
 from hypothesis import HealthCheck
 import networkx as nx
+import tempfile
+from pathlib import Path
 
 # Import Graph Program modules
 try:
@@ -102,6 +104,67 @@ def simple_node_query(draw):
         builder = builder.compute(measure)
     
     return builder
+
+
+# ============================================================================
+# Property Tests: Public GraphProgram lifecycle APIs
+# ============================================================================
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=30)
+@given(query_builder=simple_node_query())
+def test_compile_alias_matches_to_program(query_builder):
+    """Property: compile() is a stable alias for to_program()."""
+    program_from_compile = query_builder.compile()
+    program_from_to_program = query_builder.to_program()
+
+    assert isinstance(program_from_compile, GraphProgram)
+    assert program_from_compile.hash() == program_from_to_program.hash()
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
+@given(
+    network=small_multilayer_network(),
+    query_builder=simple_node_query(),
+)
+def test_program_lint_returns_list_for_compiled_program(network, query_builder):
+    """Property: lint() on compiled programs always returns diagnostics list."""
+    program = query_builder.compile()
+    diagnostics = program.lint(network=network)
+
+    assert isinstance(diagnostics, list)
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
+@given(
+    network=small_multilayer_network(),
+    query_builder=simple_node_query(),
+)
+def test_program_explain_accepts_network_context(network, query_builder):
+    """Property: explain(network) is robust and includes core explanation fields."""
+    program = query_builder.compile()
+    explanation = program.explain(network=network)
+
+    assert isinstance(explanation, str)
+    assert "Program: SELECT" in explanation
+    assert "Hash:" in explanation
+
+
+@pytest.mark.property
+@settings(deadline=None, max_examples=20)
+@given(query_builder=simple_node_query())
+def test_program_save_load_roundtrip_hash_stable_property(query_builder):
+    """Property: save/load roundtrip preserves GraphProgram hash."""
+    program = query_builder.compile()
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        path = Path(tmp_dir) / "program.py3plex.json"
+        program.save(str(path))
+        loaded = GraphProgram.load(str(path))
+
+    assert loaded.hash() == program.hash()
 
 
 # ============================================================================
