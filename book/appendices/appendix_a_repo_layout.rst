@@ -23,8 +23,9 @@ The main package is organized around analytical concerns: representation
 (``dsl/``), simulation (``dynamics/``), data interchange (``io/`` and
 ``out_of_core/``), algebraic path/query machinery (``algebra/`` and
 ``semiring/``), embeddings (``embeddings/`` and ``ml/embedding/``), experiment
-tracking (``experiments/``), meta-analysis (``meta/``), and cost/planning
-support (``optimizer/`` and ``dsl/program/``).
+tracking (``experiments/``), uncertainty quantification (``uncertainty/``),
+visual outputs (``visualization/``), meta-analysis (``meta/``), and
+cost/planning support (``optimizer/`` and ``dsl/program/``).
 
 Current Package Landmarks
 -------------------------
@@ -51,6 +52,10 @@ capabilities:
  Streaming query execution over disk-resident edge data and cost-based planning
  infrastructure for larger analyses.
 
+``py3plex/uncertainty`` and ``py3plex/visualization``
+ Bootstrap, perturbation, and partition uncertainty utilities plus plotting and
+ rendering helpers for multilayer outputs.
+
 Chapter-to-Example Map
 ----------------------
 
@@ -63,6 +68,9 @@ Chapter-to-Example Map
 :ref:`algorithms-chapter`
   ``examples/network_analysis/`` for centrality, communities, and dynamics.
 
+:ref:`visualization-chapter`
+  ``examples/visualization/`` for rendering-oriented examples.
+
 :ref:`dsl-chapter` and :ref:`advanced-dsl-chapter`
   ``examples/dsl_zoo/`` for DSL patterns and reusable snippets.
 
@@ -74,6 +82,9 @@ Chapter-to-Example Map
 :ref:`algorithms-chapter`
   ``examples/advanced/example_metapath2vec.py`` and related embedding examples
   for the current embedding surface.
+
+:ref:`advanced-dsl-chapter`
+  ``examples/pipelines/`` for pipeline and workflow composition examples.
 
 :ref:`gui-chapter`
   ``gui/`` for local GUI setup and interaction flow.
