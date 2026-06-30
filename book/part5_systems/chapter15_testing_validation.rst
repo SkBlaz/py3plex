@@ -47,6 +47,28 @@ Practical Workflow
 * preserve small synthetic fixtures with known expected behavior,
 * treat regression diffs as analytical review prompts, not only coding errors.
 
+Current Repository Validation Map
+---------------------------------
+
+The repository now contains focused tests for the newer subsystems discussed in
+this edition:
+
+* ``tests/test_dsl_lint.py`` for static DSL diagnostics,
+* ``tests/test_program.py`` and ``tests/test_dsl_program_rewrite.py`` for
+  ``GraphProgram`` identity, typing, and rewrite behavior,
+* ``tests/test_algebra_*.py`` and ``tests/property/test_algebra_properties.py``
+  for semiring/algebra invariants,
+* ``tests/test_meta_analysis.py`` and ``tests/property/test_meta_properties.py``
+  for pooled-effect semantics,
+* ``tests/test_out_of_core.py`` for streaming-query boundaries,
+* ``tests/test_metapath2vec.py`` and embedding examples for representation
+  learning behavior.
+
+Use these files as starting points when changing the corresponding package
+families.  They are more reliable than searching for a broad "full suite" entry
+point because each subsystem has different optional dependencies and runtime
+costs.
+
 Example Validation Questions
 ----------------------------
 

@@ -3,6 +3,7 @@ import tomllib
 
 
 BOOK_ROOT = Path(__file__).resolve().parents[1] / "book"
+REPO_ROOT = BOOK_ROOT.parent
 
 
 def _read(path: str) -> str:
@@ -51,3 +52,40 @@ def test_case_study_3_is_authored_and_not_template_placeholder():
     assert "transportation resilience claims" in text
     assert "when completed" not in text
     assert "To complete:" not in text
+
+
+def test_book_mentions_current_repository_subsystems():
+    combined_book = "\n".join(
+        path.read_text(encoding="utf-8") for path in BOOK_ROOT.rglob("*.rst")
+    )
+    expected_subsystems = {
+        "py3plex/algebra": "py3plex/algebra",
+        "py3plex/embeddings": "py3plex/embeddings",
+        "py3plex/dsl/lint": "py3plex/dsl/lint",
+        "py3plex/dsl/program": "py3plex/dsl/program",
+        "py3plex/experiments": "py3plex/experiments",
+        "py3plex/meta": "py3plex/meta",
+        "py3plex/out_of_core": "py3plex/out_of_core",
+        "py3plex/optimizer": "py3plex/optimizer",
+        "py3plex/ml/embedding": "py3plex/ml/embedding",
+    }
+
+    for path, mention in expected_subsystems.items():
+        assert (REPO_ROOT / path).exists(), f"Expected subsystem path missing: {path}"
+        assert mention in combined_book, f"Book does not mention current subsystem {mention}"
+
+
+def test_book_points_to_current_addition_examples():
+    combined_book = "\n".join(
+        path.read_text(encoding="utf-8") for path in BOOK_ROOT.rglob("*.rst")
+    )
+    expected_examples = [
+        "examples/out_of_core/",
+        "examples/advanced/example_graph_program.py",
+        "examples/advanced/example_rewrite_engine.py",
+        "examples/advanced/example_metapath2vec.py",
+    ]
+
+    for example in expected_examples:
+        assert (REPO_ROOT / example.rstrip("/")).exists(), f"Expected example missing: {example}"
+        assert example in combined_book, f"Book does not point to current example {example}"
