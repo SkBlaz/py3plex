@@ -45,6 +45,37 @@ Common Measures
 
 ``degree``, ``betweenness_centrality``, ``closeness_centrality``, ``pagerank``, ``clustering``
 
+Current Advanced Surfaces
+-------------------------
+
+This compact reference lists the repository additions used elsewhere in the
+book.  Treat these as entry points, then inspect module docstrings and examples
+for supported arguments.
+
+``py3plex.dsl.lint``
+  ``lint(query_ast, graph=network)`` and ``explain(query_ast, graph=network)``
+  for static diagnostics before execution.
+
+``py3plex.dsl.program``
+  ``GraphProgram.from_ast(...)``, ``apply_rewrites(...)``,
+  ``estimate_program_cost(...)``, and program fingerprints for reusable DSL
+  workflows.
+
+``py3plex.algebra`` / ``py3plex.semiring``
+  Semiring registry, path, closure, fixed-point, and witness utilities.
+
+``py3plex.embeddings`` / ``py3plex.ml.embedding``
+  NetMF, MetaPath2Vec, Node2Vec, DeepWalk, LINE, multiplex embeddings, link
+  operators, and evaluation helpers.
+
+``py3plex.out_of_core``
+  ``OutOfCoreNetwork`` plus streaming execution helpers for supported
+  disk-backed query patterns.
+
+``py3plex.meta`` and ``py3plex.experiments``
+  Meta-analysis builders/results and filesystem-backed experiment records for
+  reproducible multi-run comparisons.
+
 Result Export
 -------------
 
