@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Jun 29, 2026}
+\date{Jul 01, 2026}
 \release{2.0.0}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -52900,6 +52900,28 @@ Filtering: All annotation fields support predicate filters
 Computation: Can chain .compute() after community\_auto()
 
 \end{itemize}
+
+\end{fulllineitems}\end{savenotes}
+
+\index{compile() (py3plex.dsl.QueryBuilder method)@\spxentry{compile()}\spxextra{py3plex.dsl.QueryBuilder method}}
+
+\begin{savenotes}\begin{fulllineitems}
+\phantomsection\label{\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.compile}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{compile}}}
+{}
+{{ $\rightarrow$ GraphProgram}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Compile query into a GraphProgram.
+
+\sphinxAtStartPar
+This is a public alias for {\hyperref[\detokenize{reference/api_index:py3plex.dsl.QueryBuilder.to_program}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{to\_program()}}}}} and mirrors the
+executable program workflow:
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Q...compile().execute(network)}}.
 
 \end{fulllineitems}\end{savenotes}
 
