@@ -802,7 +802,13 @@ def _select_to_dict(select: SelectStmt) -> Dict[str, Any]:
     if select.layer_expr:
         result["layer_expr"] = _layer_expr_to_dict(select.layer_expr)
     if select.layer_set:
-        result["layer_set"] = sorted(select.layer_set)
+        from ..layers import LayerSet as _LayerSet
+        if isinstance(select.layer_set, _LayerSet):
+            # LayerSet is an unevaluated expression AST – not iterable;
+            # use its repr as a stable serialisable token.
+            result["layer_set"] = repr(select.layer_set)
+        else:
+            result["layer_set"] = sorted(select.layer_set)
     
     # Compute items
     if select.compute:
