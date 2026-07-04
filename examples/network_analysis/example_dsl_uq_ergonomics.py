@@ -216,13 +216,13 @@ def example_5_autocompute():
 
     net = build_example_network()
 
-    # Order by degree without explicitly computing it
-    # Since .uq() is set, autocompute will use uncertainty
-    print("\n--- Autocompute degree with uncertainty ---")
+    # Compute degree with uncertainty
+    print("\n--- Compute degree with uncertainty ---")
     result = (
         Q.nodes()
+        .compute("degree")
         .uq(method="perturbation", n_samples=30, seed=42)
-        .order_by("-degree")  # Autocomputes degree with uncertainty
+        .order_by("-degree")
         .limit(5)
         .execute(net)
     )
@@ -230,7 +230,7 @@ def example_5_autocompute():
     df = result.to_pandas(expand_uncertainty=True)
     print(df[["id", "degree", "degree_std", "degree_ci95_width"]].head())
 
-    print("\nNote: degree was auto-computed with uncertainty because .uq() was set")
+    print("\nNote: degree was computed with uncertainty because .uq() was set")
 
 
 def example_6_one_liner():

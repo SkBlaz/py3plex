@@ -22,6 +22,7 @@ Example:
     >>> q = Q.edges().during(100.0, 200.0).execute(network)  # Range [100, 200]
 """
 
+import copy
 import logging
 import pandas as pd
 from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING, Tuple
@@ -1794,6 +1795,13 @@ class QueryBuilder:
             ...      .execute(network)
             ... )
         """
+        # Compiler-level explain: if the first positional arg is a network
+        # object (not an int/None), delegate to compile().explain(network).
+        # This enables the idiom  q.explain(net)  documented in AGENTS.md.
+        if neighbors_top is not None and not isinstance(neighbors_top, int):
+            _network = neighbors_top
+            return self.compile().explain(_network)
+
         # Check if this is execution plan mode (no arguments provided)
         has_any_arg = any(
             [
@@ -3785,9 +3793,18 @@ class QueryBuilder:
         # Apply to the next execute() call only (safe even if already absent).
         self.__dict__.pop("_explain_plan_flag", None)
 
-        ast = Query(explain=False, select=self._select)
-        return execute_ast(network, ast, params=params, progress=progress, explain_plan=explain_plan, planner_config=planner)
-    
+        # Determine effective planner config: explicit arg wins, stored config is fallback.
+        effective_planner = planner if planner is not None else getattr(self, '_planner_config', None)
+
+        # Route through the compiler/program path for canonical execution.
+        return self.compile().execute(
+            network,
+            params=params if params else None,
+            progress=progress,
+            explain_plan=explain_plan,
+            planner_config=effective_planner,
+        )
+
     def explain_plan(self) -> "QueryBuilder":
         """Enable plan explanation in the next execute() call.
         
@@ -3838,10 +3855,14 @@ class QueryBuilder:
     def to_ast(self) -> Query:
         """Export as AST Query object.
 
+        Each call returns an independent snapshot of the current builder state.
+        Mutating the builder after calling ``to_ast()`` does not affect previously
+        returned objects, and two calls to ``to_ast()`` do not share mutable state.
+
         Returns:
-            Query AST node
+            Query AST node (deep copy of current builder state)
         """
-        return Query(explain=False, select=self._select)
+        return Query(explain=False, select=copy.deepcopy(self._select))
 
     def to_dsl(self) -> str:
         """Export as DSL string.
