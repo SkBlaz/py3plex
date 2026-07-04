@@ -42,6 +42,9 @@ class UnknownLayerRule:
         
         # Check each layer term
         for term in select.layer_expr.terms:
+            # '*' is a wildcard meaning "all layers" – always valid
+            if term.name == "*":
+                continue
             if term.name not in available_layers:
                 # Find position in query (approximate)
                 span = self._find_layer_span(term.name, context.query)

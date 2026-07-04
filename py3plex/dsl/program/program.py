@@ -240,6 +240,7 @@ class GraphProgram:
         seed: Optional[int] = None,
         n_jobs: int = 1,
         cache_policy: str = "auto",
+        planner_config: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> QueryResult:
         """Execute the program on a network.
@@ -299,6 +300,7 @@ class GraphProgram:
             params=params,
             progress=progress,
             explain_plan=explain_plan,
+            planner_config=planner_config,
         )
         
         # Store in cache if enabled
@@ -420,71 +422,143 @@ class GraphProgram:
     def explain(self, network: Optional[Any] = None) -> str:
         """Generate human-readable explanation of the program.
 
-        If ``network`` is provided, this includes static lint/explain information
-        from DSL linting utilities.
-        
+        Includes compiler-level information: resolved target, layers, logical
+        plan steps, compute metrics with cost hints, and provenance hashes.
+
+        Args:
+            network: Optional network; used for layer resolution and cost hints.
+
         Returns:
-            Multi-line string explaining what the program does
-        
+            Multi-line string explaining what the program does.
+
         Example:
             >>> print(program.explain())
-            Program: SELECT nodes
+            Query target: nodes
             Layers: social, work
-            Compute: degree, betweenness
-            Filter: degree > 5
-            Order by: degree DESC
-            Limit: 10
+            Logical plan:
+              1. ScanNodes
+              2. LayerFilter
+              3. PredicateFilter: degree > 5
+              4. ComputeMetric: betweenness_centrality
+            Warnings:
+              - betweenness_centrality can be expensive on large graphs
+            Provenance:
+              ast_hash: a3b5c7d9...
         """
-        lines = ["Program: SELECT " + str(self.canonical_ast.select.target.value)]
-        
+        # --- Header -----------------------------------------------------------
+        target_val = str(self.canonical_ast.select.target.value)
+        lines = [
+            f"SELECT {target_val}",           # SQL-like summary line (backward compat)
+            f"Query target: {target_val}",    # compiler-style target line
+        ]
+
         select = self.canonical_ast.select
-        
-        # Layer info
+
+        # --- Layers -----------------------------------------------------------
         if select.layer_expr:
-            layer_names = select.layer_expr.get_layer_names()
-            lines.append(f"Layers: {', '.join(layer_names)}")
+            try:
+                layer_names = select.layer_expr.get_layer_names()
+                lines.append(f"Layers: {', '.join(layer_names)}")
+            except Exception:
+                lines.append(f"Layers: {select.layer_expr}")
         elif select.layer_set:
             lines.append(f"Layers: {', '.join(sorted(select.layer_set))}")
-        
-        # Compute info
+
+        # --- Compute metrics --------------------------------------------------
         if select.compute:
             metric_names = [c.result_name for c in select.compute]
-            lines.append(f"Compute: {', '.join(metric_names)}")
-        
-        # Filter info
+            lines.append(f"Compute metrics: {', '.join(metric_names)}")
+
+        # --- Filter -----------------------------------------------------------
         if select.where:
             lines.append(f"Filter: {_format_condition(select.where)}")
-        
-        # Order info
+
+        # --- Order / Limit ----------------------------------------------------
         if select.order_by:
             order_strs = [
-                f"{o.key} {'DESC' if o.desc else 'ASC'}" 
+                f"{o.key} {'DESC' if o.desc else 'ASC'}"
                 for o in select.order_by
             ]
             lines.append(f"Order by: {', '.join(order_strs)}")
-        
-        # Limit info
         if select.limit:
             lines.append(f"Limit: {select.limit}")
-        
-        # Type info
-        lines.append(f"Output type: {self.type_signature}")
-        
-        # Hash
-        lines.append(f"Hash: {self.program_hash[:16]}...")
 
+        # --- Logical plan -----------------------------------------------------
+        logical_steps: List[str] = []
+        if target_val == "nodes":
+            logical_steps.append("ScanNodes")
+        elif target_val == "edges":
+            logical_steps.append("ScanEdges")
+        else:
+            logical_steps.append(f"Scan({target_val})")
+
+        if select.layer_expr or select.layer_set:
+            logical_steps.append("LayerFilter")
+
+        if select.where:
+            logical_steps.append(f"PredicateFilter: {_format_condition(select.where)}")
+
+        if select.compute:
+            for c in select.compute:
+                logical_steps.append(f"ComputeMetric: {c.result_name}")
+
+        if select.group_by:
+            logical_steps.append("GroupByLayer")
+
+        if select.order_by:
+            order_strs = [f"{o.key} {'DESC' if o.desc else 'ASC'}" for o in select.order_by]
+            logical_steps.append(f"OrderBy: {', '.join(order_strs)}")
+
+        if select.limit:
+            logical_steps.append(f"Limit: {select.limit}")
+
+        if logical_steps:
+            lines.append("Logical plan:")
+            for i, step in enumerate(logical_steps, 1):
+                lines.append(f"  {i}. {step}")
+
+        # --- Warnings (cost hints) --------------------------------------------
+        _EXPENSIVE = {"betweenness_centrality", "closeness_centrality", "eigenvector_centrality"}
+        warnings: List[str] = []
+        if select.compute:
+            for c in select.compute:
+                if c.result_name in _EXPENSIVE:
+                    warnings.append(
+                        f"{c.result_name} can be expensive on large graphs"
+                    )
+        if warnings:
+            lines.append("Warnings:")
+            for w in warnings:
+                lines.append(f"  - {w}")
+
+        # --- Planner plan (if available) --------------------------------------
+        if network is not None:
+            try:
+                from ..planner import plan_query
+                planned = plan_query(self.canonical_ast, network=network, params=None, config=None)
+                lines.append(f"Plan hash: {planned.plan_hash}")
+            except Exception:
+                pass
+
+        # --- Provenance / hash ------------------------------------------------
+        lines.append("Provenance:")
+        hash_val = self.program_hash[:16]
+        lines.append(f"  Hash: {hash_val}...")        # backward compat key
+        lines.append(f"  ast_hash: {hash_val}...")
+        lines.append(f"  output type: {self.type_signature}")
+
+        # --- Extra lint diagnostics when network is available -----------------
         if network is not None:
             try:
                 from ..lint import explain as lint_explain
-
                 explained = lint_explain(self.canonical_ast, graph=network)
-                lines.append("Static cost estimate: " + explained.cost_estimate)
+                if explained.cost_estimate:
+                    lines.append(f"Static cost estimate: {explained.cost_estimate}")
                 if explained.diagnostics:
                     lines.append(f"Diagnostics: {len(explained.diagnostics)} issue(s)")
             except Exception:
-                # Keep base explain robust even if lint/explain tools fail.
                 pass
-        
+
         return "\n".join(lines)
 
     def lint(
@@ -496,7 +570,66 @@ class GraphProgram:
         from ..lint import lint as lint_query
 
         return lint_query(self.canonical_ast, graph=network, schema=schema)
-    
+
+    def check(self, network: Optional[Any] = None) -> None:
+        """Perform semantic validation of this program against *network*.
+
+        Raises :class:`~py3plex.dsl.errors.DSLCompileError` if any error-level
+        lint diagnostics are detected so that callers receive a clear domain
+        error instead of a confusing runtime failure.
+
+        Args:
+            network: Optional network used to resolve layers and validate metric
+                compatibility.  Can be *None* for static checks only.
+
+        Raises:
+            DSLCompileError: If any validation error is found.
+
+        Example:
+            >>> program = Q.nodes().compute("degree").compile()
+            >>> program.check(net)  # raises if invalid
+        """
+        from ..errors import DSLCompileError
+
+        diagnostics = self.lint(network=network)
+        errors = [d for d in diagnostics if getattr(d, "severity", None) == "error"]
+        if errors:
+            messages = "; ".join(getattr(d, "message", str(d)) for d in errors)
+            raise DSLCompileError(
+                f"Program failed semantic check ({len(errors)} error(s)): {messages}"
+            )
+
+    def plan(self, network: Optional[Any] = None) -> Any:
+        """Produce an inspectable logical/physical plan for this program.
+
+        Uses the existing :func:`~py3plex.dsl.planner.plan_query` infrastructure
+        to build a :class:`~py3plex.dsl.planner.PlannedQuery` that exposes
+        the planned stage order, required measures, cost estimates, and
+        rewrite summary.
+
+        Args:
+            network: Optional network used for layer resolution and cost hints.
+
+        Returns:
+            :class:`~py3plex.dsl.planner.PlannedQuery` (or a plain dict if
+            planner is unavailable).
+
+        Example:
+            >>> plan = Q.nodes().compute("betweenness_centrality").compile().plan(net)
+            >>> print(plan.plan_hash)
+        """
+        try:
+            from ..planner import plan_query
+
+            return plan_query(
+                ast=self.canonical_ast,
+                network=network,
+                params=None,
+                config=None,
+            )
+        except Exception:  # pragma: no cover
+            return {"ast_hash": self.program_hash, "planned_stages": []}
+
     def diff(self, other: GraphProgram) -> Dict[str, Any]:
         """Compute structural difference between two programs.
         
