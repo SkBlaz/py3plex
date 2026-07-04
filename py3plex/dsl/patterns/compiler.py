@@ -5,7 +5,7 @@ This module compiles PatternGraph IR into execution plans that can be
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Tuple
 
 from .ir import (
     AllDistinctConstraint,
@@ -136,7 +136,7 @@ def compile_pattern(
     )
 
 
-def _summarize_network_nodes(network: Any) -> tuple[Dict[str, int], int]:
+def _summarize_network_nodes(network: Any) -> Tuple[Dict[str, int], int]:
     """Count nodes per layer in one pass."""
     layer_counts: Dict[str, int] = {}
     total_nodes = 0
@@ -208,7 +208,7 @@ def _build_join_order(
     used_edge_ids: set[int] = set()
 
     while remaining_vars:
-        candidate_steps: List[tuple[float, str, str, str, bool, PatternEdge]] = []
+        candidate_steps: List[Tuple[float, str, str, str, bool, PatternEdge]] = []
         for edge in pattern.edges:
             if edge.src in bound_vars and edge.dst in remaining_vars:
                 candidate_steps.append(
