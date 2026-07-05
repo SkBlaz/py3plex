@@ -136,12 +136,32 @@ Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
 Attraction forces  took <TIME> seconds
 AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 
 Query executed successfully, got 4 results
 
 ============================================================
 Demo 2: Enhanced QueryResult Introspection
 ============================================================
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
@@ -170,12 +190,32 @@ Demo 3: Pedagogical Error Messages
 ============================================================
 
 1. Unknown metric error:
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 Error caught: Unknown measure 'unknownmetric'.
 Known measures: betweenness, betweenness_centrality, closeness, closeness_centrality, clustering, clustering_coefficient, communities, community, degree, degree_centrality, edge_betweenness, edge_betweenness_centrality, eigenvector, eigenvector_centrality, pagerank, triangles
 
 Note: Error message includes suggestions and examples
 
 2. Unknown layer error:
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
@@ -202,9 +242,29 @@ Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
 Attraction forces  took <TIME> seconds
 AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 Computed degree for 8 node replicas
 
 2. Suppress warnings:
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
@@ -232,11 +292,31 @@ Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
 Attraction forces  took <TIME> seconds
 AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 Total node replicas: 8
 Physical nodes: 4
 Physical node names: ['Alice', 'Bob', 'Charlie', 'David']
 
 2. Per-layer operations:
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds

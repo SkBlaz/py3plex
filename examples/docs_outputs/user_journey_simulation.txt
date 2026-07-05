@@ -46,6 +46,16 @@ Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
 Attraction forces  took <TIME> seconds
 AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 OK Query completed: 8 node replicas found
   Physical nodes: 4
   Ergonomic win: Clear distinction between replicas and physical nodes
@@ -53,6 +63,16 @@ OK Query completed: 8 node replicas found
 >>> Step 5: Computing basic network metrics
 ----------------------------------------------------------------------
 Code: result = Q.nodes().compute('degree').execute(net)
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
@@ -118,6 +138,21 @@ Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
 Attraction forces  took <TIME> seconds
 AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 OK Found 0 influential nodes
 
   Top 5 influential nodes:
@@ -129,6 +164,21 @@ Index: []
 >>> Step 3: Analyzing each layer independently
 ----------------------------------------------------------------------
 Code: Q.nodes().per_layer().compute('degree').top_k(3, 'degree')
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
@@ -193,6 +243,21 @@ Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
 Attraction forces  took <TIME> seconds
 AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 OK Found 12 cross-layer hubs
   Nodes: ['Person_4', 'Person_5', 'Person_6', 'Person_7', 'Person_8']
   Ergonomic win: Complex cross-layer analysis made simple
@@ -233,12 +298,42 @@ Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
 Attraction forces  took <TIME> seconds
 AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 OK Computed PageRank with uncertainty for 5 nodes
   (UQ data available in result.attributes)
 
 >>> Step 3: Building reusable, parameterized queries
 ----------------------------------------------------------------------
 Code: Using threshold parameter for different analyses
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
@@ -270,7 +365,37 @@ Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
 Attraction forces  took <TIME> seconds
 AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
   Threshold 3: 20 nodes with degree > 3
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds
@@ -292,6 +417,21 @@ AdjustSpeedAndApplyForces step  took <TIME> seconds
 >>> Step 4: Exporting results in multiple formats
 ----------------------------------------------------------------------
 Code: result.to_pandas(), result.to_networkx()
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
+BarnesHut Approximation  took <TIME> seconds
+Repulsion forces  took <TIME> seconds
+Gravitational forces  took <TIME> seconds
+Attraction forces  took <TIME> seconds
+AdjustSpeedAndApplyForces step  took <TIME> seconds
 BarnesHut Approximation  took <TIME> seconds
 Repulsion forces  took <TIME> seconds
 Gravitational forces  took <TIME> seconds

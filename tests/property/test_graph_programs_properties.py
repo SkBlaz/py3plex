@@ -148,7 +148,7 @@ def test_program_explain_accepts_network_context(network, query_builder):
     explanation = program.explain(network=network)
 
     assert isinstance(explanation, str)
-    assert "Program: SELECT" in explanation
+    assert "Query target:" in explanation
     assert "Hash:" in explanation
 
 
