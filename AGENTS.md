@@ -8,7 +8,7 @@
 - A set of known-good pipeline blueprints ("Golden Paths")
 - A reproducibility + performance policy manual
 
-**Version**: py3plex 2.0.0 | DSL v2.1 | Python 3.8+
+**Version**: py3plex 2.0.1 | DSL v2.1 | Python 3.8+
 
 ** New to py3plex?** 
 - **5 minutes**: See [dsl_patterns_quick_reference.py](examples/getting_started/dsl_patterns_quick_reference.py) for 7 copy-paste patterns
@@ -8835,7 +8835,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 ### Overview Statistics
 
-**Version**: py3plex 2.0.0  
+**Version**: py3plex 2.0.1  
 **Python Support**: 3.8+  
 **Repository Size**: ~171K lines of code  
 **Test Coverage**: 8,942 tests across 539 test files (~14.7% statement coverage)  
@@ -9627,7 +9627,7 @@ raise Py3plexException("Invalid configuration")
 ```python
 import py3plex
 
-print(py3plex.__version__)  # "2.0.0"
+print(py3plex.__version__)  # "2.0.1"
 ```
 
 ### Version Bump Checklist (Canonical)
@@ -9666,7 +9666,8 @@ When the prompt is **"bump version"**, update the canonical project version in `
 These tests are intended to ensure that a single bump request updates library, docs, book, MCP, and citation version surfaces consistently.
 
 **Version History**:
-- **2.0.0** (Current): Major version bump across package, docs, MCP, and book metadata
+- **2.0.1** (Current): Version bump by 0.0.1
+- **2.0.0**: Major version bump across package, docs, MCP, and book metadata
 - **1.1.4**: Repository statistics refresh and AGENTS.md consistency updates
 - **1.1.3**: Repository state updates and documentation improvements
 - **1.1.2**: Removed redundant documentation files
@@ -10099,7 +10100,7 @@ All successful tool responses include:
     "ok": true,
     "tool": "tool_name",
     "version": {
-      "py3plex": "2.0.0",
+      "py3plex": "2.0.1",
       "mcp_server": "1.0.0"
     },
     "timestamp": 1673456789.123,
@@ -10153,7 +10154,7 @@ Check that the server is running and stdio transport is properly configured.
 
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-05-17 (for py3plex v2.0.0)
+**Last Updated**: 2026-07-05 (for py3plex v2.0.1)
 
 
 ---

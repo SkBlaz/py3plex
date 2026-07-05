@@ -83,7 +83,7 @@ def _book_mentions_package_dir(combined_book: str, package_dir: str) -> bool:
 
 def test_front_matter_uses_canonical_version():
     text = _read("front_matter.rst")
-    assert "version 2.0.0 (2026)" in text
+    assert "version 2.0.1 (2026)" in text
     assert "version 1.0 (2025)" not in text
 
 

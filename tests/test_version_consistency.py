@@ -93,5 +93,5 @@ def test_release_metadata_alignment_in_docs_and_readme():
     assert f"py3plex_version: {version}" in reproducibility_chapter
     assert f"py3plex:{version}" in docker_appendix
 
-    assert "img.shields.io/badge/lines-211.4K-blue" in readme
+    assert "img.shields.io/badge/lines-211.9K-blue" in readme
     assert "img.shields.io/badge/tests-9.2K-blue" in readme
