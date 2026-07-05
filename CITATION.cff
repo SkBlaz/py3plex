@@ -22,8 +22,8 @@ keywords:
   - network science
   - graph analysis
 license: MIT
-version: 2.0.0
-date-released: "2026-05-17"
+version: 2.0.1
+date-released: "2026-07-05"
 preferred-citation:
   type: article
   title: "Py3plex toolkit for visualization and analysis of multilayer networks"
