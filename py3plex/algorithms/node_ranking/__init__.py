@@ -15,7 +15,7 @@ Notes:
 """
 
 import multiprocessing as mp
-from typing import Any, Generator, List, Optional, Tuple, Union, cast
+from typing import Any, Generator, List, Optional, Sequence, Tuple, Union, cast
 
 import networkx as nx
 import numpy as np
@@ -234,7 +234,7 @@ def sparse_page_rank(
 def run_PPR(
     network: sp.spmatrix,
     cores: Optional[int] = None,
-    jobs: Optional[List[range]] = None,
+    jobs: Optional[List[Sequence[int]]] = None,
     damping: float = 0.85,
     spread_step: int = 10,
     spread_percent: float = 0.3,
@@ -319,7 +319,10 @@ def run_PPR(
         if targets is None:
             jobs = [range(n)[i : i + step] for i in range(0, n, step)]  # generate jobs
         else:
-            jobs = [range(n)[i : i + step] for i in targets]  # generate jobs
+            target_list = list(targets)
+            jobs = [
+                target_list[i : i + step] for i in range(0, len(target_list), step)
+            ]  # generate jobs
 
     if not parallel:
         for target in jobs:
@@ -331,6 +334,27 @@ def run_PPR(
             for batch in jobs:
                 results = p.map(page_rank_kernel, batch)
                 yield results
+
+
+def _node_order(graph: nx.Graph) -> List[Any]:
+    """Return a stable node order for matrix-based HITS helpers."""
+    return list(graph.nodes())
+
+
+def _adjacency_array(graph: nx.Graph, nodelist: Optional[Sequence[Any]] = None) -> np.ndarray:
+    """Return the graph adjacency matrix as a dense numpy array."""
+    if nodelist is None:
+        nodelist = _node_order(graph)
+    return nx.to_numpy_array(graph, nodelist=list(nodelist), dtype=float, weight="weight")
+
+
+def _l2_normalize(values: np.ndarray) -> np.ndarray:
+    """Normalize a non-negative vector with the historical L2 convention."""
+    values = np.maximum(values, 0.0)
+    norm = np.linalg.norm(values, 2)
+    if norm > 0:
+        return values / norm
+    return values
 
 
 def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
@@ -349,7 +373,7 @@ def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
             - authority_scores: Dictionary mapping node -> authority score
 
     Notes:
-        - Uses scipy-based implementation from NetworkX (nx.hits_scipy)
+        - Uses an internal power-iteration fallback compatible with NetworkX 3.x
         - Scores are normalized so that the sum of squares equals 1
         - For undirected graphs, hub and authority scores are identical
         - Converges using power iteration method
@@ -365,7 +389,29 @@ def hubs_and_authorities(graph: nx.Graph) -> Tuple[dict, dict]:
         hub_matrix: Get the hub matrix representation
         authority_matrix: Get the authority matrix representation
     """
-    return nx.hits_scipy(graph)  # type: ignore[no-any-return]
+    nodes = _node_order(graph)
+    if not nodes:
+        return {}, {}
+
+    adjacency = _adjacency_array(graph, nodes)
+    hubs = np.ones(len(nodes), dtype=float)
+    authorities = np.ones(len(nodes), dtype=float)
+
+    for _ in range(1000):
+        next_authorities = _l2_normalize(adjacency.T @ hubs)
+        next_hubs = _l2_normalize(adjacency @ next_authorities)
+        if (
+            np.linalg.norm(next_hubs - hubs, 1)
+            + np.linalg.norm(next_authorities - authorities, 1)
+            < 1e-12
+        ):
+            hubs = next_hubs
+            authorities = next_authorities
+            break
+        hubs = next_hubs
+        authorities = next_authorities
+
+    return dict(zip(nodes, hubs)), dict(zip(nodes, authorities))
 
 
 def hub_matrix(graph: nx.Graph) -> np.ndarray:
@@ -388,7 +434,8 @@ def hub_matrix(graph: nx.Graph) -> np.ndarray:
         authority_matrix: Complementary authority matrix
         hubs_and_authorities: Compute actual hub/authority scores
     """
-    return cast(np.ndarray, nx.hub_matrix(graph))
+    adjacency = _adjacency_array(graph)
+    return adjacency @ adjacency.T
 
 
 def authority_matrix(graph: nx.Graph) -> np.ndarray:
@@ -411,4 +458,5 @@ def authority_matrix(graph: nx.Graph) -> np.ndarray:
         hub_matrix: Complementary hub matrix
         hubs_and_authorities: Compute actual hub/authority scores
     """
-    return cast(np.ndarray, nx.authority_matrix(graph))
+    adjacency = _adjacency_array(graph)
+    return adjacency.T @ adjacency
