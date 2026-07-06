@@ -328,7 +328,7 @@ def layer_entropy(
 
 
 def _mdl_single_layer(
-    layer_partition: Dict[Any, int],
+    layer_partition: Dict[Any, Any],
     layer_edges: List[tuple],
     directed: bool = False,
 ) -> float:
@@ -336,6 +336,8 @@ def _mdl_single_layer(
 
     Args:
         layer_partition: Dict mapping node -> community_id for this layer only.
+            Community ids need only be hashable (e.g. singleton sentinel
+            objects for unassigned nodes are supported).
         layer_edges: List of (u, v) edge pairs within this layer.
         directed: Whether the underlying graph is directed. Controls the
             maximum-edge normalization for block pairs. Defaults to False
@@ -345,7 +347,7 @@ def _mdl_single_layer(
     Returns:
         Description length in bits for this layer.
     """
-    communities: Dict[int, List[Any]] = defaultdict(list)
+    communities: Dict[Any, List[Any]] = defaultdict(list)
     for node, comm in layer_partition.items():
         communities[comm].append(node)
 
@@ -355,9 +357,12 @@ def _mdl_single_layer(
     if k == 0 or n == 0:
         return 0.0
 
-    # Count edges between/within each block pair
+    # Count edges between/within each block pair. Community ids are only
+    # required to be hashable (not orderable) -- singleton sentinel ids used
+    # for unassigned nodes are plain objects, so pairs are keyed with a
+    # frozenset rather than a min/max tuple.
     # Self-loops are skipped: they do not fit the n_r*(n_r-1) pair model
-    edge_counts: Dict[tuple, int] = defaultdict(int)
+    edge_counts: Dict[frozenset, int] = defaultdict(int)
     for u, v in layer_edges:
         if u == v:
             continue
@@ -365,41 +370,44 @@ def _mdl_single_layer(
         s = layer_partition.get(v)
         if r is None or s is None:
             continue
-        edge_counts[(min(r, s), max(r, s))] += 1
-
-    comm_ids = list(communities.keys())
+        edge_counts[frozenset((r, s))] += 1
 
     # Part 1: model cost - n * log2(k) bits to encode node assignments
     model_cost = n * np.log2(k) if k > 1 else 0.0
 
-    # Part 2: data cost - binary entropy per block pair
+    # Part 2: data cost - binary entropy per block pair. Block pairs with no
+    # observed edges contribute exactly 0 (H(p=0) == 0), so it suffices to
+    # iterate over the pairs that actually have edges rather than every pair
+    # of communities. This keeps the cost O(|E|) instead of O(k^2), which
+    # matters once unassigned nodes are represented as singleton communities
+    # (k can then be as large as n).
     data_cost = 0.0
-    for i, r in enumerate(comm_ids):
+    for pair, e_rs in edge_counts.items():
+        if len(pair) == 1:
+            (r,) = pair
+            s = r
+        else:
+            r, s = tuple(pair)
         n_r = len(communities[r])
-        for j, s in enumerate(comm_ids):
-            if j < i:
-                continue
-            n_s = len(communities[s])
+        n_s = len(communities[s])
 
-            # Maximum possible edges between blocks r and s.
-            # Directed graphs allow both (u->v) and (v->u): the off-diagonal
-            # capacity doubles and the on-diagonal uses n_r*(n_r-1).
-            if r == s:
-                m_rs = n_r * (n_r - 1) if directed else n_r * (n_r - 1) / 2
-            else:
-                m_rs = 2 * n_r * n_s if directed else n_r * n_s
-            if m_rs == 0:
-                continue
+        # Maximum possible edges between blocks r and s.
+        # Directed graphs allow both (u->v) and (v->u): the off-diagonal
+        # capacity doubles and the on-diagonal uses n_r*(n_r-1).
+        if r == s:
+            m_rs = n_r * (n_r - 1) if directed else n_r * (n_r - 1) / 2
+        else:
+            m_rs = 2 * n_r * n_s if directed else n_r * n_s
+        if m_rs == 0:
+            continue
 
-            e_rs = edge_counts.get((min(r, s), max(r, s)), 0)
+        # Clamp to [0, 1]. Parallel/directional edges can push p above 1,
+        # which makes log2(1 - p) return nan and silently corrupt the score.
+        p = min(e_rs / m_rs, 1.0)
 
-            # Clamp to [0, 1]. Parallel/directional edges can push p above 1,
-            # which makes log2(1 - p) return nan and silently corrupt the score.
-            p = min(e_rs / m_rs, 1.0)
-
-            # Binary entropy H(p); 0 when p == 0 or p == 1
-            if 0.0 < p < 1.0:
-                data_cost += m_rs * (-p * np.log2(p) - (1.0 - p) * np.log2(1.0 - p))
+        # Binary entropy H(p); 0 when p == 0 or p == 1
+        if 0.0 < p < 1.0:
+            data_cost += m_rs * (-p * np.log2(p) - (1.0 - p) * np.log2(1.0 - p))
 
     return model_cost + data_cost
 
@@ -429,6 +437,13 @@ def mdl_score(
 
     Lower score is better.
 
+    Partial partitions: every node present in the network is accounted for,
+    not just the ones covered by `partition`. A node the partition omits is
+    scored as its own singleton community, so both n_ℓ (model cost) and its
+    incident edges (data cost) still count. Without this, an algorithm could
+    lower its MDL score simply by leaving hard nodes and their edges out of
+    the partition.
+
     Args:
         partition: Dict mapping (node_id, layer) -> community_id.
         network: Multilayer network with a core_network NetworkX graph.
@@ -443,24 +458,41 @@ def mdl_score(
         >>> score = mdl_score(partition, net)
         >>> assert score >= 0.0
     """
-    if not partition:
+    G = getattr(network, "core_network", None)
+    node_set = set(G.nodes()) if G is not None else set()
+    all_nodes = node_set | set(partition.keys())
+    if not all_nodes:
         return 0.0
 
-    G = network.core_network
-    directed = G.is_directed()
+    directed = G.is_directed() if G is not None else False
 
-    # Collect layers and per-layer node assignments
-    layer_partitions: Dict[Any, Dict[Any, int]] = defaultdict(dict)
-    for node, comm in partition.items():
-        if isinstance(node, tuple) and len(node) >= 2:
-            layer = node[1]
+    # Collect layers and per-layer node assignments. Every node in the
+    # network is included -- not just the ones covered by `partition` -- so
+    # that an algorithm returning a partial partition cannot shrink n_ℓ or
+    # skip edges just by omitting nodes. Nodes missing from `partition` get a
+    # unique sentinel object as their "community", i.e. each is treated as
+    # its own singleton community.
+    layer_partitions: Dict[Any, Dict[Any, Any]] = defaultdict(dict)
+    n_unassigned = 0
+    for node in all_nodes:
+        layer = node[1] if isinstance(node, tuple) and len(node) >= 2 else None
+        if node in partition:
+            layer_partitions[layer][node] = partition[node]
         else:
-            layer = None
-        layer_partitions[layer][node] = comm
+            layer_partitions[layer][node] = object()
+            n_unassigned += 1
+
+    if n_unassigned:
+        warnings.warn(
+            f"Partition covers {len(partition)} of {len(all_nodes)} nodes; "
+            f"{n_unassigned} unassigned node(s) are scored as singleton "
+            "communities so they cannot be omitted to lower the MDL score.",
+            stacklevel=2
+        )
 
     # Pre-index edges by layer: only keep intra-layer edges
     layer_edges: Dict[Any, List[tuple]] = defaultdict(list)
-    for u, v in G.edges():
+    for u, v in (G.edges() if G is not None else []):
         u_layer = u[1] if isinstance(u, tuple) and len(u) >= 2 else None
         v_layer = v[1] if isinstance(v, tuple) and len(v) >= 2 else None
         if u_layer == v_layer:
