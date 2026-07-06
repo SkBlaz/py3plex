@@ -331,21 +331,36 @@ def _mdl_single_layer(
     layer_partition: Dict[Any, Any],
     layer_edges: List[tuple],
     directed: bool = False,
+    include_model_cost: bool = True,
 ) -> float:
-    """Compute SBM two-part description length for a single flat graph layer.
+    """Compute SBM two-part description length for a flat edge set.
+
+    Despite the name, this is used for two things in `mdl_score`: the
+    per-layer intra-layer term (with `include_model_cost=True`, using a
+    single layer's local node -> community assignment), and the global
+    inter-layer term (with `include_model_cost=False`, using the full
+    across-all-layers node-layer -> community assignment, restricted to
+    edges that cross layers). See `mdl_score` for why model cost is only
+    charged once, per layer.
 
     Args:
-        layer_partition: Dict mapping node -> community_id for this layer only.
+        layer_partition: Dict mapping node -> community_id.
             Community ids need only be hashable (e.g. singleton sentinel
             objects for unassigned nodes are supported).
-        layer_edges: List of (u, v) edge pairs within this layer.
+        layer_edges: List of (u, v) edge pairs to account for. Both
+            endpoints must be keys of `layer_partition`.
         directed: Whether the underlying graph is directed. Controls the
             maximum-edge normalization for block pairs. Defaults to False
             (undirected), preserving backward-compatible behavior for callers
             that do not pass the flag.
+        include_model_cost: Whether to add the n * log2(k) model-cost term.
+            Set to False when `layer_partition`/`layer_edges` describe a
+            block structure whose assignment cost was already charged
+            elsewhere (e.g. the inter-layer term reuses assignments already
+            paid for by the per-layer model cost).
 
     Returns:
-        Description length in bits for this layer.
+        Description length in bits.
     """
     communities: Dict[Any, List[Any]] = defaultdict(list)
     for node, comm in layer_partition.items():
@@ -373,7 +388,7 @@ def _mdl_single_layer(
         edge_counts[frozenset((r, s))] += 1
 
     # Part 1: model cost - n * log2(k) bits to encode node assignments
-    model_cost = n * np.log2(k) if k > 1 else 0.0
+    model_cost = n * np.log2(k) if (include_model_cost and k > 1) else 0.0
 
     # Part 2: data cost - binary entropy per block pair. Block pairs with no
     # observed edges contribute exactly 0 (H(p=0) == 0), so it suffices to
@@ -419,12 +434,13 @@ def mdl_score(
     """Compute MDL (Minimum Description Length) score for a multilayer partition.
 
     Computes the SBM two-part description length independently per layer and
-    sums the results. Operating per layer avoids the flattening problem where
-    pooling all layers into core_network inflates block sizes with
-    cross-layer node-layer pairs that share no edges, corrupting the edge
-    density estimates that drive the data cost.
+    sums the results, then adds one more term for inter-layer (cross-layer)
+    edges. Operating per layer for the intra-layer term avoids the flattening
+    problem where pooling all layers into core_network inflates block sizes
+    with cross-layer node-layer pairs that share no edges, corrupting the
+    edge density estimates that drive the data cost.
 
-    Per-layer computation:
+    Per-layer computation (intra-layer edges only):
       - Part 1 (model cost): n_ℓ * log2(k_ℓ) bits to encode the community
         assignment of each node in layer ℓ, where n_ℓ is the number of
         node-layer pairs in that layer and k_ℓ is the number of distinct
@@ -433,9 +449,27 @@ def mdl_score(
         the binary entropy of the observed intra-layer edge density times the
         maximum possible intra-layer edges between those blocks.
 
-    Total MDL = Σ_ℓ (model_cost_ℓ + data_cost_ℓ)
+    Inter-layer computation (edges whose endpoints are in different layers,
+    e.g. multiplex coupling edges or general cross-layer edges):
+      - No additional model cost is charged -- every node-layer pair's
+        community assignment was already paid for by the per-layer model
+        cost above.
+      - Data cost only: block sizes N_r/N_s are the *global* community
+        sizes (summed across all layers), and the block pair (r, s) is
+        scored using the observed inter-layer edge density between them,
+        the same binary-entropy formula as the intra-layer case. This
+        slightly overstates the space of possible inter-layer edges (it
+        does not subtract same-layer node pairs from N_r * N_s, since
+        inter-layer edges in py3plex are not restricted to same-node
+        couplings and can connect arbitrary node-layer pairs), which is a
+        conservative approximation rather than an exact block model.
 
-    Lower score is better.
+    Total MDL = Σ_ℓ (model_cost_ℓ + data_cost_ℓ) + data_cost_inter_layer
+
+    Lower score is better. Ignoring inter-layer edges entirely would let two
+    partitions with identical intra-layer structure but very different (e.g.
+    incoherent vs. replica-consistent) cross-layer coupling score identically,
+    which is misleading for a *multilayer* MDL metric.
 
     Partial partitions: every node present in the network is accounted for,
     not just the ones covered by `partition`. A node the partition omits is
@@ -490,17 +524,33 @@ def mdl_score(
             stacklevel=2
         )
 
-    # Pre-index edges by layer: only keep intra-layer edges
+    # Split edges into intra-layer (same layer on both ends) and inter-layer
+    # (endpoints in different layers, e.g. multiplex coupling edges).
     layer_edges: Dict[Any, List[tuple]] = defaultdict(list)
+    inter_layer_edges: List[tuple] = []
     for u, v in (G.edges() if G is not None else []):
         u_layer = u[1] if isinstance(u, tuple) and len(u) >= 2 else None
         v_layer = v[1] if isinstance(v, tuple) and len(v) >= 2 else None
         if u_layer == v_layer:
             layer_edges[u_layer].append((u, v))
+        else:
+            inter_layer_edges.append((u, v))
 
-    # Sum description length across layers
+    # Sum description length across layers (intra-layer model + data cost)
     total = 0.0
+    global_partition: Dict[Any, Any] = {}
     for layer, lpartition in layer_partitions.items():
         total += _mdl_single_layer(lpartition, layer_edges[layer], directed=directed)
+        global_partition.update(lpartition)
+
+    # Add the inter-layer data cost: community assignments were already paid
+    # for above, so only the observed cross-layer edge density is charged.
+    if inter_layer_edges:
+        total += _mdl_single_layer(
+            global_partition,
+            inter_layer_edges,
+            directed=directed,
+            include_model_cost=False,
+        )
 
     return total
