@@ -1,7 +1,7 @@
 ---
 title: 'Py3plex: A Python library for multilayer and heterogeneous network analysis and visualization' 
 
-tags: 
+tags:  
 - Python
 - network science
 - multilayer networks
