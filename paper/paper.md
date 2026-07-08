@@ -10,16 +10,17 @@ tags:
 - visualization
 
 authors:
+  - name: Evgenija Popchanovska
+    equal-contrib: true
+    affiliation: 2
+  - name: Boshko Koloski
+    orcid: 0000-0002-7330-0579
+    equal-contrib: true
+    affiliation: 1
   - name: Blaž Škrlj
     orcid: 0000-0002-9916-8756
     equal-contrib: true
     affiliation: 1
-  - name: Boshko Koloski
-    equal-contrib: true
-    affiliation: 1
-  - name: Evgenija Popchanovska
-    equal-contrib: true
-    affiliation: 2
 
 affiliations: 
 - index: 1
@@ -56,7 +57,7 @@ Py3plex uses high-performance I/O like Apache Arrow and works with NetworkX, ena
 The following section describes the comparison of Py3plex with other ecosystems for network analysis.
 
 | Ecosystem                              | Overlap with Py3plex 2.0                                                                                 | Py3plex 2.0 positioning                                                                                                                                                       |
-| -------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -------------------------------------- |----------------------------------------------------------------------------------------------------------| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | pymnet [@pymnet]                       | Formal multilayer data structures, multilayer metrics, transformations, random models, and visualization | py3plex 2.0 extends beyond representation and metrics toward workflow-oriented multilayer analysis with DSL queries, uncertainty-aware summaries, and reproducible execution. |
 | MultiNetX [@multinex]                  | Python-native multilayer graph manipulation, supra-adjacency analysis, and visualization                 | py3plex 2.0 provides a broader end-to-end environment for multilayer workflows, temporal analysis, and structured analytical pipelines.                                       |
 | muxViz [@muxviz]                       | Multilayer visualization, centrality analysis, community detection, and structural analysis              | py3plex 2.0 emphasizes Python-native, scriptable, and reproducible multilayer workflows rather than desktop-oriented visual analytics.                                        |
