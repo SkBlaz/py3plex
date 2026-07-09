@@ -572,6 +572,43 @@ class TestPerformance:
         assert elapsed < 2.0
         assert score >= 0.0
 
+    @pytest.mark.slow
+    def test_no_quadratic_blowup_mdl_large_scale(self):
+        """mdl_score should stay near-linear at ~2M nodes, not just at the
+        smaller scale in test_no_quadratic_blowup_mdl_fragmented.
+
+        Marked slow: builds a 2,000,000-node graph and runs the full
+        mdl_score computation. Measured ~8s / ~3GB peak RSS on a dev
+        machine; a regression to a quadratic-in-communities loop would
+        take minutes rather than tens of seconds at this scale. Skip via
+        `pytest -m "not slow"` for a fast local/CI run.
+        """
+        n = 2_000_000
+        nodes = [(f"node_{i}", "layer_0") for i in range(n)]
+
+        G = nx.Graph()
+        G.add_nodes_from(nodes)
+        for i in range(n):
+            G.add_edge(nodes[i], nodes[(i + 1) % n])
+
+        net = multinet.multi_layer_network(directed=False)
+        net.core_network = G
+
+        # Worst case for _mdl_single_layer's block-pair counting: every
+        # node is its own singleton community, maximizing k without
+        # increasing |E|.
+        partition = {node: i for i, node in enumerate(nodes)}
+
+        import time
+        start = time.time()
+        score = mdl_score(partition, net)
+        elapsed = time.time() - start
+
+        # Generous bound to absorb slower/loaded CI hardware while still
+        # catching a real regression to quadratic-in-communities behavior.
+        assert elapsed < 60.0
+        assert score >= 0.0
+
 
 class TestIntegrationWithAutoCommunity:
     """Test integration with AutoCommunity."""
