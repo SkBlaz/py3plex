@@ -391,6 +391,21 @@ def _mdl_single_layer(
 
     Returns:
         Description length in bits.
+
+    Notes:
+        - Complexity: O(n + |E|), not O(k^2). The data cost loop iterates
+          only over `edge_counts` (block pairs with at least one observed
+          edge), not over all k^2 pairs of communities -- block pairs with
+          no edges contribute exactly 0 (H(p=0) == 0), so they're skipped
+          rather than enumerated. This matters once heavily-fragmented
+          partitions (e.g. many singleton communities from unassigned nodes,
+          see `mdl_score`) push k up toward n: a naive double loop over
+          communities would be O(k^2) regardless of how sparse the edges
+          are, whereas this stays tied to the actual edge count. The
+          remaining cost still scales with |E| itself, which is inherent to
+          reading every edge once and not specific to fragmentation -- a
+          dense graph is the same O(|E|) cost whether it has 2 communities
+          or n of them.
     """
     communities: Dict[Any, List[Any]] = defaultdict(list)
     for node, comm in layer_partition.items():
@@ -533,6 +548,19 @@ def mdl_score(
     Returns:
         Total description length in bits (float).  Returns 0.0 for empty
         inputs.
+
+    Notes:
+        - Complexity: O(N + |E|) total across layers, where N is the number
+          of node-layer pairs and E the edges (intra- plus inter-layer) --
+          see `_mdl_single_layer`'s Notes for why fragmentation (many
+          singleton communities, e.g. from unassigned nodes) doesn't push
+          this toward O(k^2). On expected AutoCommunity graph sizes (up to
+          ~1e5 nodes / ~1e6 edges, matching the practical_limits declared
+          for candidate algorithms like leiden_multilayer), this is expected
+          to stay well under a second; see
+          `tests/test_multilayer_quality_metrics.py::TestPerformance::test_no_quadratic_blowup_mdl_fragmented`
+          for a regression guard against a future reintroduction of a
+          quadratic-in-communities loop.
 
     Examples:
         >>> # Perfect 2-community split on a clique pair
