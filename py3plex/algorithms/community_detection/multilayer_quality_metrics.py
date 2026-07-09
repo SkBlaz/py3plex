@@ -20,6 +20,7 @@ import warnings
 from collections import defaultdict
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
+import networkx as nx
 import numpy as np
 
 
@@ -327,6 +328,32 @@ def layer_entropy(
     return float(clipped_entropy)
 
 
+def _dedupe_node_pairs(edges: List[tuple], directed: bool) -> List[tuple]:
+    """Collapse parallel/multi-edges into a single edge per node pair.
+
+    py3plex's default `core_network` container is a `nx.MultiGraph` /
+    `nx.MultiDiGraph`, which can hold more than one edge between the same
+    node pair. The block-pair capacity `m_rs` computed in
+    `_mdl_single_layer` counts *distinct* node pairs, so leaving multi-edges
+    un-collapsed lets the raw edge count `e_rs` exceed `m_rs` -- silently
+    clamped to a density of 1.0, which scores e.g. a 2-edge and a 200-edge
+    block identically. Deduplicating here is a deliberate, explicit collapse
+    (one of "reject / collapse / weighted likelihood") that keeps the
+    Bernoulli block model well-defined for multigraph inputs, at the cost of
+    discarding multiplicity (and, since `_mdl_single_layer` never looks at
+    edge weight, weight magnitude too -- see `mdl_score`'s warning).
+    """
+    seen: set = set()
+    deduped = []
+    for u, v in edges:
+        key = (u, v) if directed else frozenset((u, v))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append((u, v))
+    return deduped
+
+
 def _mdl_single_layer(
     layer_partition: Dict[Any, Any],
     layer_edges: List[tuple],
@@ -348,7 +375,10 @@ def _mdl_single_layer(
             Community ids need only be hashable (e.g. singleton sentinel
             objects for unassigned nodes are supported).
         layer_edges: List of (u, v) edge pairs to account for. Both
-            endpoints must be keys of `layer_partition`.
+            endpoints must be keys of `layer_partition`. May contain
+            parallel/multi-edges (e.g. from a MultiGraph); these are
+            collapsed to a single edge per node pair before scoring, see
+            `_dedupe_node_pairs`.
         directed: Whether the underlying graph is directed. Controls the
             maximum-edge normalization for block pairs. Defaults to False
             (undirected), preserving backward-compatible behavior for callers
@@ -371,6 +401,10 @@ def _mdl_single_layer(
 
     if k == 0 or n == 0:
         return 0.0
+
+    # Collapse parallel/multi-edges before block-pair counting, so e_rs can
+    # never exceed the simple-graph capacity m_rs computed below.
+    layer_edges = _dedupe_node_pairs(layer_edges, directed)
 
     # Count edges between/within each block pair. Community ids are only
     # required to be hashable (not orderable) -- singleton sentinel ids used
@@ -416,8 +450,11 @@ def _mdl_single_layer(
         if m_rs == 0:
             continue
 
-        # Clamp to [0, 1]. Parallel/directional edges can push p above 1,
-        # which makes log2(1 - p) return nan and silently corrupt the score.
+        # e_rs <= m_rs is now guaranteed by the parallel-edge collapse above
+        # (each node pair contributes at most one edge), so this clamp is a
+        # defensive fallback rather than the primary safeguard -- without it,
+        # p > 1 would make log2(1 - p) return nan and silently corrupt the
+        # score.
         p = min(e_rs / m_rs, 1.0)
 
         # Binary entropy H(p); 0 when p == 0 or p == 1
@@ -478,6 +515,17 @@ def mdl_score(
     lower its MDL score simply by leaving hard nodes and their edges out of
     the partition.
 
+    Parallel/weighted edges: the block model above is Bernoulli (edge
+    present or absent between a node pair), which is only well-defined for
+    simple graphs. py3plex's default network container is a
+    `nx.MultiGraph`/`nx.MultiDiGraph`, so if the same node pair carries more
+    than one edge, it is collapsed to a single edge before scoring (see
+    `_dedupe_node_pairs`) rather than left to silently overflow the
+    simple-graph capacity and clamp to a density of 1.0. Edge `weight`
+    attributes are likewise ignored -- every edge counts as one, regardless
+    of magnitude. Both cases emit a `UserWarning` since the description
+    length then cannot distinguish a lightly- from a heavily-connected block.
+
     Args:
         partition: Dict mapping (node_id, layer) -> community_id.
         network: Multilayer network with a core_network NetworkX graph.
@@ -499,6 +547,30 @@ def mdl_score(
         return 0.0
 
     directed = G.is_directed() if G is not None else False
+    raw_edges: List[tuple] = list(G.edges()) if G is not None else []
+
+    # Detect parallel edges (possible on py3plex's default MultiGraph/
+    # MultiDiGraph container) and non-unit edge weights. Neither is modeled
+    # by the Bernoulli block structure below -- multi-edges are collapsed to
+    # a single edge per node pair (see `_dedupe_node_pairs`) and weight
+    # magnitude is ignored entirely -- so warn rather than silently scoring
+    # a lightly- and heavily-connected block identically.
+    if isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
+        has_parallel_edges = len(_dedupe_node_pairs(raw_edges, directed)) < len(raw_edges)
+    else:
+        has_parallel_edges = False
+    has_weighted_edges = G is not None and any(
+        data.get("weight", 1) != 1 for _, _, data in G.edges(data=True)
+    )
+    if has_parallel_edges or has_weighted_edges:
+        warnings.warn(
+            "Network has parallel edges and/or non-unit edge weights; "
+            "mdl_score models a simple Bernoulli block structure, so "
+            "parallel edges are collapsed to one edge per node pair and "
+            "weight magnitude is ignored. The resulting description length "
+            "cannot distinguish a lightly- from a heavily-connected block.",
+            stacklevel=2,
+        )
 
     # Collect layers and per-layer node assignments. Every node in the
     # network is included -- not just the ones covered by `partition` -- so
@@ -528,7 +600,7 @@ def mdl_score(
     # (endpoints in different layers, e.g. multiplex coupling edges).
     layer_edges: Dict[Any, List[tuple]] = defaultdict(list)
     inter_layer_edges: List[tuple] = []
-    for u, v in (G.edges() if G is not None else []):
+    for u, v in raw_edges:
         u_layer = u[1] if isinstance(u, tuple) and len(u) >= 2 else None
         v_layer = v[1] if isinstance(v, tuple) and len(v) >= 2 else None
         if u_layer == v_layer:
