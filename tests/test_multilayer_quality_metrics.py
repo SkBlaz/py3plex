@@ -1,17 +1,18 @@
 """Tests for multilayer-specific community quality metrics.
 
-Tests cover:
+Covers replica_consistency and layer_entropy:
 - Determinism (repeated calls yield identical results)
 - Correctness (known partitions yield expected metric values)
 - Edge cases (single-layer nodes, single community, fragmentation)
 - Hard-to-game behavior (giant cluster vs reasonable partition)
 - Performance (no quadratic blowups)
 - Integration with AutoCommunity
+
+mdl_score has its own dedicated suite in test_mdl_score.py.
 """
 
 import pytest
 import numpy as np
-import networkx as nx
 from collections import defaultdict
 
 from py3plex.core import multinet
@@ -19,7 +20,6 @@ from py3plex.algorithms.community_detection.multilayer_quality_metrics import (
     replica_consistency,
     layer_entropy,
     iter_layered_assignments,
-    mdl_score,
 )
 
 
@@ -529,85 +529,6 @@ class TestPerformance:
         # Should complete in reasonable time (< 1 second)
         assert elapsed < 1.0
         assert 0.0 <= h <= 1.0
-
-    def test_no_quadratic_blowup_mdl_fragmented(self):
-        """mdl_score should stay near-linear even with many singleton
-        communities, not quadratic in the number of communities per layer.
-
-        _mdl_single_layer's data cost loop iterates over observed block
-        pairs (`edge_counts`), not over all k^2 community pairs, so cost
-        tracks O(n + |E|) rather than O(k^2). Extreme fragmentation (every
-        node its own community, as an AutoCommunity algorithm might produce
-        for a partial/degenerate partition) maximizes k without blowing up
-        |E| -- this is exactly the scenario a regression to a k^2 nested
-        loop over communities would fail on.
-        """
-        n = 5000
-        nodes = [(f"node_{i}", "layer_0") for i in range(n)]
-
-        # Sparse, deterministic edge set (a cycle): O(n) edges, and since
-        # every node is its own community, each edge lands on a distinct
-        # community pair -- the worst case for the number of block pairs
-        # relative to node count.
-        G = nx.Graph()
-        G.add_nodes_from(nodes)
-        for i in range(n):
-            G.add_edge(nodes[i], nodes[(i + 1) % n])
-
-        net = multinet.multi_layer_network(directed=False)
-        net.core_network = G
-
-        # Every node in its own singleton community (maximal fragmentation).
-        partition = {node: i for i, node in enumerate(nodes)}
-
-        # Partition covers every node on a plain (non-multi, unweighted)
-        # graph, so none of mdl_score's warning paths (partial partition,
-        # parallel/weighted edges) should fire here.
-        import time
-        start = time.time()
-        score = mdl_score(partition, net)
-        elapsed = time.time() - start
-
-        # Should complete in reasonable time (< 2 seconds) despite k == n.
-        assert elapsed < 2.0
-        assert score >= 0.0
-
-    @pytest.mark.slow
-    def test_no_quadratic_blowup_mdl_large_scale(self):
-        """mdl_score should stay near-linear at ~2M nodes, not just at the
-        smaller scale in test_no_quadratic_blowup_mdl_fragmented.
-
-        Marked slow: builds a 2,000,000-node graph and runs the full
-        mdl_score computation. Measured ~8s / ~3GB peak RSS on a dev
-        machine; a regression to a quadratic-in-communities loop would
-        take minutes rather than tens of seconds at this scale. Skip via
-        `pytest -m "not slow"` for a fast local/CI run.
-        """
-        n = 2_000_000
-        nodes = [(f"node_{i}", "layer_0") for i in range(n)]
-
-        G = nx.Graph()
-        G.add_nodes_from(nodes)
-        for i in range(n):
-            G.add_edge(nodes[i], nodes[(i + 1) % n])
-
-        net = multinet.multi_layer_network(directed=False)
-        net.core_network = G
-
-        # Worst case for _mdl_single_layer's block-pair counting: every
-        # node is its own singleton community, maximizing k without
-        # increasing |E|.
-        partition = {node: i for i, node in enumerate(nodes)}
-
-        import time
-        start = time.time()
-        score = mdl_score(partition, net)
-        elapsed = time.time() - start
-
-        # Generous bound to absorb slower/loaded CI hardware while still
-        # catching a real regression to quadratic-in-communities behavior.
-        assert elapsed < 60.0
-        assert score >= 0.0
 
 
 class TestIntegrationWithAutoCommunity:

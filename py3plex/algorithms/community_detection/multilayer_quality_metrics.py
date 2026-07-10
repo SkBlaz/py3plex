@@ -558,8 +558,9 @@ def mdl_score(
           ~1e5 nodes / ~1e6 edges, matching the practical_limits declared
           for candidate algorithms like leiden_multilayer), this is expected
           to stay well under a second; see
-          `tests/test_multilayer_quality_metrics.py::TestPerformance::test_no_quadratic_blowup_mdl_fragmented`
-          for a regression guard against a future reintroduction of a
+          `tests/test_mdl_score.py::TestPerformance::test_no_quadratic_blowup_mdl_fragmented`
+          (and `..._large_scale` for a slow-marked ~2M-node check) for
+          regression guards against a future reintroduction of a
           quadratic-in-communities loop.
 
     Examples:
