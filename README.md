@@ -8,6 +8,7 @@
 [![Benchmarks](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml)
 [![Documentation](https://github.com/SkBlaz/py3plex/actions/workflows/doc-coverage.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/doc-coverage.yml)
 [![Formal Verification](https://github.com/SkBlaz/py3plex/actions/workflows/verify.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/verify.yml)
+[![Lean formal verification](https://github.com/SkBlaz/py3plex/actions/workflows/formal.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/formal.yml)
 [![Fuzzing](https://github.com/SkBlaz/py3plex/actions/workflows/fuzzing.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/fuzzing.yml)
 [![PyPI version](https://img.shields.io/pypi/v/py3plex.svg)](https://pypi.org/project/py3plex/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/py3plex)](https://pypistats.org/packages/py3plex)
@@ -24,6 +25,15 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * Multilayer network visualization and analysis
 * Community detection and centrality measures
 * Network decomposition and embeddings
+
+**Formal verification (Lean):** Selected semantic properties of the query
+optimizer are modelled and machine-checked in [Lean 4](https://leanprover.github.io/)
+under `formal/`.  The current formalization is intentionally narrow — it covers
+an abstract filter-fusion equivalence that corresponds to the
+`CombineAdjacentFilters` optimizer rule; it does *not* claim the entire library
+is formally verified.  Lean is a development/release verification tool, **not**
+a runtime dependency; the normal `pip install py3plex` wheel remains a pure
+Python package.  See [`formal/README.md`](formal/README.md) for details.
 
 
 ```python
