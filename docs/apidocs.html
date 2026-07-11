@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Documentation &mdash; py3plex 2.0.0 documentation</title>
+  <title>API Documentation &mdash; py3plex 2.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c94df887" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -8180,44 +8180,107 @@ number of labels.</p>
 <p>Single-layer node ranking utilities.</p>
 <dl class="py function" id="module-py3plex.algorithms.node_ranking.node_ranking">
 <dt class="sig sig-object py" id="py3plex.algorithms.node_ranking.node_ranking.authority_matrix">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">authority_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">spmatrix</span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.authority_matrix" title="Link to this definition"></a></dt>
-<dd><p>Get the authority matrix of a graph.</p>
+<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">authority_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.authority_matrix" title="Link to this definition"></a></dt>
+<dd><p>Get the authority matrix representation of a graph.</p>
+<p>Computes the matrix A = A.T &#64; A where A is the adjacency matrix.
+The authority matrix is used in HITS algorithm computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>graph</strong> – NetworkX graph</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Authority matrix</p>
+<dd class="field-even"><p>Authority matrix (N x N) where N is number of nodes</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>For directed graphs: A[i,j] = number of nodes that point to both i and j</p></li>
+<li><p>Used internally by HITS algorithm to compute authority scores</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>hub_matrix: Complementary hub matrix
+hubs_and_authorities: Compute actual hub/authority scores</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.node_ranking.node_ranking.hub_matrix">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">hub_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">spmatrix</span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.hub_matrix" title="Link to this definition"></a></dt>
-<dd><p>Get the hub matrix of a graph.</p>
+<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">hub_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.hub_matrix" title="Link to this definition"></a></dt>
+<dd><p>Get the hub matrix representation of a graph.</p>
+<p>Computes the matrix H = A &#64; A.T where A is the adjacency matrix.
+The hub matrix is used in HITS algorithm computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>graph</strong> – NetworkX graph</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Hub matrix</p>
+<dd class="field-even"><p>Hub matrix (N x N) where N is number of nodes</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>For directed graphs: H[i,j] = number of nodes pointed to by both i and j</p></li>
+<li><p>Used internally by HITS algorithm to compute hub scores</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>authority_matrix: Complementary authority matrix
+hubs_and_authorities: Compute actual hub/authority scores</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.node_ranking.node_ranking.hubs_and_authorities">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">hubs_and_authorities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.hubs_and_authorities" title="Link to this definition"></a></dt>
-<dd><p>Compute hubs and authorities scores using HITS algorithm.</p>
+<dd><p>Compute HITS (Hubs and Authorities) scores for all nodes in a graph.</p>
+<p>Implements the Hyperlink-Induced Topic Search (HITS) algorithm to identify
+hub nodes (nodes that point to many authorities) and authority nodes (nodes
+pointed to by many hubs) in a network.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>graph</strong> – NetworkX graph</p>
+<dd class="field-odd"><p><strong>graph</strong> – NetworkX graph (directed or undirected)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of (hubs dictionary, authorities dictionary)</p>
+<dd class="field-even"><p><dl class="simple">
+<dt>(hub_scores, authority_scores)</dt><dd><ul class="simple">
+<li><p>hub_scores: Dictionary mapping node -&gt; hub score</p></li>
+<li><p>authority_scores: Dictionary mapping node -&gt; authority score</p></li>
+</ul>
 </dd>
 </dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[dict, dict]</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Uses an internal power-iteration fallback compatible with NetworkX 3.x</p></li>
+<li><p>Scores are normalized so that the sum of squares equals 1</p></li>
+<li><p>For undirected graphs, hub and authority scores are identical</p></li>
+<li><p>Converges using power iteration method</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hubs</span><span class="p">,</span> <span class="n">authorities</span> <span class="o">=</span> <span class="n">hubs_and_authorities</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Node 0 has high hub score (points to others)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Node 2 has high authority score (pointed to by others)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>hub_matrix: Get the hub matrix representation
+authority_matrix: Get the authority matrix representation</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -8239,57 +8302,102 @@ number of labels.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="py3plex.algorithms.node_ranking.node_ranking.page_rank_kernel">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">page_rank_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.page_rank_kernel" title="Link to this definition"></a></dt>
-<dd><p>PageRank kernel for parallel computation.</p>
-<p>Note: This function expects global variables G, damping_hyper,
-spread_step_hyper, spread_percent_hyper, and graph to be defined.
-It’s designed for use with multiprocessing.Pool.map().</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>index_row</strong> – Row index to compute PageRank for</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of (index, PageRank vector)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.node_ranking.node_ranking.sparse_page_rank">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">sparse_page_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">range</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_percent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">try_shrink</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.sparse_page_rank" title="Link to this definition"></a></dt>
-<dd><p>Compute sparse PageRank with personalization.</p>
+<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">sparse_page_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_percent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">try_shrink</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.sparse_page_rank" title="Link to this definition"></a></dt>
+<dd><p>Compute personalized PageRank using sparse matrix operations.</p>
+<p>Implements an efficient personalized PageRank algorithm with adaptive sparsification
+to reduce memory usage and computation time. The algorithm uses a power iteration
+method with early stopping based on convergence criteria.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>matrix</strong> – Sparse adjacency matrix (column-stochastic)</p></li>
-<li><p><strong>start_nodes</strong> – List of starting node indices for personalization (can be range or None)</p></li>
-<li><p><strong>epsilon</strong> – Convergence threshold</p></li>
-<li><p><strong>max_steps</strong> – Maximum number of iterations</p></li>
-<li><p><strong>damping</strong> – Damping factor (teleportation probability)</p></li>
-<li><p><strong>spread_step</strong> – Maximum steps for spread calculation</p></li>
-<li><p><strong>spread_percent</strong> – Percentage threshold for spread</p></li>
-<li><p><strong>try_shrink</strong> – Whether to try matrix shrinking optimization</p></li>
+<li><p><strong>matrix</strong> – Column-stochastic sparse adjacency matrix (use stochastic_normalization first)</p></li>
+<li><p><strong>start_nodes</strong> – List or range of starting nodes for personalized PageRank</p></li>
+<li><p><strong>epsilon</strong> – Convergence threshold for L1 norm difference (default: 1e-6)</p></li>
+<li><p><strong>max_steps</strong> – Maximum number of iterations (default: 100000)</p></li>
+<li><p><strong>damping</strong> – Damping factor / teleportation probability (default: 0.5)
+Higher values (e.g., 0.85) favor network structure over random jumps</p></li>
+<li><p><strong>spread_step</strong> – Number of steps to check for sparsity pattern (default: 10)</p></li>
+<li><p><strong>spread_percent</strong> – Maximum fraction of nodes to consider for shrinkage (default: 0.3)</p></li>
+<li><p><strong>try_shrink</strong> – Enable adaptive shrinkage to reduce computation (default: True)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>PageRank vector</p>
+<dd class="field-even"><p>PageRank scores for all nodes, with start_nodes set to 0</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Assumes matrix is column-stochastic (use stochastic_normalization first)</p></li>
+<li><p>Adaptive shrinkage identifies nodes unreachable from start_nodes and
+excludes them from computation for efficiency</p></li>
+<li><p>Convergence is measured by L1 norm of rank vector difference</p></li>
+<li><p>Start nodes are zeroed out in the final result to avoid self-importance</p></li>
+</ul>
+<dl class="simple">
+<dt>Complexity:</dt><dd><ul class="simple">
+<li><p>Time: O(k * E) where k is iterations and E is edges</p></li>
+<li><p>Space: O(N) for rank vectors, plus matrix storage</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create and normalize adjacency matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adj</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adj_norm</span> <span class="o">=</span> <span class="n">stochastic_normalization</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compute PageRank from node 0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">sparse_page_rank</span><span class="p">(</span><span class="n">adj_norm</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">damping</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span>  <span class="c1"># PageRank scores (node 0 will be 0)</span>
+<span class="go">array([0.  , 0.5, 0.5])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AssertionError</strong> – If start_nodes is empty</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>stochastic_normalization: Required preprocessing step
+run_PPR: Parallel wrapper for computing multiple PageRank vectors</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.node_ranking.node_ranking.stochastic_normalization">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.node_ranking.</span></span><span class="sig-name descname"><span class="pre">stochastic_normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">spmatrix</span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.node_ranking.stochastic_normalization" title="Link to this definition"></a></dt>
-<dd><p>Normalize a sparse matrix stochastically.</p>
+<dd><p>Normalize a sparse matrix to stochastic form (column-stochastic).</p>
+<p>Converts an adjacency matrix to a stochastic matrix where each column sums to 1.
+This normalization is required for PageRank-style random walk algorithms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>matrix</strong> – Sparse matrix to normalize</p>
+<dd class="field-odd"><p><strong>matrix</strong> – Sparse adjacency matrix to normalize</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Stochastically normalized sparse matrix</p>
+<dd class="field-even"><p>Column-stochastic sparse matrix where each column sums to 1</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sp.spmatrix</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Removes self-loops (sets diagonal to 0) before normalization</p></li>
+<li><p>Handles zero-degree nodes by leaving corresponding columns as zeros</p></li>
+<li><p>Preserves sparsity structure for memory efficiency</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adj</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stoch_adj</span> <span class="o">=</span> <span class="n">stochastic_normalization</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stoch_adj</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">A1</span>  <span class="c1"># Column sums should be 1</span>
+<span class="go">array([1., 1., 1.])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -11327,7 +11435,7 @@ pointed to by many hubs) in a network.</p>
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>Uses scipy-based implementation from NetworkX (nx.hits_scipy)</p></li>
+<li><p>Uses an internal power-iteration fallback compatible with NetworkX 3.x</p></li>
 <li><p>Scores are normalized so that the sum of squares equals 1</p></li>
 <li><p>For undirected graphs, hub and authority scores are identical</p></li>
 <li><p>Converges using power iteration method</p></li>
@@ -11387,7 +11495,7 @@ sparse_page_rank: Core PageRank computation</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.node_ranking.run_PPR">
-<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.</span></span><span class="sig-name descname"><span class="pre">run_PPR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">range</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_percent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.run_PPR" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.node_ranking.</span></span><span class="sig-name descname"><span class="pre">run_PPR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jobs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.85</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_percent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.algorithms.node_ranking.run_PPR" title="Link to this definition"></a></dt>
 <dd><p>Run Personalized PageRank (PPR) in parallel for multiple starting nodes.</p>
 <p>Computes personalized PageRank vectors for multiple nodes using parallel processing.
 This is useful for creating node embeddings or analyzing node importance from
