@@ -15,9 +15,9 @@ predicates.
 ## Relation to the Python optimizer
 
 The Python implementation of this transformation is `CombineAdjacentFilters`
-in `py3plex/optimizer/rules.py` (method `apply`, lines 157–171).  That rule
-merges two consecutive `LogicalFilter` nodes by concatenating their predicate
-lists.
+in `py3plex/optimizer/rules.py` (method `apply`).  That rule
+merges two consecutive `LogicalFilter` nodes by concatenating their
+`conditions` lists in inner-then-outer order.
 
 **Phase 1 boundary**: Lean proves the transformation in the abstract `Plan`
 model.  Phase 1 does *not* prove that the Python optimizer always emits
