@@ -35,6 +35,7 @@ def test_formal_theorems_listed_in_readme_exist_in_lean_sources():
 
     theorem_names = [
         "Plan.eval_scan",
+        "Plan.eval_emptyScan",
         "Plan.eval_filter",
         "Plan.filter_const_true",
         "Plan.filter_const_false",
@@ -48,6 +49,7 @@ def test_formal_theorems_listed_in_readme_exist_in_lean_sources():
         assert theorem_name in readme
 
     assert "theorem Plan.eval_scan" in semantics
+    assert "theorem Plan.eval_emptyScan" in semantics
     assert "theorem Plan.eval_filter" in semantics
     assert "theorem Plan.filter_const_true" in semantics
     assert "theorem Plan.filter_const_false" in semantics
@@ -94,3 +96,15 @@ def test_formal_readme_python_lean_table_covers_both_proven_rules():
     assert "ShortCircuitEmptyLayer" in readme
     assert "filter_empty_scan" in readme
     assert "filterFusion" in readme
+
+
+def test_formal_empty_scan_is_marked_done_and_mapped_to_python_node():
+    readme = _read(FORMAL / "README.md")
+    syntax = _read(FORMAL / "Py3plex/DSL/Syntax.lean")
+    semantics = _read(FORMAL / "Py3plex/DSL/Semantics.lean")
+
+    assert "- [x] `Plan.emptyScan` — models `LogicalEmptyScan`" in readme
+    assert "| `Plan.emptyScan` | `LogicalEmptyScan` in `plan_nodes.py` |" in readme
+    assert "| `Plan.emptyScan` | `LogicalEmptyScan` in the same file |" in syntax
+    assert "| emptyScan : Plan α" in syntax
+    assert "theorem Plan.eval_emptyScan" in semantics

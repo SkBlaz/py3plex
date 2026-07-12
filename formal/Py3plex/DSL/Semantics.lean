@@ -9,6 +9,7 @@ semantics of a `Plan` — and proves basic sanity theorems about it.
 ## Semantics
 
 * `eval (scan rows)          = rows`
+* `eval emptyScan            = []`
 * `eval (filter p child)     = (eval child).filter p`
 -/
 
@@ -21,6 +22,7 @@ namespace Py3plex.DSL
 /-- Execute a `Plan` and return the resulting list of rows. -/
 def Plan.eval : Plan α → List α
   | .scan rows      => rows
+  | .emptyScan      => []
   | .filter p child => child.eval.filter p
 
 -- ---------------------------------------------------------------------------
@@ -31,6 +33,11 @@ def Plan.eval : Plan α → List α
 @[simp]
 theorem Plan.eval_scan (rows : List α) :
     (Plan.scan rows).eval = rows := rfl
+
+/-- Evaluating `emptyScan` always yields the empty list. -/
+@[simp]
+theorem Plan.eval_emptyScan :
+    ((Plan.emptyScan : Plan α)).eval = [] := rfl
 
 /-- Evaluating a `filter` applies the predicate to the child's result. -/
 @[simp]
@@ -64,13 +71,13 @@ theorem Plan.filter_const_false (child : Plan α) :
     simp only [List.filter_cons]
     simp [ih]
 
-/-- Filtering *any* predicate over an empty scan always yields the empty list.
+/-- Filtering *any* predicate over `emptyScan` always yields the empty list.
 
     This is the abstract counterpart of the `ShortCircuitEmptyLayer` rule in
     `py3plex/optimizer/rules.py`: when the layer set is empty the sub-plan's
     result is empty regardless of what predicate is applied, so the whole
     sub-tree can be replaced by `LogicalEmptyScan`. -/
 theorem Plan.filter_empty_scan (p : α → Bool) :
-    (Plan.filter p (Plan.scan [])).eval = [] := by simp
+    (Plan.filter p (Plan.emptyScan : Plan α)).eval = [] := by simp
 
 end Py3plex.DSL
