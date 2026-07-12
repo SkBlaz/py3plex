@@ -44,6 +44,7 @@ mathematical proof.
 | `Plan.eval_filter` | `Py3plex/DSL/Semantics.lean` | Evaluating a filter applies the predicate to the child's result |
 | `Plan.filter_const_true` | `Py3plex/DSL/Semantics.lean` | Filtering with `fun _ => true` is the identity |
 | `Plan.filter_const_false` | `Py3plex/DSL/Semantics.lean` | Filtering with `fun _ => false` yields `[]` |
+| `Plan.filter_empty_scan` | `Py3plex/DSL/Semantics.lean` | Filtering *any* predicate over an empty scan yields `[]` (models `ShortCircuitEmptyLayer`) |
 | `Py3plex.Optimizer.filter_compose` | `Py3plex/Optimizer/FilterFusion.lean` | Two `List.filter` calls compose into one with a conjunctive predicate |
 | `Py3plex.Optimizer.filterFusion` | `Py3plex/Optimizer/FilterFusion.lean` | **Main theorem**: two adjacent `Plan.filter` nodes are semantically equal to a single filter with a conjunctive predicate |
 | `Py3plex.Optimizer.filterFusion_length` | `Py3plex/Optimizer/FilterFusion.lean` | Filter fusion preserves the result length |
@@ -55,6 +56,9 @@ axioms.
 
 * The Python `CombineAdjacentFilters` optimizer rule always emits exactly the
   transformation proved here.
+* The Python `ShortCircuitEmptyLayer` rule always emits exactly the
+  transformation proved by `Plan.filter_empty_scan` (the Lean theorem proves
+  the abstract model; Python-level invocation correctness is out of scope).
 * Any property of NetworkX, centrality algorithms, floating-point numerics,
   temporal dynamics, or uncertainty quantification.
 * End-to-end correctness of the full py3plex pipeline.
@@ -78,8 +82,15 @@ The `filterFusion` theorem models the `CombineAdjacentFilters` rule in
 which merges two consecutive `LogicalFilter` nodes by combining their
 `conditions` lists in inner-then-outer order).
 
-Lean proves the transformation is correct in the abstract model.  Whether the
-Python rule is always invoked correctly is a Python-level question that Phase 1
+The `filter_empty_scan` theorem models the `ShortCircuitEmptyLayer` rule in
+`py3plex/optimizer/rules.py` (class `ShortCircuitEmptyLayer`, which replaces
+any `LogicalFilter` whose child scan has an empty layer set with a
+`LogicalEmptyScan` node).  The Lean proof captures the key semantic insight:
+`(Plan.filter p (Plan.scan [])).eval = []` — filtering *any* predicate over an
+empty input always returns the empty list.
+
+Lean proves each transformation is correct in the abstract model.  Whether the
+Python rules are always invoked correctly is a Python-level question that Phase 1
 does not address.
 
 ---

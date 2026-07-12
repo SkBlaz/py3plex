@@ -38,6 +38,7 @@ def test_formal_theorems_listed_in_readme_exist_in_lean_sources():
         "Plan.eval_filter",
         "Plan.filter_const_true",
         "Plan.filter_const_false",
+        "Plan.filter_empty_scan",
         "Py3plex.Optimizer.filter_compose",
         "Py3plex.Optimizer.filterFusion",
         "Py3plex.Optimizer.filterFusion_length",
@@ -50,6 +51,7 @@ def test_formal_theorems_listed_in_readme_exist_in_lean_sources():
     assert "theorem Plan.eval_filter" in semantics
     assert "theorem Plan.filter_const_true" in semantics
     assert "theorem Plan.filter_const_false" in semantics
+    assert "theorem Plan.filter_empty_scan" in semantics
     assert "theorem filter_compose" in filter_fusion
     assert "theorem filterFusion" in filter_fusion
     assert "theorem filterFusion_length" in filter_fusion
@@ -63,3 +65,32 @@ def test_formal_build_entrypoints_stay_aligned():
     assert "cd formal && lake build" in makefile
     assert "working-directory: formal" in workflow
     assert "run: lake build" in workflow
+
+
+def test_formal_filter_empty_scan_models_short_circuit_empty_layer():
+    """Plan.filter_empty_scan is the abstract counterpart of the Python
+    ShortCircuitEmptyLayer optimizer rule.  Verify that:
+      - the Lean theorem exists in Semantics.lean
+      - the README documents the theorem with its Python rule name
+      - the Lean docstring explicitly mentions ShortCircuitEmptyLayer
+    """
+    semantics = _read(FORMAL / "Py3plex/DSL/Semantics.lean")
+    readme = _read(FORMAL / "README.md")
+
+    assert "theorem Plan.filter_empty_scan" in semantics
+    assert "ShortCircuitEmptyLayer" in semantics
+    assert "Plan.filter_empty_scan" in readme
+    assert "ShortCircuitEmptyLayer" in readme
+
+
+def test_formal_readme_python_lean_table_covers_both_proven_rules():
+    """The README's Python-to-Lean mapping table must reference both proven
+    optimizer rules: CombineAdjacentFilters (filterFusion) and
+    ShortCircuitEmptyLayer (filter_empty_scan).
+    """
+    readme = _read(FORMAL / "README.md")
+
+    assert "CombineAdjacentFilters" in readme
+    assert "ShortCircuitEmptyLayer" in readme
+    assert "filter_empty_scan" in readme
+    assert "filterFusion" in readme
