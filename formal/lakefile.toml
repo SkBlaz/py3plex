@@ -1,5 +1,5 @@
--- py3plex Lean formal project
--- Modern Lake TOML format (Lake ≥ 4.3, bundled with Lean ≥ 4.3)
+# py3plex Lean formal project
+# Modern Lake TOML format (Lake ≥ 4.3, bundled with Lean ≥ 4.3)
 
 name = "Py3plex"
 version = "0.1.0"
