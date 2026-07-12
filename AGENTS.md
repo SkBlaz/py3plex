@@ -8694,10 +8694,10 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 ### Test Organization
 
 **Test Suite Statistics**:
-- **Total test files**: 539 test_*.py files (553 total Python files in tests/)
+- **Total test files**: 577 test_*.py files (591 total Python files in tests/)
 - **DSL test files**: 76 files covering DSL v2, legacy DSL, and related features
 - **Verification test files**: 10 files with formal correctness guarantees
-- **Property-based test files**: 113 files in `tests/property/` using Hypothesis
+- **Property-based test files**: 115 files in `tests/property/` using Hypothesis
 
 **Test Categories**:
 
@@ -8748,9 +8748,9 @@ Formal correctness guarantees with metamorphic and differential testing:
 
 Total: 83+ tests with formal guarantees
 
-#### 3. Property-Based Tests (113 files in tests/property/)
+#### 3. Property-Based Tests (115 files in tests/property/)
 Hypothesis-driven property testing:
-- `test_dsl_*_properties.py` - DSL property tests (113 files)
+- `test_dsl_*_properties.py` - DSL property tests (115 files)
 - Covers: aggregation, AST, export, registry, serialization, UQ
 
 #### 4. Core Module Tests
@@ -8837,9 +8837,9 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 **Version**: py3plex 2.0.1  
 **Python Support**: 3.8+  
-**Repository Size**: ~171K lines of code  
-**Test Coverage**: 8,942 tests across 539 test files (~14.7% statement coverage)  
-**Key Modules**: 459 Python files across core, algorithms, DSL, and utilities  
+**Repository Size**: ~175K lines of code  
+**Test Coverage**: 9,319 tests across 577 test files (~14.7% statement coverage)  
+**Key Modules**: 465 Python files across core, algorithms, DSL, and utilities  
 
 ### Major Subsystems
 
@@ -8922,10 +8922,10 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 ### Test Infrastructure
 
 **Test Organization**:
-- **539 test files** with **8,942 individual tests**
+- **577 test files** with **9,319 individual tests**
 - **83+ verification tests** across specialized modules (provenance, differential, metamorphic, determinism) — 10 files in `tests/verification/`
 - **210+ new tests** added in recent updates (schema validation, parallel execution, temporal utils, random generators, visualization, UQ propagation)
-- **113 property-based test files** using Hypothesis in `tests/property/`
+- **115 property-based test files** using Hypothesis in `tests/property/`
 - Metamorphic tests for invariant checking
 - Integration tests for end-to-end workflows
 - **NEW**: Tests for algebra, embeddings, experiments, meta-analysis, out-of-core, optimizer, DSL lint, DSL program objects
@@ -8940,6 +8940,10 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `test_ergonomics.py`, `test_cli_ergonomics.py` — ergonomics helpers
 - `test_centrality_robustness.py`, `test_centrality_robustness_oracles.py`, `test_centrality_explain.py`, `test_centrality_explain_integration.py` — robustness centrality
 - `property/test_algebra_properties.py`, `property/test_graph_programs_properties.py`, `property/test_centrality_invariants.py`, `property/test_centrality_rankings.py`, `property/test_io_metamorphic_roundtrip.py`, `property/test_meta_properties.py`, `property/test_versatility_metamorphic.py` — property-based tests
+- `test_formal_phase1_alignment.py` (4 tests) — checks formal/ README, Lean sources, and Python optimizer align with Phase 1 guarantees
+- `test_optimizer_submodules.py` (19 tests) — comprehensive regression tests for all optimizer submodules (plan nodes, rules, logical/physical plan, cost model)
+- `test_agent_api.py` (17 tests) — regression contract tests for the stable machine-facing `py3plex.agent` API
+- `test_agents_documentation_claims.py` (2 tests) — guardrails ensuring AGENTS.md wording stays conservative and accurate
 
 **Coverage Areas**:
 - Core functionality: 40-85% coverage
@@ -8979,6 +8983,8 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - **NEW (v1.2)**: `py3plex/dsl/lint/` (15 modules) — DSL static analysis and linting framework with 8 lint rules (unknown layer, unknown attribute, type mismatch, unsatisfiable, redundant, full-scan, cross-layer)
 - **NEW (v1.2)**: `py3plex/dsl/program/` (10 modules) — `GraphProgram` first-class immutable program objects with rewrite engine, cost model, diff, distribution, and program cache
 - **NEW (v1.2)**: `py3plex/dsl/executors/` — Specialized execution engines (`benchmark_executor`)
+- **NEW (Phase 1 formal)**: `formal/` — Lean 4 formal verification project. Machine-checked proofs of abstract optimizer semantics: `Plan.eval_scan`, `Plan.eval_filter`, `filter_const_true/false`, `filter_compose`, `filterFusion`, `filterFusion_length`. Uses Lean 4 `v4.14.0` (pinned in `lean-toolchain`), zero external Lean deps. Not a runtime py3plex dependency. See `formal/README.md`.
+- **NEW**: `py3plex/agent.py` — Stable machine-facing agent API (`load_network_from_path`, `top_hubs_by_layer`, `uncertainty_centrality`, `summarize_result`, `compare_networks`, `reproducible_export_bundle`, `community_detection_with_uq`, `temporal_slice`). Returns structured dicts with `status`, `assumptions`, `warnings`, `result`, `provenance`, and `replay` keys suitable for programmatic consumption by AI agents and automation pipelines.
 
 ---
 
@@ -9002,6 +9008,7 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `py3plex/graph_ops.py` (50KB) - Dplyr-style chainable API
 - `py3plex/pipeline.py` (19KB) - Sklearn-style pipeline
 - `py3plex/workflows.py` (21KB) - Config-driven workflows
+- `py3plex/agent.py` - Stable machine-facing agent API (structured dict responses for AI agents and automation)
 - `py3plex_mcp/` - MCP server for AI agent integration
 
 ### MCP Server
@@ -9432,13 +9439,13 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `AGENTS.md` (10,500+ lines) - **This file** - Comprehensive AI agent documentation
 - `README.md` - Quick start and project overview
 - `docfiles/` - Documentation source files
-- `examples/` - **267 example scripts** demonstrating all features
+- `examples/` - **268 example scripts** demonstrating all features
 - `docs/py3plex_book.pdf` (106 pages) - Technical documentation
 - `CITATION.cff` - Citation information
 
 ### Test Suite
 
-**Test Files** (539 files, 8,942 tests):
+**Test Files** (577 files, 9,319 tests):
 
 **DSL Tests**:
 - `tests/test_dsl_v2.py` - DSL v2 core functionality
@@ -9464,6 +9471,14 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `tests/test_temporal.py` - Temporal networks
 - `tests/test_temporal_utils_extended.py` (40 tests) - Duration parsing/formatting
 
+**Formal Verification and Optimizer Tests**:
+- `tests/test_formal_phase1_alignment.py` (4 tests) - Checks formal/ README, Lean sources, and Python optimizer align with Phase 1 formal spec
+- `tests/test_optimizer_submodules.py` (19 tests) - Comprehensive optimizer submodule regression tests (plan nodes, rules including `CombineAdjacentFilters`, logical/physical plan, cost model)
+
+**Agent API Tests**:
+- `tests/test_agent_api.py` (17 tests) - Regression contract tests for `py3plex.agent` stable machine-facing API
+- `tests/test_agents_documentation_claims.py` (2 tests) - Guardrails ensuring AGENTS.md wording stays conservative and accurate
+
 **Specialized Tests**:
 - `tests/test_counterexamples.py` - Counterexample generation
 - `tests/test_claim_learning.py` - Claim learning
@@ -9488,9 +9503,20 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 
 **Quality Assurance**:
 - `.pre-commit-config.yaml` - Pre-commit hooks
-- `.github/workflows/` - CI/CD pipelines (tests, examples, benchmarks, docs, fuzzing)
+- `.github/workflows/` - CI/CD pipelines (tests, examples, benchmarks, docs, fuzzing, formal verification)
+- `.github/workflows/formal.yml` - Lean 4 formal verification CI (runs `lake build` in `formal/`)
 - `conftest.py` - Pytest configuration
 - `verify_rewrite_engine.py` - Rewrite engine verification
+
+**Formal Verification** (Lean 4):
+- `formal/` - Lean 4 formal verification project (Phase 1 optimizer correctness)
+  - `formal/lean-toolchain` - Lean version pin: `leanprover/lean4:v4.14.0`
+  - `formal/lakefile.lean` - Lake build file (zero external Lean deps)
+  - `formal/Py3plex/DSL/Syntax.lean` - Lean models of `Plan` inductive type (scan, filter, …)
+  - `formal/Py3plex/DSL/Semantics.lean` - `Plan.eval` denotational semantics
+  - `formal/Py3plex/Optimizer/FilterFusion.lean` - Proofs: `filterFusion`, `filterFusion_length`, `filter_const_true`, `filter_const_false`, `filter_compose`, `eval_scan`, `eval_filter` — all 7 machine-checked, no `sorry`
+  - `formal/README.md` - Full description of scope, theorems, and relationship to Python optimizer
+  - **Lean is NOT required** for normal py3plex usage; `formal/` is a research artifact only
 
 **Docker Support**:
 - `Dockerfile` - Container image
@@ -9683,7 +9709,7 @@ These tests are intended to ensure that a single bump request updates library, d
 - **README.md**: Quick start and flagship example
 - **AGENTS.md**: Comprehensive AI agent documentation (this file)
 - **docfiles/**: Detailed documentation
-- **examples/**: 267 example scripts
+- **examples/**: 268 example scripts
 - **pyproject.toml**: Dependencies and build config
 - **Technical Book**: `docs/py3plex_book.pdf` (106 pages)
 
@@ -10714,3 +10740,5 @@ Recommended areas for future test coverage:
 **v1.1+ UQ Propagation Update** (January 2026): Implemented first-class uncertainty propagation semantics with `mode="propagate"` option in `.uq()`. This enables quantification of selection stability (p_present, p_selected, rank_uq) when queries include filtering, ordering, and selection operations. The propagate mode executes the full query end-to-end per replicate, capturing how uncertain metric values affect which items appear in final results. Aggregation now uses UQAlgebra to preserve uncertainty through grouping operations instead of silently dropping it. All changes are backward compatible (default mode="summarize_only"). New test module: tests/test_dsl_uq_propagation.py (7 deterministic tests).
 
 **March 2026 Statistics Update**: AGENTS.md refreshed with verified repository counts — 539 test files (553 total Python files in tests/), 8,942 individual tests, 113 property-based test files, 459 Python modules in py3plex/, 267 example scripts, ~171K lines of code (~14.7% statement coverage).
+
+**July 2026 Statistics Update**: AGENTS.md updated to reflect current verified repository counts — 577 test_*.py files (591 total Python files in tests/), 9,319 individual tests, 115 property-based test files, 465 Python modules in py3plex/, 268 example scripts, ~175K lines of code (~14.7% statement coverage). New additions: `formal/` Lean 4 formal verification project (Phase 1 optimizer proofs, 7 machine-checked theorems, CI via `.github/workflows/formal.yml`); `py3plex/agent.py` stable machine-facing agent API; `tests/test_formal_phase1_alignment.py` (4 tests), `tests/test_optimizer_submodules.py` (19 tests), `tests/test_agent_api.py` (17 tests), `tests/test_agents_documentation_claims.py` (2 tests).
