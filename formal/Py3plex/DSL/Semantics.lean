@@ -64,4 +64,13 @@ theorem Plan.filter_const_false (child : Plan α) :
     simp only [List.filter_cons]
     simp [ih]
 
+/-- Filtering *any* predicate over an empty scan always yields the empty list.
+
+    This is the abstract counterpart of the `ShortCircuitEmptyLayer` rule in
+    `py3plex/optimizer/rules.py`: when the layer set is empty the sub-plan's
+    result is empty regardless of what predicate is applied, so the whole
+    sub-tree can be replaced by `LogicalEmptyScan`. -/
+theorem Plan.filter_empty_scan (p : α → Bool) :
+    (Plan.filter p (Plan.scan [])).eval = [] := by simp
+
 end Py3plex.DSL
