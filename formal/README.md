@@ -75,8 +75,8 @@ The Lean `Plan` type abstracts:
 
 The `filterFusion` theorem models the `CombineAdjacentFilters` rule in
 `py3plex/optimizer/rules.py` (class `CombineAdjacentFilters`, method `apply`,
-which merges two consecutive `LogicalFilter` nodes by combining their predicate
-lists).
+which merges two consecutive `LogicalFilter` nodes by combining their
+`conditions` lists in inner-then-outer order).
 
 Lean proves the transformation is correct in the abstract model.  Whether the
 Python rule is always invoked correctly is a Python-level question that Phase 1

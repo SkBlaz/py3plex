@@ -93,8 +93,8 @@ class PushFilterBelowCompute(OptimizationRule):
             return False
         # Only push down if the filter predicate does not reference computed cols
         measures = getattr(plan, "measures", [])
-        predicates = getattr(child, "predicates", [])
-        for pred in predicates:
+        conditions = getattr(child, "conditions", [])
+        for pred in conditions:
             for m in measures:
                 if m in str(pred):
                     return False
@@ -156,11 +156,11 @@ class CombineAdjacentFilters(OptimizationRule):
 
     def apply(self, plan: LogicalOp) -> LogicalOp:
         inner_filt = plan.children[0]
-        combined_predicates = list(getattr(plan, "predicates", [])) + list(
-            getattr(inner_filt, "predicates", [])
+        combined_conditions = list(getattr(inner_filt, "conditions", [])) + list(
+            getattr(plan, "conditions", [])
         )
         merged = copy.copy(plan)
-        merged.predicates = combined_predicates  # type: ignore[attr-defined]
+        merged.conditions = combined_conditions  # type: ignore[attr-defined]
         merged.children = list(inner_filt.children)
         return merged
 
@@ -178,8 +178,8 @@ class ReorderFiltersBySelectivity(OptimizationRule):
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalFilter":
             return False
-        predicates = list(getattr(plan, "predicates", []))
-        return len(predicates) > 1
+        conditions = list(getattr(plan, "conditions", []))
+        return len(conditions) > 1
 
     def apply(self, plan: LogicalOp) -> LogicalOp:
         # Simple heuristic: layer predicates first, then equality, then range
@@ -192,8 +192,8 @@ class ReorderFiltersBySelectivity(OptimizationRule):
             return 2
 
         new_plan = copy.copy(plan)
-        new_plan.predicates = sorted(  # type: ignore[attr-defined]
-            getattr(plan, "predicates", []), key=_priority
+        new_plan.conditions = sorted(  # type: ignore[attr-defined]
+            getattr(plan, "conditions", []), key=_priority
         )
         return new_plan
 

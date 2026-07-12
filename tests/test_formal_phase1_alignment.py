@@ -1,0 +1,65 @@
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+FORMAL = ROOT / "formal"
+
+
+def _read(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+def test_formal_readme_matches_phase1_tree_and_toolchain():
+    readme = _read(FORMAL / "README.md")
+    toolchain = _read(FORMAL / "lean-toolchain").strip()
+
+    assert "# Py3plex Formal Verification (Phase 1)" in readme
+    assert "Syntax.lean" in readme
+    assert "Semantics.lean" in readme
+    assert "FilterFusion.lean" in readme
+    assert toolchain in readme
+
+
+def test_formal_readme_and_lean_comment_reference_conditions_lists():
+    readme = _read(FORMAL / "README.md")
+    filter_fusion = _read(FORMAL / "Py3plex/Optimizer/FilterFusion.lean")
+
+    assert "`conditions` lists in inner-then-outer order" in readme
+    assert "`conditions` lists in inner-then-outer order" in filter_fusion
+
+
+def test_formal_theorems_listed_in_readme_exist_in_lean_sources():
+    readme = _read(FORMAL / "README.md")
+    semantics = _read(FORMAL / "Py3plex/DSL/Semantics.lean")
+    filter_fusion = _read(FORMAL / "Py3plex/Optimizer/FilterFusion.lean")
+
+    theorem_names = [
+        "Plan.eval_scan",
+        "Plan.eval_filter",
+        "Plan.filter_const_true",
+        "Plan.filter_const_false",
+        "Py3plex.Optimizer.filter_compose",
+        "Py3plex.Optimizer.filterFusion",
+        "Py3plex.Optimizer.filterFusion_length",
+    ]
+
+    for theorem_name in theorem_names:
+        assert theorem_name in readme
+
+    assert "theorem Plan.eval_scan" in semantics
+    assert "theorem Plan.eval_filter" in semantics
+    assert "theorem Plan.filter_const_true" in semantics
+    assert "theorem Plan.filter_const_false" in semantics
+    assert "theorem filter_compose" in filter_fusion
+    assert "theorem filterFusion" in filter_fusion
+    assert "theorem filterFusion_length" in filter_fusion
+
+
+def test_formal_build_entrypoints_stay_aligned():
+    makefile = _read(ROOT / "Makefile")
+    workflow = _read(ROOT / ".github/workflows/formal.yml")
+
+    assert "formal: ## Build and verify the Lean formal proofs" in makefile
+    assert "cd formal && lake build" in makefile
+    assert "working-directory: formal" in workflow
+    assert "run: lake build" in workflow
