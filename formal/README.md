@@ -161,11 +161,125 @@ project uses only Lean's built-in `Init` / `Std` library).
 
 | Phase | Scope |
 | ----- | ----- |
-| Phase 1 (current) | Abstract model, `filterFusion` theorem, CI enforcement |
-| Phase 2 | Python-to-Lean AST serialization; compare optimizer output against Lean model |
-| Phase 3 | Certificate replay: optimizer emits a Lean certificate, Lean verifies it |
-| Phase 4 | Broader coverage: multi-step rewrites, cost model, other optimizer rules |
+| Phase 1 (current) | Abstract model, `filterFusion` theorem, `filter_empty_scan` theorem, CI enforcement |
+| Phase 2 | Extend `Plan` to cover all plan-node types; prove one theorem per optimizer rule |
+| Phase 3 | Python-to-Lean AST serialization; compare optimizer output against Lean model |
+| Phase 4 | Certificate replay: optimizer emits a Lean certificate, Lean verifies it |
+| Phase 5 | End-to-end: composed optimizer preserves `eval` for a full DSL query |
 
 Formalization of NetworkX internals, floating-point numerics, temporal dynamics,
 uncertainty quantification, or centrality algorithms is explicitly out of scope
 for all near-term phases.
+
+---
+
+## TODO: Steps toward an end-to-end provable base
+
+The items below are ordered from "next immediate win" (concrete Lean work) to
+"eventual e2e closure" (Python–Lean bridge).  Each group is a prerequisite for
+the one that follows.  Checked items are already done.
+
+### Group 1 — Extend the abstract `Plan` type (Phase 1 extension)
+
+New constructors mirror every `LogicalOp` subclass in
+`py3plex/optimizer/plan_nodes.py`.
+
+- [x] `Plan.scan` — models `LogicalScanNodes` / `LogicalScanEdges`
+- [x] `Plan.filter` — models `LogicalFilter`
+- [ ] `Plan.project` — models `LogicalProject`
+- [ ] `Plan.limit` — models `LogicalLimit`
+- [ ] `Plan.topK` — models `LogicalTopK`
+- [ ] `Plan.orderBy` — models `LogicalOrderBy`
+- [ ] `Plan.compute` — models `LogicalCompute`
+- [ ] `Plan.aggregate` — models `LogicalAggregate`
+- [ ] `Plan.groupByLayer` — models `LogicalGroupByLayer` / `LogicalGroupByLayerPair`
+- [ ] `Plan.coverage` — models `LogicalCoverage`
+- [ ] `Plan.layerFilter` — models `LogicalLayerFilter`
+- [ ] `Plan.uq` — models `LogicalUQ`
+- [ ] `Plan.emptyScan` — models `LogicalEmptyScan`
+
+### Group 2 — One theorem per optimizer rule (Phase 2)
+
+One machine-checked theorem per rule class in `py3plex/optimizer/rules.py`.
+The two checked items are already proved; the rest are open.
+
+- [x] `filterFusion` ↔ `CombineAdjacentFilters`
+- [x] `filter_empty_scan` ↔ `ShortCircuitEmptyLayer`
+- [ ] `filter_pushdown_compute` ↔ `PushFilterBelowCompute`  
+      Statement: `filter p (compute f plan)`.eval = `compute f (filter (p ∘ f) plan)`.eval  
+      (when predicate does not depend on a freshly computed column)
+- [ ] `layer_filter_pushdown_compute` ↔ `PushLayerFilterBelowCompute`
+- [ ] `filter_pushdown_aggregate` ↔ `PushFilterBelowAggregate`
+- [ ] `filter_reorder_selectivity` ↔ `ReorderFiltersBySelectivity`  
+      Statement: reordering independent filters preserves semantics
+- [ ] `orderby_limit_to_topk` ↔ `ConvertOrderByLimitToTopK`  
+      Statement: `limit k (orderBy key plan)`.eval = `topK k key plan`.eval
+- [ ] `remove_redundant_project` ↔ `RemoveRedundantProject`  
+      Statement: `project id plan`.eval = `plan`.eval
+- [ ] `early_limit_pushdown` ↔ `EarlyLimitPushdown`  
+      Statement: `limit k (compute f plan)`.eval = `compute f (limit k plan)`.eval  
+      (when compute does not change ordering)
+- [ ] `aggregate_hash_equiv` ↔ `ConvertAggregateToHashIfSmallGroups`
+- [ ] `cached_centrality_equiv` ↔ `UseCachedCentralityIfAvailable`
+- [ ] `collapse_per_layer_scan` ↔ `CollapsePerLayerIntoScanPartition`
+- [ ] `coverage_bitmask_equiv` ↔ `ConvertCoverageToBitmaskAggregation`
+- [ ] `uq_shared_base` ↔ `ConvertUQComputeToSharedBaseCompute`
+- [ ] `merge_computes` ↔ `MergeMultipleComputesIntoSinglePass`
+
+### Group 3 — Python–Lean AST bridge (Phase 3)
+
+Makes the Lean model executable against real optimizer output without running
+Lean's kernel on production data.
+
+- [ ] Add a Python serializer (`py3plex/optimizer/lean_export.py`) that converts
+      any `LogicalOp` tree to a stable s-expression / JSON format.
+- [ ] Add a Lean `#eval`-level reader that reconstructs a `Plan` value from that
+      format at proof-check time.
+- [ ] Extend `tests/test_formal_phase1_alignment.py` with a round-trip test: run
+      a toy query through the Python optimizer, serialize, deserialize in Lean,
+      assert `.eval` of before-plan equals `.eval` of after-plan.
+- [ ] Add a CI step (`lake script run check_roundtrip`) that invokes the above
+      test automatically on every push.
+
+### Group 4 — Certificate replay (Phase 4)
+
+Each Python rule application produces a self-contained Lean snippet that Lean
+can verify independently of py3plex's runtime.
+
+- [ ] Define a `Certificate` datatype in Lean: `{ before : Plan, after : Plan,
+      proof : before.eval = after.eval }`.
+- [ ] Have the Python `RuleEngine` emit a certificate JSON file alongside normal
+      optimizer output (opt-in flag `--emit-lean-certs`).
+- [ ] Write a Lean `#check`-level verifier that reads the certificate JSON and
+      type-checks the proof term.
+- [ ] CI verifies every emitted certificate on the example queries in
+      `tests/test_optimizer_submodules.py`.
+
+### Group 5 — End-to-end query equivalence (Phase 5)
+
+The ultimate goal: machine-check that the composed optimizer produces a plan
+whose `eval` equals the original plan's `eval` for the full DSL query language.
+
+- [ ] Define `DSLQuery` in Lean as a structured query built from the DSL v2
+      builder's output (covers nodes/edges, `from_layers`, `where`, `compute`,
+      `order_by`, `limit`).
+- [ ] Prove `RuleEngine.sound`: for any `DSLQuery q`, applying all rules in
+      sequence yields a plan `q'` such that `q'.eval = q.eval`.
+- [ ] Prove `Plan.eval_deterministic`: given the same input network,
+      `plan.eval` always returns the same result (referential transparency of
+      the abstract model).
+- [ ] Prove or assume (as an axiom) `Python.conformsToModel`: the Python
+      `LogicalOp.execute()` output agrees with `Plan.eval` on all inputs covered
+      by the Lean model (requires the AST bridge from Group 3).
+- [ ] Compose the above to obtain: "the end-to-end py3plex query pipeline
+      returns results consistent with the abstract Lean semantics."
+
+### Non-goals (explicitly out of scope forever)
+
+These items are excluded to keep the formalization tractable:
+
+* Correctness of NetworkX's graph algorithms.
+* Floating-point precision of centrality computations.
+* Temporal dynamics or uncertainty quantification semantics.
+* I/O format parsing correctness.
+* Any property that requires modelling Python's object model or mutable state.
