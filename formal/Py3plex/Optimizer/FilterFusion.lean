@@ -1,3 +1,5 @@
+import Py3plex.DSL.Semantics
+
 /-!
 # Py3plex.Optimizer.FilterFusion — Filter-Fusion Equivalence Theorem
 
@@ -28,8 +30,6 @@ Applying `filter q` first and then `filter p` keeps exactly those elements
 for which *both* `q` and `p` return `true`.  The combined predicate is
 therefore `fun row => q row && p row` (inner predicate first in the `&&`).
 -/
-
-import Py3plex.DSL.Semantics
 
 namespace Py3plex.Optimizer
 

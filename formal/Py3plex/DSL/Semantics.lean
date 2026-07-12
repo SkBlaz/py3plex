@@ -1,3 +1,5 @@
+import Py3plex.DSL.Syntax
+
 /-!
 # Py3plex.DSL.Semantics — Executable Plan Semantics
 
@@ -9,8 +11,6 @@ semantics of a `Plan` — and proves basic sanity theorems about it.
 * `eval (scan rows)          = rows`
 * `eval (filter p child)     = (eval child).filter p`
 -/
-
-import Py3plex.DSL.Syntax
 
 namespace Py3plex.DSL
 
