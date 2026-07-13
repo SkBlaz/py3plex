@@ -5,6 +5,8 @@ Example: DSL Sensitivity Analysis - Multilayer Network Robustness
 
 This example demonstrates sensitivity analysis specific to multilayer networks,
 including layer-specific perturbations and cross-layer stability assessment.
+
+SKIP_CI: slow - Sensitivity analysis with multiple perturbation samples takes more than 30 seconds
 """
 
 from py3plex.core import multinet
