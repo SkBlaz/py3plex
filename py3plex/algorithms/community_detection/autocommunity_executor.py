@@ -455,6 +455,7 @@ def _evaluate_algorithms(
     from py3plex.algorithms.community_detection.multilayer_quality_metrics import (
         replica_consistency,
         layer_entropy,
+        mdl_score,
     )
     
     import inspect
@@ -519,9 +520,7 @@ def _evaluate_algorithms(
                         value = 0.0
                 
                 elif metric_name == "mdl":
-                    # Description length (if available)
-                    # Placeholder for now
-                    value = 0.0
+                    value = mdl_score(partition, network)
                 
                 elif metric_name == "replica_consistency":
                     # Multilayer coherence metric
