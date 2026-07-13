@@ -3,14 +3,15 @@
 
 Defines the inductive type `Plan α`, a minimal abstract query plan
 parameterised over row type `α`.  The type is deliberately small: only a
-base-case scan and a filter step are included.  This is enough to state and
-machine-check optimizer equivalence theorems.
+base-case scan, a distinguished empty scan, and a filter step are included.
+This is enough to state and machine-check optimizer equivalence theorems.
 
 ## Relation to py3plex Python code
 
 | Lean constructor | Python equivalent |
 | ---------------- | ---------------- |
 | `Plan.scan`      | `LogicalScanNodes` / `LogicalScanEdges` in `py3plex/optimizer/plan_nodes.py` |
+| `Plan.emptyScan` | `LogicalEmptyScan` in the same file |
 | `Plan.filter`    | `LogicalFilter` in the same file |
 
 Phase 1 does **not** prove that the Python optimizer always emits exactly the
@@ -22,11 +23,14 @@ namespace Py3plex.DSL
 /-- An abstract query plan, generic over row type `α`.
 
     * `scan rows`       — base case: yield a fixed list of rows.
+    * `emptyScan`       — known-empty result, matching Python's
+                          `LogicalEmptyScan`.
     * `filter p child`  — keep only rows from `child` that satisfy
                           boolean predicate `p`.
 -/
 inductive Plan (α : Type) where
   | scan   : List α → Plan α
+  | emptyScan : Plan α
   | filter : (α → Bool) → Plan α → Plan α
 
 end Py3plex.DSL

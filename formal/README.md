@@ -41,10 +41,11 @@ mathematical proof.
 | Theorem | File | Statement |
 | ------- | ---- | --------- |
 | `Plan.eval_scan` | `Py3plex/DSL/Semantics.lean` | Evaluating a scan returns the original rows |
+| `Plan.eval_emptyScan` | `Py3plex/DSL/Semantics.lean` | Evaluating `emptyScan` yields `[]` |
 | `Plan.eval_filter` | `Py3plex/DSL/Semantics.lean` | Evaluating a filter applies the predicate to the child's result |
 | `Plan.filter_const_true` | `Py3plex/DSL/Semantics.lean` | Filtering with `fun _ => true` is the identity |
 | `Plan.filter_const_false` | `Py3plex/DSL/Semantics.lean` | Filtering with `fun _ => false` yields `[]` |
-| `Plan.filter_empty_scan` | `Py3plex/DSL/Semantics.lean` | Filtering *any* predicate over an empty scan yields `[]` (models `ShortCircuitEmptyLayer`) |
+| `Plan.filter_empty_scan` | `Py3plex/DSL/Semantics.lean` | Filtering *any* predicate over `emptyScan` yields `[]` (models `ShortCircuitEmptyLayer`) |
 | `Py3plex.Optimizer.filter_compose` | `Py3plex/Optimizer/FilterFusion.lean` | Two `List.filter` calls compose into one with a conjunctive predicate |
 | `Py3plex.Optimizer.filterFusion` | `Py3plex/Optimizer/FilterFusion.lean` | **Main theorem**: two adjacent `Plan.filter` nodes are semantically equal to a single filter with a conjunctive predicate |
 | `Py3plex.Optimizer.filterFusion_length` | `Py3plex/Optimizer/FilterFusion.lean` | Filter fusion preserves the result length |
@@ -75,6 +76,7 @@ The Lean `Plan` type abstracts:
 | Lean | Python (`py3plex/optimizer/`) |
 | ---- | ----------------------------- |
 | `Plan.scan` | `LogicalScanNodes` / `LogicalScanEdges` in `plan_nodes.py` |
+| `Plan.emptyScan` | `LogicalEmptyScan` in `plan_nodes.py` |
 | `Plan.filter` | `LogicalFilter` in `plan_nodes.py` |
 
 The `filterFusion` theorem models the `CombineAdjacentFilters` rule in
@@ -82,12 +84,14 @@ The `filterFusion` theorem models the `CombineAdjacentFilters` rule in
 which merges two consecutive `LogicalFilter` nodes by combining their
 `conditions` lists in inner-then-outer order).
 
-The `filter_empty_scan` theorem models the `ShortCircuitEmptyLayer` rule in
+The `eval_emptyScan` equation and `filter_empty_scan` theorem model the
+`ShortCircuitEmptyLayer` rule in
 `py3plex/optimizer/rules.py` (class `ShortCircuitEmptyLayer`, which replaces
 any `LogicalFilter` whose child scan has an empty layer set with a
 `LogicalEmptyScan` node).  The Lean proof captures the key semantic insight:
-`(Plan.filter p (Plan.scan [])).eval = []` — filtering *any* predicate over an
-empty input always returns the empty list.
+`Plan.emptyScan.eval = []` and `(Plan.filter p Plan.emptyScan).eval = []` —
+filtering *any* predicate over an already-empty input always returns the empty
+list.
 
 Lean proves each transformation is correct in the abstract model.  Whether the
 Python rules are always invoked correctly is a Python-level question that Phase 1
@@ -161,7 +165,7 @@ project uses only Lean's built-in `Init` / `Std` library).
 
 | Phase | Scope |
 | ----- | ----- |
-| Phase 1 (current) | Abstract model, `filterFusion` theorem, `filter_empty_scan` theorem, CI enforcement |
+| Phase 1 (current) | Abstract model, `emptyScan` + filter theorems, CI enforcement |
 | Phase 2 | Extend `Plan` to cover all plan-node types; prove one theorem per optimizer rule |
 | Phase 3 | Python-to-Lean AST serialization; compare optimizer output against Lean model |
 | Phase 4 | Certificate replay: optimizer emits a Lean certificate, Lean verifies it |
@@ -186,6 +190,7 @@ New constructors mirror every `LogicalOp` subclass in
 
 - [x] `Plan.scan` — models `LogicalScanNodes` / `LogicalScanEdges`
 - [x] `Plan.filter` — models `LogicalFilter`
+- [x] `Plan.emptyScan` — models `LogicalEmptyScan`
 - [ ] `Plan.project` — models `LogicalProject`
 - [ ] `Plan.limit` — models `LogicalLimit`
 - [ ] `Plan.topK` — models `LogicalTopK`
@@ -196,7 +201,6 @@ New constructors mirror every `LogicalOp` subclass in
 - [ ] `Plan.coverage` — models `LogicalCoverage`
 - [ ] `Plan.layerFilter` — models `LogicalLayerFilter`
 - [ ] `Plan.uq` — models `LogicalUQ`
-- [ ] `Plan.emptyScan` — models `LogicalEmptyScan`
 
 ### Group 2 — One theorem per optimizer rule (Phase 2)
 
