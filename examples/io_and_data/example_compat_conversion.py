@@ -10,7 +10,7 @@ Run with: python examples/interop/example_cross_compatibility.py
 from py3plex.compat import convert, to_ir
 from py3plex.compat.schema import infer_schema
 from py3plex.io.schema import MultiLayerGraph, Node, Layer, Edge
-
+from py3plex.compat.exceptions import CompatibilityError
 
 def create_sample_graph():
     """Create a sample multilayer network."""
@@ -82,7 +82,6 @@ def main():
     print("\n3. Error Handling (Strict Mode)")
     print("-" * 60)
     try:
-        from py3plex.compat.exceptions import CompatibilityError
         matrix = convert(graph, "scipy_sparse", strict=True)
         print(f"    Conversion succeeded")
     except CompatibilityError as e:

@@ -1,12 +1,14 @@
 """Tests for multilayer-specific community quality metrics.
 
-Tests cover:
+Covers replica_consistency and layer_entropy:
 - Determinism (repeated calls yield identical results)
 - Correctness (known partitions yield expected metric values)
 - Edge cases (single-layer nodes, single community, fragmentation)
 - Hard-to-game behavior (giant cluster vs reasonable partition)
 - Performance (no quadratic blowups)
 - Integration with AutoCommunity
+
+mdl_score has its own dedicated suite in test_mdl_score.py.
 """
 
 import pytest
