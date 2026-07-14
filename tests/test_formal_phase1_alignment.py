@@ -17,6 +17,7 @@ def test_formal_readme_matches_phase1_tree_and_toolchain():
     assert "Syntax.lean" in readme
     assert "Semantics.lean" in readme
     assert "FilterFusion.lean" in readme
+    assert "ProjectIdentity.lean" in readme
     assert toolchain in readme
 
 
@@ -32,17 +33,21 @@ def test_formal_theorems_listed_in_readme_exist_in_lean_sources():
     readme = _read(FORMAL / "README.md")
     semantics = _read(FORMAL / "Py3plex/DSL/Semantics.lean")
     filter_fusion = _read(FORMAL / "Py3plex/Optimizer/FilterFusion.lean")
+    project_identity = _read(FORMAL / "Py3plex/Optimizer/ProjectIdentity.lean")
 
     theorem_names = [
         "Plan.eval_scan",
         "Plan.eval_emptyScan",
         "Plan.eval_filter",
+        "Plan.eval_project",
+        "Plan.eval_limit",
         "Plan.filter_const_true",
         "Plan.filter_const_false",
         "Plan.filter_empty_scan",
         "Py3plex.Optimizer.filter_compose",
         "Py3plex.Optimizer.filterFusion",
         "Py3plex.Optimizer.filterFusion_length",
+        "Py3plex.Optimizer.remove_redundant_project",
     ]
 
     for theorem_name in theorem_names:
@@ -51,12 +56,15 @@ def test_formal_theorems_listed_in_readme_exist_in_lean_sources():
     assert "theorem Plan.eval_scan" in semantics
     assert "theorem Plan.eval_emptyScan" in semantics
     assert "theorem Plan.eval_filter" in semantics
+    assert "theorem Plan.eval_project" in semantics
+    assert "theorem Plan.eval_limit" in semantics
     assert "theorem Plan.filter_const_true" in semantics
     assert "theorem Plan.filter_const_false" in semantics
     assert "theorem Plan.filter_empty_scan" in semantics
     assert "theorem filter_compose" in filter_fusion
     assert "theorem filterFusion" in filter_fusion
     assert "theorem filterFusion_length" in filter_fusion
+    assert "theorem remove_redundant_project" in project_identity
 
 
 def test_formal_build_entrypoints_stay_aligned():
@@ -108,3 +116,24 @@ def test_formal_empty_scan_is_marked_done_and_mapped_to_python_node():
     assert "| `Plan.emptyScan` | `LogicalEmptyScan` in the same file |" in syntax
     assert "| emptyScan : Plan α" in syntax
     assert "theorem Plan.eval_emptyScan" in semantics
+
+
+def test_formal_project_and_limit_are_marked_done_and_defined():
+    readme = _read(FORMAL / "README.md")
+    syntax = _read(FORMAL / "Py3plex/DSL/Syntax.lean")
+    semantics = _read(FORMAL / "Py3plex/DSL/Semantics.lean")
+    project_identity = _read(FORMAL / "Py3plex/Optimizer/ProjectIdentity.lean")
+
+    assert "- [x] `Plan.project` — models `LogicalProject`" in readme
+    assert "- [x] `Plan.limit` — models `LogicalLimit`" in readme
+    assert "- [x] `remove_redundant_project` ↔ `RemoveRedundantProject`" in readme
+    assert "| `Plan.project` | `LogicalProject` in `plan_nodes.py` |" in readme
+    assert "| `Plan.limit` | `LogicalLimit` in `plan_nodes.py` |" in readme
+    assert "| `Plan.project`   | `LogicalProject` in the same file |" in syntax
+    assert "| `Plan.limit`     | `LogicalLimit` in the same file |" in syntax
+    assert "| project : (α → α) → Plan α → Plan α" in syntax
+    assert "| limit : Nat → Plan α → Plan α" in syntax
+    assert "theorem Plan.eval_project" in semantics
+    assert "theorem Plan.eval_limit" in semantics
+    assert "theorem Plan.project_id" in semantics
+    assert "theorem remove_redundant_project" in project_identity
