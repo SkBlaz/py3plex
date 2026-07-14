@@ -827,6 +827,115 @@ Exit codes:
         help="Print SHA-256 fingerprint of the capability report",
     )
 
+    # DYNAMICS command - Epidemic simulations
+    dynamics_parser = subparsers.add_parser(
+        "dynamics",
+        help="Run epidemic dynamics simulations (SIS, SIR, SEIR)",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run SIR epidemic with 100 steps
+  py3plex dynamics network.edgelist --model sir --beta 0.3 --gamma 0.1 --steps 100 --output results.json
+  
+  # Run SIS with 10 replicates and 1% initial infection
+  py3plex dynamics network.edgelist --model sis --beta 0.3 --mu 0.1 --seed-fraction 0.01 --replicates 10
+  
+  # Run SEIR with custom parameters
+  py3plex dynamics network.edgelist --model seir --beta 0.3 --sigma 0.2 --gamma 0.1 --steps 200
+  
+  # Specify seed for reproducibility
+  py3plex dynamics network.edgelist --model sir --beta 0.3 --gamma 0.1 --seed 42 --output sir.json
+        """,
+    )
+    dynamics_parser.add_argument(
+        "input",
+        help="Input network file (edgelist, graphml, etc.)",
+    )
+    dynamics_parser.add_argument(
+        "--model", "-m",
+        required=True,
+        choices=["sis", "sir", "seir"],
+        help="Epidemic model to simulate",
+    )
+    dynamics_parser.add_argument(
+        "--beta",
+        type=float,
+        required=True,
+        help="Infection rate (transmission probability)",
+    )
+    dynamics_parser.add_argument(
+        "--gamma",
+        type=float,
+        help="Recovery rate (for SIR and SEIR models)",
+    )
+    dynamics_parser.add_argument(
+        "--mu",
+        type=float,
+        help="Recovery rate (for SIS model)",
+    )
+    dynamics_parser.add_argument(
+        "--sigma",
+        type=float,
+        help="Exposed-to-infected rate (for SEIR model only)",
+    )
+    dynamics_parser.add_argument(
+        "--steps",
+        type=int,
+        default=100,
+        help="Number of simulation steps (default: 100)",
+    )
+    dynamics_parser.add_argument(
+        "--replicates",
+        type=int,
+        default=1,
+        help="Number of independent simulation runs (default: 1)",
+    )
+    dynamics_parser.add_argument(
+        "--seed-fraction",
+        type=float,
+        default=0.01,
+        help="Fraction of nodes initially infected (default: 0.01)",
+    )
+    dynamics_parser.add_argument(
+        "--seed-nodes",
+        nargs="+",
+        help="Specific nodes to seed with infection (space-separated node IDs)",
+    )
+    dynamics_parser.add_argument(
+        "--layers",
+        nargs="+",
+        help="Restrict simulation to specific layers (space-separated layer names)",
+    )
+    dynamics_parser.add_argument(
+        "--seed",
+        type=int,
+        help="Random seed for reproducibility",
+    )
+    dynamics_parser.add_argument(
+        "--output", "-o",
+        help="Output file for results (JSON format)",
+    )
+    dynamics_parser.add_argument(
+        "--format",
+        choices=["json", "csv"],
+        default="json",
+        help="Output format (default: json)",
+    )
+    dynamics_parser.add_argument(
+        "--plot",
+        action="store_true",
+        help="Generate and save trajectory plot",
+    )
+    dynamics_parser.add_argument(
+        "--plot-file",
+        help="Output file for trajectory plot (PNG format)",
+    )
+    dynamics_parser.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="Print detailed progress information",
+    )
+
     # EXPERIMENT command group
     from py3plex.experiments.cli import add_experiment_subparser
 
@@ -3721,6 +3830,211 @@ hairball_plot(graph, network_colors)
         return 1
 
 
+def cmd_dynamics(args: argparse.Namespace) -> int:
+    """Run epidemic dynamics simulations on a network.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    try:
+        if args.verbose:
+            print(f"Loading network from: {args.input}")
+
+        # Load network
+        net = multinet.multi_layer_network(directed=False)
+        net.load_network(args.input, input_type="multiedgelist")
+
+        if args.verbose:
+            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
+
+        # Validate model-specific parameters
+        if args.model in ["sir", "seir"] and args.gamma is None:
+            logger.error(f"{args.model.upper()} model requires --gamma parameter")
+            return 1
+
+        if args.model == "sis" and args.mu is None:
+            logger.error("SIS model requires --mu parameter")
+            return 1
+
+        if args.model == "seir" and args.sigma is None:
+            logger.error("SEIR model requires --sigma parameter")
+            return 1
+
+        # Import dynamics module
+        from py3plex.dsl import Q
+        from py3plex.dsl.builder import DynamicsBuilder
+
+        # Construct dynamics query
+        if args.verbose:
+            print(f"Setting up {args.model.upper()} simulation...")
+            print(f"  Beta (infection rate): {args.beta}")
+            if args.model == "sir":
+                print(f"  Gamma (recovery rate): {args.gamma}")
+            elif args.model == "sis":
+                print(f"  Mu (recovery rate): {args.mu}")
+            elif args.model == "seir":
+                print(f"  Sigma (exposed rate): {args.sigma}")
+                print(f"  Gamma (recovery rate): {args.gamma}")
+            print(f"  Steps: {args.steps}")
+            print(f"  Replicates: {args.replicates}")
+
+        # Build dynamics query
+        query_builder = Q.dynamics(
+            args.model.upper(),
+            beta=args.beta,
+            gamma=args.gamma if args.model in ["sir", "seir"] else None,
+            mu=args.mu if args.model == "sis" else None,
+            sigma=args.sigma if args.model == "seir" else None,
+        )
+
+        # Restrict to specific layers if requested
+        if args.layers:
+            from py3plex.dsl import L
+            layer_expr = L[args.layers[0]]
+            for layer in args.layers[1:]:
+                layer_expr = layer_expr + L[layer]
+            query_builder = query_builder.on_layers(layer_expr)
+
+        # Seed infections
+        if args.seed_nodes:
+            # Seed specific nodes
+            seed_nodes_list = [(node, net.get_layers()[0]) for node in args.seed_nodes]
+            query_builder = query_builder.seed_infections(nodes=seed_nodes_list)
+        else:
+            # Seed fraction of nodes
+            query_builder = query_builder.seed_infections(fraction=args.seed_fraction)
+
+        # Run simulation
+        if args.seed is not None:
+            query_builder = query_builder.run(
+                steps=args.steps,
+                replicates=args.replicates,
+                seed=args.seed
+            )
+        else:
+            query_builder = query_builder.run(
+                steps=args.steps,
+                replicates=args.replicates
+            )
+
+        if args.verbose:
+            print("Running simulation...")
+
+        # Execute
+        result = query_builder.execute(net)
+
+        if args.verbose:
+            print("Simulation complete!")
+
+        # Extract trajectories
+        trajectories = result.trajectories
+
+        # Prepare output
+        output_data = {
+            "model": args.model,
+            "parameters": {
+                "beta": args.beta,
+            },
+            "simulation": {
+                "steps": args.steps,
+                "replicates": args.replicates,
+                "seed": args.seed,
+            },
+            "network": {
+                "nodes": len(net.get_nodes()),
+                "edges": len(net.get_edges()),
+                "layers": net.get_layers(),
+            },
+            "trajectories": trajectories.to_dict(orient="records") if hasattr(trajectories, "to_dict") else str(trajectories),
+        }
+
+        # Add model-specific parameters
+        if args.model == "sir":
+            output_data["parameters"]["gamma"] = args.gamma
+        elif args.model == "sis":
+            output_data["parameters"]["mu"] = args.mu
+        elif args.model == "seir":
+            output_data["parameters"]["sigma"] = args.sigma
+            output_data["parameters"]["gamma"] = args.gamma
+
+        # Save results
+        if args.output:
+            if args.format == "json":
+                with open(args.output, "w") as f:
+                    json.dump(output_data, f, indent=2)
+                if args.verbose:
+                    print(f"Results saved to: {args.output}")
+            elif args.format == "csv":
+                if hasattr(trajectories, "to_csv"):
+                    trajectories.to_csv(args.output, index=False)
+                else:
+                    print("Warning: Could not export trajectories to CSV format")
+                if args.verbose:
+                    print(f"Trajectories saved to: {args.output}")
+        else:
+            # Print to stdout
+            print(json.dumps(output_data, indent=2))
+
+        # Generate plot if requested
+        if args.plot or args.plot_file:
+            try:
+                import matplotlib.pyplot as plt
+
+                plot_file = args.plot_file if args.plot_file else "dynamics_plot.png"
+
+                plt.figure(figsize=(10, 6))
+
+                if args.model == "sis":
+                    # Plot S and I
+                    if "susceptible" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
+                    if "infected" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
+                elif args.model == "sir":
+                    # Plot S, I, and R
+                    if "susceptible" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
+                    if "infected" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
+                    if "recovered" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["recovered"], label="Recovered", color="green")
+                elif args.model == "seir":
+                    # Plot S, E, I, and R
+                    if "susceptible" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
+                    if "exposed" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["exposed"], label="Exposed", color="orange")
+                    if "infected" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
+                    if "recovered" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["recovered"], label="Recovered", color="green")
+
+                plt.xlabel("Time Step")
+                plt.ylabel("Population")
+                plt.title(f"{args.model.upper()} Dynamics Simulation")
+                plt.legend()
+                plt.grid(True, alpha=0.3)
+                plt.tight_layout()
+                plt.savefig(plot_file, dpi=150)
+                plt.close()
+
+                if args.verbose:
+                    print(f"Plot saved to: {plot_file}")
+            except Exception as e:
+                logger.warning(f"Could not generate plot: {e}")
+
+        return 0
+
+    except Exception as e:
+        logger.error(f"Error during dynamics simulation: {e}")
+        if args.verbose:
+            traceback.print_exc()
+        return 1
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
@@ -3759,6 +4073,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "run-config": cmd_run_config,
         "tutorial": cmd_tutorial,
         "capabilities": cmd_capabilities,
+        "dynamics": cmd_dynamics,
     }
 
     # Experiment command group dispatches via its own dispatcher

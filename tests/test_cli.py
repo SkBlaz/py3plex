@@ -728,6 +728,154 @@ class TestCLIConvert:
             assert "layers" in data
 
 
+class TestCLIDynamics:
+    """Test the 'dynamics' command."""
+
+    @pytest.fixture
+    def test_network(self, tmp_path):
+        """Create a simple test network."""
+        net_file = tmp_path / "test_network.edgelist"
+        net_file.write_text(
+            "A B social\n"
+            "B C social\n"
+            "C D social\n"
+            "D A social\n"
+            "A C work\n"
+            "B D work\n"
+        )
+        return str(net_file)
+
+    def test_dynamics_sir_basic(self, test_network, tmp_path):
+        """Test basic SIR simulation."""
+        output_file = tmp_path / "sir_results.json"
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sir",
+                "--beta",
+                "0.3",
+                "--gamma",
+                "0.1",
+                "--steps",
+                "50",
+                "--output",
+                str(output_file),
+                "--seed",
+                "42",
+            ]
+        )
+        assert result == 0
+        assert output_file.exists()
+
+        # Verify output structure
+        with open(output_file) as f:
+            data = json.load(f)
+        assert data["model"] == "sir"
+        assert data["parameters"]["beta"] == 0.3
+        assert data["parameters"]["gamma"] == 0.1
+        assert "trajectories" in data
+
+    def test_dynamics_sis_basic(self, test_network, tmp_path):
+        """Test basic SIS simulation."""
+        output_file = tmp_path / "sis_results.json"
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sis",
+                "--beta",
+                "0.3",
+                "--mu",
+                "0.1",
+                "--steps",
+                "50",
+                "--replicates",
+                "2",
+                "--output",
+                str(output_file),
+            ]
+        )
+        assert result == 0
+        assert output_file.exists()
+
+    def test_dynamics_seir_basic(self, test_network, tmp_path):
+        """Test basic SEIR simulation."""
+        output_file = tmp_path / "seir_results.json"
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "seir",
+                "--beta",
+                "0.3",
+                "--sigma",
+                "0.2",
+                "--gamma",
+                "0.1",
+                "--steps",
+                "50",
+                "--output",
+                str(output_file),
+            ]
+        )
+        assert result == 0
+        assert output_file.exists()
+
+    def test_dynamics_missing_gamma(self, test_network):
+        """Test that SIR without gamma parameter fails."""
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sir",
+                "--beta",
+                "0.3",
+                "--steps",
+                "50",
+            ]
+        )
+        assert result == 1  # Should fail
+
+    def test_dynamics_missing_mu(self, test_network):
+        """Test that SIS without mu parameter fails."""
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sis",
+                "--beta",
+                "0.3",
+                "--steps",
+                "50",
+            ]
+        )
+        assert result == 1  # Should fail
+
+    def test_dynamics_missing_sigma(self, test_network):
+        """Test that SEIR without sigma parameter fails."""
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "seir",
+                "--beta",
+                "0.3",
+                "--gamma",
+                "0.1",
+                "--steps",
+                "50",
+            ]
+        )
+        assert result == 1  # Should fail
+
+
 class TestCLIIntegration:
     """Integration tests for CLI workflows."""
 
