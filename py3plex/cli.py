@@ -12,6 +12,7 @@ import random
 import shutil
 import sys
 import tempfile
+import textwrap
 import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -4321,7 +4322,6 @@ def main(argv: Optional[List[str]] = None) -> int:
         "tutorial": cmd_tutorial,
         "capabilities": cmd_capabilities,
         "dynamics": cmd_dynamics,
-        "embed": cmd_embed,
         "embed": cmd_embed,
     }
 
