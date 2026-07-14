@@ -11,6 +11,8 @@ semantics of a `Plan` — and proves basic sanity theorems about it.
 * `eval (scan rows)          = rows`
 * `eval emptyScan            = []`
 * `eval (filter p child)     = (eval child).filter p`
+* `eval (project f child)    = (eval child).map f`
+* `eval (limit n child)      = (eval child).take n`
 -/
 
 namespace Py3plex.DSL
@@ -24,6 +26,8 @@ def Plan.eval : Plan α → List α
   | .scan rows      => rows
   | .emptyScan      => []
   | .filter p child => child.eval.filter p
+  | .project f child => child.eval.map f
+  | .limit n child => child.eval.take n
 
 -- ---------------------------------------------------------------------------
 -- Equation lemmas (marked @[simp] for use in later proofs)
@@ -43,6 +47,16 @@ theorem Plan.eval_emptyScan :
 @[simp]
 theorem Plan.eval_filter (p : α → Bool) (child : Plan α) :
     (Plan.filter p child).eval = child.eval.filter p := rfl
+
+/-- Evaluating a `project` maps each row in the child's result. -/
+@[simp]
+theorem Plan.eval_project (f : α → α) (child : Plan α) :
+    (Plan.project f child).eval = child.eval.map f := rfl
+
+/-- Evaluating a `limit` keeps the first `n` rows of the child's result. -/
+@[simp]
+theorem Plan.eval_limit (n : Nat) (child : Plan α) :
+    (Plan.limit n child).eval = child.eval.take n := rfl
 
 -- ---------------------------------------------------------------------------
 -- Basic sanity theorems
@@ -79,5 +93,10 @@ theorem Plan.filter_const_false (child : Plan α) :
     sub-tree can be replaced by `LogicalEmptyScan`. -/
 theorem Plan.filter_empty_scan (p : α → Bool) :
     (Plan.filter p (Plan.emptyScan : Plan α)).eval = [] := by simp
+
+/-- Projecting with the identity function is the identity plan. -/
+theorem Plan.project_id (child : Plan α) :
+    (Plan.project (fun x => x) child).eval = child.eval := by
+  simp
 
 end Py3plex.DSL

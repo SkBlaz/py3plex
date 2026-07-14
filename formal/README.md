@@ -20,7 +20,8 @@ formal/
     │   ├── Syntax.lean         Abstract Plan type
     │   └── Semantics.lean      Plan.eval + basic correctness theorems
     └── Optimizer/
-        └── FilterFusion.lean   Filter-fusion equivalence theorem
+        ├── FilterFusion.lean     Filter-fusion equivalence theorem
+        └── ProjectIdentity.lean  Redundant-project equivalence theorem
 ```
 
 ---
@@ -43,12 +44,15 @@ mathematical proof.
 | `Plan.eval_scan` | `Py3plex/DSL/Semantics.lean` | Evaluating a scan returns the original rows |
 | `Plan.eval_emptyScan` | `Py3plex/DSL/Semantics.lean` | Evaluating `emptyScan` yields `[]` |
 | `Plan.eval_filter` | `Py3plex/DSL/Semantics.lean` | Evaluating a filter applies the predicate to the child's result |
+| `Plan.eval_project` | `Py3plex/DSL/Semantics.lean` | Evaluating a project maps each row of the child's result |
+| `Plan.eval_limit` | `Py3plex/DSL/Semantics.lean` | Evaluating a limit keeps the first `n` rows |
 | `Plan.filter_const_true` | `Py3plex/DSL/Semantics.lean` | Filtering with `fun _ => true` is the identity |
 | `Plan.filter_const_false` | `Py3plex/DSL/Semantics.lean` | Filtering with `fun _ => false` yields `[]` |
 | `Plan.filter_empty_scan` | `Py3plex/DSL/Semantics.lean` | Filtering *any* predicate over `emptyScan` yields `[]` (models `ShortCircuitEmptyLayer`) |
 | `Py3plex.Optimizer.filter_compose` | `Py3plex/Optimizer/FilterFusion.lean` | Two `List.filter` calls compose into one with a conjunctive predicate |
 | `Py3plex.Optimizer.filterFusion` | `Py3plex/Optimizer/FilterFusion.lean` | **Main theorem**: two adjacent `Plan.filter` nodes are semantically equal to a single filter with a conjunctive predicate |
 | `Py3plex.Optimizer.filterFusion_length` | `Py3plex/Optimizer/FilterFusion.lean` | Filter fusion preserves the result length |
+| `Py3plex.Optimizer.remove_redundant_project` | `Py3plex/Optimizer/ProjectIdentity.lean` | Identity project elimination preserves semantics |
 
 All proofs are fully machine-checked; none use `sorry`, `admit`, or unsafe
 axioms.
@@ -78,6 +82,8 @@ The Lean `Plan` type abstracts:
 | `Plan.scan` | `LogicalScanNodes` / `LogicalScanEdges` in `plan_nodes.py` |
 | `Plan.emptyScan` | `LogicalEmptyScan` in `plan_nodes.py` |
 | `Plan.filter` | `LogicalFilter` in `plan_nodes.py` |
+| `Plan.project` | `LogicalProject` in `plan_nodes.py` |
+| `Plan.limit` | `LogicalLimit` in `plan_nodes.py` |
 
 The `filterFusion` theorem models the `CombineAdjacentFilters` rule in
 `py3plex/optimizer/rules.py` (class `CombineAdjacentFilters`, method `apply`,
@@ -191,8 +197,8 @@ New constructors mirror every `LogicalOp` subclass in
 - [x] `Plan.scan` — models `LogicalScanNodes` / `LogicalScanEdges`
 - [x] `Plan.filter` — models `LogicalFilter`
 - [x] `Plan.emptyScan` — models `LogicalEmptyScan`
-- [ ] `Plan.project` — models `LogicalProject`
-- [ ] `Plan.limit` — models `LogicalLimit`
+- [x] `Plan.project` — models `LogicalProject`
+- [x] `Plan.limit` — models `LogicalLimit`
 - [ ] `Plan.topK` — models `LogicalTopK`
 - [ ] `Plan.orderBy` — models `LogicalOrderBy`
 - [ ] `Plan.compute` — models `LogicalCompute`
@@ -218,7 +224,7 @@ The two checked items are already proved; the rest are open.
       Statement: reordering independent filters preserves semantics
 - [ ] `orderby_limit_to_topk` ↔ `ConvertOrderByLimitToTopK`  
       Statement: `limit k (orderBy key plan)`.eval = `topK k key plan`.eval
-- [ ] `remove_redundant_project` ↔ `RemoveRedundantProject`  
+- [x] `remove_redundant_project` ↔ `RemoveRedundantProject`  
       Statement: `project id plan`.eval = `plan`.eval
 - [ ] `early_limit_pushdown` ↔ `EarlyLimitPushdown`  
       Statement: `limit k (compute f plan)`.eval = `compute f (limit k plan)`.eval  

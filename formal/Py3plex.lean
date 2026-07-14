@@ -1,6 +1,7 @@
 import Py3plex.DSL.Syntax
 import Py3plex.DSL.Semantics
 import Py3plex.Optimizer.FilterFusion
+import Py3plex.Optimizer.ProjectIdentity
 
 /-!
 # Py3plex Lean Formal Library
