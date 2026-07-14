@@ -936,6 +936,107 @@ Examples:
         help="Print detailed progress information",
     )
 
+    # Embed command
+    embed_parser = subparsers.add_parser(
+        "embed",
+        help="Learn node embeddings",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent(
+            """\
+            Learn low-dimensional node embeddings using various algorithms.
+
+            Supported algorithms:
+              - node2vec: Random walk-based with biased sampling
+              - deepwalk: Uniform random walks
+              - netmf: Matrix factorization (NetMF)
+              - line: LINE (1st and 2nd order proximity)
+              - metapath2vec: Heterogeneous network metapath walks
+
+            Examples:
+                # Node2Vec embeddings
+                py3plex embed network.edgelist --algorithm node2vec --dimensions 128 --output embeddings.csv
+
+                # NetMF (faster, no walks)
+                py3plex embed network.edgelist --algorithm netmf --dimensions 64 --output embeddings.json
+
+                # MetaPath2Vec for heterogeneous networks
+                py3plex embed network.edgelist --algorithm metapath2vec --dimensions 128 --metapath "ABA,ACA" --output embeddings.csv
+            """
+        ),
+    )
+    embed_parser.add_argument("input", help="Input network file")
+    embed_parser.add_argument(
+        "--algorithm",
+        "-a",
+        choices=["node2vec", "deepwalk", "netmf", "line", "metapath2vec"],
+        default="node2vec",
+        help="Embedding algorithm (default: node2vec)",
+    )
+    embed_parser.add_argument(
+        "--dimensions",
+        "-d",
+        type=int,
+        default=128,
+        help="Embedding dimensionality (default: 128)",
+    )
+    embed_parser.add_argument(
+        "--walk-length",
+        type=int,
+        default=40,
+        help="Random walk length for walk-based methods (default: 40)",
+    )
+    embed_parser.add_argument(
+        "--num-walks",
+        type=int,
+        default=10,
+        help="Number of walks per node for walk-based methods (default: 10)",
+    )
+    embed_parser.add_argument(
+        "--window-size",
+        type=int,
+        default=10,
+        help="Context window size for skip-gram (default: 10)",
+    )
+    embed_parser.add_argument(
+        "--p",
+        type=float,
+        default=1.0,
+        help="Return parameter for node2vec (default: 1.0)",
+    )
+    embed_parser.add_argument(
+        "--q",
+        type=float,
+        default=1.0,
+        help="In-out parameter for node2vec (default: 1.0)",
+    )
+    embed_parser.add_argument(
+        "--metapath",
+        type=str,
+        help="Metapath schema for metapath2vec (e.g., 'ABA,ACA')",
+    )
+    embed_parser.add_argument(
+        "--workers",
+        type=int,
+        default=4,
+        help="Number of parallel workers (default: 4)",
+    )
+    embed_parser.add_argument(
+        "--seed",
+        type=int,
+        help="Random seed for reproducibility",
+    )
+    embed_parser.add_argument(
+        "--output",
+        "-o",
+        help="Output file for embeddings (JSON or CSV)",
+    )
+    embed_parser.add_argument(
+        "--format",
+        choices=["json", "csv"],
+        default="csv",
+        help="Output format (default: csv)",
+    )
+
     # EXPERIMENT command group
     from py3plex.experiments.cli import add_experiment_subparser
 
@@ -4035,6 +4136,152 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_embed(args: argparse.Namespace) -> int:
+    """Learn node embeddings from a network.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    try:
+        if args.verbose:
+            print(f"Loading network from: {args.input}")
+
+        # Load network
+        net = multinet.multi_layer_network(directed=False)
+        net.load_network(args.input, input_type="multiedgelist")
+
+        if args.verbose:
+            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
+
+        # Prepare embedding parameters
+        embed_params = {
+            "method": args.algorithm,
+            "dimensions": args.dimensions,
+            "walk_length": args.walk_length,
+            "num_walks": args.num_walks,
+            "context_size": args.window_size,
+            "workers": args.workers,
+        }
+
+        # Add algorithm-specific parameters
+        if args.algorithm == "node2vec":
+            embed_params["p"] = args.p
+            embed_params["q"] = args.q
+        elif args.algorithm == "metapath2vec":
+            if not args.metapath:
+                logger.error("MetaPath2Vec requires --metapath parameter (e.g., 'ABA,ACA')")
+                return 1
+            embed_params["metapath"] = args.metapath
+
+        # Add seed if specified
+        if args.seed is not None:
+            embed_params["seed"] = args.seed
+
+        if args.verbose:
+            print(f"Learning {args.algorithm} embeddings...")
+            print(f"  Dimensions: {args.dimensions}")
+            if args.algorithm in ["node2vec", "deepwalk"]:
+                print(f"  Walk length: {args.walk_length}")
+                print(f"  Num walks: {args.num_walks}")
+            if args.algorithm == "node2vec":
+                print(f"  p (return): {args.p}")
+                print(f"  q (in-out): {args.q}")
+            if args.algorithm == "metapath2vec":
+                print(f"  Metapath: {args.metapath}")
+            print(f"  Window size: {args.window_size}")
+
+        # Learn embeddings using the unified embed() API
+        result = net.embed(**embed_params)
+
+        if args.verbose:
+            print("Embeddings learned successfully!")
+
+        # Prepare output
+        if hasattr(result, "embeddings"):
+            # EmbeddingResult object
+            embeddings = result.embeddings
+            node_list = result.nodes if hasattr(result, "nodes") else list(embeddings.keys())
+        else:
+            # Direct embeddings dictionary
+            embeddings = result
+            node_list = list(embeddings.keys())
+
+        # Convert to output format
+        output_data = {
+            "algorithm": args.algorithm,
+            "parameters": {
+                "dimensions": args.dimensions,
+                "walk_length": args.walk_length,
+                "num_walks": args.num_walks,
+                "window_size": args.window_size,
+                "seed": args.seed,
+            },
+            "network": {
+                "nodes": len(net.get_nodes()),
+                "edges": len(net.get_edges()),
+                "layers": net.get_layers(),
+            },
+            "embeddings": {},
+        }
+
+        # Add algorithm-specific parameters to output
+        if args.algorithm == "node2vec":
+            output_data["parameters"]["p"] = args.p
+            output_data["parameters"]["q"] = args.q
+        elif args.algorithm == "metapath2vec":
+            output_data["parameters"]["metapath"] = args.metapath
+
+        # Format embeddings for output
+        for node in node_list:
+            if node in embeddings:
+                embedding = embeddings[node]
+                # Convert numpy array to list if needed
+                if hasattr(embedding, "tolist"):
+                    output_data["embeddings"][str(node)] = embedding.tolist()
+                else:
+                    output_data["embeddings"][str(node)] = list(embedding)
+
+        # Save results
+        if args.output:
+            if args.format == "json":
+                with open(args.output, "w") as f:
+                    json.dump(output_data, f, indent=2)
+                if args.verbose:
+                    print(f"Embeddings saved to: {args.output}")
+            elif args.format == "csv":
+                # Write CSV format: node, dim_0, dim_1, ..., dim_n
+                import csv
+
+                with open(args.output, "w", newline="") as f:
+                    writer = csv.writer(f)
+                    # Header
+                    header = ["node"] + [f"dim_{i}" for i in range(args.dimensions)]
+                    writer.writerow(header)
+                    # Data
+                    for node in node_list:
+                        if node in embeddings:
+                            embedding = embeddings[node]
+                            if hasattr(embedding, "tolist"):
+                                embedding = embedding.tolist()
+                            writer.writerow([str(node)] + list(embedding))
+                if args.verbose:
+                    print(f"Embeddings saved to: {args.output}")
+        else:
+            # Print to stdout (JSON format)
+            print(json.dumps(output_data, indent=2))
+
+        return 0
+
+    except Exception as e:
+        logger.error(f"Error during embedding learning: {e}")
+        if args.verbose:
+            traceback.print_exc()
+        return 1
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
@@ -4074,6 +4321,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         "tutorial": cmd_tutorial,
         "capabilities": cmd_capabilities,
         "dynamics": cmd_dynamics,
+        "embed": cmd_embed,
+        "embed": cmd_embed,
     }
 
     # Experiment command group dispatches via its own dispatcher
