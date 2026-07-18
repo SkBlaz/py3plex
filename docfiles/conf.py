@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.abspath('../py3plex'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax', 'sphinx.ext.todo']
 
 # Mock optional heavy dependencies so autodoc can import modules without them installed
 autodoc_mock_imports = ['gensim', 'rdflib']

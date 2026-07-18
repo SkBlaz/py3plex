@@ -1290,6 +1290,7 @@ def multiplex_closeness_centrality(
                   Recommended for disconnected multilayer networks.
                 - 'auto': Automatically selects 'harmonic' if the network has
                   multiple connected components, otherwise uses 'standard'.
+
                 Default is 'standard' for backward compatibility.
 
     Returns:

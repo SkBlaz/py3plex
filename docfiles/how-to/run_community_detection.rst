@@ -12,7 +12,7 @@ How to Run Community Detection on Multilayer Networks
       :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/community_detection.ipynb
       :alt: Open in Google Colab
    
-   Or see the full executable example: :download:`example_community_detection.py <../../examples/communities/example_community_detection.py>`
+   See the `py3plex examples <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ for community detection examples.
 
 **Prerequisites:** 
 
@@ -2896,8 +2896,7 @@ The ``FlowHierarchyResult`` object contains:
 
 **Examples:**
 
-* Basic usage: :download:`example_flow_hierarchy_basic.py <../../examples/communities/example_flow_hierarchy_basic.py>`
-* Multilayer with alpha variations: :download:`example_flow_hierarchy_multilayer.py <../../examples/communities/example_flow_hierarchy_multilayer.py>`
+See the `py3plex examples directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ for flow hierarchy usage examples.
 
 **References:**
 

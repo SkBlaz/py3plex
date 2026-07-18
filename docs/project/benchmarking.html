@@ -16,7 +16,7 @@
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -226,7 +226,7 @@
 <section id="use-sparse-matrices">
 <h3>Use Sparse Matrices<a class="headerlink" href="#use-sparse-matrices" title="Link to this heading"></a></h3>
 <p>For large networks, use sparse matrix representations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -236,7 +236,7 @@
 <section id="batch-operations">
 <h3>Batch Operations<a class="headerlink" href="#batch-operations" title="Link to this heading"></a></h3>
 <p>Process multiple operations together instead of issuing separate passes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span>
 
 <span class="c1"># Compute multiple metrics at once</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
@@ -251,7 +251,7 @@
 <section id="use-arrow-parquet-for-i-o">
 <h3>Use Arrow/Parquet for I/O<a class="headerlink" href="#use-arrow-parquet-for-i-o" title="Link to this heading"></a></h3>
 <p>For large datasets, prefer columnar formats over CSV:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.parquet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pq</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyarrow.parquet</span> <span class="k">as</span> <span class="nn">pq</span>
 
 <span class="c1"># Save</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">pq</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">edges_table</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
@@ -264,7 +264,7 @@
 <section id="parallel-processing">
 <h3>Parallel Processing<a class="headerlink" href="#parallel-processing" title="Link to this heading"></a></h3>
 <p>For Node2Vec and other CPU-intensive algorithms:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_node2vec</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.wrappers</span> <span class="kn">import</span> <span class="n">train_node2vec</span>
 
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
@@ -586,8 +586,8 @@ python<span class="w"> </span>run_benchmarks.py
 <section id="profiling-your-code">
 <h2>Profiling Your Code<a class="headerlink" href="#profiling-your-code" title="Link to this heading"></a></h2>
 <p>Use Python profiling tools:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cProfile</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pstats</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cProfile</span>
+<span class="kn">import</span> <span class="nn">pstats</span>
 
 <span class="c1"># Profile your analysis</span>
 <span class="n">cProfile</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;your_analysis_function(network)&#39;</span><span class="p">,</span> <span class="s1">&#39;profile_stats&#39;</span><span class="p">)</span>

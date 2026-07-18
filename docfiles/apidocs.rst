@@ -47,6 +47,7 @@ Core multilayer network container, parsers, converters, generators, and compatib
    :members:
    :undoc-members:
    :show-inheritance:
+   :no-index:
 
 .. automodule:: py3plex.core.supporting
    :members:
@@ -182,6 +183,7 @@ Centrality and entanglement measures defined over supra-adjacency representation
    :members:
    :undoc-members:
    :show-inheritance:
+   :no-index:
 
 .. automodule:: py3plex.algorithms.multicentrality
    :members:

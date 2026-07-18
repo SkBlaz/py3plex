@@ -136,10 +136,10 @@ def null_model_metric(
     -----
     - Z-scores indicate how many standard deviations the observed value is from
       the null distribution mean
-    - P-values are two-tailed by default: P(|Z| >= |Z_observed|) under the null.
+    - P-values are two-tailed by default: ``P(|Z| >= |Z_obs|)`` under the null.
       For one-tailed tests, users can compute p_one_sided = p_two_sided / 2 and
       check the sign of z-score to determine the direction.
-    - High |z-score| and low p-value indicate statistical significance
+    - High z-score magnitude and low p-value indicate statistical significance
     """
     # Compute observed metric
     observed_result = metric_fn(graph)
@@ -205,7 +205,7 @@ def null_model_metric(
         zscore = np.where(std_null == 0, 0.0, zscore)
     
     # Compute two-tailed p-values
-    # P(|Z| >= |Z_observed|) = 2 * P(Z >= |Z_observed|) for symmetric distribution
+    # P(|Z| >= |Z_obs|) = 2 * P(Z >= |Z_obs|) for symmetric distribution
     # Use empirical p-value: fraction of null samples more extreme than observed
     pvalue = np.zeros(n_items)
     for j in range(n_items):

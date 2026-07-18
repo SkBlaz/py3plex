@@ -489,9 +489,6 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_zoo/queries.py
-   :pyobject: query_layer_algebra_filtering
-   :language: python
 
 Why It's Interesting
 ~~~~~~~~~~~~~~~~~~~~
@@ -536,9 +533,6 @@ DSL Concepts Demonstrated
 Query Code
 ~~~~~~~~~~
 
-.. literalinclude:: ../../examples/dsl_zoo/queries.py
-   :pyobject: query_cross_layer_paths_with_algebra
-   :language: python
 
 Why It's Interesting
 ~~~~~~~~~~~~~~~~~~~~
@@ -605,7 +599,7 @@ Running on a multilayer network returns a DataFrame with columns:
    "Bob", "social", 4, 3.5, 0.7, False
    "Charlie", "work", 6, 2.8, 3.5, True
 
-**Interpretation:** Nodes with |z-score| > 2.0 are statistically significant (p < 0.05). Alice and Charlie have significantly higher degree than expected by chance, while Bob's degree is within random variation.
+**Interpretation:** Nodes with \|z-score\| > 2.0 are statistically significant (p < 0.05). Alice and Charlie have significantly higher degree than expected by chance, while Bob's degree is within random variation.
 
 DSL Concepts Demonstrated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

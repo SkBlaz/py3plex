@@ -672,7 +672,7 @@ def parse_multiplex_folder(
     Expects a folder with specific file formats for edges, layers, and optional activity.
 
     Expected Files:
-        - *.edges: Edge information (format: layer_id node1 node2 weight)
+        - \*.edges: Edge information (format: layer_id node1 node2 weight)
         - layers.txt: Layer definitions (format: layer_id layer_name)
         - activity.txt: Optional temporal activity (format: node1 node2 timestamp layer_name)
 

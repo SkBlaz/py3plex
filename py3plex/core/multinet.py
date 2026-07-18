@@ -2834,8 +2834,7 @@ class multi_layer_network:
             centralities = network.monoplex_nx_wrapper("betweenness_centrality", kwargs={"weight": "weight"})
 
             # With multiple parameters
-            centralities = network.monoplex_nx_wrapper("betweenness_centrality",
-                                                       kwargs={"weight": "weight", "normalized": True})
+            centralities = network.monoplex_nx_wrapper("betweenness_centrality", kwargs={"weight": "weight", "normalized": True})
         """
 
         if kwargs is None:

@@ -653,6 +653,7 @@ class MultilayerCentrality:
                       Recommended for disconnected multilayer networks.
                     - 'auto': Automatically selects 'harmonic' if the supra-graph
                       has multiple connected components, otherwise uses 'standard'.
+
                     Default is 'standard' for backward compatibility.
 
         Returns:
@@ -2262,6 +2263,7 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
                             Recommended for disconnected multilayer networks.
                           - 'auto': Automatically selects 'harmonic' if the network has
                             disconnected components, otherwise uses 'standard'.
+
                           Default: 'standard' for backward compatibility.
 
     Returns:

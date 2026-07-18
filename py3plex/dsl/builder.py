@@ -2978,12 +2978,10 @@ class QueryBuilder:
         The aggregations are computed after grouping if active, otherwise globally.
 
         Args:
-            **aggregations: Named aggregations where:
-                - Key is the output column name
-                - Value is either:
-                    * A string like "mean(degree)", "quantile(degree, 0.95)", or "sum(weight)"
-                    * A string attribute name (gets the value directly)
-                    * A lambda function receiving each item
+            **aggregations: Named aggregations. Each key is an output column name.
+                Each value is a string expression like ``"mean(degree)"``,
+                ``"quantile(degree, 0.95)"``, ``"count()"``, a plain attribute
+                name string, or a callable lambda function.
 
         Returns:
             Self for chaining
@@ -3029,12 +3027,10 @@ class QueryBuilder:
         - Simple values (applied to all rows)
 
         Args:
-            **transformations: Named transformations where:
-                - Key is the output column name
-                - Value is either:
-                    * A lambda function receiving dict of item attributes
-                    * A string expression (e.g., "degree * 2")
-                    * A simple value (applied to all rows)
+            **transformations: Named transformations. Each key is an output column
+                name. Each value is a lambda receiving a dict of item attributes,
+                a string expression such as ``"degree * 2"``, or a constant value
+                applied to all rows.
 
         Returns:
             Self for chaining

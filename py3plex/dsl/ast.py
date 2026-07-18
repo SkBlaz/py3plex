@@ -866,7 +866,7 @@ class PlanStep:
 
     Attributes:
         description: Human-readable description of the step
-        estimated_complexity: Estimated time complexity (e.g., "O(|V|)")
+        estimated_complexity: Estimated time complexity (e.g., ``"O(n)"`` where n is node count)
     """
 
     description: str
