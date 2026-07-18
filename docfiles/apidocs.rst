@@ -133,11 +133,6 @@ Statistics
 
 Descriptive statistics, topology summaries, enrichment tests, and correlation utilities.
 
-.. automodule:: py3plex.algorithms.statistics.statistics
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 .. automodule:: py3plex.algorithms.statistics.multilayer_statistics
    :members:
    :undoc-members:
@@ -148,7 +143,7 @@ Descriptive statistics, topology summaries, enrichment tests, and correlation ut
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.algorithms.statistics.enrichment
+.. automodule:: py3plex.algorithms.statistics.enrichment_modules
    :members:
    :undoc-members:
    :show-inheritance:
@@ -272,11 +267,6 @@ Wrappers
 
 Command-line friendly wrappers for embeddings and benchmarking workflows.
 
-.. automodule:: py3plex.wrappers.node2vec_embedding
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 .. automodule:: py3plex.wrappers.benchmark_nodes
    :members:
    :undoc-members:
@@ -286,11 +276,6 @@ I/O Operations
 --------------
 
 Low-level file readers and writers.
-
-.. automodule:: py3plex.io.input_output
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 Aggregation and Network Operations
 ----------------------------------
@@ -391,32 +376,12 @@ Helpers for plotting learned embeddings.
    :undoc-members:
    :show-inheritance:
 
-Network Generation and Benchmarking
------------------------------------
-
-Synthetic graph generators and benchmark helpers.
-
-.. automodule:: py3plex.algorithms.general.network_generation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Additional Statistics and Analysis
 ----------------------------------
 
 Bayesian comparisons, information theory helpers, and distributions.
 
 .. automodule:: py3plex.algorithms.statistics.bayesiantests
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.statistics.information_theory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.statistics.distribution
    :members:
    :undoc-members:
    :show-inheritance:
@@ -436,7 +401,7 @@ Advanced or experimental community detection routines.
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.algorithms.community_detection.label_propagation_multilayer
+.. automodule:: py3plex.algorithms.community_detection.label_propagation
    :members:
    :undoc-members:
    :show-inheritance:
@@ -462,21 +427,6 @@ Embeddings and Wrappers
 Training wrappers for node2vec/word2vec embeddings.
 
 .. automodule:: py3plex.wrappers.train_node2vec_embedding
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.wrappers.train_word2vec_embedding
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Network Motifs and Patterns
----------------------------
-
-Motif detection and related pattern utilities.
-
-.. automodule:: py3plex.algorithms.network_patterns.motif_detection
    :members:
    :undoc-members:
    :show-inheritance:
@@ -507,26 +457,6 @@ Validation Utilities
 Validators for graph inputs and model outputs.
 
 .. automodule:: py3plex.validation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Network Comparison and Testing
-------------------------------
-
-Distances, comparisons, and slicing helpers.
-
-.. automodule:: py3plex.algorithms.general.network_comparison
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.general.distances
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.general.network_slicer
    :members:
    :undoc-members:
    :show-inheritance:
@@ -586,37 +516,13 @@ Core conversions, knowledge bases, and settings for Hedwig.
    :undoc-members:
    :show-inheritance:
 
-Time Series and Temporal Analysis
----------------------------------
-
-Temporal analysis helpers for sequence-based data.
-
-.. automodule:: py3plex.algorithms.temporal.time_series_analysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Advanced Visualization
 ----------------------
 
 Additional layouts and visual encodings for large or complex networks.
-
-.. automodule:: py3plex.visualization.hairballs
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 .. automodule:: py3plex.visualization.sankey
    :members:
    :undoc-members:
    :show-inheritance:
 
-Link Prediction
----------------
-
-Baseline link-prediction routines.
-
-.. automodule:: py3plex.algorithms.link_prediction.link_prediction
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -359,14 +359,14 @@ def edge_overlap(network: Any, layer_i: str, layer_j: str) -> float:
     """
     Calculate edge overlap (ω^αβ).
 
-    Formula: ω^αβ = |Eₐ ∩ Eᵦ| / |Eₐ ∪ Eᵦ|
+    Formula: ω^αβ = \\|Eₐ ∩ Eᵦ\\| / \\|Eₐ ∪ Eᵦ\\|
 
     Jaccard similarity of edge sets between two layers; measures structural redundancy.
 
     Variables:
         Eₐ = set of edges in layer α
         Eᵦ = set of edges in layer β
-        |·| = cardinality (number of elements)
+        \\|·\\| = cardinality (number of elements)
 
     Args:
         network: py3plex multi_layer_network object
@@ -1283,6 +1283,7 @@ def multiplex_closeness_centrality(
         normalized: Whether to normalize by network size
         weight: Edge weight attribute name (None for unweighted)
         variant: Closeness variant to use. Options:
+
                 - 'standard': Classic closeness (reciprocal of sum of distances).
                   Can produce biased values for nodes in disconnected components.
                 - 'harmonic': Harmonic closeness (sum of reciprocal distances).
@@ -1461,7 +1462,7 @@ def layer_redundancy_coefficient(
     (also present) in another layer. Values close to 1 indicate high
     redundancy, while values close to 0 indicate complementary layers.
 
-    Formula: Rᵅᵝ = |Eᵅ ∩ Eᵝ| / |Eᵅ|
+    Formula: Rᵅᵝ = \\|Eᵅ ∩ Eᵝ\\| / \\|Eᵅ\\|
 
     where Eᵅ and Eᵝ are edge sets of layers α and β.
 

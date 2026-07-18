@@ -187,7 +187,7 @@ def modularity(partition: Dict, graph: nx.Graph, weight: str = "weight") -> floa
 
     References
     ----------
-    .. 1. Newman, M.E.J. & Girvan, M. Finding and evaluating community
+    [1] Newman, M.E.J. & Girvan, M. Finding and evaluating community
     structure in networks. Physical Review E 69, 26113(2004).
 
     Examples
@@ -274,7 +274,7 @@ def best_partition(
 
     References
     ----------
-    .. 1. Blondel, V.D. et al. Fast unfolding of communities in
+    [1] Blondel, V.D. et al. Fast unfolding of communities in
     large networks. J. Stat. Mech 10008, 1-12(2008).
 
     Examples
@@ -357,7 +357,7 @@ def generate_dendrogram(
 
     References
     ----------
-    .. 1. Blondel, V.D. et al. Fast unfolding of communities in large
+    [1] Blondel, V.D. et al. Fast unfolding of communities in large
     networks. J. Stat. Mech 10008, 1-12(2008).
 
     Examples

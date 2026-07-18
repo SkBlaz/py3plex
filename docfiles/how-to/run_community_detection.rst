@@ -2396,7 +2396,7 @@ Guardrails are metrics that detect pathological partitions but are not primary o
 
 **Replica Consistency:**
 
-Formula: For each node v with replicas in L_v layers (|L_v| ≥ 2):
+Formula: For each node v with replicas in L_v layers (\|L_v\| ≥ 2):
 
 .. math::
 
@@ -2567,8 +2567,8 @@ These metrics are automatically included in AutoCommunity's multi-objective eval
 
 **Performance characteristics:**
 
-* **RC**: O(Σ_v |L_v|^2) where L_v is layers per node (efficient count-based implementation)
-* **H**: O(|assignments|) linear in node-layer assignments
+* **RC**: O(Σ_v \|L_v\|^2) where L_v is layers per node (efficient count-based implementation)
+* **H**: O(\|assignments\|) linear in node-layer assignments
 * **Both**: Fast enough for large networks (< 1 second for 10,000 node-layers)
 
 **Label-permutation invariance:**

@@ -32,6 +32,9 @@ sys.path.insert(0, os.path.abspath('../py3plex'))
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.mathjax']
 
+# Mock optional heavy dependencies so autodoc can import modules without them installed
+autodoc_mock_imports = ['gensim', 'rdflib']
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
