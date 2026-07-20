@@ -16,7 +16,7 @@
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -185,8 +185,8 @@ Run inside a virtual environment to keep dependencies isolated.</p>
 <section id="example-1-load-and-query-1-min">
 <h2>Example 1: Load and Query (1 min)<a class="headerlink" href="#example-1-load-and-query-1-min" title="Link to this heading"></a></h2>
 <p>Load a built-in dataset and run a simple query:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.datasets</span> <span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span>
 
 <span class="c1"># 1. Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>
@@ -231,7 +231,7 @@ Top high-degree nodes:
 <section id="example-2-create-network-2-min">
 <h2>Example 2: Create Network (2 min)<a class="headerlink" href="#example-2-create-network-2-min" title="Link to this heading"></a></h2>
 <p>Create a simple multilayer network from scratch:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core.multinet</span><span class="w"> </span><span class="kn">import</span> <span class="n">multi_layer_network</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core.multinet</span> <span class="kn">import</span> <span class="n">multi_layer_network</span>
 
 <span class="c1"># 1. Create network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -269,7 +269,7 @@ Top high-degree nodes:
 <section id="example-3-community-detection-api-2-min">
 <h2>Example 3: Community Detection API (2 min)<a class="headerlink" href="#example-3-community-detection-api-2-min" title="Link to this heading"></a></h2>
 <p>Learn the API for community detection in multilayer networks:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.datasets</span> <span class="kn">import</span> <span class="n">load_aarhus_cs</span>
 
 <span class="c1"># 1. Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>

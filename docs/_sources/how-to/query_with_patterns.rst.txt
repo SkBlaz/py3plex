@@ -37,15 +37,15 @@ Pattern matching allows you to find **specific subgraph structures** in your net
 
 **Comparison to Basic Queries:**
 
-+-----------------------------------+-------------------------------------------+
-| Basic DSL Query                   | Pattern Matching Query                    |
-+===================================+===========================================+
-| ``Q.nodes().where(degree__gt=3)`` | ``Q.pattern().node("a").where(...)``      |
-| Returns individual nodes          | Returns complete pattern matches          |
-+-----------------------------------+-------------------------------------------+
-| ``Q.edges().where(weight__gt=0.5)``| ``Q.pattern().edge("a", "b").where(...)`` |
-| Returns individual edges          | Returns node pairs with context           |
-+-----------------------------------+-------------------------------------------+
++-------------------------------------+-------------------------------------------+
+| Basic DSL Query                     | Pattern Matching Query                    |
++=====================================+===========================================+
+| ``Q.nodes().where(degree__gt=3)``   | ``Q.pattern().node("a").where(...)``      |
+| Returns individual nodes            | Returns complete pattern matches          |
++-------------------------------------+-------------------------------------------+
+| ``Q.edges().where(weight__gt=0.5)`` | ``Q.pattern().edge("a", "b").where(...)`` |
+| Returns individual edges            | Returns node pairs with context           |
++-------------------------------------+-------------------------------------------+
 
 Quick Start: Your First Pattern
 -------------------------------
@@ -99,7 +99,7 @@ Let's start with a simple example: finding all edges in a network.
 Notice that undirected edges produce matches in both directions.
 
 Pattern Components
------------------
+------------------
 
 Nodes
 ~~~~~
@@ -193,7 +193,7 @@ Multilayer-Aware Patterns
 One of the most powerful features is specifying layer constraints on edges.
 
 Within Layer
-~~~~~~~~~~~
+~~~~~~~~~~~~
 
 Find edges that exist within a single layer:
 
@@ -208,7 +208,7 @@ Find edges that exist within a single layer:
     )
 
 Between Layers
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 Find edges that cross between specific layers:
 
@@ -232,7 +232,7 @@ Allow edges in any layer (default behavior; call it explicitly if you want the q
     pattern = Q.pattern().edge("a", "b").any_layer()
 
 Practical Examples
------------------
+------------------
 
 Example 1: Find Triangles with Weight Constraints
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -290,7 +290,7 @@ Example 2: Find 2-Hop Paths in Specific Layer
     ...
 
 Example 3: Find High-Degree Nodes with Specific Connections
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Problem:** Find pairs of high-degree nodes (degree > 2) connected by strong edges (weight > 1.5).
 
@@ -344,12 +344,12 @@ Example 4: Cross-Layer Hub Detection
     print(f"Cross-layer hubs: {cross_layer_hubs}")
 
 Working with Results
--------------------
+--------------------
 
 The ``PatternQueryResult`` object provides multiple ways to access matches. Use raw ``rows`` for programmatic iteration, ``to_pandas`` for tabular analysis, and ``to_nodes`` / ``to_edges`` when you want to pass results back into graph algorithms.
 
 Accessing Rows
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -364,7 +364,7 @@ Accessing Rows
 Each row maps your variable names to concrete ``(node, layer)`` tuples.
 
 Converting to Pandas
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -380,7 +380,7 @@ Converting to Pandas
 Column order follows the variables you specified with ``.returning(...)``; if you did not set it, all variables are returned in declaration order.
 
 Extracting Nodes
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -394,7 +394,7 @@ Extracting Nodes
     a_nodes = result.to_nodes(vars=["a"], unique=True)
 
 Extracting Edges
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -406,7 +406,7 @@ Extracting Edges
         print(f"Edge: {src} -> {dst}")
 
 Creating Subgraphs
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -422,7 +422,7 @@ Creating Subgraphs
     print(f"Created {len(subgraphs)} subgraphs")
 
 Filtering Results
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -435,7 +435,7 @@ Filtering Results
 ``filter`` and ``limit`` return new ``PatternQueryResult`` objects; they do not modify the original result.
 
 Query Execution Planning
------------------------
+------------------------
 
 Use ``.explain()`` to see how the pattern will be executed:
 
@@ -465,7 +465,7 @@ The planner chooses ``a`` as the root because it has the most restrictive predic
 The ``estimated_complexity`` field is a relative heuristic, useful for comparing different patterns rather than predicting exact runtime.
 
 Performance Tips
----------------
+----------------
 
 1. **Add Predicates Early:** The more selective predicates you add to the root variable, the faster the query.
 
@@ -506,10 +506,10 @@ Performance Tips
        Q.pattern().path(["a", "b", "c"]).returning("a", "c")
 
 Advanced Features
-----------------
+-----------------
 
 Constraints
-~~~~~~~~~~
+~~~~~~~~~~~
 
 Global constraints that apply across variables:
 
@@ -529,7 +529,7 @@ Global constraints that apply across variables:
     )
 
 Returning Specific Variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, all variables are returned. You can select specific ones:
 
@@ -548,7 +548,7 @@ By default, all variables are returned. You can select specific ones:
     # Result only contains 'a' and 'c' columns
 
 Execution Options
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -586,16 +586,16 @@ Pattern Matching vs. NetworkX
 Pattern Matching vs. DSL Node/Edge Queries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-+---------------------------------------+---------------------------------------+
-| DSL Node/Edge Query                   | Pattern Matching                      |
-+=======================================+=======================================+
-| Returns individual elements           | Returns complete structural matches   |
-+---------------------------------------+---------------------------------------+
-| ``Q.nodes().where(degree__gt=3)``     | ``Q.pattern().node("a", degree__gt=3)``|
-| Single-element selection              | Part of larger pattern                |
-+---------------------------------------+---------------------------------------+
-| No structural relationships           | Explicit edge relationships           |
-+---------------------------------------+---------------------------------------+
++----------------------------------------+----------------------------------------+
+| DSL Node/Edge Query                    | Pattern Matching                       |
++========================================+========================================+
+| Returns individual elements            | Returns complete structural matches    |
++----------------------------------------+----------------------------------------+
+| ``Q.nodes().where(degree__gt=3)``     | ``Q.pattern().node("a", degree__gt=3)`` |
+| Single-element selection               | Part of larger pattern                 |
++----------------------------------------+----------------------------------------+
+| No structural relationships            | Explicit edge relationships            |
++----------------------------------------+----------------------------------------+
 
 Use node/edge queries when you need individual elements. Use pattern matching when you need to find subgraph structures.
 
@@ -603,7 +603,7 @@ Limitations and Future Work
 ---------------------------
 
 Current Limitations (v1)
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 * **Fixed-length paths only:** Variable-length paths like ``(a)-[*1..3]-(b)`` not yet supported
 * **No optional matching:** All pattern elements must match
@@ -613,7 +613,7 @@ Current Limitations (v1)
 These features are planned for future versions while maintaining the current clean API.
 
 Best Practices
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 1. **Start simple:** Begin with small patterns and add complexity incrementally
 2. **Test on small data:** Validate pattern logic on toy networks before scaling up
@@ -622,7 +622,7 @@ Best Practices
 5. **Document patterns:** Add comments explaining complex pattern logic
 
 Troubleshooting
---------------
+---------------
 
 Pattern Returns No Matches
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -647,7 +647,7 @@ Pattern Returns No Matches
     print(f"Network has {result.count} intralayer edges")
 
 Too Many Matches
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 **Problem:** Pattern returns too many results.
 
@@ -664,7 +664,7 @@ Too Many Matches
     pattern.limit(100).execute(network)
 
 Slow Performance
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 **Problem:** Pattern matching takes too long.
 
@@ -682,7 +682,7 @@ Slow Performance
     result = pattern.execute(network, timeout=30.0)
 
 Related Documentation
---------------------
+---------------------
 
 * :doc:`query_with_dsl` — Basic DSL queries for nodes and edges
 * :doc:`query_zoo` — Gallery of DSL query examples

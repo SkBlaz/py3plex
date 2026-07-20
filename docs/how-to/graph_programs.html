@@ -16,7 +16,7 @@
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -185,8 +185,8 @@
 <section id="creating-a-graphprogram">
 <h3>Creating a GraphProgram<a class="headerlink" href="#creating-a-graphprogram" title="Link to this heading"></a></h3>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">.to_program()</span></code> method on any DSL query:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">GraphProgram</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">GraphProgram</span>
 
 <span class="c1"># Build a program without executing</span>
 <span class="n">program</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
@@ -216,7 +216,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">TimeSeriesType</span></code>: Temporal sequence</p></li>
 </ul>
 <p>Type checking happens automatically:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">type_check</span><span class="p">,</span> <span class="n">infer_type</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">type_check</span><span class="p">,</span> <span class="n">infer_type</span>
 
 <span class="c1"># Check if program is well-typed</span>
 <span class="n">is_valid</span> <span class="o">=</span> <span class="n">type_check</span><span class="p">(</span><span class="n">program</span><span class="o">.</span><span class="n">canonical_ast</span><span class="p">)</span>
@@ -281,7 +281,7 @@
 <section id="cost-model">
 <h2>Cost Model<a class="headerlink" href="#cost-model" title="Link to this heading"></a></h2>
 <p>Every operator has cost estimates for time and memory:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">CostModel</span><span class="p">,</span> <span class="n">GraphStats</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">CostModel</span><span class="p">,</span> <span class="n">GraphStats</span>
 
 <span class="c1"># Create cost model</span>
 <span class="n">cost_model</span> <span class="o">=</span> <span class="n">CostModel</span><span class="p">()</span>
@@ -298,7 +298,7 @@
 <section id="budget-enforcement">
 <h3>Budget Enforcement<a class="headerlink" href="#budget-enforcement" title="Link to this heading"></a></h3>
 <p>Programs can enforce time budgets:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExecutionContext</span><span class="p">,</span> <span class="n">execute_program</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">ExecutionContext</span><span class="p">,</span> <span class="n">execute_program</span>
 
 <span class="c1"># Create execution context with budget</span>
 <span class="n">context</span> <span class="o">=</span> <span class="n">ExecutionContext</span><span class="p">(</span>
@@ -324,7 +324,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">explanation</span><span class="p">)</span>
 
 <span class="c1"># Detailed explanation with costs</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">explain_program</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">explain_program</span>
 
 <span class="n">detailed</span> <span class="o">=</span> <span class="n">explain_program</span><span class="p">(</span>
     <span class="n">program</span><span class="p">,</span>
@@ -375,7 +375,7 @@
 <section id="comparing-programs">
 <h2>Comparing Programs<a class="headerlink" href="#comparing-programs" title="Link to this heading"></a></h2>
 <p>Diff two programs to see structural and semantic differences:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">diff_programs</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">diff_programs</span>
 
 <span class="c1"># Create two programs</span>
 <span class="n">program1</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
@@ -403,7 +403,7 @@
 <section id="composing-programs">
 <h2>Composing Programs<a class="headerlink" href="#composing-programs" title="Link to this heading"></a></h2>
 <p>Combine multiple programs into pipelines:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">compose</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">compose</span>
 
 <span class="c1"># Define reusable components</span>
 <span class="n">select_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
@@ -422,7 +422,7 @@
 <p>Programs support deterministic caching for reproducibility:</p>
 <section id="graph-fingerprints">
 <h3>Graph Fingerprints<a class="headerlink" href="#graph-fingerprints" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph_fingerprint</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">graph_fingerprint</span>
 
 <span class="c1"># Generate stable network fingerprint</span>
 <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">graph_fingerprint</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -433,7 +433,7 @@
 <section id="cache-keys">
 <h3>Cache Keys<a class="headerlink" href="#cache-keys" title="Link to this heading"></a></h3>
 <p>Cache keys combine graph, program, and execution context:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CacheKey</span><span class="p">,</span>
     <span class="n">graph_fingerprint</span><span class="p">,</span>
     <span class="n">execution_fingerprint</span><span class="p">,</span>
@@ -452,7 +452,7 @@
 </section>
 <section id="using-the-cache">
 <h3>Using the Cache<a class="headerlink" href="#using-the-cache" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_global_cache</span><span class="p">,</span> <span class="n">clear_global_cache</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">get_global_cache</span><span class="p">,</span> <span class="n">clear_global_cache</span>
 
 <span class="c1"># Execute with caching</span>
 <span class="n">result1</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
@@ -476,7 +476,7 @@
 <section id="uq-semantics">
 <h2>UQ Semantics<a class="headerlink" href="#uq-semantics" title="Link to this heading"></a></h2>
 <p>Programs support uncertainty quantification with Distribution types:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">UQMode</span><span class="p">,</span> <span class="n">UQMetadata</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">UQMode</span><span class="p">,</span> <span class="n">UQMetadata</span>
 
 <span class="c1"># Create distribution from samples</span>
 <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">,</span> <span class="mf">0.52</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">,</span> <span class="mf">0.49</span><span class="p">]</span>
@@ -499,7 +499,7 @@
 <section id="distribution-propagation">
 <h3>Distribution Propagation<a class="headerlink" href="#distribution-propagation" title="Link to this heading"></a></h3>
 <p>Distributions propagate through aggregations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">propagate_distribution</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="n">propagate_distribution</span>
 
 <span class="c1"># Propagate through mean operation</span>
 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>  <span class="c1"># Mix of Distributions and floats</span>
@@ -514,9 +514,9 @@
 <section id="complete-example">
 <h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
 <p>Here’s a complete workflow using Graph Programs:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<span class="kn">from</span> <span class="nn">py3plex.dsl.program</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">GraphProgram</span><span class="p">,</span>
     <span class="n">explain_program</span><span class="p">,</span>
     <span class="n">diff_programs</span><span class="p">,</span>

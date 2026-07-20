@@ -16,7 +16,7 @@
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -151,8 +151,8 @@
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <p>Basic conversion between py3plex and NetworkX:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Edge</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.compat</span> <span class="kn">import</span> <span class="n">convert</span>
+<span class="kn">from</span> <span class="nn">py3plex.io.schema</span> <span class="kn">import</span> <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Edge</span>
 
 <span class="c1"># Create a py3plex graph</span>
 <span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -186,7 +186,7 @@
 <h2>Conversion Modes<a class="headerlink" href="#conversion-modes" title="Link to this heading"></a></h2>
 <dl>
 <dt><strong>Strict Mode</strong> (default)</dt><dd><p>Raises <code class="docutils literal notranslate"><span class="pre">CompatibilityError</span></code> if target cannot represent all data:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompatibilityError</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.compat.exceptions</span> <span class="kn">import</span> <span class="n">CompatibilityError</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># SciPy sparse can&#39;t store attributes</span>
@@ -222,8 +222,8 @@
 <li><p>Self-loops</p></li>
 </ul>
 <p>Example with NetworkX algorithms:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.compat</span> <span class="kn">import</span> <span class="n">convert</span>
 
 <span class="c1"># Convert to NetworkX</span>
 <span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3plex_graph</span><span class="p">,</span> <span class="s2">&quot;networkx&quot;</span><span class="p">)</span>
@@ -240,7 +240,7 @@
 <section id="scipy-sparse-conversions">
 <h2>SciPy Sparse Conversions<a class="headerlink" href="#scipy-sparse-conversions" title="Link to this heading"></a></h2>
 <p>Sparse matrices are useful for large graphs and linear algebra operations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.sparse.linalg</span>
 
 <span class="c1"># Convert to sparse matrix (compat mode for attributes)</span>
 <span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span>
@@ -283,8 +283,8 @@
 <section id="schema-validation">
 <h2>Schema Validation<a class="headerlink" href="#schema-validation" title="Link to this heading"></a></h2>
 <p>Validate graph compatibility before conversion:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_ir</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">infer_schema</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.compat</span> <span class="kn">import</span> <span class="n">to_ir</span>
+<span class="kn">from</span> <span class="nn">py3plex.compat.schema</span> <span class="kn">import</span> <span class="n">infer_schema</span>
 
 <span class="c1"># Convert to intermediate representation</span>
 <span class="n">ir</span> <span class="o">=</span> <span class="n">to_ir</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
@@ -305,8 +305,8 @@
 <section id="sidecar-bundles">
 <h2>Sidecar Bundles<a class="headerlink" href="#sidecar-bundles" title="Link to this heading"></a></h2>
 <p>Sidecar bundles preserve complete graph data when target format is lossy:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.sidecar</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_sidecar</span><span class="p">,</span> <span class="n">import_sidecar</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_ir</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.compat.sidecar</span> <span class="kn">import</span> <span class="n">export_sidecar</span><span class="p">,</span> <span class="n">import_sidecar</span>
+<span class="kn">from</span> <span class="nn">py3plex.compat</span> <span class="kn">import</span> <span class="n">to_ir</span>
 
 <span class="c1"># Export complete graph data</span>
 <span class="n">ir</span> <span class="o">=</span> <span class="n">to_ir</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
@@ -326,7 +326,7 @@
 <section id="intermediate-representation">
 <h2>Intermediate Representation<a class="headerlink" href="#intermediate-representation" title="Link to this heading"></a></h2>
 <p>All conversions use a canonical intermediate representation (IR):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_ir</span><span class="p">,</span> <span class="n">from_ir</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.compat</span> <span class="kn">import</span> <span class="n">to_ir</span><span class="p">,</span> <span class="n">from_ir</span>
 
 <span class="c1"># Convert to IR</span>
 <span class="n">ir</span> <span class="o">=</span> <span class="n">to_ir</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
@@ -350,7 +350,7 @@
 <p>Three specialized exceptions with actionable messages:</p>
 <dl>
 <dt><strong>CompatibilityError</strong></dt><dd><p>Target cannot represent data (strict mode):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompatibilityError</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.compat.exceptions</span> <span class="kn">import</span> <span class="n">CompatibilityError</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">convert</span><span class="p">(</span><span class="n">multigraph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -363,7 +363,7 @@
 </div>
 </dd>
 <dt><strong>SchemaError</strong></dt><dd><p>Schema validation failure:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaError</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.compat.exceptions</span> <span class="kn">import</span> <span class="n">SchemaError</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">validate_against_schema</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">expected_schema</span><span class="p">)</span>
@@ -373,7 +373,7 @@
 </div>
 </dd>
 <dt><strong>ConversionNotSupportedError</strong></dt><dd><p>Missing optional dependencies:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConversionNotSupportedError</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.compat.exceptions</span> <span class="kn">import</span> <span class="n">ConversionNotSupportedError</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;igraph&quot;</span><span class="p">)</span>
@@ -387,8 +387,8 @@
 <section id="common-patterns">
 <h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h2>
 <p><strong>NetworkX to py3plex</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">py3plex.compat</span> <span class="kn">import</span> <span class="n">convert</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
 <span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>

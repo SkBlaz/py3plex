@@ -642,6 +642,7 @@ class MultilayerCentrality:
                         See NetworkX documentation for details. Only used when
                         variant='standard'.
             variant: Closeness variant to use. Options:
+
                     - 'standard': Classic closeness (reciprocal of sum of distances).
                       For disconnected graphs, uses Wasserman-Faust scaling if
                       wf_improved=True. Can produce biased values for nodes in
@@ -652,6 +653,7 @@ class MultilayerCentrality:
                       Recommended for disconnected multilayer networks.
                     - 'auto': Automatically selects 'harmonic' if the supra-graph
                       has multiple connected components, otherwise uses 'standard'.
+
                     Default is 'standard' for backward compatibility.
 
         Returns:
@@ -1472,7 +1474,7 @@ class MultilayerCentrality:
         a node's neighbors when the node is removed. It quantifies the fault
         tolerance of the network.
 
-        LE(u) = (1 / (|N_u|*(|N_u|-1))) * sum_{i≠j in N_u} [1 / d(i,j)]
+        LE(u) = (1 / (\\|N_u\\|*(\\|N_u\\|-1))) * sum_{i≠j in N_u} [1 / d(i,j)]
 
         Returns:
             dict: {(node, layer): local_efficiency}
@@ -2082,8 +2084,8 @@ class MultilayerCentrality:
 
         Aggregates per-layer centrality values using Lp norm.
 
-        C_i = (sum_{ℓ in L_i} w_ℓ * |c^ℓ[i]|^p)^{1/p}  for p < ∞
-        C_i = max_{ℓ in L_i} (w_ℓ * |c^ℓ[i]|)          for p = ∞
+        C_i = (sum_{ℓ in L_i} w_ℓ * \\|c^ℓ[i]\\|^p)^{1/p}  for p < ∞
+        C_i = max_{ℓ in L_i} (w_ℓ * \\|c^ℓ[i]\\|)          for p = ∞
 
         where L_i is the set of layers where node i exists.
 
@@ -2244,6 +2246,7 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
                          percolation, spreading, collective influence, load, flow betweenness,
                          harmonic, bridging, local efficiency). Default: False
         preset: Convenience parameter to set all inclusion flags at once. Options:
+
                 - 'basic': Only degree and eigenvector-based measures (default behavior)
                 - 'standard': Includes path-based measures
                 - 'advanced': Includes path-based and advanced measures
@@ -2253,12 +2256,14 @@ def compute_all_centralities(network, include_path_based=False, include_advanced
                     centrality in disconnected graphs. Default: True. Only used when
                     closeness_variant='standard'.
         closeness_variant: Variant of closeness centrality to use. Options:
+
                           - 'standard': Classic closeness (reciprocal of sum of distances).
                             Uses Wasserman-Faust scaling if wf_improved=True.
                           - 'harmonic': Harmonic closeness (sum of reciprocal distances).
                             Recommended for disconnected multilayer networks.
                           - 'auto': Automatically selects 'harmonic' if the network has
                             disconnected components, otherwise uses 'standard'.
+
                           Default: 'standard' for backward compatibility.
 
     Returns:

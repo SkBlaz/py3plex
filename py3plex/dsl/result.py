@@ -502,9 +502,9 @@ class QueryResult:
     ):
         """Export results to pandas DataFrame.
 
-        For node queries: Returns DataFrame with 'id' column plus computed attributes
-        For edge queries: Returns DataFrame with 'source', 'target', 'source_layer',
-                         'target_layer', 'weight' columns plus computed attributes
+        For node queries: returns ``id`` column plus computed attribute columns.
+        For edge queries: returns ``source``, ``target``, ``source_layer``,
+        ``target_layer``, ``weight`` columns plus computed attribute columns.
 
         Args:
             multiindex: If True and grouping metadata is present, set DataFrame index

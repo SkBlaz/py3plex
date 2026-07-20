@@ -167,6 +167,7 @@ def random_multilayer_SBM(
     """Generate a simple multiplex multilayer stochastic block model (SBM) network.
 
     This function creates a multilayer network with:
+
     - `n_nodes` nodes shared across all layers,
     - `n_layers` layers,
     - `n_blocks` latent communities (blocks),

@@ -79,7 +79,7 @@ Types of Multilayer Networks
 * Example: Communication networks over days/weeks
 
 Why Multilayer Matters
----------------------
+----------------------
 
 **Information is lost when flattening**
 
