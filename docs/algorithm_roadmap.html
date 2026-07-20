@@ -16,8 +16,8 @@
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -949,19 +949,19 @@
 <section id="community-detection-workflow">
 <h3>Community Detection Workflow<a class="headerlink" href="#community-detection-workflow" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Detect communities</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">())</span>
 
 <span class="c1"># 2. Evaluate quality</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.community_detection</span> <span class="kn">import</span> <span class="n">multilayer_modularity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_modularity</span>
 <span class="n">quality</span> <span class="o">=</span> <span class="n">multilayer_modularity</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(),</span> <span class="n">communities</span><span class="p">)</span>
 
 <span class="c1"># 3. Analyze communities</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.enrichment_modules</span> <span class="kn">import</span> <span class="n">compute_enrichment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.enrichment_modules</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_enrichment</span>
 
 <span class="c1"># 4. Visualize</span>
-<span class="kn">from</span> <span class="nn">py3plex.visualization.multilayer</span> <span class="kn">import</span> <span class="n">draw_multilayer_default</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
 <span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">communities</span><span class="o">=</span><span class="n">communities</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -969,7 +969,7 @@
 <section id="centrality-analysis-workflow">
 <h3>Centrality Analysis Workflow<a class="headerlink" href="#centrality-analysis-workflow" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Compute centralities</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">MultilayerCentrality</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultilayerCentrality</span>
 <span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="c1"># 2. Multiple measures</span>
@@ -978,11 +978,11 @@
 <span class="n">betweenness</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">multilayer_betweenness_centrality</span><span class="p">()</span>
 
 <span class="c1"># 3. Cross-layer analysis</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 <span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
 
 <span class="c1"># 4. Identify hubs</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics.basic_statistics</span> <span class="kn">import</span> <span class="n">identify_n_hubs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.basic_statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">identify_n_hubs</span>
 <span class="n">hubs</span> <span class="o">=</span> <span class="n">identify_n_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -990,17 +990,17 @@
 <section id="embedding-workflow">
 <h3>Embedding Workflow<a class="headerlink" href="#embedding-workflow" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Generate walks</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.general.walkers</span> <span class="kn">import</span> <span class="n">generate_walks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_walks</span>
 <span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                       <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;node2vec&#39;</span><span class="p">)</span>
 
 <span class="c1"># 2. Learn embeddings</span>
-<span class="kn">from</span> <span class="nn">py3plex.wrappers.node2vec_embedding</span> <span class="kn">import</span> <span class="n">generate_embeddings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers.node2vec_embedding</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_embeddings</span>
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">generate_embeddings</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
                                  <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="c1"># 3. Use for classification</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.network_classification.label_propagation</span> <span class="kn">import</span> <span class="n">label_propagation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.network_classification.label_propagation</span><span class="w"> </span><span class="kn">import</span> <span class="n">label_propagation</span>
 <span class="c1"># Or use embeddings directly with sklearn</span>
 </pre></div>
 </div>
@@ -1008,7 +1008,7 @@
 <section id="statistical-analysis-workflow">
 <h3>Statistical Analysis Workflow<a class="headerlink" href="#statistical-analysis-workflow" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Layer-level statistics</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
 <span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
 <span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>

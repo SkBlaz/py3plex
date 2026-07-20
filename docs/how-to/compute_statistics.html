@@ -16,7 +16,7 @@
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
-      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -192,7 +192,7 @@
 <p class="admonition-title">Note</p>
 <p>Imports used below</p>
 <p>Most snippets rely on the DSL helpers <code class="docutils literal notranslate"><span class="pre">Q</span></code> and <code class="docutils literal notranslate"><span class="pre">L</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 </pre></div>
 </div>
 </div>
@@ -210,7 +210,7 @@
 <section id="quick-statistics">
 <h2>Quick Statistics<a class="headerlink" href="#quick-statistics" title="Link to this heading"></a></h2>
 <p>Get a fast overview (total nodes, edges, layers):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -313,7 +313,7 @@ layer3: avg degree = 4.12
 <section id="degree-centrality">
 <h3>Degree Centrality<a class="headerlink" href="#degree-centrality" title="Link to this heading"></a></h3>
 <p>Compute degree for all nodes and sort in descending order:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
@@ -367,7 +367,7 @@ layer3: avg degree = 4.12
 <section id="node-versatility">
 <h3>Node Versatility<a class="headerlink" href="#node-versatility" title="Link to this heading"></a></h3>
 <p>Versatility measures how evenly a node distributes its connections across layers; higher values mean more balanced participation across layers.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">calculate_versatility</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_versatility</span>
 
 <span class="n">versatility_scores</span> <span class="o">=</span> <span class="n">calculate_versatility</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
@@ -387,7 +387,7 @@ layer3: avg degree = 4.12
 <section id="edge-overlap-between-layers">
 <h3>Edge Overlap Between Layers<a class="headerlink" href="#edge-overlap-between-layers" title="Link to this heading"></a></h3>
 <p>How many connections exist in multiple layers?</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">calculate_edge_overlap</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_edge_overlap</span>
 
 <span class="n">overlap</span> <span class="o">=</span> <span class="n">calculate_edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
 
@@ -399,7 +399,7 @@ layer3: avg degree = 4.12
 <section id="inter-layer-degree-correlation">
 <h3>Inter-Layer Degree Correlation<a class="headerlink" href="#inter-layer-degree-correlation" title="Link to this heading"></a></h3>
 <p>Are high-degree nodes in layer 1 also high-degree in layer 2?</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">inter_layer_correlation</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">inter_layer_correlation</span>
 
 <span class="n">correlation</span> <span class="o">=</span> <span class="n">inter_layer_correlation</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
@@ -419,7 +419,7 @@ layer3: avg degree = 4.12
 <p>Aggregate everything into a single view of the whole multilayer graph.</p>
 <section id="global-clustering-coefficient">
 <h3>Global Clustering Coefficient<a class="headerlink" href="#global-clustering-coefficient" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">global_clustering_coefficient</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">global_clustering_coefficient</span>
 
 <span class="n">gcc</span> <span class="o">=</span> <span class="n">global_clustering_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Global clustering: </span><span class="si">{</span><span class="n">gcc</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -428,7 +428,7 @@ layer3: avg degree = 4.12
 </section>
 <section id="average-path-length">
 <h3>Average Path Length<a class="headerlink" href="#average-path-length" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.statistics</span> <span class="kn">import</span> <span class="n">average_path_length</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">average_path_length</span>
 
 <span class="c1"># Note: computationally expensive for large networks; ensure the graph</span>
 <span class="c1"># is connected or run on the largest connected component.</span>
@@ -443,7 +443,7 @@ layer3: avg degree = 4.12
 <p>Persist results so you can compare runs or feed them into other tools.</p>
 <section id="save-to-csv">
 <h3>Save to CSV<a class="headerlink" href="#save-to-csv" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
@@ -458,8 +458,8 @@ layer3: avg degree = 4.12
 </section>
 <section id="save-to-json">
 <h3>Save to JSON<a class="headerlink" href="#save-to-json" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">py3plex.dsl</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;num_nodes&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())),</span>
@@ -486,7 +486,7 @@ layer3: avg degree = 4.12
 <h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading"></a></h2>
 <section id="pattern-compare-node-importance-across-layers">
 <h3>Pattern: Compare Node Importance Across Layers<a class="headerlink" href="#pattern-compare-node-importance-across-layers" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
 <span class="n">all_stats</span> <span class="o">=</span> <span class="p">[]</span>

@@ -18,7 +18,7 @@
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
-      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -424,7 +424,7 @@ To run the query zoo tests and generate validated outputs:</p>
 <p><strong>Solution:</strong> Compute basic statistics per layer using the DSL.</p>
 <section id="query-code">
 <h3><a class="toc-backref" href="#id51" role="doc-backlink">Query Code</a><a class="headerlink" href="#query-code" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_basic_exploration</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
         <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
@@ -507,7 +507,7 @@ To run the query zoo tests and generate validated outputs:</p>
 <p><strong>Solution:</strong> Find top-k central nodes per layer, then identify which nodes appear in multiple layers’ top lists.</p>
 <section id="id1">
 <h3><a class="toc-backref" href="#id56" role="doc-backlink">Query Code</a><a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_cross_layer_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">counts</span> <span class="o">=</span> <span class="n">_layer_counts</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
@@ -621,7 +621,7 @@ To run the query zoo tests and generate validated outputs:</p>
 <p><strong>Solution:</strong> Compute degree distributions per layer and measure pairwise correlations.</p>
 <section id="id5">
 <h3><a class="toc-backref" href="#id61" role="doc-backlink">Query Code</a><a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">layers</span> <span class="o">=</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">_replicas</span><span class="p">(</span><span class="n">network</span><span class="p">)})</span>
     <span class="n">layer_vectors</span> <span class="o">=</span> <span class="p">[]</span>
@@ -699,7 +699,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 <p><strong>Solution:</strong> Detect communities using multilayer community detection, then analyze their distribution across layers.</p>
 <section id="id9">
 <h3><a class="toc-backref" href="#id66" role="doc-backlink">Query Code</a><a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_community_structure</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_community_structure</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">community_id</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
@@ -800,7 +800,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 <p><strong>Solution:</strong> Compute PageRank per layer, then take the average across layers as a simplified multiplex score. (True multiplex PageRank uses supra-adjacency matrices.)</p>
 <section id="id13">
 <h3><a class="toc-backref" href="#id71" role="doc-backlink">Query Code</a><a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_multiplex_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">_aggregate_physical_graph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="n">pagerank</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">pagerank</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">)</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span> <span class="s2">&quot;multiplex_pagerank&quot;</span><span class="p">:</span> <span class="n">pagerank</span><span class="p">[</span><span class="n">node</span><span class="p">]}</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">graph</span><span class="p">)]</span>
@@ -887,7 +887,7 @@ Nodes missing from a layer contribute a degree of 0 in that matrix so every laye
 <p><strong>Solution:</strong> Simulate removing each layer and measure connectivity loss.</p>
 <section id="id17">
 <h3><a class="toc-backref" href="#id76" role="doc-backlink">Query Code</a><a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_robustness_analysis</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">baseline_graph</span> <span class="o">=</span> <span class="n">_aggregate_physical_graph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="n">baseline_cc</span> <span class="o">=</span> <span class="p">(</span>
         <span class="nb">len</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">baseline_graph</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">))</span>
@@ -999,7 +999,7 @@ The reported loss compares baseline total degree to the degree after removing a 
 <p><strong>Solution:</strong> Compute multiple centralities, normalize them, and classify nodes by how many centralities place them in the top tier.</p>
 <section id="id21">
 <h3><a class="toc-backref" href="#id81" role="doc-backlink">Query Code</a><a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_advanced_centrality_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">_aggregate_physical_graph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="n">degree</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span>
     <span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">)</span>
@@ -1120,7 +1120,7 @@ The reported loss compares baseline total degree to the degree after removing a 
 <p><strong>Solution:</strong> Use the new <code class="docutils literal notranslate"><span class="pre">.per_layer_pair()</span></code> method to group edges by (src_layer, dst_layer) pairs, then keep the top-k edges per pair. (Add <code class="docutils literal notranslate"><span class="pre">.coverage(...)</span></code> if you later need to filter across groups.)</p>
 <section id="id25">
 <h3><a class="toc-backref" href="#id86" role="doc-backlink">Query Code</a><a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_edge_grouping_and_coverage</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_edge_grouping_and_coverage</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
     <span class="n">grouped</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">_replica_graph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
@@ -1358,7 +1358,7 @@ for nodes. Both support the same coverage modes and grouping operations.</p>
 <p><strong>Solution:</strong> Generate null models (e.g., configuration model) that preserve certain properties while randomizing connections, then compute z-scores to identify significant patterns.</p>
 <section id="id37">
 <h3><a class="toc-backref" href="#id101" role="doc-backlink">Query Code</a><a class="headerlink" href="#id37" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_null_model_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_null_model_comparison</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
         <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
@@ -1465,7 +1465,7 @@ typically use 100-1000 samples for more robust statistics.</p>
 <p><strong>Solution:</strong> Analyze cross-layer variability to estimate uncertainty in centrality measures, identifying nodes with stable vs fragile importance.</p>
 <section id="id41">
 <h3><a class="toc-backref" href="#id106" role="doc-backlink">Query Code</a><a class="headerlink" href="#id41" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_bootstrap_confidence_intervals</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_bootstrap_confidence_intervals</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">samples</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
         <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
@@ -1567,7 +1567,7 @@ typically use 100-1000 samples for more robust statistics.</p>
 <p><strong>Solution:</strong> Compare multiple ranking strategies—by maximum value, by mean across layers, and by consistency (low variability)—to make uncertainty-aware decisions.</p>
 <section id="id45">
 <h3><a class="toc-backref" href="#id111" role="doc-backlink">Query Code</a><a class="headerlink" href="#id45" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">query_uncertainty_aware_ranking</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">query_uncertainty_aware_ranking</span><span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">samples</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">_layers</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
         <span class="n">graph</span> <span class="o">=</span> <span class="n">_layer_graph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
@@ -1712,8 +1712,8 @@ typically use 100-1000 samples for more robust statistics.</p>
 </div>
 </li>
 <li><p><strong>Run a single query</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">examples.dsl_zoo.datasets</span> <span class="kn">import</span> <span class="n">create_social_work_network</span>
-<span class="kn">from</span> <span class="nn">examples.dsl_zoo.queries</span> <span class="kn">import</span> <span class="n">query_basic_exploration</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">examples.dsl_zoo.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_social_work_network</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">examples.dsl_zoo.queries</span><span class="w"> </span><span class="kn">import</span> <span class="n">query_basic_exploration</span>
 
 <span class="n">net</span> <span class="o">=</span> <span class="n">create_social_work_network</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">query_basic_exploration</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
@@ -1738,7 +1738,7 @@ typically use 100-1000 samples for more robust statistics.</p>
 <p>All queries are designed to work with any <code class="docutils literal notranslate"><span class="pre">multi_layer_network</span></code> object. To adapt:</p>
 <ol class="arabic">
 <li><p><strong>Replace the dataset</strong>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load your own network</span>
 <span class="n">my_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>

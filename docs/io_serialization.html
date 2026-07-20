@@ -16,7 +16,7 @@
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -165,7 +165,7 @@
 Use the same functions for all supported formats so your code stays uniform even when the on-disk format changes.</p>
 <section id="reading-graphs">
 <h3>Reading Graphs<a class="headerlink" href="#reading-graphs" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="n">read</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
 
 <span class="c1"># Auto-detect format from extension</span>
 <span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
@@ -180,7 +180,7 @@ Use the same functions for all supported formats so your code stays uniform even
 </section>
 <section id="writing-graphs">
 <h3>Writing Graphs<a class="headerlink" href="#writing-graphs" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="n">write</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
 
 <span class="c1"># Auto-detect format from extension</span>
 <span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
@@ -197,7 +197,7 @@ Use the same functions for all supported formats so your code stays uniform even
 <section id="creating-graphs-with-the-schema-api">
 <h2>Creating Graphs with the Schema API<a class="headerlink" href="#creating-graphs-with-the-schema-api" title="Link to this heading"></a></h2>
 <p>The modern I/O system uses a schema-based API for creating graphs. Nodes, layers, and edges are explicit objects, which keeps attributes and layer membership clear and consistent across formats:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Edge</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Edge</span>
 
 <span class="c1"># Create graph</span>
 <span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">(</span>
@@ -243,7 +243,7 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 </section>
 <section id="using-arrow-format">
 <h3>Using Arrow Format<a class="headerlink" href="#using-arrow-format" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
 
 <span class="c1"># Feather format (fast, uncompressed)</span>
 <span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
@@ -339,7 +339,7 @@ Exact results depend on hardware, compression settings, and graph structure, so 
 <section id="csv-format-with-sidecars">
 <h2>CSV Format with Sidecars<a class="headerlink" href="#csv-format-with-sidecars" title="Link to this heading"></a></h2>
 <p>CSV format supports optional sidecar files for node and layer attributes to keep edge lists clean and avoid repeating metadata in the edge list:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
 
 <span class="c1"># Write with sidecars</span>
 <span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;edges.csv&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="n">write_sidecars</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -356,7 +356,7 @@ Exact results depend on hardware, compression settings, and graph structure, so 
 <section id="integration-with-networkx">
 <h2>Integration with NetworkX<a class="headerlink" href="#integration-with-networkx" title="Link to this heading"></a></h2>
 <p>Convert between py3plex I/O format and NetworkX. Use <code class="docutils literal notranslate"><span class="pre">mode='union'</span></code> for single-layer algorithms and <code class="docutils literal notranslate"><span class="pre">mode='multiplex'</span></code> when you need to preserve layer identity:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">to_networkx</span><span class="p">,</span> <span class="n">from_networkx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">to_networkx</span><span class="p">,</span> <span class="n">from_networkx</span>
 
 <span class="c1"># Load graph</span>
 <span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
@@ -373,7 +373,7 @@ Exact results depend on hardware, compression settings, and graph structure, so 
 <section id="example-complete-workflow">
 <h2>Example: Complete Workflow<a class="headerlink" href="#example-complete-workflow" title="Link to this heading"></a></h2>
 <p>Here’s a complete example demonstrating the I/O system:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Edge</span><span class="p">,</span>
     <span class="n">read</span><span class="p">,</span> <span class="n">write</span><span class="p">,</span> <span class="n">to_networkx</span>
 <span class="p">)</span>
@@ -415,7 +415,7 @@ Exact results depend on hardware, compression settings, and graph structure, so 
 <span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">loaded</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;union&#39;</span><span class="p">)</span>
 
 <span class="c1"># Use NetworkX algorithms</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most central node: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">centrality</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="o">=</span><span class="n">centrality</span><span class="o">.</span><span class="n">get</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -424,7 +424,7 @@ Exact results depend on hardware, compression settings, and graph structure, so 
 <section id="checking-supported-formats">
 <h2>Checking Supported Formats<a class="headerlink" href="#checking-supported-formats" title="Link to this heading"></a></h2>
 <p>You can query which formats are available at runtime:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="n">supported_formats</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">supported_formats</span>
 
 <span class="n">formats</span> <span class="o">=</span> <span class="n">supported_formats</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read formats: </span><span class="si">{</span><span class="n">formats</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -437,7 +437,7 @@ Only formats with all required dependencies will appear in the supported lists.<
 <section id="schema-validation">
 <h2>Schema Validation<a class="headerlink" href="#schema-validation" title="Link to this heading"></a></h2>
 <p>The I/O system includes automatic validation:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">MultiLayerGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Edge</span><span class="p">,</span>
     <span class="n">ReferentialIntegrityError</span>
 <span class="p">)</span>
@@ -466,17 +466,17 @@ Only formats with all required dependencies will appear in the supported lists.<
 <section id="advanced-custom-formats">
 <h2>Advanced: Custom Formats<a class="headerlink" href="#advanced-custom-formats" title="Link to this heading"></a></h2>
 <p>The I/O system is extensible. You can register custom format readers/writers:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.io</span> <span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">register_reader</span><span class="p">,</span> <span class="n">register_writer</span><span class="p">,</span> <span class="n">MultiLayerGraph</span>
 <span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">my_reader</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_reader</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># Custom reading logic</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">()</span>
     <span class="c1"># ... populate graph ...</span>
     <span class="k">return</span> <span class="n">graph</span>
 
-<span class="k">def</span> <span class="nf">my_writer</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_writer</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># Custom writing logic</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="c1"># ... write graph ...</span>

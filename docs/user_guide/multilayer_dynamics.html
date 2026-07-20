@@ -16,8 +16,8 @@
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
-      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -152,7 +152,7 @@
 <div class="dsl-example admonition">
 <p class="admonition-title">DSL for Dynamics</p>
 <p>Run dynamics simulations declaratively with the DSL:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">SIS</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">SIS</span>
 
 <span class="c1"># Define and run SIS simulation</span>
 <span class="n">sim</span> <span class="o">=</span> <span class="p">(</span>
@@ -218,8 +218,8 @@
 </ul>
 <section id="basic-example">
 <h3>Basic Example<a class="headerlink" href="#basic-example" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">SIRDynamics</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="c1"># Create a network</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
@@ -256,8 +256,8 @@ Final recovered: 30
 <section id="multilayer-sir-example">
 <h3>Multilayer SIR Example<a class="headerlink" href="#multilayer-sir-example" title="Link to this heading"></a></h3>
 <p>On multilayer networks, infection can spread through different interaction contexts:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">SIRDynamics</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
 
 <span class="c1"># Create two-layer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -277,7 +277,7 @@ Final recovered: 30
     <span class="p">}])</span>
 
 <span class="c1"># Digital layer: random connections (more global)</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
@@ -320,7 +320,7 @@ Attack rate: 55.00%
 </ul>
 <p><strong>Parameter Effects:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare different parameters</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
 
@@ -375,8 +375,8 @@ Attack rate: 55.00%
 </ul>
 <section id="id1">
 <h3>Basic Example<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">SISDynamics</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SISDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="c1"># Create a small-world network</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">watts_strogatz_graph</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
@@ -413,9 +413,9 @@ Std deviation: 2.77%
 <section id="sis-vs-sir-comparison">
 <h3>SIS vs SIR Comparison<a class="headerlink" href="#sis-vs-sir-comparison" title="Link to this heading"></a></h3>
 <p>The key difference: <strong>SIS sustains infection, SIR dies out</strong>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">SISDynamics</span><span class="p">,</span> <span class="n">SIRDynamics</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SISDynamics</span><span class="p">,</span> <span class="n">SIRDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
 
@@ -500,8 +500,8 @@ Std deviation: 2.77%
 </ul>
 <section id="id2">
 <h3>Basic Example<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">RandomWalkDynamics</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomWalkDynamics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="c1"># Create network</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
@@ -524,7 +524,7 @@ Std deviation: 2.77%
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start: </span><span class="si">{</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, End: </span><span class="si">{</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Count visits</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 <span class="n">visits</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
 <span class="n">top_5</span> <span class="o">=</span> <span class="n">visits</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 
@@ -549,8 +549,8 @@ Most visited nodes:
 <section id="multilayer-random-walk">
 <h3>Multilayer Random Walk<a class="headerlink" href="#multilayer-random-walk" title="Link to this heading"></a></h3>
 <p>Random walks on multilayer networks can <strong>switch between layers</strong> at inter-layer connections:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">RandomWalkDynamics</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomWalkDynamics</span>
 
 <span class="c1"># Create two-layer network with different structures</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -609,8 +609,8 @@ Switch rate: 34.77%
 <section id="lazy-random-walks">
 <h3>Lazy Random Walks<a class="headerlink" href="#lazy-random-walks" title="Link to this heading"></a></h3>
 <p>The <strong>lazy probability</strong> controls how often the walker stays in place:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">path_graph</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Simple chain</span>
 
@@ -701,7 +701,7 @@ Switch rate: 34.77%
 </section>
 <section id="visualization">
 <h3>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Run SIR simulation</span>
 <span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -806,8 +806,8 @@ p_{\\text{lazy}} &amp; \\text{if } j = i \\\\
 <h3>Time-Varying Parameters<a class="headerlink" href="#time-varying-parameters" title="Link to this heading"></a></h3>
 <p>Parameters can be <strong>functions of time</strong> for more realistic models:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seasonal variation in transmission</span>
-<span class="k">def</span> <span class="nf">seasonal_beta</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">math</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">seasonal_beta</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
     <span class="k">return</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="mi">365</span><span class="p">))</span>
 
 <span class="c1"># Note: Advanced feature, check core module support</span>
@@ -818,7 +818,7 @@ p_{\\text{lazy}} &amp; \\text{if } j = i \\\\
 <section id="heterogeneous-parameters">
 <h3>Heterogeneous Parameters<a class="headerlink" href="#heterogeneous-parameters" title="Link to this heading"></a></h3>
 <p>Different nodes can have different recovery rates:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Assign random recovery rates</span>
 <span class="n">n_nodes</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
@@ -871,7 +871,7 @@ p_{\\text{lazy}} &amp; \\text{if } j = i \\\\
 </ul>
 <p>See <a class="reference internal" href="dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> for the complete query DSL documentation, which shares these design principles.</p>
 <p><strong>Example:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.dynamics</span> <span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">SIS</span><span class="p">,</span> <span class="n">SIR</span><span class="p">,</span> <span class="n">RandomWalk</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">D</span><span class="p">,</span> <span class="n">SIS</span><span class="p">,</span> <span class="n">SIR</span><span class="p">,</span> <span class="n">RandomWalk</span>
 
 <span class="c1"># Define simulation</span>
 <span class="n">sim</span> <span class="o">=</span> <span class="p">(</span>

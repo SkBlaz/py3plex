@@ -16,7 +16,7 @@
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -176,24 +176,24 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">supports_multilayer:</span> <span class="pre">bool</span></code>: Whether algorithm supports multilayer networks (default: False)</p></li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">CentralityPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">CentralityPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="nd">@PluginRegistry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;my_centrality&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MyCustomCentrality</span><span class="p">(</span><span class="n">CentralityPlugin</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomCentrality</span><span class="p">(</span><span class="n">CentralityPlugin</span><span class="p">):</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;my_centrality&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;My custom centrality measure&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">supports_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute centrality scores for all nodes.&quot;&quot;&quot;</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
         <span class="n">raw_scores</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
@@ -220,20 +220,20 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">supports_hierarchical:</span> <span class="pre">bool</span></code>: Whether algorithm produces hierarchy (default: False)</p></li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">CommunityPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommunityPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="nd">@PluginRegistry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;community&#39;</span><span class="p">,</span> <span class="s1">&#39;my_detector&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MyDetector</span><span class="p">(</span><span class="n">CommunityPlugin</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDetector</span><span class="p">(</span><span class="n">CommunityPlugin</span><span class="p">):</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;my_detector&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">supports_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_weighted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect communities in the network.&quot;&quot;&quot;</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
         <span class="c1"># Replace with your preferred algorithm (e.g., networkx or community-louvain)</span>
@@ -255,20 +255,20 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">supports_weighted:</span> <span class="pre">bool</span></code>: Whether layout considers edge weights (default: False)</p></li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">LayoutPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
-<span class="kn">import</span> <span class="nn">math</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayoutPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
 <span class="nd">@PluginRegistry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;layout&#39;</span><span class="p">,</span> <span class="s1">&#39;my_layout&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MyLayout</span><span class="p">(</span><span class="n">LayoutPlugin</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyLayout</span><span class="p">(</span><span class="n">LayoutPlugin</span><span class="p">):</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;my_layout&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">supports_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">compute_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute layout positions.&quot;&quot;&quot;</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
@@ -302,20 +302,20 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">metric_type:</span> <span class="pre">str</span></code>: ‘global’, ‘local’, or ‘both’ (default: ‘global’)</p></li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">MetricPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetricPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="nd">@PluginRegistry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;metric&#39;</span><span class="p">,</span> <span class="s1">&#39;my_metric&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MyMetric</span><span class="p">(</span><span class="n">MetricPlugin</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyMetric</span><span class="p">(</span><span class="n">MetricPlugin</span><span class="p">):</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;my_metric&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metric_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metric_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;global&#39;</span>
 
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute network metrics.&quot;&quot;&quot;</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 
@@ -330,16 +330,16 @@
 <section id="registering-plugins">
 <h3>Registering Plugins<a class="headerlink" href="#registering-plugins" title="Link to this heading"></a></h3>
 <p><strong>Method 1: Decorator (Recommended)</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">PluginRegistry</span><span class="p">,</span> <span class="n">CentralityPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginRegistry</span><span class="p">,</span> <span class="n">CentralityPlugin</span>
 
 <span class="nd">@PluginRegistry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;my_plugin&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MyPlugin</span><span class="p">(</span><span class="n">CentralityPlugin</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyPlugin</span><span class="p">(</span><span class="n">CentralityPlugin</span><span class="p">):</span>
     <span class="c1"># Implementation</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
 <p><strong>Method 2: Direct Registration</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">PluginRegistry</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginRegistry</span>
 
 <span class="n">registry</span> <span class="o">=</span> <span class="n">PluginRegistry</span><span class="p">()</span>
 <span class="n">registry</span><span class="o">.</span><span class="n">register_plugin</span><span class="p">(</span><span class="s1">&#39;centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;my_plugin&#39;</span><span class="p">,</span> <span class="n">MyPluginClass</span><span class="p">)</span>
@@ -348,7 +348,7 @@
 </section>
 <section id="getting-and-using-plugins">
 <h3>Getting and Using Plugins<a class="headerlink" href="#getting-and-using-plugins" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex</span> <span class="kn">import</span> <span class="n">PluginRegistry</span><span class="p">,</span> <span class="n">multi_layer_network</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginRegistry</span><span class="p">,</span> <span class="n">multi_layer_network</span>
 
 <span class="n">registry</span> <span class="o">=</span> <span class="n">PluginRegistry</span><span class="p">()</span>
 <span class="c1"># Make sure your plugin has been registered or discovered first</span>
@@ -363,7 +363,7 @@
 </section>
 <section id="listing-available-plugins">
 <h3>Listing Available Plugins<a class="headerlink" href="#listing-available-plugins" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex</span> <span class="kn">import</span> <span class="n">PluginRegistry</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginRegistry</span>
 
 <span class="n">registry</span> <span class="o">=</span> <span class="n">PluginRegistry</span><span class="p">()</span>
 
@@ -381,7 +381,7 @@
 </section>
 <section id="getting-plugin-information">
 <h3>Getting Plugin Information<a class="headerlink" href="#getting-plugin-information" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex</span> <span class="kn">import</span> <span class="n">PluginRegistry</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginRegistry</span>
 
 <span class="n">registry</span> <span class="o">=</span> <span class="n">PluginRegistry</span><span class="p">()</span>
 <span class="n">info</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_plugin_info</span><span class="p">(</span><span class="s1">&#39;centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;my_plugin&#39;</span><span class="p">)</span>
@@ -410,7 +410,7 @@
 </pre></div>
 </div>
 <p>Programmatically:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">discover_plugins</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">discover_plugins</span>
 
 <span class="c1"># Discover plugins from custom directory</span>
 <span class="n">count</span> <span class="o">=</span> <span class="n">discover_plugins</span><span class="p">(</span><span class="s1">&#39;/path/to/my/plugins&#39;</span><span class="p">)</span>
@@ -430,15 +430,15 @@
 <ol class="arabic simple" start="2">
 <li><p>Write your plugin (e.g., <code class="docutils literal notranslate"><span class="pre">~/.py3plex/plugins/my_plugin.py</span></code>):</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">CentralityPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">CentralityPlugin</span><span class="p">,</span> <span class="n">PluginRegistry</span>
 
 <span class="nd">@PluginRegistry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;my_auto_plugin&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MyAutoPlugin</span><span class="p">(</span><span class="n">CentralityPlugin</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyAutoPlugin</span><span class="p">(</span><span class="n">CentralityPlugin</span><span class="p">):</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;my_auto_plugin&#39;</span>
 
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Implementation</span>
         <span class="k">return</span> <span class="p">{}</span>
 </pre></div>
@@ -446,7 +446,7 @@
 <ol class="arabic simple" start="3">
 <li><p>The plugin will be automatically discovered when you import py3plex:</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">discover_plugins</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">discover_plugins</span>
 <span class="n">discover_plugins</span><span class="p">()</span>  <span class="c1"># Loads from default directory</span>
 </pre></div>
 </div>
@@ -457,7 +457,7 @@
 <section id="input-validation">
 <h3>Input Validation<a class="headerlink" href="#input-validation" title="Link to this heading"></a></h3>
 <p>Always validate input in your plugins:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;core_network&#39;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Network must be a py3plex multi_layer_network object&quot;</span><span class="p">)</span>
 
@@ -468,7 +468,7 @@
 <section id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h3>
 <p>Provide clear docstrings:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute custom centrality.</span>
 
@@ -489,10 +489,10 @@
 <section id="dependency-checking">
 <h3>Dependency Checking<a class="headerlink" href="#dependency-checking" title="Link to this heading"></a></h3>
 <p>Check for optional dependencies:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if plugin can run.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">optional_library</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">optional_library</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -502,7 +502,7 @@
 <section id="error-handling">
 <h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h3>
 <p>Handle errors gracefully:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Your algorithm</span>
         <span class="k">return</span> <span class="n">results</span>
@@ -517,8 +517,8 @@
 <section id="built-in-examples">
 <h3>Built-in Examples<a class="headerlink" href="#built-in-examples" title="Link to this heading"></a></h3>
 <p>Py3plex includes example plugins demonstrating all plugin types. Import them to see available examples:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">py3plex.plugins.examples</span>
-<span class="kn">from</span> <span class="nn">py3plex</span> <span class="kn">import</span> <span class="n">PluginRegistry</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">py3plex.plugins.examples</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginRegistry</span>
 
 <span class="n">registry</span> <span class="o">=</span> <span class="n">PluginRegistry</span><span class="p">()</span>
 <span class="n">plugins</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">list_plugins</span><span class="p">()</span>
@@ -541,18 +541,18 @@
 <li><p>Plugin discovery and registration</p></li>
 <li><p>Getting plugin information</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex</span> <span class="kn">import</span> <span class="n">multi_layer_network</span><span class="p">,</span> <span class="n">PluginRegistry</span>
-<span class="kn">from</span> <span class="nn">py3plex.plugins</span> <span class="kn">import</span> <span class="n">CentralityPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex</span><span class="w"> </span><span class="kn">import</span> <span class="n">multi_layer_network</span><span class="p">,</span> <span class="n">PluginRegistry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">CentralityPlugin</span>
 
 <span class="c1"># Define custom plugin</span>
 <span class="nd">@PluginRegistry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;centrality&#39;</span><span class="p">,</span> <span class="s1">&#39;closeness_simple&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SimpleCloseness</span><span class="p">(</span><span class="n">CentralityPlugin</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleCloseness</span><span class="p">(</span><span class="n">CentralityPlugin</span><span class="p">):</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;closeness_simple&#39;</span>
 
-    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 
         <span class="n">centrality</span> <span class="o">=</span> <span class="p">{}</span>
@@ -616,7 +616,7 @@
 </section>
 <section id="example-setup-py">
 <h3>Example setup.py<a class="headerlink" href="#example-setup-py" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
 
 <span class="n">setup</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;py3plex-my-plugin&#39;</span><span class="p">,</span>
@@ -641,7 +641,7 @@
 <h3>PluginRegistry<a class="headerlink" href="#pluginregistry" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="PluginRegistry">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">PluginRegistry</span></span><a class="headerlink" href="#PluginRegistry" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PluginRegistry</span></span><a class="headerlink" href="#PluginRegistry" title="Link to this definition"></a></dt>
 <dd><p>Central registry for managing py3plex plugins.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="PluginRegistry.register_plugin">
@@ -737,7 +737,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="PluginRegistry.reset">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#PluginRegistry.reset" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#PluginRegistry.reset" title="Link to this definition"></a></dt>
 <dd><p>Reset the registry to initial state. Primarily useful for testing.</p>
 </dd></dl>
 

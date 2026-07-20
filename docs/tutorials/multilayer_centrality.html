@@ -16,8 +16,8 @@
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
-      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -225,8 +225,8 @@
 </section>
 <section id="basic-usage">
 <h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.core</span> <span class="kn">import</span> <span class="n">multinet</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">MultilayerCentrality</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultilayerCentrality</span>
 
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -266,7 +266,7 @@
 <section id="computing-all-centralities">
 <h2>Computing All Centralities<a class="headerlink" href="#computing-all-centralities" title="Link to this heading"></a></h2>
 <p>For convenience, you can compute <strong>all available centrality measures</strong> at once:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span> <span class="kn">import</span> <span class="n">compute_all_centralities</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.centrality</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_all_centralities</span>
 
 <span class="c1"># Compute basic centralities</span>
 <span class="n">basic_centralities</span> <span class="o">=</span> <span class="n">compute_all_centralities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -358,8 +358,8 @@
 <section id="multirank-usage">
 <h3>MultiRank Usage<a class="headerlink" href="#multirank-usage" title="Link to this heading"></a></h3>
 <p>MultiRank iteratively updates <strong>node scores</strong> and <strong>layer scores</strong> based on their mutual influence:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.multirank</span> <span class="kn">import</span> <span class="n">multirank</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.multirank</span><span class="w"> </span><span class="kn">import</span> <span class="n">multirank</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Create layer adjacency matrices</span>
 <span class="n">L1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -386,8 +386,8 @@
 <section id="multiplex-pagerank-variants-usage">
 <h3>Multiplex PageRank Variants Usage<a class="headerlink" href="#multiplex-pagerank-variants-usage" title="Link to this heading"></a></h3>
 <p>The Halu et al. (2013) framework provides <strong>four variants</strong> of cross-layer influence:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.multilayer_algorithms.multirank</span> <span class="kn">import</span> <span class="n">multiplex_pagerank</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms.multirank</span><span class="w"> </span><span class="kn">import</span> <span class="n">multiplex_pagerank</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Create layer adjacency matrices</span>
 <span class="n">L1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -551,8 +551,8 @@
 <section id="basic-usage-uncertainty-parameter">
 <h3>Basic Usage: Uncertainty Parameter<a class="headerlink" href="#basic-usage-uncertainty-parameter" title="Link to this heading"></a></h3>
 <p>Add uncertainty estimation to any supported centrality function using the <code class="docutils literal notranslate"><span class="pre">uncertainty</span></code> parameter:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.centrality_toolkit</span> <span class="kn">import</span> <span class="n">multilayer_pagerank</span>
-<span class="kn">from</span> <span class="nn">py3plex.uncertainty</span> <span class="kn">import</span> <span class="n">ResamplingStrategy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.uncertainty</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResamplingStrategy</span>
 
 <span class="c1"># Deterministic computation (default)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -586,8 +586,8 @@
 <section id="global-context-manager">
 <h3>Global Context Manager<a class="headerlink" href="#global-context-manager" title="Link to this heading"></a></h3>
 <p>For pipelines with multiple centrality computations, use the <code class="docutils literal notranslate"><span class="pre">uncertainty_enabled</span></code> context:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.uncertainty</span> <span class="kn">import</span> <span class="n">uncertainty_enabled</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.centrality_toolkit</span> <span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.uncertainty</span><span class="w"> </span><span class="kn">import</span> <span class="n">uncertainty_enabled</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
 
 <span class="c1"># Enable uncertainty for entire pipeline</span>
 <span class="k">with</span> <span class="n">uncertainty_enabled</span><span class="p">(</span><span class="n">n_runs</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
@@ -608,8 +608,8 @@
 <section id="statseries-type">
 <h3>StatSeries Type<a class="headerlink" href="#statseries-type" title="Link to this heading"></a></h3>
 <p>All centrality functions return <code class="docutils literal notranslate"><span class="pre">StatSeries</span></code> objects, whether deterministic or uncertain:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.algorithms.centrality_toolkit</span> <span class="kn">import</span> <span class="n">multilayer_pagerank</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 
@@ -637,9 +637,9 @@
 <section id="visualization-with-uncertainty">
 <h3>Visualization with Uncertainty<a class="headerlink" href="#visualization-with-uncertainty" title="Link to this heading"></a></h3>
 <p>Plot centrality with confidence bands:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.centrality_toolkit</span> <span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 
@@ -677,10 +677,10 @@
 <section id="perturbation-parameters">
 <h3>Perturbation Parameters<a class="headerlink" href="#perturbation-parameters" title="Link to this heading"></a></h3>
 <p>Customize network perturbations for robustness analysis:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py3plex.uncertainty</span> <span class="kn">import</span> <span class="n">estimate_uncertainty</span><span class="p">,</span> <span class="n">ResamplingStrategy</span>
-<span class="kn">from</span> <span class="nn">py3plex.algorithms.centrality_toolkit</span> <span class="kn">import</span> <span class="n">multilayer_pagerank</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.uncertainty</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate_uncertainty</span><span class="p">,</span> <span class="n">ResamplingStrategy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.centrality_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_pagerank</span>
 
-<span class="k">def</span> <span class="nf">my_pagerank</span><span class="p">(</span><span class="n">net</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_pagerank</span><span class="p">(</span><span class="n">net</span><span class="p">):</span>
     <span class="c1"># Custom centrality function</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="mf">1.0</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()}</span>
 
