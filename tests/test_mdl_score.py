@@ -20,6 +20,7 @@ partition (lower is better).
   for a metric this easy to silently break.
 """
 
+import math
 import time
 import warnings
 
@@ -38,6 +39,48 @@ def _net(G, directed=False):
     net = multinet.multi_layer_network(directed=directed)
     net.core_network = G
     return net
+
+
+def _partial_dense_component(prefix, n=10):
+    """A deterministic n-node subgraph with a genuinely partial internal
+    density (neither empty nor a clique): 28 of 45 possible edges for
+    n=10. Used by TestResolutionLimit to build a ground-truth community
+    whose configuration cost is nonzero, unlike a perfect clique/empty
+    block. n=10 (not smaller) matters: the resolution-limit exploit this
+    is meant to reproduce only shows up once blocks are large enough that
+    the fragmented partition's per-community model-cost savings are
+    outweighed by the quadratic-in-block-size configuration cost it
+    evades -- at e.g. n=6 the model cost still dominates and the exploit
+    does not reproduce even with the parameter-cost fix disabled.
+    """
+    nodes = [(f"{prefix}{i}", "L") for i in range(n)]
+    edges = [
+        (nodes[i], nodes[j])
+        for i in range(n)
+        for j in range(i + 1, n)
+        if (i * j) % 5 != 0
+    ]
+    return nodes, edges
+
+
+def _ground_truth_vs_fragmented_graph():
+    """Two disjoint 6-node partial-density components (see
+    `_partial_dense_component`), plus the ground-truth (2-community) and
+    fully-fragmented (all-singleton) partitions of that graph.
+    """
+    G = nx.Graph()
+    communities = []
+    for prefix in ("a", "b"):
+        nodes, edges = _partial_dense_component(prefix)
+        G.add_nodes_from(nodes)
+        G.add_edges_from(edges)
+        communities.append(nodes)
+
+    ground_truth = {
+        node: c for c, nodes in enumerate(communities) for node in nodes
+    }
+    all_singleton = {node: i for i, node in enumerate(G.nodes())}
+    return G, ground_truth, all_singleton
 
 
 class TestEmptyPartitions:
@@ -71,15 +114,23 @@ class TestSingleAndMultiLayerGraphs:
     """Single-layer and multi-layer graphs."""
 
     def test_single_layer_graph(self):
-        """Perfect 2-community split on one layer scores a known value."""
+        """Perfect 2-community split on one layer scores a known value.
+
+        model_cost = 4 * log2(2) = 4 bits.
+        Both blocks are perfectly dense/perfectly empty, so configuration
+        cost is 0, but parameter cost is not: 2 diagonal pairs (size-2
+        communities, m_rr=1) at log2(2) bits each, plus 1 off-diagonal pair
+        (m_rs=4) at log2(5) bits.
+        """
         G = nx.Graph()
         G.add_edge(("A", "L"), ("B", "L"))
         G.add_edge(("C", "L"), ("D", "L"))
         net = _net(G)
         partition = {("A", "L"): 0, ("B", "L"): 0, ("C", "L"): 1, ("D", "L"): 1}
 
+        expected = 4.0 + 2 * math.log2(2) + math.log2(5)
         score = mdl_score(partition, net)
-        assert score == pytest.approx(4.0, abs=1e-6)
+        assert score == pytest.approx(expected, abs=1e-6)
 
     def test_multi_layer_independent_layers_sum_exactly(self):
         """Two structurally identical layers with no coupling edges score
@@ -131,7 +182,14 @@ class TestDirectedGraphs:
     def test_directed_graph_uses_directed_capacity(self):
         """Directed and undirected scores differ on identical
         edges/partition, confirming the directed capacity branch (doubled
-        off-diagonal, n*(n-1) on-diagonal) is actually used."""
+        off-diagonal, n*(n-1) on-diagonal) is actually used.
+
+        Directed: model=4 bits; diagonal m_rr=2 (n*(n-1)) per community, each
+        with e_rr=1 of 2 (p=0.5, H=1 bit) so configuration cost is 2 bits per
+        community; off-diagonal m_rs=8 (2*n_r*n_s), e_rs=0. Parameter cost is
+        2*log2(3) (diagonal) + log2(9) (off-diagonal).
+        Undirected: same graph as test_single_layer_graph.
+        """
         partition = {("A", "L"): 0, ("B", "L"): 0, ("C", "L"): 1, ("D", "L"): 1}
 
         Gd = nx.DiGraph()
@@ -144,8 +202,14 @@ class TestDirectedGraphs:
         Gu.add_edge(("C", "L"), ("D", "L"))
         undirected_score = mdl_score(partition, _net(Gu, directed=False))
 
-        assert directed_score == pytest.approx(8.0, abs=1e-6)
-        assert undirected_score == pytest.approx(4.0, abs=1e-6)
+        expected_directed = (
+            4.0 + 2 * 2 * 1.0  # model + configuration cost (2 communities x 2 bits)
+            + 2 * math.log2(3) + math.log2(9)  # parameter cost
+        )
+        expected_undirected = 4.0 + 2 * math.log2(2) + math.log2(5)
+
+        assert directed_score == pytest.approx(expected_directed, abs=1e-6)
+        assert undirected_score == pytest.approx(expected_undirected, abs=1e-6)
         assert directed_score != undirected_score
 
     def test_directed_multigraph_parallel_edges(self):
@@ -161,7 +225,10 @@ class TestDirectedGraphs:
 
         with pytest.warns(UserWarning):
             score = mdl_score(partition, net)
-        assert score == pytest.approx(8.0, abs=1e-6)
+        # Dedupes to the same directed A->B, C->D edge set scored in
+        # test_directed_graph_uses_directed_capacity.
+        expected = 4.0 + 2 * 2 * 1.0 + 2 * math.log2(3) + math.log2(9)
+        assert score == pytest.approx(expected, abs=1e-6)
         assert np.isfinite(score)
 
 
@@ -170,7 +237,14 @@ class TestSingletonCommunities:
 
     def test_singleton_communities_no_crash(self):
         """Every node in its own community should not crash and stays
-        finite even with fully fragmented input."""
+        finite even with fully fragmented input.
+
+        model = 4*log2(4) = 8 bits. Every block pair has capacity <= 1
+        (singleton communities), so configuration cost is always 0 -- but
+        parameter cost is not: all C(4,2)=6 pairs have m_rs=1, each costing
+        log2(2)=1 bit, for 6 bits total (see TestResolutionLimit for why
+        this parameter cost matters).
+        """
         G = nx.Graph()
         G.add_edge(("A", "L"), ("B", "L"))
         G.add_edge(("B", "L"), ("C", "L"))
@@ -178,9 +252,10 @@ class TestSingletonCommunities:
         net = _net(G)
         partition = {("A", "L"): 0, ("B", "L"): 1, ("C", "L"): 2, ("D", "L"): 3}
 
+        expected = 4 * math.log2(4) + 6 * math.log2(2)
         score = mdl_score(partition, net)
         assert np.isfinite(score)
-        assert score == pytest.approx(8.0, abs=1e-6)
+        assert score == pytest.approx(expected, abs=1e-6)
 
     def test_non_orderable_community_ids(self):
         """Community ids need only be hashable, not orderable -- using
@@ -481,15 +556,103 @@ class TestScoreQuality:
     guarantees above matter."""
 
     def test_true_structure_scores_lower_than_giant_community(self):
+        """Two disjoint triangles: splitting them costs 6 bits of model
+        cost plus parameter cost for 3 block pairs (vs. 1 for the giant
+        community), but the giant community pays real configuration cost
+        for its far-from-0/1 internal density (6 of 15 possible edges).
+        At this scale the true partition still wins.
+
+        Note: a *2-node-per-community* version of this (one edge per
+        community, matching test_single_layer_graph) no longer passes this
+        assertion after the resolution-limit fix (see TestResolutionLimit)
+        -- with only 1 possible edge per block, the giant community's
+        single block pair is cheaper than paying model + parameter cost for
+        3 separate block pairs. That is expected, not a regression: MDL's
+        fixed structural cost only pays for itself once there is enough
+        data to justify it, and 4 nodes/2 edges is too little. Two
+        triangles is the smallest bump that clears that bar.
+        """
         G = nx.Graph()
-        G.add_edge(("A", "L"), ("B", "L"))
-        G.add_edge(("C", "L"), ("D", "L"))
+        for prefix in ("t1", "t2"):
+            nodes = [(f"{prefix}_{i}", "L") for i in range(3)]
+            G.add_edge(nodes[0], nodes[1])
+            G.add_edge(nodes[1], nodes[2])
+            G.add_edge(nodes[2], nodes[0])
         net = _net(G)
 
-        true_partition = {("A", "L"): 0, ("B", "L"): 0, ("C", "L"): 1, ("D", "L"): 1}
-        giant_partition = {("A", "L"): 0, ("B", "L"): 0, ("C", "L"): 0, ("D", "L"): 0}
+        true_partition = {
+            (f"{prefix}_{i}", "L"): c
+            for c, prefix in enumerate(("t1", "t2"))
+            for i in range(3)
+        }
+        giant_partition = {k: 0 for k in true_partition}
 
         assert mdl_score(true_partition, net) < mdl_score(giant_partition, net)
+
+
+class TestResolutionLimit:
+    """Regression: a legitimate partition with real (imperfect) block
+    density must not be beaten by a maximally-fragmented, all-deterministic
+    partition just because every fragmented block pair happens to land on
+    density 0 or 1 (H(0) == H(1) == 0). Before the parameter-cost fix in
+    `_block_parameter_cost`, an all-singleton partition had exactly 0
+    configuration cost on *any* graph (every block pair has capacity <= 1,
+    so it can only ever be "empty" or "full"), letting fragmentation escape
+    data cost regardless of how much real graph structure it discarded.
+    """
+
+    def test_fragmentation_no_longer_beats_real_structure(self):
+        """Two communities of 10 nodes each with a deterministic, genuinely
+        partial internal density (28 of 45 possible edges -- neither empty
+        nor a clique) and no edges between them, scored against an
+        all-singleton (20-community) partition of the same graph.
+
+        Before the fix, the all-singleton partition's configuration cost
+        was always 0 (every block pair has capacity 1, so p in {0, 1}),
+        while the ground-truth partition paid a real configuration cost for
+        its 28/45 density -- so fragmentation could win purely by
+        exploiting that gap (see
+        `test_parameter_cost_is_what_closes_the_gap` for direct proof this
+        happens on this exact graph). The parameter cost added here charges
+        every block pair for its capacity regardless of observed density,
+        so the far larger number of block pairs in the all-singleton
+        partition (190 pairs vs. 3) now costs more than the configuration
+        cost it evades.
+        """
+        G, ground_truth, all_singleton = _ground_truth_vs_fragmented_graph()
+        net = _net(G)
+
+        with warnings.catch_warnings():
+            # Both partitions cover every node, so no warning is actually
+            # expected here -- this is just being defensive.
+            warnings.simplefilter("ignore")
+            gt_score = mdl_score(ground_truth, net)
+            fragmented_score = mdl_score(all_singleton, net)
+
+        assert gt_score < fragmented_score
+
+    def test_parameter_cost_is_what_closes_the_gap(self, monkeypatch):
+        """Directly demonstrates that `_block_parameter_cost` is what
+        closes the resolution-limit gap: monkeypatching it away (reproducing
+        the pre-fix behavior) on the same ground-truth-vs-fragmented pair
+        from `test_fragmentation_no_longer_beats_real_structure` flips the
+        ordering back to the exploited one, confirming this specific term
+        -- not some other coincidental change -- is responsible.
+        """
+        import py3plex.algorithms.community_detection.multilayer_quality_metrics as mqm
+
+        G, ground_truth, all_singleton = _ground_truth_vs_fragmented_graph()
+        net = _net(G)
+
+        monkeypatch.setattr(mqm, "_block_parameter_cost", lambda sizes, directed: 0.0)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            gt_without_fix = mqm.mdl_score(ground_truth, net)
+            fragmented_without_fix = mqm.mdl_score(all_singleton, net)
+
+        # The pre-fix exploit: fragmentation scores better (lower) than
+        # real structure once the parameter cost is removed.
+        assert fragmented_without_fix < gt_without_fix
 
 
 class TestNetworkInputVariants:
@@ -498,13 +661,19 @@ class TestNetworkInputVariants:
 
     def test_network_object_without_core_network_attribute(self):
         """A duck-typed network object with no core_network attribute at
-        all falls back gracefully via getattr's default."""
+        all falls back gracefully via getattr's default.
+
+        With no graph, there are no edges, so this is model cost (2*log2(2)
+        = 2 bits) plus parameter cost for the single pair of singleton
+        communities (m_rs=1, log2(2)=1 bit); no configuration cost.
+        """
         class BareNetwork:
             pass
 
         partition = {("A", "L"): 0, ("B", "L"): 1}
         score = mdl_score(partition, BareNetwork())
-        assert score == pytest.approx(2.0, abs=1e-6)
+        expected = 2 * math.log2(2) + math.log2(2)
+        assert score == pytest.approx(expected, abs=1e-6)
 
     def test_network_with_none_core_network(self):
         """A real multi_layer_network whose core_network was never
@@ -513,7 +682,8 @@ class TestNetworkInputVariants:
         assert net.core_network is None
         partition = {("A", "L"): 0, ("B", "L"): 1}
         score = mdl_score(partition, net)
-        assert score == pytest.approx(2.0, abs=1e-6)
+        expected = 2 * math.log2(2) + math.log2(2)
+        assert score == pytest.approx(expected, abs=1e-6)
 
 
 class TestPerformance:
