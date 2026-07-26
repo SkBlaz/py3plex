@@ -358,7 +358,7 @@ export default function LoadData() {
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Layers</dt>
-              <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+              <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 max-h-24 overflow-y-auto pr-1 scrollbar-visible">
                 {summary.layers.join(', ') || 'N/A'}
               </dd>
             </div>

@@ -3,6 +3,7 @@ import { AlertCircle } from 'lucide-react';
 import CytoscapeComponent from 'react-cytoscapejs';
 import cytoscape from 'cytoscape';
 import { getGraphPositions } from '../lib/api';
+import SigmaRenderer from '../components/SigmaRenderer';
 
 interface NodePosition {
   node_id: string;
@@ -42,8 +43,17 @@ function layerColor(layer: string, allLayers: string[]) {
 
 // The backend's spring-layout coordinates are typically in [-1, 1];
 // Cytoscape's preset layout uses them as raw pixel positions, so scale up
-// to something legible on screen.
+// to something legible on screen. Sigma auto-fits the camera to whatever
+// coordinate range it's given, so it doesn't need this scaling.
 const LAYOUT_SCALE = 300;
+
+// Matches the backend's own spring-layout vs. random-layout cutoff
+// (gui/api/app/services/model.py) -- past this node count Cytoscape's
+// SVG/canvas hybrid rendering gets sluggish, so default to the WebGL-based
+// Sigma.js renderer instead.
+const SIGMA_AUTO_THRESHOLD = 1000;
+
+type RendererChoice = 'auto' | 'cytoscape' | 'sigma';
 
 export default function Visualize() {
   const [graphId, setGraphId] = useState<string | null>(null);
@@ -52,6 +62,7 @@ export default function Visualize() {
   const [error, setError] = useState<string | null>(null);
   const [visibleLayers, setVisibleLayers] = useState<Set<string>>(new Set());
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [rendererChoice, setRendererChoice] = useState<RendererChoice>('auto');
 
   const cyRef = useRef<cytoscape.Core | null>(null);
 
@@ -98,24 +109,35 @@ export default function Visualize() {
     return map;
   }, [positions]);
 
+  const filteredEdges = useMemo((): GraphEdge[] => {
+    if (!positions) return [];
+    return (positions.edges || []).filter((e) => visibleLayers.has(e.layer || 'default'));
+  }, [positions, visibleLayers]);
+
+  // Below the threshold, Cytoscape's richer interactions (drag-to-reposition,
+  // curved edges) are worth it; above it, Sigma's WebGL rendering is worth
+  // the tradeoff to stay responsive. Mirrors SIGMA_AUTO_THRESHOLD.
+  const effectiveRenderer = useMemo((): 'cytoscape' | 'sigma' => {
+    if (rendererChoice !== 'auto') return rendererChoice;
+    return (positions?.positions.length || 0) > SIGMA_AUTO_THRESHOLD ? 'sigma' : 'cytoscape';
+  }, [rendererChoice, positions]);
+
   const elements = useMemo((): cytoscape.ElementDefinition[] => {
     if (!positions) return [];
     const nodeEls: cytoscape.ElementDefinition[] = positions.positions.map((p) => ({
       data: { id: p.node_id },
       position: { x: p.x * LAYOUT_SCALE, y: p.y * LAYOUT_SCALE },
     }));
-    const edgeEls: cytoscape.ElementDefinition[] = (positions.edges || [])
-      .filter((e) => visibleLayers.has(e.layer || 'default'))
-      .map((e, i) => ({
-        data: {
-          id: `e${i}-${e.source}-${e.target}`,
-          source: e.source,
-          target: e.target,
-          layer: e.layer || 'default',
-        },
-      }));
+    const edgeEls: cytoscape.ElementDefinition[] = filteredEdges.map((e, i) => ({
+      data: {
+        id: `e${i}-${e.source}-${e.target}`,
+        source: e.source,
+        target: e.target,
+        layer: e.layer || 'default',
+      },
+    }));
     return [...nodeEls, ...edgeEls];
-  }, [positions, visibleLayers]);
+  }, [positions, filteredEdges]);
 
   const stylesheet = useMemo((): cytoscape.StylesheetStyle[] => {
     const base: cytoscape.StylesheetStyle[] = [
@@ -136,11 +158,13 @@ export default function Visualize() {
         },
       },
       {
+        // 'bezier' (unlike 'haystack') automatically fans out parallel
+        // edges -- e.g. the same two nodes connected in multiple layers --
+        // instead of drawing them exactly on top of each other.
         selector: 'edge',
         style: {
           width: 1.5,
-          'curve-style': 'haystack',
-          'haystack-radius': 0,
+          'curve-style': 'bezier',
           opacity: 0.55,
         },
       },
@@ -220,7 +244,7 @@ export default function Visualize() {
           {layers.length === 0 ? (
             <p className="text-sm text-gray-500 dark:text-gray-400">No layer information available</p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-2 max-h-96 overflow-y-auto pr-1 scrollbar-visible">
               {layers.map((layer) => (
                 <li key={layer} className="flex items-center gap-2">
                   <input
@@ -243,6 +267,18 @@ export default function Visualize() {
         <div className="col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Network View</h2>
+            <label className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+              Renderer
+              <select
+                className="border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-xs px-2 py-1"
+                value={rendererChoice}
+                onChange={(e) => setRendererChoice(e.target.value as RendererChoice)}
+              >
+                <option value="auto">Auto ({effectiveRenderer === 'sigma' ? 'Sigma.js' : 'Cytoscape.js'})</option>
+                <option value="cytoscape">Cytoscape.js</option>
+                <option value="sigma">Sigma.js (WebGL)</option>
+              </select>
+            </label>
           </div>
 
           {loading && (
@@ -262,13 +298,24 @@ export default function Visualize() {
 
           {positions && !loading && !error && (
             <div className="h-96 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 overflow-hidden">
-              <CytoscapeComponent
-                elements={elements}
-                stylesheet={stylesheet}
-                layout={{ name: 'preset' }}
-                style={{ width: '100%', height: '100%' }}
-                cy={handleCyInit}
-              />
+              {effectiveRenderer === 'sigma' ? (
+                <SigmaRenderer
+                  nodes={positions.positions}
+                  edges={filteredEdges}
+                  layerColor={layerColor}
+                  layers={layers}
+                  selectedNode={selectedNode}
+                  onSelectNode={setSelectedNode}
+                />
+              ) : (
+                <CytoscapeComponent
+                  elements={elements}
+                  stylesheet={stylesheet}
+                  layout={{ name: 'preset' }}
+                  style={{ width: '100%', height: '100%' }}
+                  cy={handleCyInit}
+                />
+              )}
             </div>
           )}
 
@@ -311,12 +358,16 @@ export default function Visualize() {
       {/* Info */}
       <div className="mt-6 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <p className="text-sm text-blue-800 dark:text-blue-200">
-          <strong>Note:</strong> Rendered with Cytoscape.js - drag empty space to
-          pan, scroll to zoom, drag a node to reposition it. Edges are colored and
-          toggled by layer; layer is an edge attribute in this data model, not a
-          node attribute, so nodes are not colored by layer. Layout recomputation
-          is not wired up here - it requires the async layout job pipeline
-          (Celery worker), which is separate from rendering.
+          <strong>Note:</strong> Rendered with{' '}
+          {effectiveRenderer === 'sigma' ? 'Sigma.js (WebGL)' : 'Cytoscape.js'} - drag
+          empty space to pan, scroll to zoom
+          {effectiveRenderer === 'cytoscape' ? ', drag a node to reposition it' : ''}.
+          Edges are colored and toggled by layer; layer is an edge attribute in this
+          data model, not a node attribute, so nodes are not colored by layer.
+          Graphs over {SIGMA_AUTO_THRESHOLD} nodes switch to Sigma.js automatically
+          for performance; use the Renderer dropdown above to override. Layout
+          recomputation is not wired up here - it requires the async layout job
+          pipeline (Celery worker), which is separate from rendering.
         </p>
       </div>
     </div>

@@ -18,7 +18,10 @@
     "recharts": "^2.10.3",
     "lucide-react": "^0.303.0",
     "cytoscape": "^3.28.1",
-    "react-cytoscapejs": "^2.0.0"
+    "react-cytoscapejs": "^2.0.0",
+    "sigma": "^3.0.0",
+    "graphology": "^0.25.4",
+    "@sigma/edge-curve": "^3.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.47",
