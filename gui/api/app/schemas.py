@@ -110,9 +110,16 @@ class NodePosition(BaseModel):
     layer: Optional[str] = None
 
 
+class GraphEdge(BaseModel):
+    source: str
+    target: str
+    layer: Optional[str] = None
+
+
 class GraphPositions(BaseModel):
     graph_id: str
     positions: List[NodePosition]
+    edges: List[GraphEdge] = []
 
 
 class WorkspaceSaveRequest(BaseModel):

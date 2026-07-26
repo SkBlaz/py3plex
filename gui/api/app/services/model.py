@@ -2,7 +2,7 @@
 Graph model and query service
 """
 from app.services.io import get_graph, GRAPH_REGISTRY
-from app.schemas import GraphSummary, FilterSpec, FilterResponse, NodePosition, GraphPositions
+from app.schemas import GraphSummary, FilterSpec, FilterResponse, NodePosition, GraphPositions, GraphEdge
 import networkx as nx
 import uuid
 import logging
@@ -113,12 +113,12 @@ def get_graph_positions(graph_id: str):
     entry = get_graph(graph_id)
     if not entry:
         return None
-    
+
+    graph = entry['graph']
+
     # Use stored positions or generate default
     positions = entry.get('positions')
     if not positions:
-        graph = entry['graph']
-        
         # For large graphs, use faster layout algorithm
         num_nodes = graph.number_of_nodes()
         if num_nodes > 1000:
@@ -138,10 +138,16 @@ def get_graph_positions(graph_id: str):
             for node, coords in pos_dict.items()
         ]
         entry['positions'] = positions
-    
+
+    edges = [
+        GraphEdge(source=str(u), target=str(v), layer=data.get('layer'))
+        for u, v, data in graph.edges(data=True)
+    ]
+
     result = GraphPositions(
         graph_id=graph_id,
-        positions=positions
+        positions=positions,
+        edges=edges
     )
     
     # Cache the result
