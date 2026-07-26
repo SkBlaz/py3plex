@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef, useMemo, useCallback, MouseEvent } from 'react';
-import { Play, AlertCircle } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { AlertCircle } from 'lucide-react';
+import CytoscapeComponent from 'react-cytoscapejs';
+import cytoscape from 'cytoscape';
 import { getGraphPositions } from '../lib/api';
 
 interface NodePosition {
@@ -38,8 +40,10 @@ function layerColor(layer: string, allLayers: string[]) {
   return LAYER_COLORS[idx >= 0 ? idx % LAYER_COLORS.length : 0];
 }
 
-const HIT_TEST_RADIUS_PX = 10;
-const CANVAS_PADDING_PX = 24;
+// The backend's spring-layout coordinates are typically in [-1, 1];
+// Cytoscape's preset layout uses them as raw pixel positions, so scale up
+// to something legible on screen.
+const LAYOUT_SCALE = 300;
 
 export default function Visualize() {
   const [graphId, setGraphId] = useState<string | null>(null);
@@ -49,7 +53,7 @@ export default function Visualize() {
   const [visibleLayers, setVisibleLayers] = useState<Set<string>>(new Set());
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const cyRef = useRef<cytoscape.Core | null>(null);
 
   useEffect(() => {
     const storedGraphId = sessionStorage.getItem('currentGraphId') || localStorage.getItem('currentGraphId');
@@ -94,113 +98,82 @@ export default function Visualize() {
     return map;
   }, [positions]);
 
-  // Bounding box of the raw layout coordinates, used to fit everything
-  // into the canvas regardless of the coordinate scale the backend used.
-  const bounds = useMemo(() => {
-    if (!positions || positions.positions.length === 0) return null;
-    const xs = positions.positions.map((p) => p.x);
-    const ys = positions.positions.map((p) => p.y);
-    const minX = Math.min(...xs);
-    const minY = Math.min(...ys);
-    const width = Math.max(...xs) - minX || 1;
-    const height = Math.max(...ys) - minY || 1;
-    return { minX, minY, width, height };
-  }, [positions]);
+  const elements = useMemo((): cytoscape.ElementDefinition[] => {
+    if (!positions) return [];
+    const nodeEls: cytoscape.ElementDefinition[] = positions.positions.map((p) => ({
+      data: { id: p.node_id },
+      position: { x: p.x * LAYOUT_SCALE, y: p.y * LAYOUT_SCALE },
+    }));
+    const edgeEls: cytoscape.ElementDefinition[] = (positions.edges || [])
+      .filter((e) => visibleLayers.has(e.layer || 'default'))
+      .map((e, i) => ({
+        data: {
+          id: `e${i}-${e.source}-${e.target}`,
+          source: e.source,
+          target: e.target,
+          layer: e.layer || 'default',
+        },
+      }));
+    return [...nodeEls, ...edgeEls];
+  }, [positions, visibleLayers]);
 
-  const toScreen = useCallback(
-    (x: number, y: number, rectWidth: number, rectHeight: number) => {
-      if (!bounds) return [0, 0];
-      const scale = Math.min(
-        (rectWidth - 2 * CANVAS_PADDING_PX) / bounds.width,
-        (rectHeight - 2 * CANVAS_PADDING_PX) / bounds.height
-      );
-      return [
-        CANVAS_PADDING_PX + (x - bounds.minX) * scale,
-        CANVAS_PADDING_PX + (y - bounds.minY) * scale,
-      ];
-    },
-    [bounds]
-  );
+  const stylesheet = useMemo((): cytoscape.StylesheetStyle[] => {
+    const base: cytoscape.StylesheetStyle[] = [
+      {
+        selector: 'node',
+        style: {
+          'background-color': '#475569',
+          width: 10,
+          height: 10,
+        },
+      },
+      {
+        selector: 'node:selected',
+        style: {
+          'background-color': '#111827',
+          'border-width': 2,
+          'border-color': '#2563eb',
+        },
+      },
+      {
+        selector: 'edge',
+        style: {
+          width: 1.5,
+          'curve-style': 'haystack',
+          'haystack-radius': 0,
+          opacity: 0.55,
+        },
+      },
+    ];
+    const layerStyles: cytoscape.StylesheetStyle[] = layers.map((layer) => ({
+      selector: `edge[layer = "${layer}"]`,
+      style: { 'line-color': layerColor(layer, layers) },
+    }));
+    return [...base, ...layerStyles];
+  }, [layers]);
 
-  const draw = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !positions || !bounds) return;
-
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, rect.width, rect.height);
-
-    const nodeById = new Map(positions.positions.map((p) => [p.node_id, p]));
-
-    ctx.lineWidth = 1;
-    for (const e of positions.edges || []) {
-      const layer = e.layer || 'default';
-      if (!visibleLayers.has(layer)) continue;
-      const s = nodeById.get(e.source);
-      const t = nodeById.get(e.target);
-      if (!s || !t) continue;
-      const [sx, sy] = toScreen(s.x, s.y, rect.width, rect.height);
-      const [tx, ty] = toScreen(t.x, t.y, rect.width, rect.height);
-      ctx.strokeStyle = layerColor(layer, layers);
-      ctx.globalAlpha = 0.45;
-      ctx.beginPath();
-      ctx.moveTo(sx, sy);
-      ctx.lineTo(tx, ty);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-
-    for (const p of positions.positions) {
-      const [sx, sy] = toScreen(p.x, p.y, rect.width, rect.height);
-      const isSelected = p.node_id === selectedNode;
-      ctx.beginPath();
-      ctx.arc(sx, sy, isSelected ? 6 : 4, 0, Math.PI * 2);
-      ctx.fillStyle = isSelected ? '#111827' : '#475569';
-      ctx.fill();
-      if (isSelected) {
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#2563eb';
-        ctx.stroke();
+  const handleCyInit = useCallback((cy: cytoscape.Core) => {
+    cyRef.current = cy;
+    cy.on('tap', 'node', (evt) => {
+      setSelectedNode(evt.target.id());
+    });
+    cy.on('tap', (evt) => {
+      if (evt.target === cy) {
+        setSelectedNode(null);
       }
-    }
-  }, [positions, bounds, visibleLayers, layers, selectedNode, toScreen]);
+    });
+  }, []);
 
+  // Keep Cytoscape's own selection state in sync with React state (e.g.
+  // cleared on reload, or if selection is ever driven from elsewhere).
   useEffect(() => {
-    draw();
-  }, [draw]);
-
-  useEffect(() => {
-    window.addEventListener('resize', draw);
-    return () => window.removeEventListener('resize', draw);
-  }, [draw]);
-
-  const handleCanvasClick = (event: MouseEvent<HTMLCanvasElement>) => {
-    if (!positions || !bounds) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const clickY = event.clientY - rect.top;
-
-    let closest: string | null = null;
-    let closestDist = HIT_TEST_RADIUS_PX;
-    for (const p of positions.positions) {
-      const [sx, sy] = toScreen(p.x, p.y, rect.width, rect.height);
-      const dist = Math.hypot(sx - clickX, sy - clickY);
-      if (dist < closestDist) {
-        closestDist = dist;
-        closest = p.node_id;
-      }
+    const cy = cyRef.current;
+    if (!cy) return;
+    cy.elements().unselect();
+    if (selectedNode) {
+      cy.getElementById(selectedNode).select();
     }
-    setSelectedNode(closest);
-  };
+  }, [selectedNode, elements]);
 
   const toggleLayer = (layer: string) => {
     setVisibleLayers((prev) => {
@@ -270,10 +243,6 @@ export default function Visualize() {
         <div className="col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Network View</h2>
-            <button className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
-              <Play className="h-4 w-4 inline mr-1" />
-              Recompute Layout
-            </button>
           </div>
 
           {loading && (
@@ -293,10 +262,12 @@ export default function Visualize() {
 
           {positions && !loading && !error && (
             <div className="h-96 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 overflow-hidden">
-              <canvas
-                ref={canvasRef}
-                onClick={handleCanvasClick}
-                className="w-full h-full cursor-pointer"
+              <CytoscapeComponent
+                elements={elements}
+                stylesheet={stylesheet}
+                layout={{ name: 'preset' }}
+                style={{ width: '100%', height: '100%' }}
+                cy={handleCyInit}
               />
             </div>
           )}
@@ -340,11 +311,12 @@ export default function Visualize() {
       {/* Info */}
       <div className="mt-6 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <p className="text-sm text-blue-800 dark:text-blue-200">
-          <strong>Note:</strong> This is a minimal Canvas 2D renderer (plain nodes/lines,
-          no pan/zoom/drag). Edges are colored and toggled by layer; layer is an edge
-          attribute in this data model, not a node attribute, so nodes are not
-          colored by layer. "Recompute Layout" is not wired up yet -- it requires the
-          async layout job pipeline (Celery worker), which is separate from rendering.
+          <strong>Note:</strong> Rendered with Cytoscape.js - drag empty space to
+          pan, scroll to zoom, drag a node to reposition it. Edges are colored and
+          toggled by layer; layer is an edge attribute in this data model, not a
+          node attribute, so nodes are not colored by layer. Layout recomputation
+          is not wired up here - it requires the async layout job pipeline
+          (Celery worker), which is separate from rendering.
         </p>
       </div>
     </div>
