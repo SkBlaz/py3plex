@@ -4,7 +4,7 @@ This module provides functionality to convert AST Query objects to/from
 DSL string representation and JSON format for provenance.
 """
 
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 from .ast import (
     Query,
@@ -188,7 +188,6 @@ def serialize_query(query: Query) -> Dict[str, Any]:
     Returns:
         Dictionary representation of the query
     """
-    from dataclasses import asdict
     
     # Convert to dict, handling dataclasses recursively
     def _to_dict(obj: Any) -> Any:

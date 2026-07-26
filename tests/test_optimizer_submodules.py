@@ -30,11 +30,14 @@ from py3plex.optimizer.plan_nodes import (
     LogicalUQ,
 )
 from py3plex.optimizer.rules import (
+    CombineAdjacentFilters,
     ConvertAggregateToHashIfSmallGroups,
     ConvertOrderByLimitToTopK,
     EarlyLimitPushdown,
     MergeMultipleComputesIntoSinglePass,
+    PushFilterBelowCompute,
     PushLayerFilterBelowCompute,
+    ReorderFiltersBySelectivity,
     RemoveRedundantProject,
     RuleEngine,
     ShortCircuitEmptyLayer,
@@ -267,6 +270,69 @@ def test_push_layer_filter_below_compute_rule():
     rewritten = rule.apply(plan)
     assert type(rewritten).__name__ == "LogicalLayerFilter"
     assert type(rewritten.children[0]).__name__ == "LogicalCompute"
+
+
+def test_push_filter_below_compute_respects_condition_references():
+    rule = PushFilterBelowCompute()
+
+    safe = LogicalCompute(
+        measures=["degree"],
+        children=[
+            LogicalFilter(
+                children=[LogicalScanNodes()],
+                conditions=[{"field": "layer", "op": "==", "value": "social"}],
+            )
+        ],
+    )
+    assert rule.match(safe) is True
+
+    unsafe = LogicalCompute(
+        measures=["degree"],
+        children=[
+            LogicalFilter(
+                children=[LogicalScanNodes()],
+                conditions=[{"field": "degree", "op": ">", "value": 2}],
+            )
+        ],
+    )
+    assert rule.match(unsafe) is False
+
+
+def test_combine_adjacent_filters_merges_conditions_inner_then_outer():
+    inner = LogicalFilter(
+        children=[LogicalScanNodes()],
+        conditions=[{"field": "layer", "op": "==", "value": "social"}],
+    )
+    outer = LogicalFilter(
+        children=[inner],
+        conditions=[{"field": "degree", "op": ">", "value": 2}],
+    )
+
+    rule = CombineAdjacentFilters()
+    assert rule.match(outer) is True
+
+    merged = rule.apply(outer)
+    assert merged.children == inner.children
+    assert merged.conditions == inner.conditions + outer.conditions
+
+
+def test_reorder_filters_by_selectivity_sorts_conditions():
+    plan = LogicalFilter(
+        children=[LogicalScanNodes()],
+        conditions=[
+            {"field": "degree", "op": ">", "value": 2},
+            {"field": "name", "op": "=", "value": "Alice"},
+            {"field": "layer", "op": "==", "value": "social"},
+        ],
+    )
+
+    rule = ReorderFiltersBySelectivity()
+    assert rule.match(plan) is True
+
+    reordered = rule.apply(plan)
+    assert reordered.conditions[0]["field"] == "layer"
+    assert reordered.conditions[1]["field"] == "name"
+    assert reordered.conditions[2]["field"] == "degree"
 
 
 def test_rewrite_rules_for_topk_project_limit_and_empty_layer():

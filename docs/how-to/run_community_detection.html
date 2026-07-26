@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How to Run Community Detection on Multilayer Networks &mdash; py3plex 2.0.0 documentation</title>
+  <title>How to Run Community Detection on Multilayer Networks &mdash; py3plex 2.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51b770b3"></script>
+      <script src="../_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -190,7 +190,7 @@
 <p>You can run this tutorial in your browser without any local installation:</p>
 <a class="reference external image-reference" href="https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/community_detection.ipynb"><img alt="Open in Google Colab" src="https://colab.research.google.com/assets/colab-badge.svg" />
 </a>
-<p>Or see the full executable example: <code class="xref download docutils literal notranslate"><span class="pre">example_community_detection.py</span></code></p>
+<p>See the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">py3plex examples</a> for community detection examples.</p>
 </div>
 <p><strong>Prerequisites:</strong></p>
 <ul class="simple">
@@ -2391,7 +2391,7 @@ Community-level connectivity:
 <li><p>Partitions are not degenerate giant clusters or extreme fragmentation (H)</p></li>
 </ul>
 <p><strong>Replica Consistency:</strong></p>
-<p>Formula: For each node v with replicas in L_v layers (<a href="#id3"><span class="problematic" id="id4">|L_v|</span></a> ≥ 2):</p>
+<p>Formula: For each node v with replicas in L_v layers (|L_v| ≥ 2):</p>
 <div class="math notranslate nohighlight">
 \[ \begin{align}\begin{aligned}RC(v) = \frac{2}{|L_v|(|L_v|-1)} \sum_{\ell_i &lt; \ell_j} 1[c(v,\ell_i) = c(v,\ell_j)]\\RC = \frac{1}{|\{v: |L_v|\ge 2\}|} \sum_v RC(v)\end{aligned}\end{align} \]</div>
 <p>RC ranges from 0 to 1:</p>
@@ -2540,8 +2540,8 @@ Fragmented replicas (incoherent):
 </ul>
 <p><strong>Performance characteristics:</strong></p>
 <ul class="simple">
-<li><p><strong>RC</strong>: O(Σ_v <a href="#id1"><span class="problematic" id="id2">|</span></a>L_v|^2) where L_v is layers per node (efficient count-based implementation)</p></li>
-<li><p><strong>H</strong>: O(<a href="#id5"><span class="problematic" id="id6">|assignments|</span></a>) linear in node-layer assignments</p></li>
+<li><p><strong>RC</strong>: O(Σ_v |L_v|^2) where L_v is layers per node (efficient count-based implementation)</p></li>
+<li><p><strong>H</strong>: O(|assignments|) linear in node-layer assignments</p></li>
 <li><p><strong>Both</strong>: Fast enough for large networks (&lt; 1 second for 10,000 node-layers)</p></li>
 </ul>
 <p><strong>Label-permutation invariance:</strong></p>
@@ -2842,10 +2842,7 @@ Scale 8.0: 2 communities (stability=0.734)
 </tbody>
 </table>
 <p><strong>Examples:</strong></p>
-<ul class="simple">
-<li><p>Basic usage: <code class="xref download docutils literal notranslate"><span class="pre">example_flow_hierarchy_basic.py</span></code></p></li>
-<li><p>Multilayer with alpha variations: <code class="xref download docutils literal notranslate"><span class="pre">example_flow_hierarchy_multilayer.py</span></code></p></li>
-</ul>
+<p>See the <a class="reference external" href="https://github.com/SkBlaz/py3plex/tree/master/examples">py3plex examples directory</a> for flow hierarchy usage examples.</p>
 <p><strong>References:</strong></p>
 <ul class="simple">
 <li><p>Schaub et al., “Markov Dynamics as a Zooming Lens for Multiscale Community Detection”, <em>PLoS ONE</em> 7(2): e32210 (2012)</p></li>

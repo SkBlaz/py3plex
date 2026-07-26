@@ -12,7 +12,7 @@ This guide presents py3plex as a comprehensive framework for simulating dynamica
       :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/simulate_dynamics.ipynb
       :alt: Open in Google Colab
    
-   Or see the full executable example: :download:`sir_epidemic.py <../../examples/dynamics/sir_epidemic.py>`
+   See the `py3plex examples <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ for dynamics simulation examples.
 
 **Prerequisites:** A loaded multilayer network (see :doc:`load_and_build_networks`).
 

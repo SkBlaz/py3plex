@@ -352,7 +352,7 @@ class TestMatching:
         
         result = pq.execute(simple_network)
         # Should find the triangle A-B-C in social layer
-        assert result.count >= 1  # At least one triangle
+        assert result.count == 6
     
     def test_path_match(self, simple_network):
         """Test matching 2-hop paths."""

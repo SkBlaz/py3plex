@@ -436,7 +436,7 @@ Layer Set Algebra follows standard set theory laws:
 - **Associativity**: (A | B) | C = A | (B | C)
 - **Distributivity**: A & (B | C) = (A & B) | (A & C)
 - **De Morgan's Laws**: ~(A | B) = ~A & ~B, ~(A & B) = ~A | ~B
-- **Complement**: A | ~A = *, A & ~A = ∅
+- **Complement**: A | ~A = \*, A & ~A = ∅
 
 These properties enable query optimization and reasoning about layer selections.
 

@@ -5,7 +5,7 @@ This module implements:
 - Generic compartmental framework (SIR, SEIR, etc.)
 """
 
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 

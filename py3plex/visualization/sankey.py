@@ -67,7 +67,7 @@ def draw_multilayer_sankey(
     if ax is None:
         fig, ax = plt.subplots(figsize=(12, 8))
     else:
-        fig = ax.get_figure()
+        ax.get_figure()
 
     n_layers = len(graphs)
     if n_layers == 0:
@@ -171,7 +171,7 @@ def _draw_simple_flow_diagram(labels, layer_connections, ax):
         layers_involved.add(src)
         layers_involved.add(dst)
 
-    layers_list = sorted(layers_involved)
+    sorted(layers_involved)
 
     # Create text-based flow visualization when Sankey becomes complex
     y_pos = 0.9

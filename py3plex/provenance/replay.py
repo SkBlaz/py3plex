@@ -5,7 +5,7 @@ provenance records.
 """
 
 import warnings
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from .schema import ProvenanceSchema, ProvenanceMode
 from .capture import NetworkCapture, restore_network
@@ -140,7 +140,6 @@ class ReplayContext:
     
     def _reconstruct_dsl_v2_query(self) -> Any:
         """Reconstruct DSL v2 query from serialized AST."""
-        from py3plex.dsl.ast import Query
         from py3plex.dsl.serializer import deserialize_query
         
         try:
@@ -245,7 +244,7 @@ def _restore_random_state(randomness_info: Any) -> None:
     if randomness_info.seed_sequence_entropy:
         try:
             from numpy.random import SeedSequence
-            seq = SeedSequence(randomness_info.seed_sequence_entropy)
+            SeedSequence(randomness_info.seed_sequence_entropy)
             # This creates a new Generator with the seed sequence
             # Individual stages can spawn from this
             # For now, just use the base seed

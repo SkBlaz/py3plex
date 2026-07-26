@@ -25,6 +25,32 @@ py3plex builds on NetworkX-compatible graph objects while layering multilayer se
 
 Concrete delegated/projection path: a workflow may start from a multilayer object, restrict to selected layers, project to a monoplex graph for a delegated NetworkX routine, then map results back to multilayer identifiers. That path is often computationally practical, but it is analytically different from a native multilayer operator.
 
+Current Repository Surface
+--------------------------
+
+The repository has grown beyond the original ``core``/``algorithms``/``dsl``
+split.  The current architecture separates reusable infrastructure from
+analysis-facing entry points:
+
+* ``py3plex.dsl`` remains the main workflow interface, with ``dsl/lint`` for
+  static diagnostics and ``dsl/program`` for typed, rewritable ``GraphProgram``
+  objects.
+* ``py3plex.algebra`` and ``py3plex.semiring`` hold algebraic path and closure
+  machinery that supports semiring-style reasoning rather than ad-hoc shortest
+  path special cases.
+* ``py3plex.embeddings`` and ``py3plex.ml.embedding`` expose embedding
+  primitives such as NetMF, MetaPath2Vec, Node2Vec, DeepWalk, LINE, and
+  multiplex variants.
+* ``py3plex.experiments`` and ``py3plex.meta`` turn reproducibility into
+  explicit artifacts: stored experiment records and fixed/random-effect
+  meta-analytic summaries across networks.
+* ``py3plex.out_of_core`` and ``py3plex.optimizer`` address larger workflows
+  through streaming execution and cost-aware planning.
+
+These additions do not change the central design principle of the book: prefer
+auditable workflows that make representation, approximation, and randomness
+explicit.
+
 Theory, Implementation, Workflow
 --------------------------------
 

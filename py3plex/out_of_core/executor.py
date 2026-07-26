@@ -14,17 +14,14 @@ import sqlite3
 import tempfile
 import os
 import time
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
-from .errors import OutOfCoreIOError, SchemaError, UnsupportedOutOfCoreOperation
+from .errors import UnsupportedOutOfCoreOperation
 from .network import OutOfCoreNetwork
 from .operators import (
-    add_field,
     external_groupby,
     external_sort,
-    filter_rows,
     limit as op_limit,
-    project,
     top_n,
 )
 from .readers import build_predicates, make_edge_reader
@@ -521,7 +518,7 @@ class OutOfCoreBackend:
         plan: Dict[str, Any],
     ) -> QueryResultOutOfCore:
         """Compute node degrees out-of-core via SQLite then filter/sort."""
-        directed = plan.get("directed", self.network.directed)
+        plan.get("directed", self.network.directed)
 
         reader = make_edge_reader(
             self.network.edges_path,
@@ -747,7 +744,6 @@ def _ast_to_ooc_plan(select) -> Dict[str, Any]:
     Returns:
         Plan dict compatible with :meth:`OutOfCoreBackend.execute`.
     """
-    from py3plex.dsl.ast import Target  # local import to avoid circular deps
 
     # Target
     target_obj = select.target

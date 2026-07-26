@@ -6,7 +6,6 @@ and includes metadata about the query execution.
 
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, Tuple
-import math
 import json
 
 
@@ -174,124 +173,6 @@ def _expand_uncertainty_value(
                 result[f"{attr_name}_samples"] = json.dumps(value["samples"])
             except (TypeError, ValueError):
                 result[f"{attr_name}_samples"] = None
-    else:
-        # Deterministic value - just use as-is
-        result[attr_name] = value
-        # Set uncertainty columns to None or 0
-        ci_pct = int(ci_level * 100)
-        result[f"{attr_name}_std"] = 0.0 if value is not None else None
-        result[f"{attr_name}_ci{ci_pct}_low"] = value
-        result[f"{attr_name}_ci{ci_pct}_high"] = value
-        result[f"{attr_name}_ci{ci_pct}_width"] = 0.0 if value is not None else None
-
-    return result
-
-
-def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
-    """Expand an explanation value for pandas DataFrame.
-
-    For simple values (int, float, str, None), returns as-is.
-    For complex values (list, dict), converts to JSON string for DataFrame compatibility.
-
-    Args:
-        attr_name: Attribute name
-        value: The explanation value
-
-    Returns:
-        Dictionary with the attribute name and processed value
-    """
-    import json
-
-    if value is None:
-        return {attr_name: None}
-    elif isinstance(value, (int, float, str, bool)):
-        return {attr_name: value}
-    elif isinstance(value, list):
-        # Convert list to JSON string for DataFrame
-        # Special case: if it's a list of simple types, keep as list
-        if all(isinstance(item, (int, float, str, bool, type(None))) for item in value):
-            return {attr_name: str(value)}
-        # For complex lists (e.g., list of dicts), convert to JSON
-        return {attr_name: json.dumps(value)}
-    elif isinstance(value, dict):
-        # Convert dict to JSON string
-        return {attr_name: json.dumps(value)}
-    else:
-        # Fallback: convert to string
-        return {attr_name: str(value)}
-
-
-def _expand_uncertainty_value_OLD_BACKUP(
-    attr_name: str, value: Any, ci_level: float = 0.95
-) -> Dict[str, Any]:
-    """Expand an uncertainty value into multiple columns.
-
-    Args:
-        attr_name: Base attribute name (e.g., "degree")
-        value: The value (may be dict with uncertainty info or scalar)
-        ci_level: Confidence interval level (default: 0.95)
-
-    Returns:
-        Dictionary with expanded columns
-    """
-    result = {}
-
-    # Always include the point estimate
-    if isinstance(value, dict) and "mean" in value:
-        result[attr_name] = value["mean"]
-
-        # Add std if available
-        if "std" in value:
-            result[f"{attr_name}_std"] = value["std"]
-        else:
-            result[f"{attr_name}_std"] = None
-
-        # Add CI bounds if quantiles are available
-        quantiles = value.get("quantiles", {})
-        if quantiles:
-            # Calculate quantile keys for the CI level
-            lower_q = (1 - ci_level) / 2
-            upper_q = 1 - (1 - ci_level) / 2
-
-            # Find closest available quantiles
-            ci_low = quantiles.get(lower_q)
-            ci_high = quantiles.get(upper_q)
-
-            # If exact quantiles not found, try to find closest
-            if ci_low is None or ci_high is None:
-                sorted_qs = sorted(quantiles.keys())
-                if sorted_qs:
-                    # Find closest lower quantile (within tolerance)
-                    lower_candidates = [
-                        q for q in sorted_qs if q <= lower_q + _QUANTILE_TOLERANCE
-                    ]
-                    if lower_candidates:
-                        ci_low = quantiles[lower_candidates[-1]]
-
-                    # Find closest upper quantile (within tolerance)
-                    upper_candidates = [
-                        q for q in sorted_qs if q >= upper_q - _QUANTILE_TOLERANCE
-                    ]
-                    if upper_candidates:
-                        ci_high = quantiles[upper_candidates[0]]
-
-            # Convert CI level to percentage for column names (e.g., 0.95 -> ci95)
-            ci_pct = int(ci_level * 100)
-
-            result[f"{attr_name}_ci{ci_pct}_low"] = ci_low
-            result[f"{attr_name}_ci{ci_pct}_high"] = ci_high
-
-            # Calculate width if both bounds available
-            if ci_low is not None and ci_high is not None:
-                result[f"{attr_name}_ci{ci_pct}_width"] = ci_high - ci_low
-            else:
-                result[f"{attr_name}_ci{ci_pct}_width"] = None
-        else:
-            # No quantiles - set CI columns to None
-            ci_pct = int(ci_level * 100)
-            result[f"{attr_name}_ci{ci_pct}_low"] = None
-            result[f"{attr_name}_ci{ci_pct}_high"] = None
-            result[f"{attr_name}_ci{ci_pct}_width"] = None
     else:
         # Deterministic value - just use as-is
         result[attr_name] = value
@@ -621,9 +502,9 @@ class QueryResult:
     ):
         """Export results to pandas DataFrame.
 
-        For node queries: Returns DataFrame with 'id' column plus computed attributes
-        For edge queries: Returns DataFrame with 'source', 'target', 'source_layer',
-                         'target_layer', 'weight' columns plus computed attributes
+        For node queries: returns ``id`` column plus computed attribute columns.
+        For edge queries: returns ``source``, ``target``, ``source_layer``,
+        ``target_layer``, ``weight`` columns plus computed attribute columns.
 
         Args:
             multiindex: If True and grouping metadata is present, set DataFrame index
@@ -1755,7 +1636,7 @@ class QueryResult:
         >>> print(plan["applied_rules"])
         """
         optimizer_meta = self.meta.get("optimizer", {})
-        provenance = self.meta.get("provenance", {})
+        self.meta.get("provenance", {})
 
         # Physical plan dict (stored by executor when optimizer is enabled)
         physical_plan = self.meta.get("physical_plan", None)
@@ -1802,11 +1683,8 @@ class QueryResult:
             detect_attribute_conflicts,
             resolve_attribute_conflict,
             merge_uncertainty_info,
-            IdentityStrategy,
-            ConflictResolution,
             AlgebraConfig,
             AmbiguousIdentityError,
-            AttributeConflictError,
         )
         
         check_result_compatibility(self, other)
@@ -1930,8 +1808,6 @@ class QueryResult:
             detect_attribute_conflicts,
             resolve_attribute_conflict,
             merge_uncertainty_info,
-            IdentityStrategy,
-            ConflictResolution,
             AlgebraConfig,
             AmbiguousIdentityError,
         )
@@ -2041,7 +1917,6 @@ class QueryResult:
             check_result_compatibility,
             detect_identity_ambiguity,
             extract_item_identity,
-            IdentityStrategy,
             AlgebraConfig,
             AmbiguousIdentityError,
         )
@@ -2118,7 +1993,6 @@ class QueryResult:
             check_result_compatibility,
             detect_identity_ambiguity,
             extract_item_identity,
-            IdentityStrategy,
             AlgebraConfig,
             AmbiguousIdentityError,
         )

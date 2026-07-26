@@ -35,7 +35,7 @@ Example usage:
 """
 
 from dataclasses import dataclass, field, asdict
-from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Literal, Optional, Tuple
 from functools import wraps
 
 # Import diagnostic infrastructure

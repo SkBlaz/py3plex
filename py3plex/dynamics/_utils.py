@@ -6,7 +6,6 @@ and extracting network information needed by dynamics processes.
 
 from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 
-import networkx as nx
 import numpy as np
 
 

@@ -36,8 +36,7 @@ Examples
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
-import warnings
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
@@ -46,10 +45,6 @@ from py3plex.uncertainty.partition_reducers import (
     CoAssignmentReducer,
     PartitionDistanceReducer,
     ConsensusReducer,
-)
-from py3plex.uncertainty.partition_metrics import (
-    variation_of_information,
-    normalized_mutual_information,
 )
 
 
@@ -467,7 +462,7 @@ class PartitionUQ:
         if not isinstance(uq_result, UQResult):
             raise TypeError(f"Expected UQResult, got {type(uq_result)}")
         
-        n_nodes = len(node_ids)
+        len(node_ids)
         
         # Extract marginal reducer output
         if 'NodeMarginalReducer' not in uq_result.reducer_outputs:

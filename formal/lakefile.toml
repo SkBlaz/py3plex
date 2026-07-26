@@ -1,0 +1,9 @@
+# py3plex Lean formal project
+# Modern Lake TOML format (Lake ≥ 4.3, bundled with Lean ≥ 4.3)
+
+name = "Py3plex"
+version = "0.1.0"
+defaultTargets = ["Py3plex"]
+
+[[lean_lib]]
+name = "Py3plex"

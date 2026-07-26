@@ -8,7 +8,7 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 import numpy as np
 from collections import defaultdict
 
@@ -582,7 +582,7 @@ def attribute_centrality_independence_test(
                 'n_nodes': len(attrs),
                 'contingency_table': contingency.tolist()
             }
-        except Exception as e:
+        except Exception:
             # Fallback to correlation test
             pass
     

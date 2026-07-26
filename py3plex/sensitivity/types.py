@@ -5,8 +5,7 @@ distinct from UQ types which focus on statistical uncertainty.
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
-import numpy as np
+from typing import Any, Dict, List, Optional
 
 
 @dataclass

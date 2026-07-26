@@ -600,7 +600,7 @@ Unless noted otherwise, the definitions below assume undirected, unweighted edge
 Mathematical Definitions
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Throughout, let *V* be the set of physical nodes and *L* the set of layers. Let *N*\ :sub:`v,ℓ` be the neighbor set of node *v* within layer *ℓ*, and *k*\ :sub:`v,ℓ` = |*N*\ :sub:`v,ℓ`|.
+Throughout, let *V* be the set of physical nodes and *L* the set of layers. Let *N*\ :sub:`v,ℓ` be the neighbor set of node *v* within layer *ℓ*, and *k*\ :sub:`v,ℓ` = \|*N*\ :sub:`v,ℓ`\|.
 
 **Variant A: Intra-layer Local Clustering**
 
@@ -674,15 +674,15 @@ where *d*\ :sub:`i` is the degree of state node *i* in the supra-adjacency matri
 Coefficient Type Mapping
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-+---------------+------------------+----------------------------------------+
-| Coefficient   | Returns          | Description                            |
-+===============+==================+========================================+
-| ``"intra"``   | (node, layer)    | Classical clustering per layer         |
-+---------------+------------------+----------------------------------------+
-| ``"multiplex"``| (node, None)    | Aggregated across layers               |
-+---------------+------------------+----------------------------------------+
-| ``"supra"``   | (node, layer)    | Full supra-adjacency representation    |
-+---------------+------------------+----------------------------------------+
++------------------+------------------+----------------------------------------+
+| Coefficient      | Returns          | Description                            |
++==================+==================+========================================+
+| ``"intra"``      | (node, layer)    | Classical clustering per layer         |
++------------------+------------------+----------------------------------------+
+| ``"multiplex"``  | (node, None)     | Aggregated across layers               |
++------------------+------------------+----------------------------------------+
+| ``"supra"``      | (node, layer)    | Full supra-adjacency representation    |
++------------------+------------------+----------------------------------------+
 
 Usage Examples
 ~~~~~~~~~~~~~~
@@ -789,14 +789,14 @@ Complexity and Performance
 **Computational Complexity:**
 
 - **Intra-layer**: *O*(Σ\ :sub:`v,ℓ` *k*\ :sup:`2`\ :sub:`v,ℓ`) — quadratic in local degree
-- **Multiplex**: *O*(Σ\ :sub:`v` (*k*\ :sup:`agg`\ :sub:`v`)\ :sup:`2` × |*L*|) — quadratic in aggregated degree
+- **Multiplex**: *O*(Σ\ :sub:`v` (*k*\ :sup:`agg`\ :sub:`v`)\ :sup:`2` × \|*L*\|) — quadratic in aggregated degree
 - **Supra-adjacency**: roughly cubic in the number of state nodes :math:`|V_M|` for the dense matrix multiplications (sparser graphs reduce constants but remain heavy)
 
 **Memory Usage:**
 
-- **Intra-layer**: *O*(|*E*|) - stores adjacency lists per layer
-- **Multiplex**: *O*(|*V*| × |*L*|) - stores aggregated neighbor sets
-- **Supra-adjacency**: *O*(|*V*\ :sub:`M`|\ :sup:`2`) worst case, *O*(|*E*\ :sub:`total`|) for sparse representation
+- **Intra-layer**: *O*(\|*E*\|) - stores adjacency lists per layer
+- **Multiplex**: *O*(\|*V*\| × \|*L*\|) - stores aggregated neighbor sets
+- **Supra-adjacency**: *O*(\|*V*\ :sub:`M`\|\ :sup:`2`) worst case, *O*(\|*E*\ :sub:`total`\|) for sparse representation
 
 **Performance Recommendations:**
 

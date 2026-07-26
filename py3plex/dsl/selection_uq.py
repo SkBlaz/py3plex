@@ -7,15 +7,14 @@ with uncertainty quantification, integrated with the DSL executor.
 import copy
 import logging
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional
 
 from py3plex.uncertainty import (
     SelectionOutput,
     execute_selection_uq,
     SelectionUQ,
 )
-from py3plex.uncertainty.noise_models import NoiseModel
-from py3plex.dsl.ast import SelectStmt, Target
+from py3plex.dsl.ast import SelectStmt
 from py3plex.dsl.result import QueryResult
 
 

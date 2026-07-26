@@ -4,7 +4,7 @@ Optional module for tracking path witnesses (predecessors, k-best paths).
 Disabled by default for performance.
 """
 
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 
 

@@ -12,7 +12,7 @@ Key features:
 **INTERNAL USE ONLY - NOT A PUBLIC API**
 """
 
-from typing import Any, Callable, Iterable, List, Optional, Union
+from typing import Any, Callable, Iterable, List, Optional
 import warnings
 
 import numpy as np
@@ -126,6 +126,13 @@ def parallel_map(
     - Progress bars require tqdm to be installed
     - joblib backend requires joblib to be installed
     """
+    valid_backends = {"multiprocessing", "joblib"}
+    if backend not in valid_backends:
+        raise ValueError(
+            f"Unknown backend '{backend}'. "
+            "Must be 'multiprocessing' or 'joblib'"
+        )
+
     # Convert to list for length and multiple iterations
     items_list = list(items)
     n_items = len(items_list)
@@ -154,26 +161,29 @@ def parallel_map(
     # Ensure n_jobs is reasonable
     n_jobs = max(1, min(n_jobs, n_items))
     
-    # Choose backend
-    if backend == "joblib":
+    # Prefer joblib when available: its default loky backend can serialize
+    # local functions, which keeps parallel_map usable in tests/notebooks.
+    if backend in {"joblib", "multiprocessing"}:
         try:
             from joblib import Parallel, delayed
             
-            # Use joblib with spawn context for safety
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=UserWarning)
                 results = Parallel(
                     n_jobs=n_jobs,
-                    backend="multiprocessing",
+                    backend="loky",
                     verbose=10 if progress else 0,
                 )(delayed(func)(item) for item in items_list)
             
             return results
         except ImportError:
+            if backend == "joblib":
+                raise
             # Fall back to multiprocessing
             warnings.warn(
                 "joblib not available, falling back to multiprocessing backend",
-                RuntimeWarning
+                RuntimeWarning,
+                stacklevel=2,
             )
             backend = "multiprocessing"
     
@@ -206,7 +216,6 @@ def parallel_map(
                 results = pool.map(func, items_list, chunksize=chunksize)
         
         return results
-    
     raise ValueError(
         f"Unknown backend '{backend}'. "
         "Must be 'multiprocessing' or 'joblib'"

@@ -21,7 +21,7 @@ Example:
     >>> q = Q.nodes().where(F.degree > 5, layer="social")
 """
 
-from typing import Any, Union
+from typing import Union
 from .ast import ConditionExpr, ConditionAtom, Comparison, ParamRef
 
 

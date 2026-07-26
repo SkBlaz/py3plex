@@ -84,6 +84,22 @@ def test_node2vec_embedding_deterministic_seed():
     np.testing.assert_allclose(emb_a.to_numpy(), emb_b.to_numpy())
 
 
+def test_layer_regularized_embedding():
+    # `dimensions` must not exceed the number of distinct physical nodes (3:
+    # Alice/Bob/Carol), since union mode collapses layers and its rank is
+    # capped by that count.
+    net = _toy_network()
+    emb = net.embed(method="layer_regularized", dimensions=2, seed=3)
+    assert emb.to_numpy().shape == (len(list(net.get_nodes())), 2)
+
+
+def test_dsl_embed_integration_layer_regularized():
+    net = _toy_network()
+    result = Q.nodes().embed("layer_regularized", dim=2, seed=3).execute(net)
+    mat = result.to_numpy("embedding")
+    assert mat.shape[1] == 2
+
+
 def test_multiplex_walks():
     net = _toy_network()
     emb = net.embed(

@@ -6,11 +6,9 @@ uncertainty for any graph metric via resampling.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, Union
-import copy
+from typing import Any, Callable, Dict, Optional
 
 import numpy as np
-import networkx as nx
 
 from py3plex.core import multinet
 from py3plex._parallel import parallel_map, spawn_seeds
@@ -165,7 +163,7 @@ def bootstrap_metric(
     
     # Get sorted list of items for consistent indexing
     index = sorted(original_result.keys(), key=lambda x: str(x))
-    n_items = len(index)
+    len(index)
     
     # Determine number of jobs
     if n_jobs is None:

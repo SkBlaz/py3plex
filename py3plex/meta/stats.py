@@ -15,8 +15,7 @@ Heterogeneity metrics:
 """
 
 import numpy as np
-import warnings
-from typing import Dict, Any, Tuple, Optional
+from typing import Tuple
 from dataclasses import dataclass
 
 

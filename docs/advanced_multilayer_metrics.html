@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced Multilayer Metrics &mdash; py3plex 2.0.0 documentation</title>
+  <title>Advanced Multilayer Metrics &mdash; py3plex 2.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c94df887" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=51b770b3"></script>
+      <script src="_static/documentation_options.js?v=f5cff4aa"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -663,7 +663,7 @@ Correlation matrix:
 </section>
 <section id="mathematical-definitions">
 <h3>Mathematical Definitions<a class="headerlink" href="#mathematical-definitions" title="Link to this heading"></a></h3>
-<p>Throughout, let <em>V</em> be the set of physical nodes and <em>L</em> the set of layers. Let <em>N</em><sub>v,ℓ</sub> be the neighbor set of node <em>v</em> within layer <em>ℓ</em>, and <em>k</em><sub>v,ℓ</sub> = <a href="#id12"><span class="problematic" id="id13">|*N*\ :sub:`v,ℓ`|</span></a>.</p>
+<p>Throughout, let <em>V</em> be the set of physical nodes and <em>L</em> the set of layers. Let <em>N</em><sub>v,ℓ</sub> be the neighbor set of node <em>v</em> within layer <em>ℓ</em>, and <em>k</em><sub>v,ℓ</sub> = |*N*<sub>v,ℓ</sub>|.</p>
 <p><strong>Variant A: Intra-layer Local Clustering</strong></p>
 <p>For each node-layer pair (<em>v</em>, <em>ℓ</em>), the intra-layer clustering coefficient is:</p>
 <div class="math notranslate nohighlight">
@@ -721,7 +721,8 @@ k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|\]</div>
 <td><p>(node, layer)</p></td>
 <td><p>Classical clustering per layer</p></td>
 </tr>
-<tr class="row-odd"><td colspan="2"><p><a href="#id2"><span class="problematic" id="id3">``</span></a>”multiplex”<a href="#id4"><span class="problematic" id="id5">``</span></a>| (node, None)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;multiplex&quot;</span></code></p></td>
+<td><p>(node, None)</p></td>
 <td><p>Aggregated across layers</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;supra&quot;</span></code></p></td>
@@ -823,14 +824,14 @@ k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|\]</div>
 <p><strong>Computational Complexity:</strong></p>
 <ul class="simple">
 <li><p><strong>Intra-layer</strong>: <em>O*(Σ:sub:`v,ℓ` *k</em><sup>2</sup><sub>v,ℓ</sub>) — quadratic in local degree</p></li>
-<li><p><strong>Multiplex</strong>: <em>O*(Σ:sub:`v` (*k</em><sup>agg</sup><sub>v</sub>)<sup>2</sup> × <a href="#id14"><span class="problematic" id="id15">|*L*|</span></a>) — quadratic in aggregated degree</p></li>
+<li><p><strong>Multiplex</strong>: <em>O*(Σ:sub:`v` (*k</em><sup>agg</sup><sub>v</sub>)<sup>2</sup> × |*L*|) — quadratic in aggregated degree</p></li>
 <li><p><strong>Supra-adjacency</strong>: roughly cubic in the number of state nodes <span class="math notranslate nohighlight">\(|V_M|\)</span> for the dense matrix multiplications (sparser graphs reduce constants but remain heavy)</p></li>
 </ul>
 <p><strong>Memory Usage:</strong></p>
 <ul class="simple">
-<li><p><strong>Intra-layer</strong>: <a href="#id6"><span class="problematic" id="id7">*</span></a>O*(<a href="#id16"><span class="problematic" id="id17">|*E*|</span></a>) - stores adjacency lists per layer</p></li>
-<li><p><strong>Multiplex</strong>: <a href="#id8"><span class="problematic" id="id9">*</span></a>O*(<a href="#id18"><span class="problematic" id="id19">|*V*|</span></a> × <a href="#id20"><span class="problematic" id="id21">|*L*|</span></a>) - stores aggregated neighbor sets</p></li>
-<li><p><strong>Supra-adjacency</strong>: <em>O*(|*V</em><sub>M`|:sup:`2</sub>) worst case, <em>O*(|*E</em>:sub:<a href="#id10"><span class="problematic" id="id11">`</span></a>total`|) for sparse representation</p></li>
+<li><p><strong>Intra-layer</strong>: <em>O*(|*E</em>|) - stores adjacency lists per layer</p></li>
+<li><p><strong>Multiplex</strong>: <em>O*(|*V</em>| × |*L*|) - stores aggregated neighbor sets</p></li>
+<li><p><strong>Supra-adjacency</strong>: <em>O*(|*V</em><sub>M</sub>|<sup>2</sup>) worst case, <em>O*(|*E</em><sub>total</sub>|) for sparse representation</p></li>
 </ul>
 <p><strong>Performance Recommendations:</strong></p>
 <ul class="simple">

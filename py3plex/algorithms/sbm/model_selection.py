@@ -5,7 +5,7 @@ This module provides utilities for selecting the number of blocks (K)
 using various criteria.
 """
 
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Tuple
 import numpy as np
 import pandas as pd
 
@@ -94,7 +94,6 @@ def compute_icl(
     Returns:
         ICL value (lower is better)
     """
-    from .utils import safe_log
     
     # Compute BIC
     bic = compute_bic(elbo, n_nodes, n_edges, n_layers, K, model, layer_mode)

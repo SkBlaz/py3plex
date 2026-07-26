@@ -216,7 +216,7 @@ def multilayer_resistance_distance(
     """
     try:
         import numpy as np
-        from scipy import sparse
+        __import__("scipy.sparse")
     except ImportError:
         return {"global_distance": None, "error": "numpy/scipy required"}
     

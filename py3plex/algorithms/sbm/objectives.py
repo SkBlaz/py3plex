@@ -8,7 +8,6 @@ and prior distributions for SBM variants.
 from typing import List, Optional
 import numpy as np
 import scipy.sparse as sp
-from scipy.special import gammaln, digamma
 
 from .utils import safe_log
 
@@ -44,7 +43,7 @@ def bernoulli_log_likelihood(
     B_safe = np.clip(B, 1e-10, 1 - 1e-10)
     
     log_B = safe_log(B_safe)
-    log_one_minus_B = safe_log(1 - B_safe)
+    safe_log(1 - B_safe)
     
     ll = 0.0
     
@@ -177,7 +176,7 @@ def compute_elbo(
         ELBO value
     """
     n_nodes, K = q.shape
-    n_layers = len(A_layers)
+    len(A_layers)
     
     elbo = 0.0
     

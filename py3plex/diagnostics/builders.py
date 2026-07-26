@@ -4,7 +4,7 @@ This module provides convenience functions for creating Diagnostic objects
 for common error scenarios throughout py3plex.
 """
 
-from typing import List, Optional, Any, Dict
+from typing import List, Optional
 from .core import (
     Diagnostic,
     DiagnosticSeverity,
@@ -12,7 +12,7 @@ from .core import (
     FixSuggestion,
 )
 from .codes import ERROR_CODES
-from .utils import did_you_mean, fuzzy_match
+from .utils import did_you_mean
 
 
 def unknown_field_error(
