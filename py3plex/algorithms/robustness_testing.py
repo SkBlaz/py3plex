@@ -13,11 +13,10 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 import numpy as np
 import networkx as nx
 from collections import defaultdict
-import copy
 
 
 def targeted_node_removal(
@@ -82,7 +81,7 @@ def targeted_node_removal(
     elif removal_strategy == "eigenvector":
         try:
             node_scores = nx.eigenvector_centrality(G, max_iter=1000)
-        except:
+        except (nx.NetworkXException, ValueError):
             # Fallback to degree if eigenvector fails
             node_scores = dict(G.degree())
     elif removal_strategy == "random":
@@ -344,19 +343,19 @@ def _compute_metric(G: nx.Graph, metric: str) -> float:
                     subgraph = G.subgraph(largest).to_undirected()
                     return nx.diameter(subgraph)
                 return 0
-        except:
+        except (nx.NetworkXException, ValueError):
             return 0
     
     elif metric == "clustering":
         try:
             return nx.average_clustering(G.to_undirected())
-        except:
+        except (nx.NetworkXException, ValueError):
             return 0.0
     
     elif metric == "efficiency":
         try:
             return nx.global_efficiency(G)
-        except:
+        except (nx.NetworkXException, ValueError):
             return 0.0
     
     else:

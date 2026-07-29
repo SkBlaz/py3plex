@@ -1,7 +1,6 @@
 """Fixed-point iteration engine for semiring operations."""
 
 from typing import Any, Callable, Dict, Optional
-from py3plex.exceptions import Py3plexException
 
 
 def fixed_point_iteration(

@@ -78,13 +78,12 @@ from __future__ import annotations
 
 import warnings
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import scipy.sparse as sp
-from scipy.sparse.linalg import eigsh
 
-from py3plex.exceptions import AlgorithmError, Py3plexException
+from py3plex.exceptions import AlgorithmError
 
 
 # ============================================================================

@@ -321,14 +321,20 @@ def parse_multi_edgelist(
         G = nx.MultiGraph()
     with open(input_name) as IN:
         for line in IN:
-            parts = line.strip().split()
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+
+            parts = stripped.split()
 
             if len(parts) == 5:
                 node_first, layer_first, node_second, layer_second, weight = parts
 
-            else:
+            elif len(parts) == 4:
                 node_first, layer_first, node_second, layer_second = parts
                 weight = "1"
+            else:
+                continue
 
             if layer_first == layer_second and node_first == node_second:
 
@@ -384,24 +390,27 @@ def parse_simple_edgelist(
 
     with handle as IN:
         for line in IN:
-            if line.split()[0] != "#":
-                parts = line.strip().split()
-                if len(parts) == 3:
-                    node_first_str, node_second_str, weight_str = parts
-                    weight = float(weight_str)
-                elif len(parts) == 2:
-                    node_first_str, node_second_str = parts
-                    weight = 1.0
-                else:
-                    continue
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
 
-                node_first = (node_first_str, "null")
-                node_second = (node_second_str, "null")
+            parts = stripped.split()
+            if len(parts) == 3:
+                node_first_str, node_second_str, weight_str = parts
+                weight = float(weight_str)
+            elif len(parts) == 2:
+                node_first_str, node_second_str = parts
+                weight = 1.0
+            else:
+                continue
 
-                G.add_node(node_first, type="null")
-                G.add_node(node_second, type="null")
+            node_first = (node_first_str, "null")
+            node_second = (node_second_str, "null")
 
-                G.add_edge(node_first, node_second, weight=weight)
+            G.add_node(node_first, type="null")
+            G.add_node(node_second, type="null")
+
+            G.add_edge(node_first, node_second, weight=weight)
 
     return (G, None)
 
@@ -447,19 +456,26 @@ def parse_edgelist_multi_types(
 
     with open(input_name) as IN:
         for line in IN:
-            if line.split()[0] != "#":
-                parts = line.strip().split()
-                if len(parts) > 2:
-                    node_first, node_second, weight = parts
-                    edge_type = parts[3]
-                else:
-                    node_first, node_second = parts
-                    weight = "1"
-                    edge_type = None
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
 
-                G.add_node((node_first, "null"), type="null")
-                G.add_node((node_second, "null"), type="null")
-                G.add_edge(node_first, node_second, weight=weight, type=edge_type)
+            parts = stripped.split()
+            if len(parts) >= 4:
+                node_first, node_second, weight, edge_type = parts[:4]
+            elif len(parts) == 3:
+                node_first, node_second, weight = parts
+                edge_type = None
+            elif len(parts) == 2:
+                node_first, node_second = parts
+                weight = "1"
+                edge_type = None
+            else:
+                continue
+
+            G.add_node((node_first, "null"), type="null")
+            G.add_node((node_second, "null"), type="null")
+            G.add_edge(node_first, node_second, weight=weight, type=edge_type)
     return (G, None)
 
 
@@ -495,8 +511,14 @@ def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None
     G = nx.Graph()
     with open(input_name) as IN:
         for line in IN:
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
 
-            parts = line.strip().split()
+            parts = stripped.split()
+            if len(parts) < 3:
+                continue
+
             node_first = parts[0]
             node_second = parts[1]
             tag = parts[2]
@@ -614,11 +636,18 @@ def parse_multiplex_edges(
     unique_layers = set()
     with open(input_name) as ef:
         for line in ef:
-            parts = line.strip().split(" ")
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+
+            parts = stripped.split()
+            if len(parts) < 3:
+                continue
+
             node_first = str(parts[1])
             node_second = str(parts[2])
             layer = parts[0]
-            if len(parts) > 2:
+            if len(parts) >= 4:
                 weight = parts[3]
             else:
                 weight = "1"
@@ -643,7 +672,7 @@ def parse_multiplex_folder(
     Expects a folder with specific file formats for edges, layers, and optional activity.
 
     Expected Files:
-        - *.edges: Edge information (format: layer_id node1 node2 weight)
+        - \*.edges: Edge information (format: layer_id node1 node2 weight)
         - layers.txt: Layer definitions (format: layer_id layer_name)
         - activity.txt: Optional temporal activity (format: node1 node2 timestamp layer_name)
 
@@ -686,7 +715,13 @@ def parse_multiplex_folder(
     for lx in layer_file:
         with open(lx) as lf:
             for line in lf:
-                lid, lname = line.strip().split(" ")
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#"):
+                    continue
+                parts = stripped.split()
+                if len(parts) < 2:
+                    continue
+                lid, lname = parts[:2]
                 layer_dict[lname] = lid
 
     if len(activity_file) >= 1:
@@ -694,7 +729,13 @@ def parse_multiplex_folder(
         for ac in activity_file:
             with open(ac) as acf:
                 for line in acf:
-                    n1, n2, timestamp, layer_name = line.strip().split(" ")
+                    stripped = line.strip()
+                    if not stripped or stripped.startswith("#"):
+                        continue
+                    parts = stripped.split()
+                    if len(parts) < 4:
+                        continue
+                    n1, n2, timestamp, layer_name = parts[:4]
                     time_series_tuples.append(
                         {
                             "node_first": 1,
@@ -718,11 +759,16 @@ def parse_multiplex_folder(
     for edgefile in edges_file:
         with open(edgefile) as ef:
             for line in ef:
-                parts = line.strip().split(" ")
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#"):
+                    continue
+                parts = stripped.split()
+                if len(parts) < 3:
+                    continue
                 node_first = parts[1]
                 node_second = parts[2]
                 layer = parts[0]
-                weight = parts[3]
+                weight = parts[3] if len(parts) >= 4 else "1"
                 G.add_node((node_first, str(layer)))
                 G.add_node((node_second, str(layer)))
                 G.add_edge(

@@ -1,50 +1,26 @@
-"""Pattern Matching API for py3plex DSL.
+"""Pattern-matching DSL primitives for motif, path, and constraint queries.
 
-This module provides a first-class pattern matching Builder API that enables
-users to express graph motifs and paths (optionally multilayer-aware) and
-execute them efficiently.
-
-Example:
-    >>> from py3plex.dsl import Q
-    >>> 
-    >>> # Simple edge pattern
-    >>> pq = (
-    ...     Q.pattern()
-    ...      .node("a").where(layer="social", degree__gt=3)
-    ...      .node("b").where(layer="social")
-    ...      .edge("a", "b", directed=False).where(weight__gt=0.2)
-    ...      .returning("a", "b")
-    ... )
-    >>> 
-    >>> matches = pq.execute(network)
-    >>> df = matches.to_pandas()
-    >>> nodes = matches.to_nodes()
+This package contains the IR, builder API, compiler, and execution engine for
+py3plex pattern matching.
 """
 
 from .ir import (
-    PatternNode,
+    AllDistinctConstraint,
+    EdgeLayerConstraint,
+    LayerConstraint,
+    MatchRow,
+    NotEqualConstraint,
     PatternEdge,
     PatternGraph,
-    MatchRow,
-    LayerConstraint,
-    EdgeLayerConstraint,
+    PatternNode,
     Predicate,
 )
-
-from .builder import (
-    PatternQueryBuilder,
-    PatternNodeBuilder,
-    PatternEdgeBuilder,
-)
-
+from .builder import PatternEdgeBuilder, PatternNodeBuilder, PatternQueryBuilder
 from .result import PatternQueryResult
-
 from .compiler import PatternPlan, compile_pattern
-
 from .engine import match_pattern
 
 __all__ = [
-    # IR
     "PatternNode",
     "PatternEdge",
     "PatternGraph",
@@ -52,15 +28,13 @@ __all__ = [
     "LayerConstraint",
     "EdgeLayerConstraint",
     "Predicate",
-    # Builder
+    "NotEqualConstraint",
+    "AllDistinctConstraint",
     "PatternQueryBuilder",
     "PatternNodeBuilder",
     "PatternEdgeBuilder",
-    # Result
     "PatternQueryResult",
-    # Compiler
     "PatternPlan",
     "compile_pattern",
-    # Engine
     "match_pattern",
 ]

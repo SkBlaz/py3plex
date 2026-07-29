@@ -258,7 +258,6 @@ def multilayer_sbm_with_dependencies(
     
     # Assign nodes to blocks (same across layers)
     node_blocks = []
-    current_node = 0
     for block_id, block_size in enumerate(block_sizes):
         node_blocks.extend([block_id] * block_size)
     

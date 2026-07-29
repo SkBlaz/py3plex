@@ -297,6 +297,47 @@ from .lint import (
     TypeEnvironment,
 )
 
+# Import compiler infrastructure modules
+from .metrics import (
+    MetricSpec,
+    METRIC_REGISTRY,
+    get_metric,
+    find_metric,
+    is_known_metric,
+    _CORE_METRICS,
+)
+
+from .plan import (
+    LogicalPlan,
+    PhysicalPlan,
+    OP_SCAN_NODES,
+    OP_SCAN_EDGES,
+    OP_RESOLVE_LAYERS,
+    OP_LAYER_FILTER,
+    OP_PREDICATE_FILTER,
+    OP_COMPUTE_METRIC,
+    OP_GROUP_BY_LAYER,
+    OP_GROUP_BY_LAYER_PAIR,
+    OP_TOP_K,
+    OP_COVERAGE_FILTER,
+    OP_AGGREGATE,
+    OP_ORDER_BY,
+    OP_LIMIT,
+    OP_PROJECT,
+)
+
+from .operators import (
+    PhysicalOp,
+    ExecutionContext,
+    ScanNodes,
+    ScanEdges,
+    LayerFilter,
+    PredicateFilter,
+    ComputeMetric,
+    OrderBy,
+    Limit,
+)
+
 # Import legacy functions for backward compatibility
 from py3plex.dsl_legacy import (
     execute_query,
@@ -532,6 +573,38 @@ __all__ = [
     "EntityRef",
     "AttrType",
     "TypeEnvironment",
+    # Compiler infrastructure — metric registry
+    "MetricSpec",
+    "METRIC_REGISTRY",
+    "get_metric",
+    "is_known_metric",
+    # Compiler infrastructure — logical/physical plan
+    "LogicalPlan",
+    "PhysicalPlan",
+    "OP_SCAN_NODES",
+    "OP_SCAN_EDGES",
+    "OP_RESOLVE_LAYERS",
+    "OP_LAYER_FILTER",
+    "OP_PREDICATE_FILTER",
+    "OP_COMPUTE_METRIC",
+    "OP_GROUP_BY_LAYER",
+    "OP_GROUP_BY_LAYER_PAIR",
+    "OP_TOP_K",
+    "OP_COVERAGE_FILTER",
+    "OP_AGGREGATE",
+    "OP_ORDER_BY",
+    "OP_LIMIT",
+    "OP_PROJECT",
+    # Compiler infrastructure — physical operators
+    "PhysicalOp",
+    "ExecutionContext",
+    "ScanNodes",
+    "ScanEdges",
+    "LayerFilter",
+    "PredicateFilter",
+    "ComputeMetric",
+    "OrderBy",
+    "Limit",
     # Legacy functions (backward compatibility)
     "execute_query",
     "format_result",

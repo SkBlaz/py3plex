@@ -7,7 +7,7 @@ This module provides conversion functions between py3plex's main network class
 
 import json
 import numpy as np
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import py3plex
 from py3plex.core.multinet import multi_layer_network

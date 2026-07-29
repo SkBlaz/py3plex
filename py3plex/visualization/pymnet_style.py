@@ -38,12 +38,10 @@ Example:
 
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
-import warnings
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import networkx as nx
-import numpy as np
 
 from py3plex.exceptions import VisualizationError, Py3plexFormatError
 from py3plex.logging_config import get_logger
@@ -348,7 +346,7 @@ def _get_node_colors(
     
     if node_color_by == "layer":
         # Color by layer using matplotlib tab palette
-        cmap = plt.cm.get_cmap('tab10')
+        cmap = mpl.colormaps['tab10']
         layer_colors = {layer: mpl.colors.rgb2hex(cmap(i % 10)) 
                        for i, layer in enumerate(mlg.layers)}
         
@@ -374,7 +372,7 @@ def _get_node_colors(
             min_degree = min(degree_map.values())
             degree_range = max_degree - min_degree if max_degree > min_degree else 1
             
-            cmap = plt.cm.get_cmap('viridis')
+            cmap = mpl.colormaps['viridis']
             
             for layer in mlg.layers:
                 colors[layer] = {}
@@ -400,7 +398,7 @@ def _get_node_colors(
                     colors[layer][node] = '#1f77b4'
     else:
         # Default: use layer colors
-        cmap = plt.cm.get_cmap('tab10')
+        cmap = mpl.colormaps['tab10']
         layer_colors = {layer: mpl.colors.rgb2hex(cmap(i % 10)) 
                        for i, layer in enumerate(mlg.layers)}
         

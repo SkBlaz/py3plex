@@ -4,9 +4,8 @@ This module implements the core logic for running sensitivity analyses,
 including perturbation loops, metric computation, and result aggregation.
 """
 
-import copy
 import logging
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional
 
 import numpy as np
 
@@ -21,7 +20,6 @@ from .metrics import (
     jaccard_at_k,
     kendall_tau,
     variation_of_information,
-    community_flip_probability,
     parse_metric_spec,
 )
 

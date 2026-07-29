@@ -78,6 +78,61 @@ For larger networks:
 
 Never present approximate outputs as exact without explicit disclosure.
 
+Static Review Before Execution
+------------------------------
+
+Current DSL tooling includes a static-analysis layer in ``py3plex.dsl.lint``.
+Use it before long or expensive runs when a query depends on fragile layer names,
+schema assumptions, or expensive full scans.
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    from py3plex.dsl.lint import lint
+
+    query = Q.nodes().where(degree__gt=5).compute('pagerank').to_ast()
+    diagnostics = lint(query, graph=network)
+    for diagnostic in diagnostics:
+        print(diagnostic.code, diagnostic.message)
+
+This does not replace execution-time validation.  It is an early warning layer
+for unknown layers, unknown attributes, type mismatches, redundant predicates,
+and performance hazards.
+
+Graph Programs and Rewrites
+---------------------------
+
+For reusable workflows that must be inspected, transformed, or compared,
+``py3plex.dsl.program`` exposes ``GraphProgram`` objects.  The practical use
+case is not "more abstraction"; it is auditable program identity, rewrite
+history, cost estimates, and execution fingerprints.
+
+.. code-block:: python
+
+    from py3plex.dsl import Q
+    from py3plex.dsl.program import GraphProgram, apply_rewrites
+
+    program = GraphProgram.from_ast(Q.nodes().compute('degree').to_ast())
+    optimized = apply_rewrites(program)
+    result = optimized.execute(network)
+
+When reviewing a rewritten program, verify that optimization did not change the
+analysis population, grouping semantics, or uncertainty configuration.
+
+Scaling and Cross-Run Workflows
+-------------------------------
+
+The advanced DSL ecosystem now includes adjacent infrastructure:
+
+* ``py3plex.out_of_core`` for supported streaming query shapes over disk-backed
+  edge data,
+* ``py3plex.meta`` for pooling comparable network statistics across networks,
+* ``py3plex.experiments`` for persisting run metadata and artifacts.
+
+These tools are most valuable when they preserve the same query semantics while
+making larger or repeated analyses auditable.  They should not be used to hide
+unsupported query patterns or incompatible effect definitions.
+
 Advanced Checklist
 ------------------
 

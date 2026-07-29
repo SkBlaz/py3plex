@@ -51,8 +51,8 @@ For detailed documentation, see: https://skblaz.github.io/py3plex/
 """
 
 # Version information
-__version__ = "2.0.0"
-__api_version__ = "2.0.0"
+__version__ = "2.0.1"
+__api_version__ = "2.0.1"
 
 from py3plex.core.multinet import multi_layer_network
 from py3plex.core.types import (

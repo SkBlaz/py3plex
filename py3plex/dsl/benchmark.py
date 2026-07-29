@@ -4,7 +4,7 @@ This module provides the B builder for creating benchmarking queries that
 compare algorithms with fair budgets, deterministic seeding, and rich results.
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 from py3plex.dsl.ast import (
     BenchmarkNode,

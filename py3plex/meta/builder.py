@@ -22,11 +22,11 @@ Example:
 import warnings
 import pandas as pd
 import numpy as np
-from typing import Any, Dict, List, Optional, Union, Callable
+from typing import Any, Dict, List, Optional, Union
 from py3plex.exceptions import MetaAnalysisError
 
 from .result import MetaResult
-from .stats import meta_analysis, weighted_least_squares, PooledEffect
+from .stats import meta_analysis, weighted_least_squares
 from .utils import (
     compute_network_fingerprint,
     prepare_effect_table,
@@ -660,7 +660,7 @@ class MetaBuilder:
                 hint="Use format 'y ~ x1 + x2'",
             )
 
-        outcome = match.group(1).strip()
+        match.group(1).strip()
         predictors_str = match.group(2).strip()
         predictors = [p.strip() for p in predictors_str.split("+")]
 

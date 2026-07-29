@@ -34,13 +34,11 @@ Examples
 
 from __future__ import annotations
 
-import copy
 from typing import Any, List, Optional
 
 import numpy as np
 
 from py3plex.uncertainty.plan import UQPlan, UQResult
-from py3plex.uncertainty.noise_models import NoNoise
 
 
 def run_uq(plan: UQPlan, network: Any) -> UQResult:

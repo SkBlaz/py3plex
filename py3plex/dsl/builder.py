@@ -22,6 +22,7 @@ Example:
     >>> q = Q.edges().during(100.0, 200.0).execute(network)  # Range [100, 200]
 """
 
+import copy
 import logging
 import pandas as pd
 from typing import Any, Dict, List, Optional, Union, TYPE_CHECKING, Tuple
@@ -52,7 +53,6 @@ from .ast import (
     TemporalContext,
     WindowSpec,
     UQConfig,
-    CounterfactualSpec,
     SensitivitySpec,
     PredictStmt,
     LinkPredictionSpec,
@@ -871,7 +871,6 @@ class QueryBuilder:
                     random_state = Q.uncertainty.get("random_state")
 
         # Handle approximation parameters
-        approx_spec = None
         if approx:
             # Extract approximation-specific params from kwargs
             approx_params = {}
@@ -1796,6 +1795,13 @@ class QueryBuilder:
             ...      .execute(network)
             ... )
         """
+        # Compiler-level explain: if the first positional arg is a network
+        # object (not an int/None), delegate to compile().explain(network).
+        # This enables the idiom  q.explain(net)  documented in AGENTS.md.
+        if neighbors_top is not None and not isinstance(neighbors_top, int):
+            _network = neighbors_top
+            return self.compile().explain(_network)
+
         # Check if this is execution plan mode (no arguments provided)
         has_any_arg = any(
             [
@@ -2972,12 +2978,10 @@ class QueryBuilder:
         The aggregations are computed after grouping if active, otherwise globally.
 
         Args:
-            **aggregations: Named aggregations where:
-                - Key is the output column name
-                - Value is either:
-                    * A string like "mean(degree)", "quantile(degree, 0.95)", or "sum(weight)"
-                    * A string attribute name (gets the value directly)
-                    * A lambda function receiving each item
+            **aggregations: Named aggregations. Each key is an output column name.
+                Each value is a string expression like ``"mean(degree)"``,
+                ``"quantile(degree, 0.95)"``, ``"count()"``, a plain attribute
+                name string, or a callable lambda function.
 
         Returns:
             Self for chaining
@@ -3023,12 +3027,10 @@ class QueryBuilder:
         - Simple values (applied to all rows)
 
         Args:
-            **transformations: Named transformations where:
-                - Key is the output column name
-                - Value is either:
-                    * A lambda function receiving dict of item attributes
-                    * A string expression (e.g., "degree * 2")
-                    * A simple value (applied to all rows)
+            **transformations: Named transformations. Each key is an output column
+                name. Each value is a lambda receiving a dict of item attributes,
+                a string expression such as ``"degree * 2"``, or a constant value
+                applied to all rows.
 
         Returns:
             Self for chaining
@@ -3373,7 +3375,6 @@ class QueryBuilder:
             >>> high_bc = Q.nodes().compute("betweenness_centrality").where(betweenness_centrality__gt=0.1)
             >>> result = high_degree.join(high_bc, on=["node", "layer"], how="inner").execute(network)
         """
-        from .ast import JoinNode
 
         # Validate join type
         valid_join_types = {"inner", "left", "right", "outer", "semi", "anti"}
@@ -3430,6 +3431,16 @@ class QueryBuilder:
         from py3plex.dsl.program import GraphProgram
         ast = Query(explain=False, select=self._select)
         return GraphProgram.from_ast(ast)
+
+    def compile(self) -> "GraphProgram":
+        """Compile query into a GraphProgram.
+
+        This is a public alias for :meth:`to_program` and mirrors the
+        executable program workflow:
+
+        ``Q...compile().execute(network)``.
+        """
+        return self.to_program()
 
     def embed(
         self,
@@ -3778,9 +3789,18 @@ class QueryBuilder:
         # Apply to the next execute() call only (safe even if already absent).
         self.__dict__.pop("_explain_plan_flag", None)
 
-        ast = Query(explain=False, select=self._select)
-        return execute_ast(network, ast, params=params, progress=progress, explain_plan=explain_plan, planner_config=planner)
-    
+        # Determine effective planner config: explicit arg wins, stored config is fallback.
+        effective_planner = planner if planner is not None else getattr(self, '_planner_config', None)
+
+        # Route through the compiler/program path for canonical execution.
+        return self.compile().execute(
+            network,
+            params=params if params else None,
+            progress=progress,
+            explain_plan=explain_plan,
+            planner_config=effective_planner,
+        )
+
     def explain_plan(self) -> "QueryBuilder":
         """Enable plan explanation in the next execute() call.
         
@@ -3831,10 +3851,14 @@ class QueryBuilder:
     def to_ast(self) -> Query:
         """Export as AST Query object.
 
+        Each call returns an independent snapshot of the current builder state.
+        Mutating the builder after calling ``to_ast()`` does not affect previously
+        returned objects, and two calls to ``to_ast()`` do not share mutable state.
+
         Returns:
-            Query AST node
+            Query AST node (deep copy of current builder state)
         """
-        return Query(explain=False, select=self._select)
+        return Query(explain=False, select=copy.deepcopy(self._select))
 
     def to_dsl(self) -> str:
         """Export as DSL string.
@@ -4085,7 +4109,7 @@ class QueryBuilder:
             >>> work_hubs = Q.nodes().from_layers(L["work"]).where(degree__gt=5)
             >>> all_hubs = social_hubs | work_hubs
         """
-        from .algebra import check_query_compatibility, AlgebraError
+        from .algebra import check_query_compatibility
         from copy import deepcopy
         
         check_query_compatibility(self, other)
@@ -4847,7 +4871,7 @@ class Q:
             >>> unfiltered = Q.nodes()
             >>> assert Q.assert_subset(filtered, unfiltered, network)
         """
-        from .algebra import check_query_compatibility, extract_item_identity, IdentityStrategy
+        from .algebra import extract_item_identity, IdentityStrategy
         from .result import QueryResult
         
         # Execute queries if needed
@@ -4973,7 +4997,7 @@ class Q:
             >>> Q.assert_disjoint(social, work, network, identity="by_replica")
             True
         """
-        from .algebra import check_query_compatibility, extract_item_identity, IdentityStrategy
+        from .algebra import extract_item_identity, IdentityStrategy
         from .result import QueryResult
         
         # Execute queries if needed

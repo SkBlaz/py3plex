@@ -14,7 +14,6 @@ import itertools
 import json
 import time
 import warnings
-from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
@@ -24,7 +23,6 @@ from py3plex.benchmarks.budget import Budget
 from py3plex.benchmarks.metrics import compute_metric
 from py3plex.benchmarks.runners import (
     CommunityAlgorithmRunner,
-    CommunityRunResult,
     compute_config_id,
     create_runner_from_spec,
 )

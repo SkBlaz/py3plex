@@ -191,7 +191,7 @@ def match_fastpath(select_stmt: Any) -> Optional[FastPlan]:
         must be used.
     """
     # Avoid circular import; import locally.
-    from .ast import Target, ConditionExpr, ConditionAtom, Comparison
+    from .ast import Target, ConditionExpr, Comparison
 
     # ---- gate on features that are incompatible with fast path ---------------
 
@@ -239,7 +239,7 @@ def match_fastpath(select_stmt: Any) -> Optional[FastPlan]:
     # as helper attributes so build_fast_index can resolve them.
     #
     # We do NOT support mixed layer_set + layer_expr (shouldn't happen).
-    has_layer_filter = bool(
+    bool(
         getattr(select_stmt, "layer_set", None)
         or getattr(select_stmt, "layer_expr", None)
     )

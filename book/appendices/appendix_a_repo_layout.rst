@@ -9,7 +9,7 @@ Repository Map (Condensed)
 .. code-block:: text
 
     py3plex/
-    ├── py3plex/      # Main package (core, algorithms, dsl, io, visualization, dynamics)
+    ├── py3plex/      # Main package (core, algorithms, dsl, algebra, embeddings, io, ...)
     ├── tests/        # Automated validation and regression checks
     ├── examples/     # Runnable examples by topic
     ├── book/         # This manuscript source
@@ -18,7 +18,43 @@ Repository Map (Condensed)
     ├── pyproject.toml
     └── Makefile
 
-The main package is organized around analytical concerns: representation (`core/`), inference (`algorithms/`), query workflows (`dsl/`), simulation (`dynamics/`), and data interchange (`io/`).
+The main package is organized around analytical concerns: representation
+(``core/``), inference (``algorithms/`` and ``centrality/``), query workflows
+(``dsl/``), simulation (``dynamics/``), data interchange (``io/`` and
+``out_of_core/``), algebraic path/query machinery (``algebra/`` and
+``semiring/``), embeddings (``embeddings/`` and ``ml/embedding/``), experiment
+tracking (``experiments/``), uncertainty quantification (``uncertainty/``),
+visual outputs (``visualization/``), meta-analysis (``meta/``), and
+cost/planning support (``optimizer/`` and ``dsl/program/``).
+
+Current Package Landmarks
+-------------------------
+
+Use this list to orient yourself when the book discusses newer repository
+capabilities:
+
+``py3plex/algebra`` and ``py3plex/semiring``
+ Semiring-style path, closure, fixed-point, and witness utilities.
+
+``py3plex/embeddings`` and ``py3plex/ml/embedding``
+ NetMF, MetaPath2Vec, Node2Vec/DeepWalk/LINE-style embedding primitives and
+ shared embedding utilities.
+
+``py3plex/dsl/lint`` and ``py3plex/dsl/program``
+ Static query diagnostics plus first-class ``GraphProgram`` objects for typed,
+ rewritable, cost-aware DSL workflows.
+
+``py3plex/experiments`` and ``py3plex/meta``
+ Filesystem-backed experiment records and meta-analytic pooling of network
+ statistics across runs or datasets.
+
+``py3plex/out_of_core`` and ``py3plex/optimizer``
+ Streaming query execution over disk-resident edge data and cost-based planning
+ infrastructure for larger analyses.
+
+``py3plex/uncertainty`` and ``py3plex/visualization``
+ Bootstrap, perturbation, and partition uncertainty utilities plus plotting and
+ rendering helpers for multilayer outputs.
 
 Chapter-to-Example Map
 ----------------------
@@ -32,8 +68,23 @@ Chapter-to-Example Map
 :ref:`algorithms-chapter`
   ``examples/network_analysis/`` for centrality, communities, and dynamics.
 
+:ref:`visualization-chapter`
+  ``examples/visualization/`` for rendering-oriented examples.
+
 :ref:`dsl-chapter` and :ref:`advanced-dsl-chapter`
   ``examples/dsl_zoo/`` for DSL patterns and reusable snippets.
+
+:ref:`advanced-dsl-chapter`
+  ``examples/advanced/example_graph_program.py`` and
+  ``examples/advanced/example_rewrite_engine.py`` for program/rewrite examples;
+  ``examples/out_of_core/`` for streaming query examples.
+
+:ref:`algorithms-chapter`
+  ``examples/advanced/example_metapath2vec.py`` and related embedding examples
+  for the current embedding surface.
+
+:ref:`advanced-dsl-chapter`
+  ``examples/pipelines/`` for pipeline and workflow composition examples.
 
 :ref:`gui-chapter`
   ``gui/`` for local GUI setup and interaction flow.

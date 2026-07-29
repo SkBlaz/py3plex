@@ -52,7 +52,7 @@ Concrete Run-Manifest Example
 .. code-block:: yaml
 
     run_id: social_multiplex_2026_03_22_001
-    py3plex_version: 2.0.0
+    py3plex_version: 2.0.1
     python_version: 3.12.3
     git_commit: f2ffa0813a9c
     dataset_checksum: sha256:2a0c...9f4b

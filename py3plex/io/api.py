@@ -56,7 +56,7 @@ def register_reader(format_name: str, reader_func: ReaderFunc) -> None:
 
     Args:
         format_name: Name of the format (e.g., 'json', 'csv', 'graphml')
-        reader_func: Function that takes (filepath, **kwargs) and returns MultiLayerGraph
+        reader_func: Function that takes (filepath, ``**kwargs``) and returns MultiLayerGraph
 
     Example:
         >>> def my_reader(filepath, **kwargs):
@@ -87,7 +87,7 @@ def register_writer(format_name: str, writer_func: WriterFunc) -> None:
 
     Args:
         format_name: Name of the format (e.g., 'json', 'csv', 'graphml')
-        writer_func: Function that takes (graph, filepath, **kwargs) and writes to file
+        writer_func: Function that takes (graph, filepath, ``**kwargs``) and writes to file
 
     Example:
         >>> def my_writer(graph, filepath, **kwargs):

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import time
 import warnings
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from py3plex.algorithms.community_detection.budget import BudgetSpec, CommunityResult
 

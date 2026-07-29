@@ -1,5 +1,5 @@
 Examples Documentation
-=====================
+======================
 
 This section contains executable examples with their actual outputs captured from CI.
 
@@ -59,13 +59,6 @@ Basic Network Query Example
 
 This example demonstrates creating a simple multilayer network and querying it.
 
-**Source code:**
-
-.. literalinclude:: ../examples/docs/01_basic_query.py
-   :language: python
-   :lines: 1-30
-   :linenos:
-
 **Output:**
 
 .. literalinclude:: ../examples/docs_outputs/01_basic_query.txt
@@ -82,12 +75,6 @@ Community Detection Example
 ---------------------------
 
 This example demonstrates running Louvain community detection on a multilayer network.
-
-**Source code:**
-
-.. literalinclude:: ../examples/docs/02_community_detection.py
-   :language: python
-   :linenos:
 
 **Output:**
 

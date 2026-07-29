@@ -8,7 +8,7 @@ This guide covers all aspects of installing py3plex and setting up your environm
 Which Docs Should I Use?
 -------------------------
 
-**Most users should use these docs (py3plex 1.x)**, which you're reading now at https://skblaz.github.io/py3plex/. They cover:
+**Most users should use these docs (py3plex 2.x)**, which you're reading now at https://skblaz.github.io/py3plex/. They cover:
 
 * The current stable version with modern features (DSL v2, pipelines, workflows)
 * All new APIs, including the SQL-like query DSL and dplyr-style operations
@@ -19,7 +19,7 @@ Which Docs Should I Use?
 * You're maintaining old code that depends on py3plex 0.8x specifically
 * You need features that were removed in the 1.x rewrite (very rare)
 
-The legacy docs are available at https://py3plex.readthedocs.io but are **no longer maintained or updated** and may have broken examples. We strongly recommend upgrading to 1.x for new projects.
+The legacy docs are available at https://py3plex.readthedocs.io but are **no longer maintained or updated** and may have broken examples. We strongly recommend using py3plex 2.x for new projects.
 
 Installation Modes
 ------------------
@@ -268,9 +268,12 @@ These are automatically installed with py3plex:
 * ``matplotlib>=3.3.0`` - Static visualization
 * ``scikit-learn>=0.24.0`` - Machine learning utilities
 * ``tqdm>=4.40.0`` - Progress bars
-* ``rdflib>=6.0.0`` - Semantic web support
 * ``bitarray>=2.0.0`` - Efficient boolean arrays
-* ``gensim>=4.0.0`` - Topic modeling utilities
+
+Optional algorithm extras include:
+
+* ``rdflib>=6.0.0`` - Semantic web support utilities
+* ``gensim>=4.0.0`` - Topic modeling and embedding helpers
 * ``seaborn>=0.11.0`` - Statistical plotting
 * ``cython>=0.29.0`` - Extension compilation support
 

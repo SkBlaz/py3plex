@@ -1,0 +1,43 @@
+name: Lean formal verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Cancel in-progress runs for the same branch/PR when a newer commit arrives.
+concurrency:
+  group: lean-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lean-build:
+    name: lean-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Elan (Lean toolchain manager)
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --no-modify-path
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # Cache the downloaded Lean toolchain so repeat runs are faster.
+      # The cache is keyed by the exact toolchain and manifest, so a version
+      # bump automatically busts the cache.
+      - name: Cache Lean toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan/toolchains
+          key: lean-toolchain-${{ hashFiles('formal/lean-toolchain', 'formal/lake-manifest.json') }}
+          restore-keys: lean-toolchain-
+
+      - name: Build and verify Lean proofs
+        working-directory: formal
+        run: lake build

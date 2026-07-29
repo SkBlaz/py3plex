@@ -17,7 +17,6 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .ast import Query, SelectStmt
-    from py3plex.core.multinet import multi_layer_network
 
 
 # ==============================================================================

@@ -3,7 +3,7 @@
 This module provides type aliases and data structures for semiring operations.
 """
 
-from typing import Any, Callable, Dict, List, Optional, Protocol, Union
+from typing import Any, Callable, Dict, List, Optional, Protocol
 from dataclasses import dataclass, field
 
 

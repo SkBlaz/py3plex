@@ -85,7 +85,7 @@ except ImportError:
     tqdm = MockTqdm()
 
 try:
-    from py3plex.algorithms.statistics import topology
+    __import__("py3plex.algorithms.statistics.topology")
 except ImportError:
     pass
 
@@ -463,14 +463,14 @@ class multi_layer_network:
           relationship types (e.g., friend, colleague, family layers).
 
     Choosing the Right Network Type:
-        ===============  ==================  ==================
-        Criterion        multilayer          multiplex
-        ===============  ==================  ==================
-        Node sets        Different per layer Same across layers
-        Coupling edges   Manual (explicit)   Automatic
-        Use case         Heterogeneous nets  Same entities, many
-                         (author-paper)      relationship types
-        ===============  ==================  ==================
+        ===============  ===================  ===================
+        Criterion        multilayer           multiplex
+        ===============  ===================  ===================
+        Node sets        Different per layer  Same across layers
+        Coupling edges   Manual (explicit)    Automatic
+        Use case         Heterogeneous nets   Same entities, many
+                         (author-paper)       relationship types
+        ===============  ===================  ===================
 
     Key Features:
         - Dict-based API for adding nodes and edges (see add_nodes() and add_edges())
@@ -1129,12 +1129,14 @@ class multi_layer_network:
     def load_network_activity(self, activity_file):
         """Network activity loader
 
-                Args:
-                    param1: The name of the generic activity file -> 65432 61888 1377688175 RE
-        , n1 n2 timestamp and layer name. Note that layer node mappings MUST be loaded in order to map nodes to activity properly.
+        Args:
+            activity_file: The name of the generic activity file.
+                Format: n1 n2 timestamp layer_name (e.g., ``65432 61888 1377688175 RE``).
+                Note that layer node mappings MUST be loaded in order to map nodes
+                to activity properly.
 
-                Returns:
-                   self.activity is filled.
+        Returns:
+            self.activity is filled.
 
         """
 
@@ -1395,11 +1397,12 @@ class multi_layer_network:
         
         Examples:
             >>> net = multi_layer_network()
+            >>> _ = net.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
             >>> caps = net.capabilities()
             >>> print(caps.mode)
-            'multilayer'
+            single
             >>> print(caps.layer_count)
-            2
+            1
         
         Notes:
             - Results are cached for performance
@@ -1901,7 +1904,6 @@ class multi_layer_network:
             else:
                 # Shouldn't happen, but handle 3-tuple case
                 u, v, attr = edge_data
-                key = 0
             
             # Skip coupling edges if requested
             if remove_coupling and attr.get("type") == "coupling":
@@ -2813,6 +2815,7 @@ class multi_layer_network:
             method (str): Name of the NetworkX function to call (e.g., 'degree_centrality', 'betweenness_centrality')
             kwargs (dict, optional): Keyword arguments to pass to the NetworkX function.
                                      For example, for betweenness_centrality you can pass:
+
                                      - weight: Edge attribute to use as weight
                                      - normalized: Whether to normalize betweenness values
                                      - distance: Edge attribute to use as distance (for closeness_centrality)
@@ -2831,8 +2834,7 @@ class multi_layer_network:
             centralities = network.monoplex_nx_wrapper("betweenness_centrality", kwargs={"weight": "weight"})
 
             # With multiple parameters
-            centralities = network.monoplex_nx_wrapper("betweenness_centrality",
-                                                       kwargs={"weight": "weight", "normalized": True})
+            centralities = network.monoplex_nx_wrapper("betweenness_centrality", kwargs={"weight": "weight", "normalized": True})
         """
 
         if kwargs is None:
@@ -3008,16 +3010,17 @@ class multi_layer_network:
 
         Supported Formats:
             **Dict format (recommended):**
-            ```python
-            {
-                'source': 'node1',          # Source node ID
-                'target': 'node2',          # Target node ID
-                'source_type': 'layer1',    # Source layer name
-                'target_type': 'layer2',    # Target layer name (can be same as source)
-                'weight': 1.0,              # Optional: edge weight
-                'type': 'interaction'       # Optional: edge type/label
-            }
-            ```
+
+            .. code-block:: python
+
+                {
+                    'source': 'node1',          # Source node ID
+                    'target': 'node2',          # Target node ID
+                    'source_type': 'layer1',    # Source layer name
+                    'target_type': 'layer2',    # Target layer name (can be same as source)
+                    'weight': 1.0,              # Optional: edge weight
+                    'type': 'interaction'       # Optional: edge type/label
+                }
 
             **List format:**
             `[node1, layer1, node2, layer2]`
@@ -3145,15 +3148,16 @@ class multi_layer_network:
             self: Returns self for method chaining
 
         Dict Format:
-            ```python
-            {
-                'source': 'node_id',    # Node identifier (can be string or number)
-                'type': 'layer_name',   # Layer this node belongs to
-                'weight': 1.0,          # Optional: node weight/importance
-                'label': 'display'      # Optional: display label
-                # ... any other node attributes
-            }
-            ```
+
+            .. code-block:: python
+
+                {
+                    'source': 'node_id',    # Node identifier (can be string or number)
+                    'type': 'layer_name',   # Layer this node belongs to
+                    'weight': 1.0,          # Optional: node weight/importance
+                    'label': 'display'      # Optional: display label
+                    # ... any other node attributes
+                }
 
         Examples:
             >>> # Add single node
@@ -4541,6 +4545,7 @@ class multi_layer_network:
         
         >>> # Named partition for multiple algorithms
         >>> net.assign_partition(partition, name="louvain", meta={"resolution": 1.0})
+        >>> partition2 = {('A', 'L1'): 1, ('B', 'L1'): 1}
         >>> net.assign_partition(partition2, name="infomap")
         """
         # Initialize partitions storage if needed

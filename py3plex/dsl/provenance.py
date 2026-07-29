@@ -15,7 +15,7 @@ import hashlib
 import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Union
 
 try:
     from typing import TYPE_CHECKING
@@ -269,7 +269,7 @@ def ast_summary(ast: Union['Query', 'SelectStmt', Any]) -> str:
     Returns:
         Short summary string (e.g., "SELECT nodes FROM layer='social' WHERE degree>5")
     """
-    from .ast import Query, SelectStmt, Target
+    from .ast import Query, SelectStmt
     
     parts = []
     
@@ -433,7 +433,7 @@ class ProvenanceBuilder:
         Args:
             query: Query or SelectStmt AST
         """
-        from .ast import Query, SelectStmt, Target
+        from .ast import Query, SelectStmt
         
         # Determine target
         if isinstance(query, Query):

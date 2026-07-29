@@ -26,8 +26,7 @@ Examples
 
 from __future__ import annotations
 
-from typing import Any, Optional
-import copy
+from typing import Optional
 
 import numpy as np
 

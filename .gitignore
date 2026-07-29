@@ -126,3 +126,6 @@ book/_build/
 results/
 /tmp/
 tmp/
+
+# Lean / Lake build artifacts (formal/)
+formal/.lake/

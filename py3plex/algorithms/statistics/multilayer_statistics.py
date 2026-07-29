@@ -359,14 +359,14 @@ def edge_overlap(network: Any, layer_i: str, layer_j: str) -> float:
     """
     Calculate edge overlap (ω^αβ).
 
-    Formula: ω^αβ = |Eₐ ∩ Eᵦ| / |Eₐ ∪ Eᵦ|
+    Formula: ω^αβ = \\|Eₐ ∩ Eᵦ\\| / \\|Eₐ ∪ Eᵦ\\|
 
     Jaccard similarity of edge sets between two layers; measures structural redundancy.
 
     Variables:
         Eₐ = set of edges in layer α
         Eᵦ = set of edges in layer β
-        |·| = cardinality (number of elements)
+        \\|·\\| = cardinality (number of elements)
 
     Args:
         network: py3plex multi_layer_network object
@@ -704,7 +704,9 @@ def versatility_centrality(
     return versatility
 
 
-def interdependence(network: Any, sample_size: int = 100) -> float:
+def interdependence(
+    network: Any, sample_size: int = 100, seed: Optional[int] = None
+) -> float:
     """
     Calculate interdependence (λ).
 
@@ -725,6 +727,7 @@ def interdependence(network: Any, sample_size: int = 100) -> float:
     Args:
         network: py3plex multi_layer_network object
         sample_size: Number of node pairs to sample for estimation
+        seed: Optional random seed for deterministic node-pair sampling
 
     Returns:
         Interdependence ratio
@@ -776,11 +779,11 @@ def interdependence(network: Any, sample_size: int = 100) -> float:
     multiplex_paths = []
     layer_paths = []
 
-    np.random.seed(42)  # For reproducibility
+    rng = np.random.default_rng(seed)
     sampled_pairs: set = set()
 
     while len(sampled_pairs) < sample_size:
-        n1, n2 = np.random.choice(all_nodes, size=2, replace=False)
+        n1, n2 = rng.choice(all_nodes, size=2, replace=False)
         if (n1, n2) not in sampled_pairs and (n2, n1) not in sampled_pairs:
             sampled_pairs.add((n1, n2))
 
@@ -1117,6 +1120,7 @@ def resilience(
     network: Any,
     perturbation_type: str = "layer_removal",
     perturbation_param: Union[str, float] = None,
+    seed: Optional[int] = None,
 ) -> float:
     """
     Calculate resilience (R).
@@ -1142,6 +1146,7 @@ def resilience(
         network: py3plex multi_layer_network object
         perturbation_type: 'layer_removal' or 'coupling_removal'
         perturbation_param: Layer to remove or fraction of inter-layer edges
+        seed: Optional random seed for stochastic perturbation steps
 
     Returns:
         Resilience ratio between 0 and 1
@@ -1190,13 +1195,16 @@ def resilience(
             if n1[1] != n2[1]  # Different layers
         ]
 
-        num_to_remove = int(len(inter_layer_edges) * perturbation_param)
-        np.random.seed(42)
-        edge_indices = np.random.choice(
-            len(inter_layer_edges), size=num_to_remove, replace=False
+        num_to_remove = min(
+            int(len(inter_layer_edges) * perturbation_param), len(inter_layer_edges)
         )
-        edges_to_remove = [inter_layer_edges[i] for i in edge_indices]
-        perturbed_graph.remove_edges_from(edges_to_remove)
+        if num_to_remove > 0:
+            rng = np.random.default_rng(seed)
+            edge_indices = rng.choice(
+                len(inter_layer_edges), size=num_to_remove, replace=False
+            )
+            edges_to_remove = [inter_layer_edges[i] for i in edge_indices]
+            perturbed_graph.remove_edges_from(edges_to_remove)
 
     # Calculate perturbed largest component size
     if perturbed_graph.number_of_nodes() == 0:
@@ -1275,12 +1283,14 @@ def multiplex_closeness_centrality(
         normalized: Whether to normalize by network size
         weight: Edge weight attribute name (None for unweighted)
         variant: Closeness variant to use. Options:
+
                 - 'standard': Classic closeness (reciprocal of sum of distances).
                   Can produce biased values for nodes in disconnected components.
                 - 'harmonic': Harmonic closeness (sum of reciprocal distances).
                   Recommended for disconnected multilayer networks.
                 - 'auto': Automatically selects 'harmonic' if the network has
                   multiple connected components, otherwise uses 'standard'.
+
                 Default is 'standard' for backward compatibility.
 
     Returns:
@@ -1453,7 +1463,7 @@ def layer_redundancy_coefficient(
     (also present) in another layer. Values close to 1 indicate high
     redundancy, while values close to 0 indicate complementary layers.
 
-    Formula: Rᵅᵝ = |Eᵅ ∩ Eᵝ| / |Eᵅ|
+    Formula: Rᵅᵝ = \\|Eᵅ ∩ Eᵝ\\| / \\|Eᵅ\\|
 
     where Eᵅ and Eᵝ are edge sets of layers α and β.
 

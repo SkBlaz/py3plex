@@ -33,11 +33,9 @@ from ..ast import (
     Query,
     SelectStmt,
     Target,
-    ComputeItem,
     ConditionExpr,
-    OrderItem,
 )
-from .types import Type, ScalarType, TableType
+from .types import Type
 
 
 @dataclass(frozen=True)
@@ -83,7 +81,6 @@ class GraphStats:
         Returns:
             GraphStats instance
         """
-        import networkx as nx
         
         # Get basic counts (properties, not methods)
         num_nodes = network.node_count
@@ -534,7 +531,7 @@ class CostModel:
         
         # Brandes algorithm: O(VE) for unweighted graphs
         # For multilayer, multiply by layers
-        complexity_multiplier = V * E * stats.num_layers
+        V * E * stats.num_layers
         
         # Base time from edge iterations
         time_est = (E / 1000.0) * self.constants["edge_iteration_per_1k"]

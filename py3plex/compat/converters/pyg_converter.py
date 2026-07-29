@@ -12,7 +12,7 @@ from ..ir import GraphIR
 
 # Try to import PyG
 try:
-    import torch
+    __import__("torch")
     from torch_geometric.data import Data, HeteroData
     
     PYG_AVAILABLE = True

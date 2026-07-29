@@ -16,6 +16,7 @@ result = (
     Q.nodes()
     .from_layers(L["*"])
     .community(method="leiden", gamma=1.0, omega=1.0, random_state=42, partition_name="uq")
+    .compute("degree")
     .uq(method="seed", n_samples=20, ci=0.95, seed=42)
     .execute(net)
 )

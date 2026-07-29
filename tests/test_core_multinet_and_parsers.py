@@ -6,7 +6,9 @@ import scipy.sparse as sp
 from py3plex.core.multinet import multi_layer_network
 from py3plex.core.parsers import (
     parse_edgelist_multi_types,
+    parse_multiplex_edges,
     parse_simple_edgelist,
+    parse_spin_edgelist,
 )
 
 
@@ -87,7 +89,7 @@ def test_get_tensor_handles_format_conversion_and_warnings():
 
 def test_parsers_read_weights_and_edge_types(tmp_path):
     simple_path = tmp_path / "simple.txt"
-    simple_path.write_text("# comment\nu v 2.5\nx y\n")
+    simple_path.write_text("\n# comment\nu v 2.5\nx y\n")
 
     simple_graph, _ = parse_simple_edgelist(str(simple_path), directed=False)
 
@@ -107,8 +109,46 @@ def test_parsers_read_weights_and_edge_types(tmp_path):
     assert second_edge["type"] is None
     assert second_edge["weight"] == "1"
 
-    multi_type_invalid = tmp_path / "multi_types_invalid.txt"
-    multi_type_invalid.write_text("p q 3.0\n")
+    multi_type_weight_only = tmp_path / "multi_types_weight_only.txt"
+    multi_type_weight_only.write_text("\n# comment\np q 3.0\n")
 
-    with pytest.raises(IndexError):
-        parse_edgelist_multi_types(str(multi_type_invalid), directed=False)
+    weighted_graph, _ = parse_edgelist_multi_types(
+        str(multi_type_weight_only), directed=False
+    )
+    weighted_edge = weighted_graph.get_edge_data("p", "q")[0]
+
+    assert weighted_edge["type"] is None
+    assert weighted_edge["weight"] == "3.0"
+
+
+def test_multiedgelist_parser_skips_blank_and_comment_lines(tmp_path):
+    multi_path = tmp_path / "multi.txt"
+    multi_path.write_text("\n# comment\nu l1 v l1 2.0\n")
+
+    net = multi_layer_network(directed=False)
+    net.load_network(str(multi_path), input_type="multiedgelist")
+
+    assert net.core_network.number_of_nodes() == 2
+    assert net.core_network.number_of_edges() == 1
+
+
+def test_multiplex_and_spin_parsers_skip_blank_lines(tmp_path):
+    multiplex_path = tmp_path / "multiplex.edges"
+    multiplex_path.write_text("\n# comment\nlayer1 u v\n")
+
+    multiplex_graph, _ = parse_multiplex_edges(str(multiplex_path), directed=False)
+
+    assert multiplex_graph.number_of_nodes() == 2
+    assert multiplex_graph.number_of_edges() == 1
+    assert multiplex_graph.get_edge_data(("u", "layer1"), ("v", "layer1"))[0][
+        "weight"
+    ] == 1.0
+
+    spin_path = tmp_path / "spin.txt"
+    spin_path.write_text("\n# comment\nu v tag\n")
+
+    spin_graph, _ = parse_spin_edgelist(str(spin_path), directed=False)
+
+    assert spin_graph.number_of_nodes() == 2
+    assert spin_graph.number_of_edges() == 1
+    assert spin_graph.get_edge_data("u", "v")["type"] == "tag"

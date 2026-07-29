@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import csv
 import heapq
 import json
 import os
 import tempfile
-from pathlib import Path
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
-from .utils import sort_key_for_row, stable_hash
+from .utils import sort_key_for_row
 
 
 class SpillManager:

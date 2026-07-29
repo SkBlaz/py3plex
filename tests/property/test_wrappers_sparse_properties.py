@@ -8,6 +8,7 @@ from scipy import sparse  # noqa: E402
 
 hypothesis = pytest.importorskip("hypothesis")
 from hypothesis import given, strategies as st  # noqa: E402
+pytest.importorskip("gensim")
 
 from py3plex.wrappers.benchmark_nodes import sparse2graph  # noqa: E402
 

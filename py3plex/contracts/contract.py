@@ -1,8 +1,8 @@
 """Main Robustness contract class with sensible defaults."""
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Union
-from .predicates import Predicate, JaccardAtK, KendallTau, PartitionVI, PartitionARI
+from typing import Any, Dict, List, Optional
+from .predicates import Predicate, JaccardAtK, KendallTau, PartitionVI
 
 
 @dataclass

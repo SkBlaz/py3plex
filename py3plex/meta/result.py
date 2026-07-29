@@ -5,9 +5,8 @@ access to meta-analysis results.
 """
 
 import pandas as pd
-import numpy as np
-from typing import Any, Dict, List, Optional, Union
-from dataclasses import dataclass, field
+from typing import Any, Dict, Optional
+from dataclasses import dataclass
 
 
 @dataclass

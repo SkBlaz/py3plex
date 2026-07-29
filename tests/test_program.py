@@ -179,6 +179,44 @@ class TestGraphProgram:
         
         assert result is not None
 
+    def test_query_builder_compile_alias(self):
+        """Test QueryBuilder.compile() returns GraphProgram aliasing to_program()."""
+        qb = Q.nodes().compute("degree")
+        program = qb.compile()
+
+        assert isinstance(program, GraphProgram)
+        assert program.hash() == qb.to_program().hash()
+
+    def test_program_lint_api(self):
+        """Test program.lint() public API."""
+        net = multinet.multi_layer_network()
+        net.add_nodes([{"source": "A", "type": "social"}])
+
+        program = Q.nodes().compute("degree").to_program()
+        diagnostics = program.lint(net)
+
+        assert isinstance(diagnostics, list)
+
+    def test_program_explain_with_network(self):
+        """Test explain() accepts optional network context."""
+        net = multinet.multi_layer_network()
+        net.add_nodes([{"source": "A", "type": "social"}])
+
+        program = Q.nodes().compute("degree").to_program()
+        explanation = program.explain(net)
+
+        assert "SELECT nodes" in explanation
+
+    def test_program_save_load_roundtrip(self, tmp_path):
+        """Test GraphProgram.save()/load() roundtrip."""
+        path = tmp_path / "query.py3plex.json"
+        original = Q.nodes().from_layers(L["social"]).compute("degree").to_program()
+
+        original.save(str(path))
+        loaded = GraphProgram.load(str(path))
+
+        assert loaded.hash() == original.hash()
+
 
 class TestProgramComposition:
     """Tests for program composition."""

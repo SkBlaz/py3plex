@@ -3,7 +3,7 @@
 This module provides a rich result object for network comparison operations.
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional
 
 
 class ComparisonResult:

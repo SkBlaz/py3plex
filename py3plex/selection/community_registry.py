@@ -1,8 +1,7 @@
 """Registry of community detection algorithms for AutoCommunity."""
 
-import hashlib
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from .capabilities import CapabilitiesReport, AlgorithmInfo

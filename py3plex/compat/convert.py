@@ -5,10 +5,9 @@ This module provides the main entry point for converting between py3plex
 graphs and external formats.
 """
 
-import warnings
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Optional
 
-from .exceptions import CompatibilityError, ConversionNotSupportedError
+from .exceptions import ConversionNotSupportedError
 from .ir import GraphIR, from_ir, to_ir
 
 

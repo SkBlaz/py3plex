@@ -8,13 +8,14 @@
 [![Benchmarks](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/benchmarks.yml)
 [![Documentation](https://github.com/SkBlaz/py3plex/actions/workflows/doc-coverage.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/doc-coverage.yml)
 [![Formal Verification](https://github.com/SkBlaz/py3plex/actions/workflows/verify.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/verify.yml)
+[![Lean formal verification](https://github.com/SkBlaz/py3plex/actions/workflows/formal.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/formal.yml)
 [![Fuzzing](https://github.com/SkBlaz/py3plex/actions/workflows/fuzzing.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/fuzzing.yml)
 [![PyPI version](https://img.shields.io/pypi/v/py3plex.svg)](https://pypi.org/project/py3plex/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/py3plex)](https://pypistats.org/packages/py3plex)
 ![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 ![Docker](https://img.shields.io/badge/Docker-Available-blue)
-![Lines of Code](https://img.shields.io/badge/lines-211.4K-blue)
-![Test Count](https://img.shields.io/badge/tests-9.2K-blue)
+![Lines of Code](https://img.shields.io/badge/lines-212.8K-blue)
+![Test Count](https://img.shields.io/badge/tests-9.6K-blue)
 
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
@@ -74,9 +75,7 @@ print(df[["id", "layer", "community_id",
           "betweenness_centrality_ci95_high", "score", "top_neighbors"]].head(10))
 ```
 
-### Safe chaining order (DSL v2)
-
-Use a strict two-phase flow:
+Uses a strict two-phase flow:
 
 1. **Build query** on `Q...` (`.where()`, `.compute()`, `.order_by()`, `.per_layer()`, `.coverage()`, ...)
 2. **Execute once** with `.execute(network)`

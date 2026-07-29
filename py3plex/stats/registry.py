@@ -5,7 +5,7 @@ model requirements.
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 from .statvalue import StatValue
 from .uncertainty import Uncertainty

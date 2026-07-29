@@ -9,7 +9,7 @@ These complement the existing high-level ProcessSpec system by providing
 traditional OOP interfaces with full control over the dynamics.
 """
 
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional
 
 import networkx as nx
 import numpy as np
@@ -22,7 +22,7 @@ from ._utils import (
 )
 
 # Import algorithm requirements system
-from py3plex.requirements import AlgoRequirements, check_compat, AlgorithmCompatibilityError
+from py3plex.requirements import check_compat, AlgorithmCompatibilityError
 from py3plex.algorithms.requirements_registry import (
     SIS_REQS,
     SIR_REQS,

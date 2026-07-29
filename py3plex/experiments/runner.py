@@ -14,10 +14,9 @@ loaded in lightweight contexts.
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .artifacts import save_metadata, save_result_table
+from .artifacts import save_result_table
 from .errors import ReproductionError
 from .model import Experiment
 from .store import ExperimentStore, get_default_store

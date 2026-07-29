@@ -850,16 +850,39 @@ class LayerRegularizedEmbedding(NetMFEmbedding):
             seed=self.seed,
         ).fit_transform(network)
 
-        union_aligned = union.reorder(supra.item_ids)
-        if supra.matrix.shape != union_aligned.matrix.shape:
+        # `union` mode collapses layers, so it is indexed by *physical* node
+        # id (e.g. "A"), while `supra` mode is indexed by (node, layer)
+        # tuples (e.g. ("A", "l1")). These key spaces don't overlap, so we
+        # can't `reorder` union onto supra's ids directly -- instead we
+        # broadcast each physical node's union vector to every one of its
+        # layer replicas in the supra index.
+        union_index = {iid: i for i, iid in enumerate(union.item_ids)}
+        union_rows = []
+        for supra_id in supra.item_ids:
+            phys_id = supra_id[0] if isinstance(supra_id, tuple) else supra_id
+            if phys_id not in union_index:
+                raise EmbeddingError(
+                    "LayerRegularizedEmbedding requires every supra node's "
+                    f"physical id to appear in the union embedding; {phys_id!r} "
+                    "(from supra node "
+                    f"{supra_id!r}) was not found. This may happen when supra/"
+                    "union modes produce different node sets."
+                )
+            union_rows.append(union.matrix[union_index[phys_id]])
+        union_aligned_matrix = np.vstack(union_rows).astype(supra.matrix.dtype, copy=False)
+
+        if union_aligned_matrix.shape[1] != supra.matrix.shape[1]:
             raise EmbeddingError(
-                "LayerRegularizedEmbedding requires aligned supra/union matrices "
-                f"with identical shape, got {supra.matrix.shape} and "
-                f"{union_aligned.matrix.shape}. This may happen when supra/union "
-                "modes produce different node sets. Ensure nodes are present "
-                "across layers or use a single multilayer mode."
+                "LayerRegularizedEmbedding requires supra and union embeddings "
+                f"to have the same dimensionality, got {supra.matrix.shape[1]} "
+                f"vs {union_aligned_matrix.shape[1]}. This typically happens "
+                f"when `dimensions` ({self.dimensions}) exceeds the number of "
+                "distinct physical nodes, since union mode collapses layers "
+                "and its rank is capped by that count. Use a smaller "
+                "`dimensions` or a larger network."
             )
-        blended = self.alpha * supra.matrix + (1.0 - self.alpha) * union_aligned.matrix
+
+        blended = self.alpha * supra.matrix + (1.0 - self.alpha) * union_aligned_matrix
         self._result = EmbeddingResult(
             matrix=blended.astype(np.float32),
             item_ids=supra.item_ids,

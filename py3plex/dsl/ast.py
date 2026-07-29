@@ -7,10 +7,9 @@ AST nodes, which are then executed by the same engine.
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union, Set
+from typing import Any, Dict, List, Optional, Tuple, Union
 import hashlib
 import json
-import copy
 
 
 class Target(str, Enum):
@@ -867,7 +866,7 @@ class PlanStep:
 
     Attributes:
         description: Human-readable description of the step
-        estimated_complexity: Estimated time complexity (e.g., "O(|V|)")
+        estimated_complexity: Estimated time complexity (e.g., ``"O(n)"`` where n is node count)
     """
 
     description: str

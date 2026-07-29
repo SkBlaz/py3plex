@@ -14,7 +14,7 @@ Semirings power generic path algorithms:
 """
 
 import math
-from typing import Any, Dict, Optional, Protocol
+from typing import Any, Dict, Protocol
 from dataclasses import dataclass, field
 
 
