@@ -28,10 +28,6 @@ import numpy as np
 
 from py3plex.algorithms.community_detection.leiden_multilayer import (
     leiden_multilayer,
-    LeidenResult,
-)
-from py3plex.algorithms.community_detection.multilayer_modularity import (
-    multilayer_modularity,
 )
 from py3plex.uncertainty.partition import (
     CommunityDistribution,

@@ -142,7 +142,7 @@ def draw_networkx(G, pos=None, arrows=True, with_labels=True, **kwds):
        For directed graphs, if True draw arrowheads.
        Note: Arrows will be the same color as edges.
 
-    arrowstyle : str, optional (default='-|>')
+    arrowstyle : str, optional (default='-\|>')
         For directed graphs, choose the style of the arrowsheads.
         See :py:class: `matplotlib.patches.ArrowStyle` for more
         options.
@@ -478,7 +478,7 @@ def draw_networkx_edges(
        For directed graphs, if True draw arrowheads.
        Note: Arrows will be the same color as edges.
 
-    arrowstyle : str, optional (default='-|>')
+    arrowstyle : str, optional (default='-\|>')
        For directed graphs, choose the style of the arrow heads.
        See :py:class: `matplotlib.patches.ArrowStyle` for more
        options.

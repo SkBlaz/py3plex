@@ -328,25 +328,6 @@ class PhysicalPlanBuilder:
     # ------------------------------------------------------------------
 
     def _build_op(self, logical: "LogicalOp", stats: "Any") -> PhysicalOp:
-        from .plan_nodes import (
-            LogicalScanNodes,
-            LogicalScanEdges,
-            LogicalFilter,
-            LogicalLayerFilter,
-            LogicalCompute,
-            LogicalAggregate,
-            LogicalGroupByLayer,
-            LogicalGroupByLayerPair,
-            LogicalCoverage,
-            LogicalOrderBy,
-            LogicalLimit,
-            LogicalTopK,
-            LogicalUQ,
-            LogicalNullModel,
-            LogicalProject,
-            LogicalCachedCompute,
-            LogicalEmptyScan,
-        )
 
         children = [self._build_op(c, stats) for c in logical.children]
         estimated_rows = getattr(logical, "estimated_rows", None) or 0
@@ -405,7 +386,7 @@ class PhysicalPlanBuilder:
                 desc=getattr(logical, "desc", True),
             )
         elif ltype == "LogicalOrderBy":
-            keys = getattr(logical, "keys", [])
+            getattr(logical, "keys", [])
             op = PhysicalFilterPython()  # ordering is handled by executor
         elif ltype == "LogicalLimit":
             n = getattr(logical, "n", 0)

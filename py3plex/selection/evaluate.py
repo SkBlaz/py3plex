@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from .result import ContestantResult
 from .community_registry import CandidateSpec
-from .metric_registry import MetricRegistry, MetricSpec
+from .metric_registry import MetricSpec
 
 logger = logging.getLogger(__name__)
 

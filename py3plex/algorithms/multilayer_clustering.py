@@ -67,7 +67,7 @@ References
 
 from typing import Dict, List, Optional, Set, Tuple, Union
 import numpy as np
-from scipy.sparse import csr_matrix, lil_matrix
+from scipy.sparse import lil_matrix
 
 from py3plex.core.multinet import multi_layer_network
 

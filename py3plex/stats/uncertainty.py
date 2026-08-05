@@ -11,6 +11,16 @@ from typing import Optional, Tuple
 import numpy as np
 
 
+def _sample_std(samples: np.ndarray) -> float:
+    """Sample standard deviation with exact zero for constant samples."""
+    if len(samples) < 2:
+        return 0.0
+    arr = np.asarray(samples)
+    if np.ptp(arr) == 0:
+        return 0.0
+    return float(np.std(arr, ddof=1))
+
+
 class Uncertainty(ABC):
     """Base class for uncertainty models.
     
@@ -306,7 +316,7 @@ class Bootstrap(Uncertainty):
             "type": "bootstrap",
             "n": len(self.samples),
             "mean": float(np.mean(self.samples)),
-            "std": float(np.std(self.samples, ddof=1)),
+            "std": self.std(),
             "ci": self.ci(level),
             "method": "percentile",
         }
@@ -327,9 +337,7 @@ class Bootstrap(Uncertainty):
     
     def std(self) -> Optional[float]:
         """Compute sample standard deviation."""
-        if len(self.samples) < 2:
-            return 0.0
-        return float(np.std(self.samples, ddof=1))
+        return _sample_std(self.samples)
     
     def propagate(self, op: str, other: Optional["Uncertainty"], *, seed: Optional[int] = None) -> "Uncertainty":
         """Propagate via Monte Carlo."""
@@ -340,7 +348,7 @@ class Bootstrap(Uncertainty):
         return {
             "type": "bootstrap",
             "n": len(self.samples),
-            "std": float(np.std(self.samples, ddof=1)) if len(self.samples) > 1 else 0.0,
+            "std": self.std(),
             "ci95": list(self.ci(0.95)),
         }
 
@@ -368,7 +376,7 @@ class Empirical(Uncertainty):
             "type": "empirical",
             "n": len(self.samples),
             "mean": float(np.mean(self.samples)),
-            "std": float(np.std(self.samples, ddof=1)),
+            "std": self.std(),
             "ci": self.ci(level),
         }
     
@@ -388,9 +396,7 @@ class Empirical(Uncertainty):
     
     def std(self) -> Optional[float]:
         """Compute sample standard deviation."""
-        if len(self.samples) < 2:
-            return 0.0
-        return float(np.std(self.samples, ddof=1))
+        return _sample_std(self.samples)
     
     def propagate(self, op: str, other: Optional["Uncertainty"], *, seed: Optional[int] = None) -> "Uncertainty":
         """Propagate via Monte Carlo."""
@@ -401,7 +407,7 @@ class Empirical(Uncertainty):
         return {
             "type": "empirical",
             "n": len(self.samples),
-            "std": float(np.std(self.samples, ddof=1)) if len(self.samples) > 1 else 0.0,
+            "std": self.std(),
             "ci95": list(self.ci(0.95)),
         }
 

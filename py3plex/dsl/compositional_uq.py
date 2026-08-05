@@ -13,18 +13,12 @@ Key concepts:
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Callable
+from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 
 import numpy as np
-import networkx as nx
 
-from .ast import SelectStmt, UQConfig
-from .result import QueryResult
-from py3plex.uncertainty import (
-    StatSeries,
-    ResamplingStrategy,
-)
+from .ast import SelectStmt
 
 
 logger = logging.getLogger(__name__)
@@ -296,7 +290,7 @@ def create_resampled_network(
     else:
         resample_seed = None
     
-    rng = np.random.default_rng(resample_seed)
+    np.random.default_rng(resample_seed)
     
     if spec.method == "perturbation":
         # For perturbation, we don't actually modify the network

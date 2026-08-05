@@ -21,7 +21,7 @@ import dataclasses
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from .utils import canonical_json, stable_hash
+from .utils import stable_hash
 
 
 @dataclasses.dataclass

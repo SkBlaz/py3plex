@@ -4,7 +4,7 @@ Provides convenient access to benchmark-specific views like leaderboards,
 summaries, and traces.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 import pandas as pd
 
 

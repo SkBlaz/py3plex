@@ -6,7 +6,7 @@ All errors, warnings, and informational messages should emit Diagnostic objects.
 
 import json
 from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 from enum import Enum
 
 

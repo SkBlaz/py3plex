@@ -165,9 +165,9 @@ def find_violation(
     # Determine layers to search
     if layers is None:
         # Use all layers
-        search_layers = [str(layer) for layer in network.layers]
+        [str(layer) for layer in network.layers]
     else:
-        search_layers = layers
+        pass
 
     # Build DSL query to compute needed metrics
     # For MVP: antecedent uses "degree" (cheap), consequent uses computed metric

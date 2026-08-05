@@ -14,7 +14,7 @@ where the metric can be:
 
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, Optional
 import warnings
 
 import networkx as nx
@@ -95,14 +95,7 @@ def robustness_centrality(
     """
     # Validate inputs
     if target not in ("node", "layer"):
-        raise Py3plexException(
-            f"Invalid target type: '{target}'",
-            suggestions=[
-                "Use target='node' to measure node robustness",
-                "Use target='layer' to measure layer robustness"
-            ],
-            did_you_mean="node" if target.lower().startswith("n") else "layer"
-        )
+        raise ValueError("target must be one of: node, layer")
     
     valid_metrics = [
         "giant_component",
@@ -111,17 +104,7 @@ def robustness_centrality(
         "sir_final_size",
     ]
     if metric not in valid_metrics:
-        from py3plex.errors import find_similar
-        did_you_mean = find_similar(metric, valid_metrics)
-        raise Py3plexException(
-            f"Unknown robustness metric: '{metric}'",
-            suggestions=[
-                f"Valid metrics: {', '.join(valid_metrics)}",
-                "Use 'giant_component' for connectivity-based robustness",
-                "Use 'sis_final_prevalence' or 'sir_final_size' for dynamics-based robustness"
-            ],
-            did_you_mean=did_you_mean
-        )
+        raise ValueError(f"metric must be one of: {', '.join(valid_metrics)}")
 
     # py3plex.core.multinet.multi_layer_network may keep `core_network=None` until
     # something is added. In that case the graph is effectively empty, and any

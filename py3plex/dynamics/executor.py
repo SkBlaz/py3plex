@@ -170,7 +170,7 @@ def run_simulation(network: Any, stmt: SimulationStmt,
         )
 
     # Step 3: Create update function
-    update_step = process_spec.update_fn(params, stmt.coupling)
+    process_spec.update_fn(params, stmt.coupling)
 
     # Step 4: Initialize RNG and spawn seeds for replicates
     base_seed = stmt.seed if stmt.seed is not None else 42

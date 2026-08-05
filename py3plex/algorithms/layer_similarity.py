@@ -12,10 +12,8 @@ Authors: py3plex contributors
 Date: 2025
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 import numpy as np
-import scipy.sparse as sp
-from collections import defaultdict
 
 
 def jaccard_layer_similarity(
@@ -167,7 +165,6 @@ def spectral_layer_similarity(
     
     try:
         # Compute adjacency matrices
-        import networkx as nx
         from py3plex.core.nx_compat import nx_to_scipy_sparse_matrix
         
         adj1 = nx_to_scipy_sparse_matrix(subgraph1)

@@ -4,7 +4,7 @@ This module provides functions to compare baseline and counterfactual
 results using various statistical measures.
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -27,7 +27,7 @@ def compute_delta_stats(baseline: pd.DataFrame,
         return {}
     
     # Get baseline values
-    baseline_vals = baseline[metric].values
+    baseline[metric].values
     
     # Collect counterfactual deltas
     deltas = []
@@ -296,7 +296,7 @@ def fragile_nodes(baseline: pd.DataFrame,
     cv_scores = []
     for item_id in item_ids:
         # Get baseline value
-        baseline_val = baseline.loc[item_id, metric]
+        baseline.loc[item_id, metric]
         
         # Collect counterfactual values
         cf_vals = []

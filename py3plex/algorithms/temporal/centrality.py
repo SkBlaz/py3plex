@@ -9,8 +9,6 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterator, Optional, Tuple
 
-import networkx as nx
-import numpy as np
 
 
 def streaming_pagerank(

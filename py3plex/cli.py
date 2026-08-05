@@ -12,6 +12,7 @@ import random
 import shutil
 import sys
 import tempfile
+import textwrap
 import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -827,6 +828,216 @@ Exit codes:
         help="Print SHA-256 fingerprint of the capability report",
     )
 
+    # DYNAMICS command - Epidemic simulations
+    dynamics_parser = subparsers.add_parser(
+        "dynamics",
+        help="Run epidemic dynamics simulations (SIS, SIR, SEIR)",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run SIR epidemic with 100 steps
+  py3plex dynamics network.edgelist --model sir --beta 0.3 --gamma 0.1 --steps 100 --output results.json
+  
+  # Run SIS with 10 replicates and 1% initial infection
+  py3plex dynamics network.edgelist --model sis --beta 0.3 --mu 0.1 --seed-fraction 0.01 --replicates 10
+  
+  # Run SEIR with custom parameters
+  py3plex dynamics network.edgelist --model seir --beta 0.3 --sigma 0.2 --gamma 0.1 --steps 200
+  
+  # Specify seed for reproducibility
+  py3plex dynamics network.edgelist --model sir --beta 0.3 --gamma 0.1 --seed 42 --output sir.json
+        """,
+    )
+    dynamics_parser.add_argument(
+        "input",
+        help="Input network file (edgelist, graphml, etc.)",
+    )
+    dynamics_parser.add_argument(
+        "--model", "-m",
+        required=True,
+        choices=["sis", "sir", "seir"],
+        help="Epidemic model to simulate",
+    )
+    dynamics_parser.add_argument(
+        "--beta",
+        type=float,
+        required=True,
+        help="Infection rate (transmission probability)",
+    )
+    dynamics_parser.add_argument(
+        "--gamma",
+        type=float,
+        help="Recovery rate (for SIR and SEIR models)",
+    )
+    dynamics_parser.add_argument(
+        "--mu",
+        type=float,
+        help="Recovery rate (for SIS model)",
+    )
+    dynamics_parser.add_argument(
+        "--sigma",
+        type=float,
+        help="Exposed-to-infected rate (for SEIR model only)",
+    )
+    dynamics_parser.add_argument(
+        "--steps",
+        type=int,
+        default=100,
+        help="Number of simulation steps (default: 100)",
+    )
+    dynamics_parser.add_argument(
+        "--replicates",
+        type=int,
+        default=1,
+        help="Number of independent simulation runs (default: 1)",
+    )
+    dynamics_parser.add_argument(
+        "--seed-fraction",
+        type=float,
+        default=0.01,
+        help="Fraction of nodes initially infected (default: 0.01)",
+    )
+    dynamics_parser.add_argument(
+        "--seed-nodes",
+        nargs="+",
+        help="Specific nodes to seed with infection (space-separated node IDs)",
+    )
+    dynamics_parser.add_argument(
+        "--layers",
+        nargs="+",
+        help="Restrict simulation to specific layers (space-separated layer names)",
+    )
+    dynamics_parser.add_argument(
+        "--seed",
+        type=int,
+        help="Random seed for reproducibility",
+    )
+    dynamics_parser.add_argument(
+        "--output", "-o",
+        help="Output file for results (JSON format)",
+    )
+    dynamics_parser.add_argument(
+        "--format",
+        choices=["json", "csv"],
+        default="json",
+        help="Output format (default: json)",
+    )
+    dynamics_parser.add_argument(
+        "--plot",
+        action="store_true",
+        help="Generate and save trajectory plot",
+    )
+    dynamics_parser.add_argument(
+        "--plot-file",
+        help="Output file for trajectory plot (PNG format)",
+    )
+    dynamics_parser.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="Print detailed progress information",
+    )
+
+    # Embed command
+    embed_parser = subparsers.add_parser(
+        "embed",
+        help="Learn node embeddings",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent(
+            """\
+            Learn low-dimensional node embeddings using various algorithms.
+
+            Supported algorithms:
+              - node2vec: Random walk-based with biased sampling
+              - deepwalk: Uniform random walks
+              - netmf: Matrix factorization (NetMF)
+              - line: LINE (1st and 2nd order proximity)
+              - metapath2vec: Heterogeneous network metapath walks
+
+            Examples:
+                # Node2Vec embeddings
+                py3plex embed network.edgelist --algorithm node2vec --dimensions 128 --output embeddings.csv
+
+                # NetMF (faster, no walks)
+                py3plex embed network.edgelist --algorithm netmf --dimensions 64 --output embeddings.json
+
+                # MetaPath2Vec for heterogeneous networks
+                py3plex embed network.edgelist --algorithm metapath2vec --dimensions 128 --metapath "ABA,ACA" --output embeddings.csv
+            """
+        ),
+    )
+    embed_parser.add_argument("input", help="Input network file")
+    embed_parser.add_argument(
+        "--algorithm",
+        "-a",
+        choices=["node2vec", "deepwalk", "netmf", "line", "metapath2vec"],
+        default="node2vec",
+        help="Embedding algorithm (default: node2vec)",
+    )
+    embed_parser.add_argument(
+        "--dimensions",
+        "-d",
+        type=int,
+        default=128,
+        help="Embedding dimensionality (default: 128)",
+    )
+    embed_parser.add_argument(
+        "--walk-length",
+        type=int,
+        default=40,
+        help="Random walk length for walk-based methods (default: 40)",
+    )
+    embed_parser.add_argument(
+        "--num-walks",
+        type=int,
+        default=10,
+        help="Number of walks per node for walk-based methods (default: 10)",
+    )
+    embed_parser.add_argument(
+        "--window-size",
+        type=int,
+        default=10,
+        help="Context window size for skip-gram (default: 10)",
+    )
+    embed_parser.add_argument(
+        "--p",
+        type=float,
+        default=1.0,
+        help="Return parameter for node2vec (default: 1.0)",
+    )
+    embed_parser.add_argument(
+        "--q",
+        type=float,
+        default=1.0,
+        help="In-out parameter for node2vec (default: 1.0)",
+    )
+    embed_parser.add_argument(
+        "--metapath",
+        type=str,
+        help="Metapath schema for metapath2vec (e.g., 'ABA,ACA')",
+    )
+    embed_parser.add_argument(
+        "--workers",
+        type=int,
+        default=4,
+        help="Number of parallel workers (default: 4)",
+    )
+    embed_parser.add_argument(
+        "--seed",
+        type=int,
+        help="Random seed for reproducibility",
+    )
+    embed_parser.add_argument(
+        "--output",
+        "-o",
+        help="Output file for embeddings (JSON or CSV)",
+    )
+    embed_parser.add_argument(
+        "--format",
+        choices=["json", "csv"],
+        default="csv",
+        help="Output format (default: csv)",
+    )
+
     # EXPERIMENT command group
     from py3plex.experiments.cli import add_experiment_subparser
 
@@ -1563,7 +1774,10 @@ def cmd_query(args: argparse.Namespace) -> int:
             logger.info(f"Loading network from {args.input}...")
             network = _load_network(args.input)
         
-        # Execute query
+        import contextlib
+
+        # Execute query. Some lower-level layout/progress utilities print
+        # diagnostics directly to stdout; keep command stdout parseable.
         if args.dsl:
             # Interpret as Python DSL builder syntax
             from py3plex.dsl import Q, L, Param
@@ -1578,14 +1792,6 @@ def cmd_query(args: argparse.Namespace) -> int:
             }
             
             # Basic validation: only allow expected patterns
-            allowed_patterns = [
-                "Q.", "L[", "Param.",
-                ".nodes(", ".edges(", ".from_layers(", ".where(",
-                ".compute(", ".order_by(", ".limit(", ".execute(",
-                '"', "'", "(", ")", ",", "=", "+", "-", "&", "[", "]",
-                "_", "layer", "degree", "centrality", "clustering",
-                "betweenness", "closeness", "eigenvector", "pagerank",
-            ]
             
             # Check for potentially dangerous patterns
             dangerous_patterns = [
@@ -1604,11 +1810,13 @@ def cmd_query(args: argparse.Namespace) -> int:
             except NameError as e:
                 raise ValueError(f"Invalid DSL syntax: {e}. Only Q, L, and Param are allowed.")
             
-            result = query_builder.execute(network)
+            with contextlib.redirect_stdout(sys.stderr):
+                result = query_builder.execute(network)
         else:
             # Use legacy string DSL parser
             from py3plex.dsl import execute_query
-            result = execute_query(network, query_str)
+            with contextlib.redirect_stdout(sys.stderr):
+                result = execute_query(network, query_str)
         
         # Format output
         if args.dsl:
@@ -3724,6 +3932,357 @@ hairball_plot(graph, network_colors)
         return 1
 
 
+def cmd_dynamics(args: argparse.Namespace) -> int:
+    """Run epidemic dynamics simulations on a network.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    try:
+        if args.verbose:
+            print(f"Loading network from: {args.input}")
+
+        # Load network
+        net = multinet.multi_layer_network(directed=False)
+        net.load_network(args.input, input_type="multiedgelist")
+
+        if args.verbose:
+            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
+
+        # Validate model-specific parameters
+        if args.model in ["sir", "seir"] and args.gamma is None:
+            logger.error(f"{args.model.upper()} model requires --gamma parameter")
+            return 1
+
+        if args.model == "sis" and args.mu is None:
+            logger.error("SIS model requires --mu parameter")
+            return 1
+
+        if args.model == "seir" and args.sigma is None:
+            logger.error("SEIR model requires --sigma parameter")
+            return 1
+
+        # Import dynamics module
+        from py3plex.dsl import Q
+        from py3plex.dsl.builder import DynamicsBuilder
+
+        # Construct dynamics query
+        if args.verbose:
+            print(f"Setting up {args.model.upper()} simulation...")
+            print(f"  Beta (infection rate): {args.beta}")
+            if args.model == "sir":
+                print(f"  Gamma (recovery rate): {args.gamma}")
+            elif args.model == "sis":
+                print(f"  Mu (recovery rate): {args.mu}")
+            elif args.model == "seir":
+                print(f"  Sigma (exposed rate): {args.sigma}")
+                print(f"  Gamma (recovery rate): {args.gamma}")
+            print(f"  Steps: {args.steps}")
+            print(f"  Replicates: {args.replicates}")
+
+        # Build dynamics query
+        query_builder = Q.dynamics(
+            args.model.upper(),
+            beta=args.beta,
+            gamma=args.gamma if args.model in ["sir", "seir"] else None,
+            mu=args.mu if args.model == "sis" else None,
+            sigma=args.sigma if args.model == "seir" else None,
+        )
+
+        # Restrict to specific layers if requested
+        if args.layers:
+            from py3plex.dsl import L
+            layer_expr = L[args.layers[0]]
+            for layer in args.layers[1:]:
+                layer_expr = layer_expr + L[layer]
+            query_builder = query_builder.on_layers(layer_expr)
+
+        # Seed infections
+        if args.seed_nodes:
+            # Seed specific nodes
+            seed_nodes_list = [(node, net.get_layers()[0]) for node in args.seed_nodes]
+            query_builder = query_builder.seed_infections(nodes=seed_nodes_list)
+        else:
+            # Seed fraction of nodes
+            query_builder = query_builder.seed_infections(fraction=args.seed_fraction)
+
+        # Run simulation
+        if args.seed is not None:
+            query_builder = query_builder.run(
+                steps=args.steps,
+                replicates=args.replicates,
+                seed=args.seed
+            )
+        else:
+            query_builder = query_builder.run(
+                steps=args.steps,
+                replicates=args.replicates
+            )
+
+        if args.verbose:
+            print("Running simulation...")
+
+        # Execute
+        result = query_builder.execute(net)
+
+        if args.verbose:
+            print("Simulation complete!")
+
+        # Extract trajectories
+        trajectories = result.trajectories
+
+        # Prepare output
+        output_data = {
+            "model": args.model,
+            "parameters": {
+                "beta": args.beta,
+            },
+            "simulation": {
+                "steps": args.steps,
+                "replicates": args.replicates,
+                "seed": args.seed,
+            },
+            "network": {
+                "nodes": len(net.get_nodes()),
+                "edges": len(net.get_edges()),
+                "layers": net.get_layers(),
+            },
+            "trajectories": trajectories.to_dict(orient="records") if hasattr(trajectories, "to_dict") else str(trajectories),
+        }
+
+        # Add model-specific parameters
+        if args.model == "sir":
+            output_data["parameters"]["gamma"] = args.gamma
+        elif args.model == "sis":
+            output_data["parameters"]["mu"] = args.mu
+        elif args.model == "seir":
+            output_data["parameters"]["sigma"] = args.sigma
+            output_data["parameters"]["gamma"] = args.gamma
+
+        # Save results
+        if args.output:
+            if args.format == "json":
+                with open(args.output, "w") as f:
+                    json.dump(output_data, f, indent=2)
+                if args.verbose:
+                    print(f"Results saved to: {args.output}")
+            elif args.format == "csv":
+                if hasattr(trajectories, "to_csv"):
+                    trajectories.to_csv(args.output, index=False)
+                else:
+                    print("Warning: Could not export trajectories to CSV format")
+                if args.verbose:
+                    print(f"Trajectories saved to: {args.output}")
+        else:
+            # Print to stdout
+            print(json.dumps(output_data, indent=2))
+
+        # Generate plot if requested
+        if args.plot or args.plot_file:
+            try:
+                import matplotlib.pyplot as plt
+
+                plot_file = args.plot_file if args.plot_file else "dynamics_plot.png"
+
+                plt.figure(figsize=(10, 6))
+
+                if args.model == "sis":
+                    # Plot S and I
+                    if "susceptible" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
+                    if "infected" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
+                elif args.model == "sir":
+                    # Plot S, I, and R
+                    if "susceptible" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
+                    if "infected" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
+                    if "recovered" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["recovered"], label="Recovered", color="green")
+                elif args.model == "seir":
+                    # Plot S, E, I, and R
+                    if "susceptible" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
+                    if "exposed" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["exposed"], label="Exposed", color="orange")
+                    if "infected" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
+                    if "recovered" in trajectories.columns:
+                        plt.plot(trajectories["step"], trajectories["recovered"], label="Recovered", color="green")
+
+                plt.xlabel("Time Step")
+                plt.ylabel("Population")
+                plt.title(f"{args.model.upper()} Dynamics Simulation")
+                plt.legend()
+                plt.grid(True, alpha=0.3)
+                plt.tight_layout()
+                plt.savefig(plot_file, dpi=150)
+                plt.close()
+
+                if args.verbose:
+                    print(f"Plot saved to: {plot_file}")
+            except Exception as e:
+                logger.warning(f"Could not generate plot: {e}")
+
+        return 0
+
+    except Exception as e:
+        logger.error(f"Error during dynamics simulation: {e}")
+        if args.verbose:
+            traceback.print_exc()
+        return 1
+
+
+def cmd_embed(args: argparse.Namespace) -> int:
+    """Learn node embeddings from a network.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    try:
+        if args.verbose:
+            print(f"Loading network from: {args.input}")
+
+        # Load network
+        net = multinet.multi_layer_network(directed=False)
+        net.load_network(args.input, input_type="multiedgelist")
+
+        if args.verbose:
+            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
+
+        # Prepare embedding parameters
+        embed_params = {
+            "method": args.algorithm,
+            "dimensions": args.dimensions,
+            "walk_length": args.walk_length,
+            "num_walks": args.num_walks,
+            "context_size": args.window_size,
+            "workers": args.workers,
+        }
+
+        # Add algorithm-specific parameters
+        if args.algorithm == "node2vec":
+            embed_params["p"] = args.p
+            embed_params["q"] = args.q
+        elif args.algorithm == "metapath2vec":
+            if not args.metapath:
+                logger.error("MetaPath2Vec requires --metapath parameter (e.g., 'ABA,ACA')")
+                return 1
+            embed_params["metapath"] = args.metapath
+
+        # Add seed if specified
+        if args.seed is not None:
+            embed_params["seed"] = args.seed
+
+        if args.verbose:
+            print(f"Learning {args.algorithm} embeddings...")
+            print(f"  Dimensions: {args.dimensions}")
+            if args.algorithm in ["node2vec", "deepwalk"]:
+                print(f"  Walk length: {args.walk_length}")
+                print(f"  Num walks: {args.num_walks}")
+            if args.algorithm == "node2vec":
+                print(f"  p (return): {args.p}")
+                print(f"  q (in-out): {args.q}")
+            if args.algorithm == "metapath2vec":
+                print(f"  Metapath: {args.metapath}")
+            print(f"  Window size: {args.window_size}")
+
+        # Learn embeddings using the unified embed() API
+        result = net.embed(**embed_params)
+
+        if args.verbose:
+            print("Embeddings learned successfully!")
+
+        # Prepare output
+        if hasattr(result, "embeddings"):
+            # EmbeddingResult object
+            embeddings = result.embeddings
+            node_list = result.nodes if hasattr(result, "nodes") else list(embeddings.keys())
+        else:
+            # Direct embeddings dictionary
+            embeddings = result
+            node_list = list(embeddings.keys())
+
+        # Convert to output format
+        output_data = {
+            "algorithm": args.algorithm,
+            "parameters": {
+                "dimensions": args.dimensions,
+                "walk_length": args.walk_length,
+                "num_walks": args.num_walks,
+                "window_size": args.window_size,
+                "seed": args.seed,
+            },
+            "network": {
+                "nodes": len(net.get_nodes()),
+                "edges": len(net.get_edges()),
+                "layers": net.get_layers(),
+            },
+            "embeddings": {},
+        }
+
+        # Add algorithm-specific parameters to output
+        if args.algorithm == "node2vec":
+            output_data["parameters"]["p"] = args.p
+            output_data["parameters"]["q"] = args.q
+        elif args.algorithm == "metapath2vec":
+            output_data["parameters"]["metapath"] = args.metapath
+
+        # Format embeddings for output
+        for node in node_list:
+            if node in embeddings:
+                embedding = embeddings[node]
+                # Convert numpy array to list if needed
+                if hasattr(embedding, "tolist"):
+                    output_data["embeddings"][str(node)] = embedding.tolist()
+                else:
+                    output_data["embeddings"][str(node)] = list(embedding)
+
+        # Save results
+        if args.output:
+            if args.format == "json":
+                with open(args.output, "w") as f:
+                    json.dump(output_data, f, indent=2)
+                if args.verbose:
+                    print(f"Embeddings saved to: {args.output}")
+            elif args.format == "csv":
+                # Write CSV format: node, dim_0, dim_1, ..., dim_n
+                import csv
+
+                with open(args.output, "w", newline="") as f:
+                    writer = csv.writer(f)
+                    # Header
+                    header = ["node"] + [f"dim_{i}" for i in range(args.dimensions)]
+                    writer.writerow(header)
+                    # Data
+                    for node in node_list:
+                        if node in embeddings:
+                            embedding = embeddings[node]
+                            if hasattr(embedding, "tolist"):
+                                embedding = embedding.tolist()
+                            writer.writerow([str(node)] + list(embedding))
+                if args.verbose:
+                    print(f"Embeddings saved to: {args.output}")
+        else:
+            # Print to stdout (JSON format)
+            print(json.dumps(output_data, indent=2))
+
+        return 0
+
+    except Exception as e:
+        logger.error(f"Error during embedding learning: {e}")
+        if args.verbose:
+            traceback.print_exc()
+        return 1
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI.
 
@@ -3762,6 +4321,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         "run-config": cmd_run_config,
         "tutorial": cmd_tutorial,
         "capabilities": cmd_capabilities,
+        "dynamics": cmd_dynamics,
+        "embed": cmd_embed,
     }
 
     # Experiment command group dispatches via its own dispatcher

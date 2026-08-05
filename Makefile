@@ -3,7 +3,7 @@
 # Production-Grade Makefile for Development, Testing, and Publishing
 # ─────────────────────────────────────────────────────────────────────────────
 
-.PHONY: help setup dev-install format lint test coverage benchmark docs clean build publish api-check ci test-all fuzz-property fuzz-quick fuzz fuzz-long fuzz-docker
+.PHONY: help setup dev-install format lint test coverage benchmark docs clean build publish api-check ci test-all fuzz-property fuzz-quick fuzz fuzz-long fuzz-docker formal
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Variables
@@ -234,6 +234,14 @@ type-coverage: ## Check type annotation coverage with mypy
 	@printf "$(COLOR_GREEN) Running type coverage analysis...$(COLOR_RESET)\n"
 	@python docs/check_type_coverage.py --verbose
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN) Type coverage check complete!$(COLOR_RESET)\n"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Lean Formal Verification
+# ─────────────────────────────────────────────────────────────────────────────
+formal: ## Build and verify the Lean formal proofs (requires Elan/Lake)
+	@printf "$(COLOR_BOLD)$(COLOR_BLUE)▶ Running Lean formal verification...$(COLOR_RESET)\n"
+	cd formal && lake build
+	@printf "$(COLOR_BOLD)$(COLOR_GREEN) Lean build successful.$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Cleanup

@@ -317,7 +317,7 @@ def _skipgram_train(
     W_out = np.zeros((vocab_size, dim), dtype=np.float32)
 
     # Pre-compute subsampling keep probabilities
-    total_tokens = neg_dist.sum()  # already normalised, so sum=1
+    neg_dist.sum()  # already normalised, so sum=1
     # Recompute from neg_dist^(1/0.75) to get original proportions
     # (approximate; good enough for subsampling)
     if subsampling is not None:
@@ -580,7 +580,7 @@ class MetaPath2VecEmbedder:
             W_in = W_in / norms
 
         # Map item_ids to matrix rows; items missing from vocab get zeros
-        token_set = set(token_to_idx.keys())
+        set(token_to_idx.keys())
         matrix = np.zeros((len(item_ids), _dim), dtype=np.float32)
         for i, node_id in enumerate(item_ids):
             tok = _node_token(node_id)

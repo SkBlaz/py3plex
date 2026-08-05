@@ -10,8 +10,6 @@ from py3plex.exceptions import Py3plexException
 from py3plex.algebra import (
     get_semiring,
     WeightLiftSpec,
-    sssp,
-    closure,
     get_backend,
 )
 from .ast import (

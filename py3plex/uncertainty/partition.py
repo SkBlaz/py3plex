@@ -329,28 +329,27 @@ class CommunityDistribution:
         **kwargs
     ) -> np.ndarray:
         """Compute consensus partition from the distribution.
-        
+
         The consensus partition is a representative partition that best
         summarizes the distribution. Multiple methods are supported.
-        
+
         Parameters
         ----------
-        method : {'medoid', 'cluster_coassoc'}
-            Consensus method:
-            - 'medoid': Choose partition with minimum VI distance to all others
-              (always available, parameter-free)
-            - 'cluster_coassoc': Cluster the co-association matrix using
-              spectral clustering or hierarchical clustering (requires scipy)
+        method : str
+            Consensus method. Use ``'medoid'`` to choose the partition with
+            minimum VI distance to all others (parameter-free), or
+            ``'cluster_coassoc'`` to cluster the co-association matrix using
+            spectral or hierarchical clustering (requires scipy).
         **kwargs
-            Additional arguments for the consensus method:
-            - metric : str, for 'medoid' method ('vi' or 'pair_agreement')
-            - n_clusters : int, for 'cluster_coassoc' method
-        
+            Additional arguments: ``metric`` (str, for ``'medoid'``; ``'vi'``
+            or ``'pair_agreement'``), or ``n_clusters`` (int, for
+            ``'cluster_coassoc'``).
+
         Returns
         -------
         np.ndarray
             Consensus partition array, shape (n_nodes,)
-        
+
         Examples
         --------
         >>> dist = CommunityDistribution([...], nodes=[...])

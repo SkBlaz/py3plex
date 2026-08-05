@@ -6,12 +6,9 @@ compatibility checking before conversion.
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional
 
-import numpy as np
-import pandas as pd
 
-from .exceptions import SchemaError
 from .ir import GraphIR
 
 

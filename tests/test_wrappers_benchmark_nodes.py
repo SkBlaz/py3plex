@@ -9,9 +9,10 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from gensim.models import KeyedVectors
 from scipy import sparse
 from sklearn.linear_model import LogisticRegression
+
+pytest.importorskip("gensim")
 
 from py3plex.wrappers.benchmark_nodes import (
     TopKRanker,

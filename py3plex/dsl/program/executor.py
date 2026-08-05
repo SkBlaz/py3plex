@@ -24,9 +24,9 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
-from ..ast import Query, SelectStmt, Target
+from ..ast import SelectStmt, Target
 from ..executor import execute_ast
 from ..result import QueryResult
 from .cost import (
@@ -39,7 +39,7 @@ from .cost import (
     format_memory_estimate,
 )
 from .types import Type, infer_type
-from .rewrite import RewriteEngine, RewriteRule
+from .rewrite import RewriteEngine
 
 # Import exceptions
 from py3plex.exceptions import Py3plexException

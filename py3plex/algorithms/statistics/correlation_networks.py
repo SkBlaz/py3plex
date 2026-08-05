@@ -21,8 +21,17 @@ def pick_threshold(matrix: np.ndarray) -> float:
     Returns:
         Optimal threshold value
     """
+    matrix = np.asarray(matrix)
+    if matrix.ndim < 2 or matrix.shape[1] < 2:
+        return 0.0
+
     current_r_opt = 0
     rho, pval = stats.spearmanr(matrix)
+    rho = np.asarray(rho, dtype=float)
+    if rho.ndim < 2 or rho.shape[0] < 2 or rho.shape[1] < 2:
+        return 0.0
+    rho = np.nan_to_num(rho, nan=0.0, posinf=1.0, neginf=-1.0)
+
     for j in np.linspace(0, 1, 50):
         tmp_array = rho.copy()
         tmp_array[tmp_array > j] = 1
@@ -30,11 +39,18 @@ def pick_threshold(matrix: np.ndarray) -> float:
         np.fill_diagonal(tmp_array, 0)  # self loops
         rw_sum = np.sum(tmp_array, axis=0)
         count_dict = Counter(rw_sum)
+        if len(count_dict) < 2:
+            continue
         key_counts = np.log(np.fromiter(count_dict.keys(), dtype=float))
         counts = np.log(np.fromiter(count_dict.values(), dtype=float))
+        valid = np.isfinite(key_counts) & np.isfinite(counts)
+        if np.count_nonzero(valid) < 2:
+            continue
         slope, intercept, r_value, p_value, std_err = stats.linregress(
-            key_counts, counts
+            key_counts[valid], counts[valid]
         )
+        if not np.isfinite(r_value):
+            continue
         if r_value > current_r_opt:
             logger.debug("Updating R^2: %s", r_value)
             current_r_opt = r_value

@@ -5,7 +5,7 @@ Provides functions to compare GraphIR objects for equality and
 generate diffs for debugging roundtrip conversions.
 """
 
-from typing import List, Tuple
+from typing import List
 
 import pandas as pd
 

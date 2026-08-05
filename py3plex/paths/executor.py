@@ -3,7 +3,7 @@
 This module provides the main execution function for path queries.
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from .algorithms import path_registry
 from .result import PathResult

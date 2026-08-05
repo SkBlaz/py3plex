@@ -29,7 +29,7 @@ Example:
     >>> combined = result1 | result2  # Union of results
 """
 
-from typing import Any, Dict, List, Optional, Set, Union, Callable
+from typing import Any, Dict, Optional, Set
 from dataclasses import dataclass
 from enum import Enum
 
@@ -109,7 +109,6 @@ def check_query_compatibility(q1: "QueryBuilder", q2: "QueryBuilder") -> None:
         IncompatibleQueryError: If queries have incompatible targets
     """
     from .builder import QueryBuilder
-    from .ast import Target
     
     if not isinstance(q1, QueryBuilder) or not isinstance(q2, QueryBuilder):
         raise IncompatibleQueryError(

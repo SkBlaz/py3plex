@@ -32,10 +32,8 @@ Core dependencies install with the base package. Use a virtual environment to ke
 * ``pandas`` - Data manipulation
 * ``scikit-learn >= 0.24.0`` - Machine learning utilities
 * ``tqdm >= 4.40.0`` - Progress bars
-* ``rdflib >= 6.0.0`` - Semantic web support
 * ``bitarray >= 2.0.0`` - Efficient boolean arrays
 * ``seaborn >= 0.11.0`` - Statistical visualization
-* ``gensim >= 4.0.0`` - Topic modeling and embeddings
 * ``cython >= 0.29.0`` - C extensions for performance
 
 Verifying Installation
@@ -79,6 +77,22 @@ Install Plotly and igraph for interactive and advanced visualizations:
 
 * ``plotly >= 5.0.0`` - Interactive network plots
 * ``python-igraph >= 0.10.0`` - Fast C-based graph algorithms
+
+Algorithm Extras
+~~~~~~~~~~~~~~~~
+
+Install algorithm extras for optional embedding and semantic-web tooling:
+
+.. code-block:: bash
+
+    pip install py3plex[algos]
+
+**Provides:**
+
+* ``python-louvain >= 0.16`` - Louvain community detection backend
+* ``cdlib >= 0.3.0`` - Community detection algorithm collection
+* ``gensim >= 4.0.0`` - Embeddings and topic modeling helpers
+* ``rdflib >= 6.0.0`` - RDF/semantic-web helpers
 
 **Use cases:**
 

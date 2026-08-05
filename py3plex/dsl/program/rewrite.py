@@ -31,23 +31,14 @@ from __future__ import annotations
 
 import copy
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from ..ast import (
-    ComputeItem,
-    Comparison,
-    ConditionAtom,
     ConditionExpr,
-    FunctionCall,
-    OrderItem,
     Query,
-    SelectStmt,
-    SpecialPredicate,
     Target,
-    UQConfig,
 )
 from .program import GraphProgram
-from .types import Type, infer_type
 
 
 # ============================================================================

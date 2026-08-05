@@ -728,6 +728,299 @@ class TestCLIConvert:
             assert "layers" in data
 
 
+class TestCLIDynamics:
+    """Test the 'dynamics' command."""
+
+    @pytest.fixture
+    def test_network(self, tmp_path):
+        """Create a simple test network."""
+        net_file = tmp_path / "test_network.edgelist"
+        net_file.write_text(
+            "A B social\n"
+            "B C social\n"
+            "C D social\n"
+            "D A social\n"
+            "A C work\n"
+            "B D work\n"
+        )
+        return str(net_file)
+
+    def test_dynamics_sir_basic(self, test_network, tmp_path):
+        """Test basic SIR simulation."""
+        output_file = tmp_path / "sir_results.json"
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sir",
+                "--beta",
+                "0.3",
+                "--gamma",
+                "0.1",
+                "--steps",
+                "50",
+                "--output",
+                str(output_file),
+                "--seed",
+                "42",
+            ]
+        )
+        assert result == 0
+        assert output_file.exists()
+
+        # Verify output structure
+        with open(output_file) as f:
+            data = json.load(f)
+        assert data["model"] == "sir"
+        assert data["parameters"]["beta"] == 0.3
+        assert data["parameters"]["gamma"] == 0.1
+        assert "trajectories" in data
+
+    def test_dynamics_sis_basic(self, test_network, tmp_path):
+        """Test basic SIS simulation."""
+        output_file = tmp_path / "sis_results.json"
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sis",
+                "--beta",
+                "0.3",
+                "--mu",
+                "0.1",
+                "--steps",
+                "50",
+                "--replicates",
+                "2",
+                "--output",
+                str(output_file),
+            ]
+        )
+        assert result == 0
+        assert output_file.exists()
+
+    def test_dynamics_seir_basic(self, test_network, tmp_path):
+        """Test basic SEIR simulation."""
+        output_file = tmp_path / "seir_results.json"
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "seir",
+                "--beta",
+                "0.3",
+                "--sigma",
+                "0.2",
+                "--gamma",
+                "0.1",
+                "--steps",
+                "50",
+                "--output",
+                str(output_file),
+            ]
+        )
+        assert result == 0
+        assert output_file.exists()
+
+    def test_dynamics_missing_gamma(self, test_network):
+        """Test that SIR without gamma parameter fails."""
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sir",
+                "--beta",
+                "0.3",
+                "--steps",
+                "50",
+            ]
+        )
+        assert result == 1  # Should fail
+
+    def test_dynamics_missing_mu(self, test_network):
+        """Test that SIS without mu parameter fails."""
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sis",
+                "--beta",
+                "0.3",
+                "--steps",
+                "50",
+            ]
+        )
+        assert result == 1  # Should fail
+
+    def test_dynamics_missing_sigma(self, test_network):
+        """Test that SEIR without sigma parameter fails."""
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "seir",
+                "--beta",
+                "0.3",
+                "--gamma",
+                "0.1",
+                "--steps",
+                "50",
+            ]
+        )
+        assert result == 1  # Should fail
+
+
+class TestCLIEmbed:
+    """Tests for embed command."""
+
+    @pytest.fixture
+    def test_network(self, tmp_path):
+        """Create a small test network."""
+        network_file = tmp_path / "network.edgelist"
+        with open(network_file, "w") as f:
+            f.write("A B social\n")
+            f.write("B C social\n")
+            f.write("C D social\n")
+            f.write("D E social\n")
+            f.write("E A social\n")
+            f.write("A C social\n")
+            f.write("B D social\n")
+        return network_file
+
+    def test_embed_node2vec_basic(self, test_network, tmp_path):
+        """Test Node2Vec embedding."""
+        output_file = tmp_path / "embeddings.csv"
+        result = cli.main([
+            "embed",
+            str(test_network),
+            "--algorithm", "node2vec",
+            "--dimensions", "8",
+            "--walk-length", "5",
+            "--num-walks", "2",
+            "--seed", "42",
+            "--output", str(output_file),
+            "--format", "csv",
+        ])
+        assert result == 0
+        assert output_file.exists()
+
+        # Verify CSV format
+        with open(output_file) as f:
+            lines = f.readlines()
+            assert len(lines) > 1  # Header + data
+            header = lines[0].strip().split(",")
+            assert header[0] == "node"
+            assert len(header) == 9  # node + 8 dimensions
+
+    def test_embed_deepwalk_basic(self, test_network, tmp_path):
+        """Test DeepWalk embedding."""
+        output_file = tmp_path / "embeddings.json"
+        result = cli.main([
+            "embed",
+            str(test_network),
+            "--algorithm", "deepwalk",
+            "--dimensions", "8",
+            "--walk-length", "5",
+            "--num-walks", "2",
+            "--seed", "42",
+            "--output", str(output_file),
+            "--format", "json",
+        ])
+        assert result == 0
+        assert output_file.exists()
+
+        # Verify JSON format
+        with open(output_file) as f:
+            data = json.load(f)
+            assert data["algorithm"] == "deepwalk"
+            assert data["parameters"]["dimensions"] == 8
+            assert "embeddings" in data
+
+    def test_embed_netmf_basic(self, test_network, tmp_path):
+        """Test NetMF embedding."""
+        output_file = tmp_path / "embeddings.csv"
+        result = cli.main([
+            "embed",
+            str(test_network),
+            "--algorithm", "netmf",
+            "--dimensions", "8",
+            "--seed", "42",
+            "--output", str(output_file),
+            "--format", "csv",
+        ])
+        assert result == 0
+        assert output_file.exists()
+
+    def test_embed_metapath2vec_missing_metapath(self, test_network, tmp_path):
+        """Test MetaPath2Vec without metapath parameter (should fail)."""
+        output_file = tmp_path / "embeddings.csv"
+        result = cli.main([
+            "embed",
+            str(test_network),
+            "--algorithm", "metapath2vec",
+            "--dimensions", "8",
+            "--output", str(output_file),
+        ])
+        # Should fail because metapath is required
+        assert result == 1
+
+    def test_embed_csv_output(self, test_network, tmp_path):
+        """Test CSV output format."""
+        output_file = tmp_path / "embeddings.csv"
+        result = cli.main([
+            "embed",
+            str(test_network),
+            "--algorithm", "node2vec",
+            "--dimensions", "4",
+            "--walk-length", "3",
+            "--num-walks", "1",
+            "--seed", "42",
+            "--output", str(output_file),
+            "--format", "csv",
+        ])
+        assert result == 0
+
+        # Parse CSV and verify format
+        import csv
+        with open(output_file) as f:
+            reader = csv.reader(f)
+            rows = list(reader)
+            assert len(rows) > 1  # Header + at least one node
+            header = rows[0]
+            assert header[0] == "node"
+            assert len(header) == 5  # node + 4 dimensions
+
+    def test_embed_json_output(self, test_network, tmp_path):
+        """Test JSON output format."""
+        output_file = tmp_path / "embeddings.json"
+        result = cli.main([
+            "embed",
+            str(test_network),
+            "--algorithm", "node2vec",
+            "--dimensions", "4",
+            "--walk-length", "3",
+            "--num-walks", "1",
+            "--seed", "42",
+            "--output", str(output_file),
+            "--format", "json",
+        ])
+        assert result == 0
+
+        # Parse JSON and verify structure
+        with open(output_file) as f:
+            data = json.load(f)
+            assert "algorithm" in data
+            assert "parameters" in data
+            assert "embeddings" in data
+            assert data["parameters"]["dimensions"] == 4
+
+
 class TestCLIIntegration:
     """Integration tests for CLI workflows."""
 

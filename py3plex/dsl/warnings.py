@@ -12,7 +12,7 @@ Warnings are:
 
 import warnings
 import logging
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, Optional, Set
 from contextlib import contextmanager
 
 logger = logging.getLogger(__name__)

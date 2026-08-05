@@ -52,7 +52,6 @@ from py3plex.uncertainty.resampling_graph import (
 )
 from py3plex._parallel import parallel_map, spawn_seeds
 from py3plex.exceptions import AlgorithmError
-from py3plex import config
 
 
 def _run_louvain_single(args: Tuple) -> Tuple[np.ndarray, float, List[Any]]:
@@ -120,7 +119,7 @@ def _run_louvain_single(args: Tuple) -> Tuple[np.ndarray, float, List[Any]]:
         
         return (partition_array, modularity, node_index)
     
-    except Exception as e:
+    except Exception:
         # If community detection fails on this sample, return empty partition
         # with zero modularity (will get low weight)
         return (np.zeros(len(node_index), dtype=np.int32), 0.0, node_index)
@@ -482,7 +481,10 @@ def multilayer_leiden_distribution(
     """
     # Check if Leiden is available
     try:
-        from py3plex.algorithms.community_detection.leiden_multilayer import leiden_multilayer
+        __import__(
+            "py3plex.algorithms.community_detection.leiden_multilayer",
+            fromlist=["leiden_multilayer"],
+        )
     except ImportError:
         raise AlgorithmError(
             "Leiden algorithm not available",

@@ -5,8 +5,7 @@ This module provides a unified interface for all SBM variants,
 compatible with the AutoCommunity framework and DSL integration.
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
-import numpy as np
+from typing import Any, Dict, Optional, Tuple, Union
 
 from py3plex.algorithms.sbm import (
     fit_multilayer_sbm,
@@ -14,7 +13,7 @@ from py3plex.algorithms.sbm import (
     SBMFittedModel,
     sbm_seed_resampling_uq
 )
-from py3plex.algorithms.sbm.conversions import extract_layer_adjacencies, check_node_aligned
+from py3plex.algorithms.sbm.conversions import extract_layer_adjacencies
 
 
 def sbm_fit(

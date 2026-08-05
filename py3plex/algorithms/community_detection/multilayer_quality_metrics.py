@@ -354,87 +354,6 @@ def _dedupe_node_pairs(edges: List[tuple], directed: bool) -> List[tuple]:
     return deduped
 
 
-def _block_parameter_cost(sizes: List[int], directed: bool) -> float:
-    """Bits to specify every block pair's edge count, closing the
-    resolution-limit gap in the data cost below.
-
-    The data cost in `_mdl_single_layer` charges binary entropy
-    `H(e_rs / m_rs)` per block pair, which is exactly 0 whenever a pair is
-    completely empty (`e_rs == 0`) or a complete clique (`e_rs == m_rs`).
-    That is correct *given* the edge count `e_rs`, but the two-part code is
-    incomplete without also charging for specifying `e_rs` itself: a
-    partition fragmented finely enough that every block pair happens to
-    land on one of those two extremes (e.g. singleton communities, where
-    `m_rs <= 1` so `e_rs` can only ever be 0 or `m_rs`) gets that data cost
-    for free, regardless of how much real graph structure it threw away.
-    Concretely, an all-singleton partition has `H(p) == 0` for every pair
-    on *any* graph, so before this term existed its data cost was always
-    exactly 0 -- letting a maximally-fragmented, degenerate partition beat
-    a legitimate one purely by exploiting that gap, not by describing the
-    graph more efficiently.
-
-    This adds the missing term: `log2(m_rs + 1)` bits per block pair with
-    `m_rs > 0`, the cost of a uniform code over the `m_rs + 1` possible
-    values of `e_rs` (0 through `m_rs`). It is charged for *every* valid
-    block pair, including ones with zero observed edges -- there is no
-    free "assume empty" default, since that would just reopen the same
-    loophole for empty pairs. Combined with the existing entropy term
-    (which approximates the cost of specifying *which* `e_rs` edges are
-    present, given the count), the pair's total cost is now bounded below
-    by `log2(m_rs + 1) > 0` whenever `m_rs > 0`, so fragmenting into more,
-    smaller blocks always has a real cost that must be earned back by a
-    genuine reduction in the entropy term, not evaded entirely.
-
-    Args:
-        sizes: Community sizes (number of nodes in each community) for
-            this layer_partition/global partition.
-        directed: Whether the underlying graph is directed. Controls the
-            same on/off-diagonal capacity normalization as
-            `_mdl_single_layer`.
-
-    Returns:
-        Total parameter-cost bits, summed over every block pair (same-
-        community and distinct-community) with positive capacity.
-
-    Notes:
-        Computed in O(D^2), not O(k^2), where D is the number of
-        *distinct* community sizes and k the number of communities: `m_rs`
-        depends only on the pair of sizes `(n_r, n_s)`, so every pair of
-        same-size communities shares one parameter-cost value and can be
-        counted combinatorially (`C(count, 2)` or `count_a * count_b`)
-        instead of visited one at a time. D == 1 in the singleton-
-        fragmentation worst case exercised by
-        `tests/test_mdl_score.py::TestPerformance` (every community has
-        size 1), so this stays O(1) there rather than reintroducing the
-        O(k^2) blowup those tests guard against.
-    """
-    size_counts = Counter(sizes)
-    distinct_sizes = sorted(size_counts)
-    total = 0.0
-
-    # Same-community (diagonal) pairs: m_rr depends only on n_r.
-    for n in distinct_sizes:
-        m_rr = n * (n - 1) if directed else n * (n - 1) / 2
-        if m_rr > 0:
-            total += size_counts[n] * np.log2(m_rr + 1)
-
-    # Distinct-community (off-diagonal) pairs, grouped by size class so
-    # pairs sharing a size combination are counted together rather than
-    # enumerated individually.
-    for i, a in enumerate(distinct_sizes):
-        c_a = size_counts[a]
-        # Pairs of distinct communities that both happen to have size a.
-        if c_a > 1:
-            m_aa = 2 * a * a if directed else a * a
-            total += (c_a * (c_a - 1) / 2) * np.log2(m_aa + 1)
-        # Pairs across two different size classes.
-        for b in distinct_sizes[i + 1:]:
-            m_ab = 2 * a * b if directed else a * b
-            total += c_a * size_counts[b] * np.log2(m_ab + 1)
-
-    return total
-
-
 def _mdl_single_layer(
     layer_partition: Dict[Any, Any],
     layer_edges: List[tuple],
@@ -474,31 +393,19 @@ def _mdl_single_layer(
         Description length in bits.
 
     Notes:
-        - Resolution limit: data cost has two parts -- a parameter cost
-          (`_block_parameter_cost`) charged for *every* block pair with
-          positive capacity, and a configuration cost (the binary-entropy
-          loop below) charged only for pairs with an observed edge. The
-          parameter cost is what stops a maximally-fragmented, all-or-
-          nothing-density partition from escaping data cost entirely by
-          exploiting `H(0) == H(1) == 0` -- see `_block_parameter_cost`'s
-          docstring for the concrete failure mode it closes.
-        - Complexity: O(n + |E| + D^2), not O(k^2), where D is the number
-          of distinct community sizes (D <= k, often D << k). The
-          configuration-cost loop iterates only over `edge_counts` (block
-          pairs with at least one observed edge), not over all k^2 pairs of
-          communities -- block pairs with no edges contribute exactly 0
-          configuration cost, so they're skipped rather than enumerated.
-          The parameter cost visits every block pair's capacity but does so
-          grouped by size class (O(D^2)), not one community pair at a time
-          (O(k^2)) -- see `_block_parameter_cost`'s Notes. This matters
-          once heavily-fragmented partitions (e.g. many singleton
-          communities from unassigned nodes, see `mdl_score`) push k up
-          toward n: D stays 1 when all those singletons share the same
-          size, so parameter cost stays O(1) rather than reintroducing the
-          O(k^2) blowup this was designed to avoid. The remaining cost
-          still scales with |E| itself, which is inherent to reading every
-          edge once and not specific to fragmentation -- a dense graph is
-          the same O(|E|) cost whether it has 2 communities or n of them.
+        - Complexity: O(n + |E|), not O(k^2). The data cost loop iterates
+          only over `edge_counts` (block pairs with at least one observed
+          edge), not over all k^2 pairs of communities -- block pairs with
+          no edges contribute exactly 0 (H(p=0) == 0), so they're skipped
+          rather than enumerated. This matters once heavily-fragmented
+          partitions (e.g. many singleton communities from unassigned nodes,
+          see `mdl_score`) push k up toward n: a naive double loop over
+          communities would be O(k^2) regardless of how sparse the edges
+          are, whereas this stays tied to the actual edge count. The
+          remaining cost still scales with |E| itself, which is inherent to
+          reading every edge once and not specific to fragmentation -- a
+          dense graph is the same O(|E|) cost whether it has 2 communities
+          or n of them.
     """
     communities: Dict[Any, List[Any]] = defaultdict(list)
     for node, comm in layer_partition.items():
@@ -532,23 +439,13 @@ def _mdl_single_layer(
     # Part 1: model cost - n * log2(k) bits to encode node assignments
     model_cost = n * np.log2(k) if (include_model_cost and k > 1) else 0.0
 
-    # Part 2a: parameter cost - log2(m_rs + 1) bits per block pair with
-    # positive capacity, charged regardless of whether that pair has any
-    # observed edges. Without this, a pair sitting at density 0 or 1 (e.g.
-    # every pair under an all-singleton partition, where m_rs <= 1 always)
-    # contributes nothing at all to data cost, letting fragmentation escape
-    # the cost of specifying its own block structure. See
-    # `_block_parameter_cost`.
-    sizes = [len(members) for members in communities.values()]
-    data_cost = _block_parameter_cost(sizes, directed)
-
-    # Part 2b: configuration cost - binary entropy per block pair, given its
-    # edge count. Block pairs with no observed edges contribute exactly 0
-    # (H(p=0) == 0) here, so it suffices to iterate over the pairs that
-    # actually have edges rather than every pair of communities. This keeps
-    # this part of the cost O(|E|) instead of O(k^2), which matters once
-    # unassigned nodes are represented as singleton communities (k can then
-    # be as large as n).
+    # Part 2: data cost - binary entropy per block pair. Block pairs with no
+    # observed edges contribute exactly 0 (H(p=0) == 0), so it suffices to
+    # iterate over the pairs that actually have edges rather than every pair
+    # of communities. This keeps the cost O(|E|) instead of O(k^2), which
+    # matters once unassigned nodes are represented as singleton communities
+    # (k can then be as large as n).
+    data_cost = 0.0
     for pair, e_rs in edge_counts.items():
         if len(pair) == 1:
             (r,) = pair
@@ -600,63 +497,31 @@ def mdl_score(
         assignment of each node in layer ℓ, where n_ℓ is the number of
         node-layer pairs in that layer and k_ℓ is the number of distinct
         communities present in that layer.
-      - Part 2 (data cost), for every block pair (r, s) within layer ℓ:
-        - Parameter cost: log2(m_rs + 1) bits to specify the block pair's
-          edge count, charged for *every* pair with positive capacity
-          m_rs, whether or not it has any observed edges.
-        - Configuration cost: the binary entropy of the observed
-          intra-layer edge density times the maximum possible intra-layer
-          edges between those blocks.
+      - Part 2 (data cost): for every block pair (r, s) within layer ℓ,
+        the binary entropy of the observed intra-layer edge density times the
+        maximum possible intra-layer edges between those blocks.
 
     Inter-layer computation (edges whose endpoints are in different layers,
     e.g. multiplex coupling edges or general cross-layer edges):
       - No additional model cost is charged -- every node-layer pair's
         community assignment was already paid for by the per-layer model
         cost above.
-      - Data cost only (parameter + configuration cost, as above): block
-        sizes N_r/N_s are the *global* community sizes (summed across all
-        layers), and the block pair (r, s) is scored using the observed
-        inter-layer edge density between them, the same formula as the
-        intra-layer case. This slightly overstates the space of possible
-        inter-layer edges (it does not subtract same-layer node pairs from
-        N_r * N_s, since inter-layer edges in py3plex are not restricted to
-        same-node couplings and can connect arbitrary node-layer pairs),
-        which is a conservative approximation rather than an exact block
-        model.
+      - Data cost only: block sizes N_r/N_s are the *global* community
+        sizes (summed across all layers), and the block pair (r, s) is
+        scored using the observed inter-layer edge density between them,
+        the same binary-entropy formula as the intra-layer case. This
+        slightly overstates the space of possible inter-layer edges (it
+        does not subtract same-layer node pairs from N_r * N_s, since
+        inter-layer edges in py3plex are not restricted to same-node
+        couplings and can connect arbitrary node-layer pairs), which is a
+        conservative approximation rather than an exact block model.
 
-    Total MDL = Σ_ℓ (model_cost_ℓ + data_cost_ℓ) + data_cost_inter_layer,
-    where each data_cost term is itself parameter_cost + configuration_cost.
+    Total MDL = Σ_ℓ (model_cost_ℓ + data_cost_ℓ) + data_cost_inter_layer
 
     Lower score is better. Ignoring inter-layer edges entirely would let two
     partitions with identical intra-layer structure but very different (e.g.
     incoherent vs. replica-consistent) cross-layer coupling score identically,
     which is misleading for a *multilayer* MDL metric.
-
-    Resolution limit: the configuration cost alone is exactly 0 whenever a
-    block pair is completely empty or a complete clique (binary entropy
-    H(0) == H(1) == 0). A partition fragmented finely enough that every
-    block pair lands on one of those two extremes -- e.g. an all-singleton
-    partition, where every pair has capacity m_rs <= 1 and thus can only
-    ever be "empty" or "full" -- used to get zero configuration cost
-    regardless of the actual graph, letting a degenerate, maximally-
-    fragmented partition undercut a legitimate one purely by exploiting
-    that gap rather than by describing the graph more efficiently
-    (confirmed concretely: a corrupted/degenerate partition, ~5x worse by
-    modularity, scored ~4.7x better (lower) MDL than the legitimate
-    partition it was compared against, before this fix). The parameter cost
-    above closes this: every block pair with positive capacity now costs at
-    least log2(m_rs + 1) bits regardless of its observed density, so
-    fragmenting into more/smaller blocks always has a real, unavoidable
-    cost that a partition must earn back via a genuine reduction in
-    configuration cost, not just by landing on deterministic densities. See
-    `_block_parameter_cost` for the derivation and
-    `tests/test_mdl_score.py::TestResolutionLimit` for a regression case
-    reproducing the exploit. This is not purely academic for legitimate,
-    non-adversarial partitions either, but the effect is small there: real
-    algorithm outputs rarely land in the all-or-nothing block-density
-    regime the exploit depends on, so the parameter-cost term mostly
-    changes scores by a modest, structure-independent constant rather than
-    reordering reasonable candidates.
 
     Partial partitions: every node present in the network is accounted for,
     not just the ones covered by `partition`. A node the partition omits is
@@ -685,18 +550,14 @@ def mdl_score(
         inputs.
 
     Notes:
-        - Complexity: O(N + |E| + D^2) total across layers, where N is the
-          number of node-layer pairs, E the edges (intra- plus
-          inter-layer), and D the number of distinct community sizes in
-          the largest layer (or globally, for the inter-layer term) -- see
-          `_mdl_single_layer`'s and `_block_parameter_cost`'s Notes for why
-          fragmentation (many singleton communities, e.g. from unassigned
-          nodes) pushes k up toward N without pushing D past 1, so this
-          doesn't degrade toward O(k^2). On expected AutoCommunity graph
-          sizes (up to ~1e5 nodes / ~1e6 edges, matching the
-          practical_limits declared for candidate algorithms like
-          leiden_multilayer), this is expected to stay well under a second;
-          see
+        - Complexity: O(N + |E|) total across layers, where N is the number
+          of node-layer pairs and E the edges (intra- plus inter-layer) --
+          see `_mdl_single_layer`'s Notes for why fragmentation (many
+          singleton communities, e.g. from unassigned nodes) doesn't push
+          this toward O(k^2). On expected AutoCommunity graph sizes (up to
+          ~1e5 nodes / ~1e6 edges, matching the practical_limits declared
+          for candidate algorithms like leiden_multilayer), this is expected
+          to stay well under a second; see
           `tests/test_mdl_score.py::TestPerformance::test_no_quadratic_blowup_mdl_fragmented`
           (and `..._large_scale` for a slow-marked ~2M-node check) for
           regression guards against a future reintroduction of a
