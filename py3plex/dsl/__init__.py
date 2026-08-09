@@ -50,17 +50,13 @@ Example Usage:
     ...     # Use context.graph, context.current_layers, etc.
     ...     return result
 
-The DSL also supports a string syntax:
-    SELECT nodes
-    FROM LAYER("social") + LAYER("work")
-    WHERE intralayer AND degree > 5
-    COMPUTE betweenness_centrality AS bc
-    ORDER BY bc DESC
-    LIMIT 20
-    TO pandas
-
-All frontends (string DSL, builder API) compile into a single AST which is
-executed by the same engine, ensuring consistent behavior.
+A separate legacy string syntax also exists (see ``py3plex.dsl_legacy`` /
+``execute_query()``), but it is a distinct hand-written parser and executor,
+not compiled onto this module's AST -- it does not support layer set
+algebra, intralayer/interlayer predicates, per-layer grouping, or coverage.
+A unified string syntax that compiles onto this AST and is executed by the
+same engine as the builder API (ensuring consistent behavior across both
+frontends) is planned but not yet implemented.
 """
 
 from typing import Any, Dict, Optional

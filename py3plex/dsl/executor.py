@@ -50,7 +50,13 @@ from .errors import (
     UnknownAttributeError,
     GroupingError,
 )
-from .warnings import build_structured_warning
+from .warnings import (
+    build_structured_warning,
+    is_suppressed,
+    warn_degree_ambiguity,
+    warn_node_replica_confusion,
+    warn_global_community_detection,
+)
 
 # Import requirements system for algorithm compatibility checking
 from py3plex.requirements import check_compat, AlgorithmCompatibilityError
@@ -1277,8 +1283,9 @@ def _ensure_attribute(
         # Auto-compute the centrality
         if select.target == Target.NODES:
             try:
-                # Create subgraph for computation
-                subgraph = G.subgraph([item for item in items if item in G]).copy()
+                # Resolve the topology to compute on (see _resolve_measure_topology
+                # docstring: never the post-filter item list).
+                subgraph = _resolve_measure_topology(network, G, select, metric_name)
 
                 # Get measure function
                 measure_fn = measure_registry.get(metric_name)
@@ -1361,6 +1368,7 @@ def _compute_communities_with_uncertainty(
     network: Any,
     compute_item: ComputeItem,
     items: List[Any],
+    select: Optional[SelectStmt] = None,
 ) -> Dict[Any, Any]:
     """Compute community assignments with uncertainty quantification.
     
@@ -1492,7 +1500,7 @@ def _compute_communities_with_uncertainty(
         measure_fn = measure_registry.get('communities')
         
         G = network.core_network
-        subgraph = G.subgraph([item for item in items if item in G]).copy()
+        subgraph = _resolve_measure_topology(network, G, select, "communities")
         partition = measure_fn(subgraph, items)
         
         # Wrap in deterministic uncertainty format
@@ -1632,7 +1640,17 @@ def _compute_measure_with_uncertainty(
     
     # Import the uncertainty engines
     from py3plex.uncertainty import bootstrap_metric, null_model_metric
-    
+
+    # Resolve the layer scope once (graph-independent) so every bootstrap/
+    # perturbation replicate applies the *same* topology rule the
+    # deterministic path used above, rather than re-inducing a subgraph from
+    # the (possibly layer-narrowed) `items` list on every resample -- which
+    # would silently drop interlayer coupling edges on each replicate.
+    metric_name = CENTRALITY_ALIASES.get(compute_item.name, compute_item.name)
+    layer_scope = _resolve_measure_layer_scope(
+        network, select, metric_name, kind=compute_item.kind
+    )
+
     # Create metric function that works with uncertainty engines
     def metric_fn_wrapper(net):
         """Wrapper that computes the measure on the network."""
@@ -1641,13 +1659,13 @@ def _compute_measure_with_uncertainty(
             g = net.core_network
         else:
             g = net
-        
+
         # Only compute on nodes that exist in the graph
         valid_items = [item for item in items if item in g]
         if not valid_items:
             return {}
-        
-        sub = g.subgraph(valid_items).copy()
+
+        sub = _apply_layer_scope(g, layer_scope)
         result = measure_fn(sub, valid_items)
         # Handle tuple return from approximate methods
         if isinstance(result, tuple) and len(result) == 2:
@@ -2307,6 +2325,19 @@ def _execute_select(
 
     G = network.core_network
 
+    # Multilayer semantic warning: node queries return per-(node, layer)
+    # replicas, not physical nodes, unless the caller already made that
+    # explicit via per_layer()/group_by("layer").
+    if select.target == Target.NODES:
+        try:
+            if (
+                getattr(network, "layer_count", 1) > 1
+                and "layer" not in (select.group_by or [])
+            ):
+                warn_node_replica_confusion(operation="SELECT nodes")
+        except Exception:
+            pass
+
     # Check if this is a propagate mode UQ query
     if hasattr(select, "uq_config") and select.uq_config:
         if select.uq_config.method and select.uq_config.mode == "propagate":
@@ -2594,19 +2625,11 @@ def _execute_select(
             logger.info(f"Step 3.4: Computing {len(select.compute)} measure(s)")
         if select.target == Target.NODES:
             # Node measures - existing implementation
-            # Create subgraph for computation
-            subgraph = G.subgraph([item for item in items if item in G]).copy()
-
             # Build execution context for operators
-            active_layers = None
-            if select.layer_set is not None:
-                # New style: LayerSet
-                active_layers = list(
-                    select.layer_set.resolve(network, strict=False, warn_empty=False)
-                )
-            elif select.layer_expr:
-                # Old style: LayerExprBuilder
-                active_layers = list(_evaluate_layer_expr(select.layer_expr, network))
+            resolved_active_layers = _resolve_active_layers(select, network)
+            active_layers = (
+                list(resolved_active_layers) if resolved_active_layers is not None else None
+            )
 
             context = DSLExecutionContext(
                 graph=network,
@@ -2657,15 +2680,37 @@ def _execute_select(
                             fast_path_enabled = True
 
 
-                        
+
+                        # Multilayer semantic warning: community detection
+                        # without an explicit layer restriction mixes all
+                        # layers into one global partition.
+                        if compute_item.name in ['communities', 'community'] and resolved_active_layers is None:
+                            try:
+                                n_layers = getattr(network, "layer_count", 1)
+                                if n_layers > 1:
+                                    warn_global_community_detection(n_layers=n_layers)
+                            except Exception:
+                                pass
+
                         # Special handling for community detection with UQ
                         if compute_item.name in ['communities', 'community'] and compute_item.uncertainty:
                             values = _compute_communities_with_uncertainty(
                                 network=network,
                                 compute_item=compute_item,
                                 items=items,
+                                select=select,
                             )
                         else:
+                            # Resolve topology per compute_item: different
+                            # measures (and different `kind=` choices for the
+                            # same measure) can legitimately need different
+                            # graphs to compute over.
+                            metric_name = CENTRALITY_ALIASES.get(
+                                compute_item.name, compute_item.name
+                            )
+                            subgraph = _resolve_measure_topology(
+                                network, G, select, metric_name, kind=compute_item.kind
+                            )
                             # Standard uncertainty handling
                             values = _compute_measure_with_uncertainty(
                                 network=network,
@@ -2844,7 +2889,13 @@ def _execute_select(
         select.layer_set is not None or select.layer_expr is not None
     ):
         diagnostics.append(build_structured_warning("replica_vs_physical_node_ambiguity"))
-    layer_count = len(list(network.get_layers())) if hasattr(network, "get_layers") else 1
+    # Deliberately network.layer_count, not network.get_layers(): the latter
+    # computes a full force-directed visualization layout as a side effect
+    # (network.get_layers() -> converters.prepare_for_visualization(...,
+    # compute_layouts="force")) which is extremely expensive on large
+    # networks and was being triggered on every single node query just to
+    # count layers.
+    layer_count = getattr(network, "layer_count", 1)
     if layer_count > 1 and any(
         ci.name == "degree" and not getattr(ci, "kind", None) for ci in select.compute
     ):
@@ -3673,8 +3724,6 @@ def _execute_select_with_items(
 
         if select.target == Target.NODES:
             # Node measures
-            subgraph = G.subgraph([item for item in items if item in G]).copy()
-
             for compute_item in select.compute:
                 result_name = compute_item.alias or compute_item.name
 
@@ -3682,6 +3731,12 @@ def _execute_select_with_items(
                 measure_fn = measure_registry.get(compute_item.name)
                 if measure_fn:
                     try:
+                        metric_name = CENTRALITY_ALIASES.get(
+                            compute_item.name, compute_item.name
+                        )
+                        subgraph = _resolve_measure_topology(
+                            network, G, select, metric_name, kind=compute_item.kind
+                        )
                         values = measure_fn(subgraph, items)
                         attributes[result_name] = values
                     except Exception as e:
@@ -4020,6 +4075,120 @@ def _expand_layer_term(name: str, network: Any) -> Set[str]:
             return {str(layer) for (_, layer) in network.get_nodes()}
         return set()
     return {name}
+
+
+# Canonical (post-CENTRALITY_ALIASES) metric names that get aggregate-degree
+# semantics by default on multilayer networks. See _resolve_measure_topology.
+_DEGREE_METRICS = {"degree"}
+
+
+def _resolve_active_layers(select: SelectStmt, network: Any) -> Optional[Set[str]]:
+    """Resolve select.layer_set / select.layer_expr to a concrete layer set.
+
+    Returns None to mean "all layers" (no restriction). Factors out the
+    layer-resolution logic that used to be duplicated at each compute call
+    site.
+    """
+    if select is None:
+        return None
+    if getattr(select, "layer_set", None) is not None:
+        return set(select.layer_set.resolve(network, strict=False, warn_empty=False))
+    if getattr(select, "layer_expr", None):
+        return _evaluate_layer_expr(select.layer_expr, network)
+    return None
+
+
+def _resolve_measure_layer_scope(
+    network: Any,
+    select: Optional[SelectStmt],
+    metric_name: str,
+    kind: Optional[str] = None,
+) -> Optional[Set[str]]:
+    """Decide which layers a measure function should be computed over.
+
+    This is the graph-independent half of topology resolution: it returns
+    None (no restriction -- use the full graph) or a set of layer name
+    strings to restrict to, without touching any specific graph object.
+    Keeping this independent of a concrete graph lets the same scope be
+    reapplied to a *different* graph instance representing the same
+    network (e.g. a bootstrap-resampled copy), which is what
+    _compute_measure_with_uncertainty's resampling wrapper needs.
+
+    Replaces the old pattern of inducing a subgraph on the query's already
+    WHERE/coverage/limit-narrowed item list, which silently dropped
+    interlayer coupling edges and could disagree with predicates evaluated
+    over the full graph (e.g. WHERE degree > 2 selecting rows that the
+    COMPUTE clause then reported a different, smaller degree for).
+
+    Two rules:
+      1. (universal) Topology follows the query's active layer scope
+         (select.layer_set / select.layer_expr), defaulting to the full
+         graph when neither is set -- never the post-filter item list.
+      2. (degree family only) On multilayer networks, degree/degree_centrality
+         default to "aggregate" (the full graph, ignoring any layer scope)
+         unless the caller explicitly passes kind="intra" (or another
+         non-aggregate kind), which opts into rule 1's layer-scoped
+         subgraph. This matches the already-documented (but previously
+         unimplemented) intent in warnings.warn_degree_ambiguity.
+    """
+    # Deliberately checks network.layer_count rather than
+    # network.capabilities() here: capabilities() also computes weight-domain
+    # analysis (binary/integer/positive checks), which raises on real-world
+    # networks with mixed str/int edge weights (e.g. datasets.load_aarhus_cs())
+    # -- a separate, pre-existing bug. layer_count is a plain property derived
+    # from node tuples and doesn't touch that code path, so this check stays
+    # correct even when capabilities() itself would crash.
+    is_multilayer = False
+    try:
+        is_multilayer = getattr(network, "layer_count", 1) > 1
+    except Exception:
+        is_multilayer = False
+
+    if metric_name in _DEGREE_METRICS and is_multilayer:
+        effective_kind = kind or "aggregate"
+        if effective_kind == "aggregate":
+            if kind is None and not is_suppressed("degree_ambiguity"):
+                warn_degree_ambiguity(degree_type="aggregate")
+            return None
+        # kind == "intra" (or any other explicit non-aggregate value) falls
+        # through to the universal layer-scope rule below.
+
+    return _resolve_active_layers(select, network)
+
+
+def _apply_layer_scope(G: nx.Graph, layer_scope: Optional[Set[str]]) -> nx.Graph:
+    """Apply a layer scope (from _resolve_measure_layer_scope) to a graph.
+
+    None means "no restriction" -- returns G unchanged.
+    """
+    if layer_scope is None:
+        return G
+    scope_nodes = [
+        n
+        for n in G.nodes
+        if isinstance(n, tuple) and len(n) >= 2 and str(n[1]) in layer_scope
+    ]
+    return G.subgraph(scope_nodes)
+
+
+def _resolve_measure_topology(
+    network: Any,
+    G: nx.Graph,
+    select: Optional[SelectStmt],
+    metric_name: str,
+    kind: Optional[str] = None,
+) -> nx.Graph:
+    """Convenience wrapper: resolve a layer scope and apply it to G.
+
+    See _resolve_measure_layer_scope for the two-rule design. Used by call
+    sites that only need a single, concrete graph and don't need to reapply
+    the same scope to a different graph instance (contrast with
+    _compute_measure_with_uncertainty's bootstrap-resampling wrapper, which
+    resolves the scope once and reapplies it per replicate via
+    _apply_layer_scope directly).
+    """
+    layer_scope = _resolve_measure_layer_scope(network, select, metric_name, kind)
+    return _apply_layer_scope(G, layer_scope)
 
 
 def _evaluate_layer_expr(layer_expr: LayerExpr, network: Any) -> Set[str]:
@@ -6196,7 +6365,10 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
         }
         node_count = int(len(getattr(network, "core_network", {}).nodes())) if getattr(network, "core_network", None) is not None else 0
         edge_count = int(len(getattr(network, "core_network", {}).edges())) if getattr(network, "core_network", None) is not None else 0
-        layers = list(network.get_layers()) if hasattr(network, "get_layers") else []
+        # network.layers, not network.get_layers() -- see the layer_count
+        # comment above; get_layers() computes a visualization layout as a
+        # side effect and is far too expensive just to list layer names.
+        layers = list(getattr(network, "layers", []))
         result.meta['provenance']['network_fingerprint'] = {
             'node_count': node_count,
             'edge_count': edge_count,

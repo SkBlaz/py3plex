@@ -51,22 +51,22 @@ def graph_fingerprint(network: Any) -> str:
     Returns:
         64-character hex hash of network structure
     """
-    # Extract network properties in deterministic order
+    # Extract network properties in deterministic order.
+    #
+    # Deliberately network.layers, not network.get_layers(): the latter
+    # computes a full force-directed visualization layout as a side effect
+    # (network.get_layers() -> converters.prepare_for_visualization(...,
+    # compute_layouts="force")), which is extremely expensive on large
+    # networks -- and it returns a tuple of visualization artifacts
+    # (layer names, per-layer graphs, coordinates, ...), not a list of
+    # layers, so the old code below was iterating over that tuple's
+    # top-level elements and hashing their *types* (e.g. "list"), not their
+    # actual layer identities. network.layers is the cheap, correct
+    # property: a plain sorted list of layer name strings.
     layers_list = []
     try:
-        if hasattr(network, "get_layers"):
-            layers = network.get_layers()
-            # Extract stable layer identifiers, handling MultiGraph objects
-            for layer in layers:
-                if hasattr(layer, "name"):
-                    # NetworkX graph with a name attribute
-                    layers_list.append(str(layer.name) if layer.name is not None else repr(type(layer)))
-                elif hasattr(layer, "__class__"):
-                    # Use the class name as identifier for graph objects
-                    # This avoids memory addresses in the repr
-                    layers_list.append(f"{layer.__class__.__name__}")
-                else:
-                    layers_list.append(str(layer))
+        if hasattr(network, "layers"):
+            layers_list = [str(layer) for layer in network.layers]
     except Exception:
         pass
     
