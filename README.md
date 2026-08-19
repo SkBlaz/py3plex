@@ -2,6 +2,8 @@
 <img src="https://github.com/user-attachments/assets/47e16a25-cd58-41eb-9ccd-b40191758d91" alt="py3plex logo" width="400">
 
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
+[![Test Coverage](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg?branch=main&event=push)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
+[![Type Coverage](https://github.com/SkBlaz/py3plex/actions/workflows/type-coverage.yml/badge.svg?branch=main)](https://github.com/SkBlaz/py3plex/actions/workflows/type-coverage.yml)
 [![Examples](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml)
 [![Tutorial](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml)
 [![Code Quality](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml)
