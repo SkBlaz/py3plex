@@ -46,13 +46,13 @@ def test_readme_uses_test_coverage_badge_label(readme_content: str):
     assert "[![Test coverage]" in readme_content
 
 
-def test_readme_coverage_badges_use_shields_workflow_status_urls(readme_content: str):
-    """README coverage badges should use explicit shields workflow-status endpoints."""
+def test_readme_coverage_badges_use_percentage_badge_urls(readme_content: str):
+    """README coverage badges should use shields percentage badge endpoints."""
     assert (
-        "https://img.shields.io/github/actions/workflow/status/SkBlaz/py3plex/tests.yml?label=Test%20coverage"
+        "https://img.shields.io/badge/test_coverage-"
         in readme_content
     )
     assert (
-        "https://img.shields.io/github/actions/workflow/status/SkBlaz/py3plex/type-coverage.yml?label=Type%20coverage"
+        "https://img.shields.io/badge/type_coverage-"
         in readme_content
     )
