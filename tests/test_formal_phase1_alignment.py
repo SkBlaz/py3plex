@@ -73,6 +73,7 @@ def test_formal_build_entrypoints_stay_aligned():
 
     assert "formal: ## Build and verify the Lean formal proofs" in makefile
     assert "cd formal && lake build" in makefile
+    assert "branches: [master, main]" in workflow
     assert "working-directory: formal" in workflow
     assert "run: lake build" in workflow
 
