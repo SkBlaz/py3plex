@@ -186,10 +186,10 @@ can answer.</p>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="c1"># List input: [source, source_layer, target, target_layer, weight]</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Find users present in more than one layer</span>
 <span class="n">layer_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
@@ -221,15 +221,15 @@ can answer.</p>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="c1"># Physical interactions</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;TP53&#39;</span><span class="p">,</span> <span class="s1">&#39;ppi&#39;</span><span class="p">,</span> <span class="s1">&#39;MDM2&#39;</span><span class="p">,</span> <span class="s1">&#39;ppi&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'TP53'</span><span class="p">,</span> <span class="s1">'ppi'</span><span class="p">,</span> <span class="s1">'MDM2'</span><span class="p">,</span> <span class="s1">'ppi'</span><span class="p">)</span>
 
 <span class="c1"># Regulatory interactions</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;TP53&#39;</span><span class="p">,</span> <span class="s1">&#39;regulation&#39;</span><span class="p">,</span> <span class="s1">&#39;CDKN1A&#39;</span><span class="p">,</span> <span class="s1">&#39;regulation&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'TP53'</span><span class="p">,</span> <span class="s1">'regulation'</span><span class="p">,</span> <span class="s1">'CDKN1A'</span><span class="p">,</span> <span class="s1">'regulation'</span><span class="p">)</span>
 
 <span class="c1"># Compute centrality within the regulatory layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes WHERE layer=&quot;regulation&quot; &#39;</span>
-    <span class="s1">&#39;COMPUTE betweenness_centrality&#39;</span>
+    <span class="s1">'SELECT nodes WHERE layer="regulation" '</span>
+    <span class="s1">'COMPUTE betweenness_centrality'</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -255,13 +255,13 @@ can answer.</p>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="c1"># Different transportation modes</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;StationA&#39;</span><span class="p">,</span> <span class="s1">&#39;metro&#39;</span><span class="p">,</span> <span class="s1">&#39;StationB&#39;</span><span class="p">,</span> <span class="s1">&#39;metro&#39;</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;StationA&#39;</span><span class="p">,</span> <span class="s1">&#39;bus&#39;</span><span class="p">,</span> <span class="s1">&#39;StationC&#39;</span><span class="p">,</span> <span class="s1">&#39;bus&#39;</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;StationB&#39;</span><span class="p">,</span> <span class="s1">&#39;metro&#39;</span><span class="p">,</span> <span class="s1">&#39;StationC&#39;</span><span class="p">,</span> <span class="s1">&#39;metro&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'StationA'</span><span class="p">,</span> <span class="s1">'metro'</span><span class="p">,</span> <span class="s1">'StationB'</span><span class="p">,</span> <span class="s1">'metro'</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'StationA'</span><span class="p">,</span> <span class="s1">'bus'</span><span class="p">,</span> <span class="s1">'StationC'</span><span class="p">,</span> <span class="s1">'bus'</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'StationB'</span><span class="p">,</span> <span class="s1">'metro'</span><span class="p">,</span> <span class="s1">'StationC'</span><span class="p">,</span> <span class="s1">'metro'</span><span class="p">)</span>
 
 <span class="c1"># Inter-layer connections (transfers)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;StationA&#39;</span><span class="p">,</span> <span class="s1">&#39;metro&#39;</span><span class="p">,</span> <span class="s1">&#39;StationA&#39;</span><span class="p">,</span> <span class="s1">&#39;bus&#39;</span><span class="p">,</span>
-                 <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;interlayer&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'StationA'</span><span class="p">,</span> <span class="s1">'metro'</span><span class="p">,</span> <span class="s1">'StationA'</span><span class="p">,</span> <span class="s1">'bus'</span><span class="p">,</span>
+                 <span class="nb">type</span><span class="o">=</span><span class="s1">'interlayer'</span><span class="p">)</span>
 
 <span class="c1"># Identify busy transfer points (degree &gt; 2 across all modes)</span>
 <span class="n">busy_stations</span> <span class="o">=</span> <span class="p">[</span>
@@ -367,30 +367,30 @@ person identifiers.</p>
 
 <span class="c1"># Trade relationships</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>  <span class="c1"># Trade volume in billions</span>
-    <span class="p">[</span><span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'BankA'</span><span class="p">,</span> <span class="s1">'trade'</span><span class="p">,</span> <span class="s1">'BankB'</span><span class="p">,</span> <span class="s1">'trade'</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>  <span class="c1"># Trade volume in billions</span>
+    <span class="p">[</span><span class="s1">'BankB'</span><span class="p">,</span> <span class="s1">'trade'</span><span class="p">,</span> <span class="s1">'BankC'</span><span class="p">,</span> <span class="s1">'trade'</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'BankC'</span><span class="p">,</span> <span class="s1">'trade'</span><span class="p">,</span> <span class="s1">'BankA'</span><span class="p">,</span> <span class="s1">'trade'</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Ownership structures</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;ownership&#39;</span><span class="p">,</span> <span class="s1">&#39;SubsidiaryX&#39;</span><span class="p">,</span> <span class="s1">&#39;ownership&#39;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>  <span class="c1"># 75% ownership</span>
-    <span class="p">[</span><span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;ownership&#39;</span><span class="p">,</span> <span class="s1">&#39;SubsidiaryY&#39;</span><span class="p">,</span> <span class="s1">&#39;ownership&#39;</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'BankA'</span><span class="p">,</span> <span class="s1">'ownership'</span><span class="p">,</span> <span class="s1">'SubsidiaryX'</span><span class="p">,</span> <span class="s1">'ownership'</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span>  <span class="c1"># 75% ownership</span>
+    <span class="p">[</span><span class="s1">'BankB'</span><span class="p">,</span> <span class="s1">'ownership'</span><span class="p">,</span> <span class="s1">'SubsidiaryY'</span><span class="p">,</span> <span class="s1">'ownership'</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Interbank lending</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>  <span class="c1"># Lending amount</span>
-    <span class="p">[</span><span class="s1">&#39;BankB&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;BankC&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="s1">&#39;BankA&#39;</span><span class="p">,</span> <span class="s1">&#39;lending&#39;</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'BankA'</span><span class="p">,</span> <span class="s1">'lending'</span><span class="p">,</span> <span class="s1">'BankB'</span><span class="p">,</span> <span class="s1">'lending'</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>  <span class="c1"># Lending amount</span>
+    <span class="p">[</span><span class="s1">'BankB'</span><span class="p">,</span> <span class="s1">'lending'</span><span class="p">,</span> <span class="s1">'BankC'</span><span class="p">,</span> <span class="s1">'lending'</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'BankC'</span><span class="p">,</span> <span class="s1">'lending'</span><span class="p">,</span> <span class="s1">'BankA'</span><span class="p">,</span> <span class="s1">'lending'</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Identify systemically important institutions using DSL</span>
-<span class="c1"># (unweighted betweenness across all layers; pass weight=&#39;weight&#39; to include amounts)</span>
+<span class="c1"># (unweighted betweenness across all layers; pass weight='weight' to include amounts)</span>
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes COMPUTE betweenness_centrality&#39;</span>
-<span class="p">)[</span><span class="s1">&#39;computed&#39;</span><span class="p">][</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span>
+    <span class="s1">'SELECT nodes COMPUTE betweenness_centrality'</span>
+<span class="p">)[</span><span class="s1">'computed'</span><span class="p">][</span><span class="s1">'betweenness_centrality'</span><span class="p">]</span>
 
 <span class="n">top_3</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
     <span class="n">centrality</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
@@ -398,9 +398,9 @@ person identifiers.</p>
     <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top betweenness nodes (node, betweenness):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Top betweenness nodes (node, betweenness):"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_3</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Find institutions represented in multiple layers</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
@@ -409,9 +409,9 @@ person identifiers.</p>
     <span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">node_layer_count</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span>
 <span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Institutions with multiple relationship types: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">multi_layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Institutions with multiple relationship types: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">multi_layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">multi_layer_nodes</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Use cases for financial network analysis:</strong></p>

@@ -211,11 +211,11 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">nodes</span><span class="p">(</span><span class="n">multinet</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ppi&quot;</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">summarise</span><span class="p">(</span><span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">))</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">multinet</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"ppi"</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="s2">"weight"</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">"layer"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">summarise</span><span class="p">(</span><span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">))</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 </pre></div>
@@ -253,13 +253,13 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <span class="n">node_frame</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">multinet</span><span class="p">)</span>
 
 <span class="c1"># Get nodes from specific layers</span>
-<span class="n">node_frame</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">multinet</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">,</span> <span class="s2">&quot;layer2&quot;</span><span class="p">])</span>
+<span class="n">node_frame</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">multinet</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"layer1"</span><span class="p">,</span> <span class="s2">"layer2"</span><span class="p">])</span>
 
 <span class="c1"># Get all edges</span>
 <span class="n">edge_frame</span> <span class="o">=</span> <span class="n">edges</span><span class="p">(</span><span class="n">multinet</span><span class="p">)</span>
 
 <span class="c1"># Get edges from specific layers</span>
-<span class="n">edge_frame</span> <span class="o">=</span> <span class="n">edges</span><span class="p">(</span><span class="n">multinet</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ppi&quot;</span><span class="p">])</span>
+<span class="n">edge_frame</span> <span class="o">=</span> <span class="n">edges</span><span class="p">(</span><span class="n">multinet</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"ppi"</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>
@@ -276,27 +276,27 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 
 <span class="c1"># Add nodes</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'D'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">},</span>
 <span class="p">])</span>
 
 <span class="c1"># Add edges</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'D'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
 <span class="p">])</span>
 
 <span class="c1"># Example 1: Filter + mutate + to_pandas</span>
 <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"layer1"</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -304,20 +304,20 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <span class="c1"># Example 2: Grouping and summarising</span>
 <span class="n">df_summary</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">"layer"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
-        <span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span>
-        <span class="n">n</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+        <span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span>
+        <span class="n">n</span><span class="o">=</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;avg_degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"avg_degree"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df_summary</span><span class="p">)</span>
 
 <span class="c1"># Example 3: Edges</span>
 <span class="n">df_edges</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"layer1"</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1.5</span><span class="p">)</span>
     <span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
@@ -331,30 +331,30 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <h3><a class="toc-backref" href="#id8" role="doc-backlink">Filter</a><a class="headerlink" href="#filter" title="Link to this heading"></a></h3>
 <p>Filter nodes/edges using a predicate function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using a lambda predicate</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
 
 <span class="c1"># Filter edges by weight</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">edges</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">edges</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or use expression strings for simple conditions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">filter_expr</span><span class="p">(</span><span class="s2">&quot;degree &gt; 10 and layer == &#39;ppi&#39;&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">filter_expr</span><span class="p">(</span><span class="s2">"degree &gt; 10 and layer == 'ppi'"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Signature:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">filter_expr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_expr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
 </section>
 <section id="select">
 <h3><a class="toc-backref" href="#id9" role="doc-backlink">Select</a><a class="headerlink" href="#select" title="Link to this heading"></a></h3>
 <p>Keep only the specified attributes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"layer"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Signature:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
 <p>If no fields are passed, behaves as a no-op.</p>
@@ -365,13 +365,13 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-    <span class="n">k</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="n">log_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]),</span>
+    <span class="n">k</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">log_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]),</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Signature:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_fields</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_fields</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
 </section>
@@ -379,14 +379,14 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <h3><a class="toc-backref" href="#id11" role="doc-backlink">Arrange (Sort)</a><a class="headerlink" href="#arrange-sort" title="Link to this heading"></a></h3>
 <p>Sort nodes/edges by an attribute or custom key:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sort by attribute name</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Sort using a custom key function</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="o">-</span><span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="o">-</span><span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">])</span>
 </pre></div>
 </div>
 <p><strong>Signature:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
 </section>
@@ -397,7 +397,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 </pre></div>
 </div>
 <p><strong>Signature:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
 </section>
@@ -408,18 +408,18 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">"layer"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
-        <span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span>
-        <span class="n">n</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+        <span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span>
+        <span class="n">n</span><span class="o">=</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
     <span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Signatures:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroupedNodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"GroupedNodeFrame"</span><span class="p">:</span> <span class="o">...</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">aggregations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">aggregations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
 <p>The aggregations are tuples of <code class="docutils literal notranslate"><span class="pre">(field_name,</span> <span class="pre">aggregation_function)</span></code>.</p>
@@ -435,8 +435,8 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <span class="c1"># Chain with other operations</span>
 <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"layer"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 </pre></div>
@@ -451,7 +451,7 @@ verbs like <code class="docutils literal notranslate"><span class="pre">filter</
 <p>Build a py3plex subgraph containing only the selected nodes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">subgraph</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ppi&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"ppi"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_subgraph</span><span class="p">()</span>
 <span class="p">)</span>
 </pre></div>
@@ -514,14 +514,14 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <span class="c1"># Find high-degree nodes (hubs) in each layer</span>
 <span class="n">hub_summary</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># Only high-degree nodes</span>
-    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># Only high-degree nodes</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">"layer"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
-        <span class="n">hub_count</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
-        <span class="n">avg_hub_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span>
-        <span class="n">max_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="nb">max</span><span class="p">),</span>
+        <span class="n">hub_count</span><span class="o">=</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+        <span class="n">avg_hub_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span>
+        <span class="n">max_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="nb">max</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;hub_count&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"hub_count"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">hub_summary</span><span class="p">)</span>
@@ -537,11 +537,11 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <span class="c1"># Get per-layer statistics</span>
 <span class="n">layer_stats</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">"layer"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
-        <span class="n">node_count</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
-        <span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span>
-        <span class="n">total_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">),</span>
+        <span class="n">node_count</span><span class="o">=</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="nb">len</span><span class="p">),</span>
+        <span class="n">avg_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span>
+        <span class="n">total_degree</span><span class="o">=</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="nb">sum</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
@@ -556,13 +556,13 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 
 <span class="c1"># Find high-weight edges</span>
 <span class="n">high_weight_edges</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ppi&quot;</span><span class="p">,</span> <span class="s2">&quot;coexpr&quot;</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"ppi"</span><span class="p">,</span> <span class="s2">"coexpr"</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">)</span>
     <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-        <span class="n">is_intra_layer</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;source_layer&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;target_layer&quot;</span><span class="p">],</span>
-        <span class="n">weight_class</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="s2">&quot;high&quot;</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.9</span> <span class="k">else</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+        <span class="n">is_intra_layer</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="s2">"source_layer"</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">[</span><span class="s2">"target_layer"</span><span class="p">],</span>
+        <span class="n">weight_class</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="s2">"high"</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.9</span> <span class="k">else</span> <span class="s2">"medium"</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
@@ -578,13 +578,13 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <span class="c1"># Extract a subgraph of high-degree nodes in layer1</span>
 <span class="n">subgraph</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;layer1&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"layer1"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_subgraph</span><span class="p">()</span>
 <span class="p">)</span>
 
 <span class="c1"># Analyze the subgraph</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subgraph has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">subgraph</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Subgraph has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">subgraph</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -594,30 +594,30 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <section id="nodes">
 <h3><a class="toc-backref" href="#id24" role="doc-backlink">nodes()</a><a class="headerlink" href="#nodes" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">nodes</span><span class="p">(</span><span class="n">multinet</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a NodeFrame from a py3plex multi_layer_network.</span>
+<span class="w">    </span><span class="sd">"""Create a NodeFrame from a py3plex multi_layer_network.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        multinet: py3plex multi_layer_network object</span>
 <span class="sd">        layers: Optional list of layers to restrict to</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A NodeFrame wrapping the network&#39;s nodes</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        A NodeFrame wrapping the network's nodes</span>
+<span class="sd">    """</span>
 </pre></div>
 </div>
 </section>
 <section id="edges">
 <h3><a class="toc-backref" href="#id25" role="doc-backlink">edges()</a><a class="headerlink" href="#edges" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="n">multinet</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EdgeFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an EdgeFrame from a py3plex multi_layer_network.</span>
+<span class="w">    </span><span class="sd">"""Create an EdgeFrame from a py3plex multi_layer_network.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        multinet: py3plex multi_layer_network object</span>
 <span class="sd">        layers: Optional list of layers to restrict to</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        An EdgeFrame wrapping the network&#39;s edges</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        An EdgeFrame wrapping the network's edges</span>
+<span class="sd">    """</span>
 </pre></div>
 </div>
 </section>
@@ -625,20 +625,20 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <h3><a class="toc-backref" href="#id26" role="doc-backlink">NodeFrame</a><a class="headerlink" href="#nodeframe" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NodeFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A chainable view over a collection of nodes.</span>
+<span class="w">    </span><span class="sd">"""A chainable view over a collection of nodes.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        multinet: Reference to the underlying py3plex multi_layer_network</span>
 <span class="sd">        data: Current selection of nodes as a list of dicts</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter_expr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_fields</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span> <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroupedNodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_expr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_fields</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span> <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"GroupedNodeFrame"</span><span class="p">:</span> <span class="o">...</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span> <span class="o">...</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
@@ -648,20 +648,20 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <h3><a class="toc-backref" href="#id27" role="doc-backlink">EdgeFrame</a><a class="headerlink" href="#edgeframe" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">EdgeFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A chainable view over a collection of edges.</span>
+<span class="w">    </span><span class="sd">"""A chainable view over a collection of edges.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        multinet: Reference to the underlying py3plex multi_layer_network</span>
 <span class="sd">        data: Current selection of edges as a list of dicts</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;EdgeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter_expr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;EdgeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;EdgeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_fields</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;EdgeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span> <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;EdgeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;EdgeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroupedEdgeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"EdgeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_expr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"EdgeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"EdgeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_fields</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"EdgeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">arrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span> <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"EdgeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"EdgeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"GroupedEdgeFrame"</span><span class="p">:</span> <span class="o">...</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span> <span class="o">...</span>
 </pre></div>
 </div>
@@ -670,15 +670,15 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <h3><a class="toc-backref" href="#id28" role="doc-backlink">GroupedNodeFrame</a><a class="headerlink" href="#groupednodeframe" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">GroupedNodeFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A grouped view of nodes for aggregation operations.</span>
+<span class="w">    </span><span class="sd">"""A grouped view of nodes for aggregation operations.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        parent: The parent NodeFrame from which this was created</span>
 <span class="sd">        group_fields: Tuple of field names to group by</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">aggregations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">summarize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">aggregations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;NodeFrame&quot;</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># Alias</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">aggregations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summarize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">aggregations</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NodeFrame"</span><span class="p">:</span> <span class="o">...</span>  <span class="c1"># Alias</span>
 </pre></div>
 </div>
 </section>
@@ -689,7 +689,7 @@ is open for future extensions like joining on node ID, layer, etc.</p>
 <li><p><strong>Start simple</strong>: Begin with basic filters and add complexity incrementally</p></li>
 <li><p><strong>Use method chaining</strong>: Chain operations for readable, fluent code</p></li>
 <li><p><strong>Handle missing values</strong>: Use <code class="docutils literal notranslate"><span class="pre">.get()</span></code> for optional attributes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">frame</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">frame</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>

@@ -185,14 +185,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.graph_ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"data.multiedgelist"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">)</span>
 
 <span class="c1"># Build pipeline: filter → add a column → sort → convert to pandas</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 
@@ -216,8 +216,8 @@
 <p>Select rows based on conditions. Chain multiple filters for readability:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;friends&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"friends"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 </pre></div>
@@ -229,8 +229,8 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-        <span class="n">degree_squared</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="n">is_hub</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span>
+        <span class="n">degree_squared</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">is_hub</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span>
     <span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
@@ -242,7 +242,7 @@
 <p>Choose specific columns (and optionally reorder them):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"layer"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 </pre></div>
@@ -253,7 +253,7 @@
 <p>Sort results (ascending by default, or descending with <code class="docutils literal notranslate"><span class="pre">reverse=True</span></code>):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Descending</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Descending</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 </pre></div>
@@ -264,10 +264,10 @@
 <p>Aggregate by one or more columns. <code class="docutils literal notranslate"><span class="pre">summarise</span></code> expects functions that return scalars (e.g., <code class="docutils literal notranslate"><span class="pre">mean</span></code>, <code class="docutils literal notranslate"><span class="pre">max</span></code>, <code class="docutils literal notranslate"><span class="pre">len</span></code>):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">"layer"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
-        <span class="n">avg_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
-        <span class="n">max_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+        <span class="n">avg_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="n">max_degree</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
         <span class="n">count</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
@@ -291,15 +291,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="c1"># Step 1: Filter active nodes</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer_count&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer_count"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
     <span class="c1"># Step 2: Add computed score</span>
     <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-        <span class="n">activity_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer_count&quot;</span><span class="p">]</span>
+        <span class="n">activity_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer_count"</span><span class="p">]</span>
     <span class="p">)</span>
     <span class="c1"># Step 3: Filter by score</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;activity_score&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"activity_score"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">)</span>
     <span class="c1"># Step 4: Sort by score</span>
-    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;activity_score&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"activity_score"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># Step 5: Get top 20</span>
     <span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
     <span class="c1"># Convert to pandas</span>
@@ -320,7 +320,7 @@
 <span class="n">dsl_result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -331,12 +331,12 @@
 <span class="c1"># Use dplyr-style to filter and transform the same nodes</span>
 <span class="n">final_result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">])</span> <span class="ow">in</span> <span class="n">selected</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer"</span><span class="p">])</span> <span class="ow">in</span> <span class="n">selected</span><span class="p">)</span>
     <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-        <span class="n">betweenness</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">betweenness</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">n</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">]),</span> <span class="mf">0.0</span><span class="p">),</span>
-        <span class="n">centrality_rank</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">betweenness</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">n</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">]),</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="n">betweenness</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">betweenness</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">n</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer"</span><span class="p">]),</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="n">centrality_rank</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">betweenness</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">n</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer"</span><span class="p">]),</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="p">)</span>
-    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;centrality_rank&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"centrality_rank"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="p">)</span>
 </pre></div>
@@ -348,9 +348,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">,</span> <span class="n">ComputeStats</span>
 
 <span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
-    <span class="p">(</span><span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)),</span>
-    <span class="p">(</span><span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">(</span><span class="n">min_degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)),</span>
-    <span class="p">(</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="n">ComputeStats</span><span class="p">(</span><span class="n">include_layer_stats</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"load"</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"data.multiedgelist"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"filter"</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">(</span><span class="n">min_degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"stats"</span><span class="p">,</span> <span class="n">ComputeStats</span><span class="p">(</span><span class="n">include_layer_stats</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
 <span class="p">])</span>
 
 <span class="n">stats</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -367,14 +367,14 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 
 <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;steps&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span> <span class="s2">&quot;input_type&quot;</span><span class="p">:</span> <span class="s2">&quot;multiedgelist&quot;</span><span class="p">}},</span>
-        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;min_degree&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}},</span>
-        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;include_layer_stats&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
+    <span class="s2">"steps"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"load"</span><span class="p">,</span> <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="s2">"data.multiedgelist"</span><span class="p">,</span> <span class="s2">"input_type"</span><span class="p">:</span> <span class="s2">"multiedgelist"</span><span class="p">}},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"filter"</span><span class="p">,</span> <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"min_degree"</span><span class="p">:</span> <span class="mi">2</span><span class="p">}},</span>
+        <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"stats"</span><span class="p">,</span> <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"include_layer_stats"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
     <span class="p">]</span>
 <span class="p">}</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;pipeline.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"pipeline.json"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -385,15 +385,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">,</span> <span class="n">ComputeStats</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;pipeline.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"pipeline.json"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-<span class="n">step_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">step</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="n">step</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;steps&quot;</span><span class="p">]}</span>
+<span class="n">step_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">step</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]:</span> <span class="n">step</span><span class="p">[</span><span class="s2">"params"</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">"steps"</span><span class="p">]}</span>
 
 <span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
-    <span class="p">(</span><span class="s2">&quot;load&quot;</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">(</span><span class="o">**</span><span class="n">step_params</span><span class="p">[</span><span class="s2">&quot;load&quot;</span><span class="p">])),</span>
-    <span class="p">(</span><span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">(</span><span class="o">**</span><span class="n">step_params</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">])),</span>
-    <span class="p">(</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="n">ComputeStats</span><span class="p">(</span><span class="o">**</span><span class="n">step_params</span><span class="p">[</span><span class="s2">&quot;stats&quot;</span><span class="p">])),</span>
+    <span class="p">(</span><span class="s2">"load"</span><span class="p">,</span> <span class="n">LoadStep</span><span class="p">(</span><span class="o">**</span><span class="n">step_params</span><span class="p">[</span><span class="s2">"load"</span><span class="p">])),</span>
+    <span class="p">(</span><span class="s2">"filter"</span><span class="p">,</span> <span class="n">FilterNodes</span><span class="p">(</span><span class="o">**</span><span class="n">step_params</span><span class="p">[</span><span class="s2">"filter"</span><span class="p">])),</span>
+    <span class="p">(</span><span class="s2">"stats"</span><span class="p">,</span> <span class="n">ComputeStats</span><span class="p">(</span><span class="o">**</span><span class="n">step_params</span><span class="p">[</span><span class="s2">"stats"</span><span class="p">])),</span>
 <span class="p">])</span>
 
 <span class="n">stats</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -406,12 +406,12 @@
 <section id="create-pipeline-functions">
 <h3>Create Pipeline Functions<a class="headerlink" href="#create-pipeline-functions" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">identify_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reusable pipeline to identify hub nodes.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Reusable pipeline to identify hub nodes."""</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">nodes</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">hub_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;layer_count&quot;</span><span class="p">])</span>
-        <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">&quot;hub_score&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">hub_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">[</span><span class="s2">"layer_count"</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s2">"hub_score"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
     <span class="p">)</span>
 

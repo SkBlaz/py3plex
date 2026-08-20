@@ -172,8 +172,8 @@
 <p><strong>Network Configuration (YAML):</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># network_config.yaml</span>
 <span class="nt">network</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;data/multilayer.edges&quot;</span>
-<span class="w">  </span><span class="nt">input_type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;multiedgelist&quot;</span><span class="w">  </span><span class="c1"># one of: multiedgelist, edgelist, json, graphml, parquet</span>
+<span class="w">  </span><span class="nt">input_file</span><span class="p">:</span><span class="w"> </span><span class="s">"data/multilayer.edges"</span>
+<span class="w">  </span><span class="nt">input_type</span><span class="p">:</span><span class="w"> </span><span class="s">"multiedgelist"</span><span class="w">  </span><span class="c1"># one of: multiedgelist, edgelist, json, graphml, parquet</span>
 <span class="w">  </span><span class="nt">directed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">weighted</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 
@@ -183,13 +183,13 @@
 <span class="c1"># directed/weighted: toggle graph properties</span>
 
 <span class="c1"># Load with:</span>
-<span class="c1"># network.load_network(**config[&#39;network&#39;])</span>
+<span class="c1"># network.load_network(**config['network'])</span>
 </pre></div>
 </div>
 <p><strong>Algorithm Parameters:</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># algorithm_config.yaml</span>
 <span class="nt">community_detection</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;louvain_multilayer&quot;</span>
+<span class="w">  </span><span class="nt">algorithm</span><span class="p">:</span><span class="w"> </span><span class="s">"louvain_multilayer"</span>
 <span class="w">  </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">          </span><span class="c1"># resolution; higher favors smaller communities</span>
 <span class="w">    </span><span class="nt">omega</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span><span class="w">          </span><span class="c1"># inter-layer coupling strength</span>
@@ -203,7 +203,7 @@
 <span class="w">  </span><span class="nt">q</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">               </span><span class="c1"># in-out hyperparameter (q &lt; 1 encourages outward exploration)</span>
 
 <span class="nt">dynamics</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SIR&quot;</span>
+<span class="w">  </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s">"SIR"</span>
 <span class="w">  </span><span class="nt">beta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.3</span><span class="w">            </span><span class="c1"># infection probability per contact</span>
 <span class="w">  </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span><span class="w">           </span><span class="c1"># recovery probability</span>
 <span class="w">  </span><span class="nt">initial_infected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span><span class="w">  </span><span class="c1"># fraction of nodes initially infected (0–1)</span>
@@ -219,11 +219,11 @@
 <p><strong>Visualization Settings:</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># viz_config.yaml</span>
 <span class="nt">visualization</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">layout</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;force_directed&quot;</span>
+<span class="w">  </span><span class="nt">layout</span><span class="p">:</span><span class="w"> </span><span class="s">"force_directed"</span>
 <span class="w">  </span><span class="nt">node_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
 <span class="w">  </span><span class="nt">edge_width</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="w">  </span><span class="nt">dpi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
-<span class="w">  </span><span class="nt">output_format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span>
+<span class="w">  </span><span class="nt">output_format</span><span class="p">:</span><span class="w"> </span><span class="s">"png"</span>
 <span class="w">  </span><span class="nt">color_by_layer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
@@ -232,16 +232,16 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load config</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;config.yaml&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'config.yaml'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="c1"># Use config</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span>
-    <span class="n">directed</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;network&#39;</span><span class="p">][</span><span class="s1">&#39;directed&#39;</span><span class="p">]</span>
+    <span class="n">directed</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'network'</span><span class="p">][</span><span class="s1">'directed'</span><span class="p">]</span>
 <span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="n">config</span><span class="p">[</span><span class="s1">&#39;network&#39;</span><span class="p">][</span><span class="s1">&#39;input_file&#39;</span><span class="p">],</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;network&#39;</span><span class="p">][</span><span class="s1">&#39;input_type&#39;</span><span class="p">]</span>
+    <span class="n">config</span><span class="p">[</span><span class="s1">'network'</span><span class="p">][</span><span class="s1">'input_file'</span><span class="p">],</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'network'</span><span class="p">][</span><span class="s1">'input_type'</span><span class="p">]</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -281,12 +281,12 @@
 </ul>
 <p><strong>Setting environment variables:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Linux/macOS</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PY3PLEX_DATA_DIR</span><span class="o">=</span><span class="s2">&quot;/path/to/data&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PY3PLEX_DATA_DIR</span><span class="o">=</span><span class="s2">"/path/to/data"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">PY3PLEX_NUM_WORKERS</span><span class="o">=</span><span class="m">8</span>
 
 <span class="c1"># Or in Python</span>
 import<span class="w"> </span>os
-os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;/path/to/data&#39;</span>
+os.environ<span class="o">[</span><span class="s1">'PY3PLEX_DATA_DIR'</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'/path/to/data'</span>
 </pre></div>
 </div>
 <p><strong>Debugging and Development:</strong></p>
@@ -379,8 +379,8 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 <h2>Visualization Configuration<a class="headerlink" href="#visualization-configuration" title="Link to this heading"></a></h2>
 <p>Customize visualization; adjust node/edge sizes to match network scale. Set <code class="docutils literal notranslate"><span class="pre">show=False</span></code> for headless rendering:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span>
-    <span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;network.png&#39;</span><span class="p">,</span>
-    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force_directed&#39;</span><span class="p">,</span>
+    <span class="n">output_file</span><span class="o">=</span><span class="s1">'network.png'</span><span class="p">,</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">'force_directed'</span><span class="p">,</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
     <span class="n">edge_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
@@ -399,7 +399,7 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 <span class="c1"># Set log level</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
     <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s1">'</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">'</span>
 <span class="p">)</span>
 
 <span class="c1"># Now py3plex operations will log to console</span>
@@ -422,9 +422,9 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 <span class="c1"># Configure file handler</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
     <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
-    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="s1">'</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">'</span><span class="p">,</span>
     <span class="n">handlers</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="s1">&#39;py3plex.log&#39;</span><span class="p">),</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="s1">'py3plex.log'</span><span class="p">),</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>  <span class="c1"># Also log to console</span>
     <span class="p">]</span>
 <span class="p">)</span>
@@ -441,9 +441,9 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
 <span class="c1"># Enable debug logging only for specific components</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;py3plex.algorithms&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;py3plex.dsl&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;py3plex.dynamics&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'py3plex.algorithms'</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'py3plex.dsl'</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'py3plex.dynamics'</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Custom Logging Handlers:</strong></p>
@@ -453,17 +453,17 @@ os.environ<span class="o">[</span><span class="s1">&#39;PY3PLEX_DATA_DIR&#39;</s
 
 <span class="c1"># Rotating file handler (10MB max, keep 5 backups)</span>
 <span class="n">handler</span> <span class="o">=</span> <span class="n">RotatingFileHandler</span><span class="p">(</span>
-    <span class="s1">&#39;py3plex.log&#39;</span><span class="p">,</span>
+    <span class="s1">'py3plex.log'</span><span class="p">,</span>
     <span class="n">maxBytes</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span>
     <span class="n">backupCount</span><span class="o">=</span><span class="mi">5</span>
 <span class="p">)</span>
 <span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">'</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">'</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Add to py3plex logger</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;py3plex&#39;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'py3plex'</span><span class="p">)</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 </pre></div>

@@ -271,8 +271,8 @@
 <span class="c1"># Calculate modularity</span>
 <span class="n">mod</span> <span class="o">=</span> <span class="n">louvain</span><span class="o">.</span><span class="n">modularity</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Modularity: </span><span class="si">{</span><span class="n">mod</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Modularity: </span><span class="si">{</span><span class="n">mod</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -310,12 +310,12 @@ Modularity: 0.4198
 <span class="k">try</span><span class="p">:</span>
     <span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
         <span class="n">G</span><span class="p">,</span>
-        <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/usr/local/bin/Infomap&quot;</span><span class="p">,</span>  <span class="c1"># Adjust path as needed</span>
-        <span class="n">arguments</span><span class="o">=</span><span class="s2">&quot;--two-level&quot;</span>
+        <span class="n">binary_path</span><span class="o">=</span><span class="s2">"/usr/local/bin/Infomap"</span><span class="p">,</span>  <span class="c1"># Adjust path as needed</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="s2">"--two-level"</span>
     <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Infomap binary not found. Install from infomap.org&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Infomap binary not found. Install from infomap.org"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Note:</strong> Infomap requires the external Infomap binary. Install from <a class="reference external" href="https://www.mapequation.org/infomap/">https://www.mapequation.org/infomap/</a></p>
@@ -346,27 +346,27 @@ Modularity: 0.4198
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">}</span>
     <span class="p">])</span>
 
 <span class="c1"># Add edges creating two communities</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">}</span>
     <span class="p">])</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">):</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">}</span>
     <span class="p">])</span>
 
 <span class="c1"># Build supra-adjacency matrix and detect communities</span>
 <span class="n">supra_adj</span> <span class="o">=</span> <span class="n">mlmod</span><span class="o">.</span><span class="n">build_supra_modularity_matrix</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">mlmod</span><span class="o">.</span><span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">supra_adj</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -481,8 +481,8 @@ Modularity: 0.4198
 <span class="c1"># Add nodes and edges to two layers</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">}</span>
     <span class="p">])</span>
 
 <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span>
@@ -491,8 +491,8 @@ Modularity: 0.4198
 <span class="p">]</span>
 <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">tgt</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">tgt</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2&#39;</span><span class="p">}</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="n">tgt</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="n">tgt</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer2'</span><span class="p">}</span>
     <span class="p">])</span>
 
 <span class="c1"># Compute centrality measures</span>
@@ -500,11 +500,11 @@ Modularity: 0.4198
 
 <span class="c1"># Overlapping degree (sum across layers)</span>
 <span class="n">overlap_deg</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">overlapping_degree_centrality</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node 2 overlapping degree: </span><span class="si">{</span><span class="n">overlap_deg</span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;layer1&#39;</span><span class="p">)]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node 2 overlapping degree: </span><span class="si">{</span><span class="n">overlap_deg</span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">'layer1'</span><span class="p">)]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># PageRank</span>
 <span class="n">pr</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">pagerank_centrality</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node 2 PageRank: </span><span class="si">{</span><span class="n">pr</span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;layer1&#39;</span><span class="p">)]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node 2 PageRank: </span><span class="si">{</span><span class="n">pr</span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">'layer1'</span><span class="p">)]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -584,15 +584,15 @@ Node 2 PageRank: 0.0892
 <span class="c1"># Create network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Deterministic PageRank</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node scores: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is deterministic: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">is_deterministic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node scores: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Is deterministic: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">is_deterministic</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># With uncertainty</span>
 <span class="n">result_unc</span> <span class="o">=</span> <span class="n">multilayer_pagerank</span><span class="p">(</span>
@@ -602,9 +602,9 @@ Node 2 PageRank: 0.0892
     <span class="n">resampling</span><span class="o">=</span><span class="n">ResamplingStrategy</span><span class="o">.</span><span class="n">PERTURBATION</span><span class="p">,</span>
     <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean scores: </span><span class="si">{</span><span class="n">result_unc</span><span class="o">.</span><span class="n">mean</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std deviations: </span><span class="si">{</span><span class="n">result_unc</span><span class="o">.</span><span class="n">std</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;95% CI: [</span><span class="si">{</span><span class="n">result_unc</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.025</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">result_unc</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.975</span><span class="p">]</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean scores: </span><span class="si">{</span><span class="n">result_unc</span><span class="o">.</span><span class="n">mean</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Std deviations: </span><span class="si">{</span><span class="n">result_unc</span><span class="o">.</span><span class="n">std</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"95% CI: [</span><span class="si">{</span><span class="n">result_unc</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.025</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">result_unc</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.975</span><span class="p">]</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -672,22 +672,22 @@ Std deviations: [0.019 0.021 0.018 ...]
 
 <span class="c1"># Load a large network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;large_network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"large_network.csv"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">)</span>
 
 <span class="c1"># Exact computation (slow on large networks)</span>
-<span class="c1"># result = Q.nodes().compute(&quot;betweenness_centrality&quot;).execute(net)</span>
+<span class="c1"># result = Q.nodes().compute("betweenness_centrality").execute(net)</span>
 
 <span class="c1"># Approximate computation (fast)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span>
-    <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span>
+    <span class="s2">"betweenness_centrality"</span><span class="p">,</span>
     <span class="n">approx</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">n_samples</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>  <span class="c1"># Trade accuracy for speed</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>         <span class="c1"># Deterministic results</span>
 <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 
 <span class="c1"># Check provenance</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fast path: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;provenance&#39;</span><span class="p">][</span><span class="s1">&#39;backend&#39;</span><span class="p">][</span><span class="s1">&#39;fast_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Method: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;approximation&#39;</span><span class="p">][</span><span class="s1">&#39;measures&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Fast path: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">'provenance'</span><span class="p">][</span><span class="s1">'backend'</span><span class="p">][</span><span class="s1">'fast_path'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Method: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">'approximation'</span><span class="p">][</span><span class="s1">'measures'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">'method'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -711,11 +711,11 @@ Method: sampling
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl_legacy</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_query</span>
 
 <span class="c1"># Use default method</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="s1">&#39;SELECT nodes COMPUTE betweenness_centrality APPROXIMATE&#39;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="s1">'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE'</span><span class="p">)</span>
 
 <span class="c1"># Specify method and parameters</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">net</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes COMPUTE betweenness_centrality APPROXIMATE(method=&quot;sampling&quot;, n_samples=512, seed=42)&#39;</span>
+    <span class="s1">'SELECT nodes COMPUTE betweenness_centrality APPROXIMATE(method="sampling", n_samples=512, seed=42)'</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -805,11 +805,11 @@ Method: sampling
 <span class="c1"># Create small network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">}])</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">}])</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'layer1'</span><span class="p">},</span>
 <span class="p">])</span>
 
 <span class="c1"># Build supra-adjacency matrix</span>
@@ -818,7 +818,7 @@ Method: sampling
 <span class="c1"># Compute communicability centrality</span>
 <span class="n">comm_cent</span> <span class="o">=</span> <span class="n">smfc</span><span class="o">.</span><span class="n">communicability_centrality</span><span class="p">(</span><span class="n">supra_matrix</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node 1 communicability: </span><span class="si">{</span><span class="n">comm_cent</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;layer1&#39;</span><span class="p">)]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node 1 communicability: </span><span class="si">{</span><span class="n">comm_cent</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">'layer1'</span><span class="p">)]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -849,30 +849,30 @@ Method: sampling
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Add users and items layers</span>
-<span class="n">users</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u1&#39;</span><span class="p">,</span> <span class="s1">&#39;u2&#39;</span><span class="p">,</span> <span class="s1">&#39;u3&#39;</span><span class="p">]</span>
-<span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;i1&#39;</span><span class="p">,</span> <span class="s1">&#39;i2&#39;</span><span class="p">]</span>
+<span class="n">users</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'u1'</span><span class="p">,</span> <span class="s1">'u2'</span><span class="p">,</span> <span class="s1">'u3'</span><span class="p">]</span>
+<span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'i1'</span><span class="p">,</span> <span class="s1">'i2'</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">u</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;users&#39;</span><span class="p">}])</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">u</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'users'</span><span class="p">}])</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;items&#39;</span><span class="p">}])</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([{</span><span class="s1">'source'</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'items'</span><span class="p">}])</span>
 
 <span class="c1"># Add interactions (users -&gt; items)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;u1&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;i1&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;items&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;u2&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;i1&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;items&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;u2&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;i2&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;items&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'u1'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'i1'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'users'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'items'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'u2'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'i1'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'users'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'items'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'u2'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'i2'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'users'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'items'</span><span class="p">},</span>
 <span class="p">])</span>
 
 <span class="c1"># Configure and run MultiXRank</span>
 <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span>
-    <span class="s1">&#39;max_iter&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-    <span class="s1">&#39;tol&#39;</span><span class="p">:</span> <span class="mf">1e-6</span>
+    <span class="s1">'alpha'</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span>
+    <span class="s1">'max_iter'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s1">'tol'</span><span class="p">:</span> <span class="mf">1e-6</span>
 <span class="p">}</span>
 <span class="n">scores</span> <span class="o">=</span> <span class="n">multixrank</span><span class="o">.</span><span class="n">multixrank_from_py3plex_networks</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">config</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User u1 score: </span><span class="si">{</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s1">&#39;u1&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;users&#39;</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User u1 score: </span><span class="si">{</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s1">'u1'</span><span class="p">,</span><span class="w"> </span><span class="s1">'users'</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -1413,11 +1413,11 @@ Method: sampling
 
 <span class="c1"># 3. Cross-layer analysis</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 
 <span class="c1"># 4. Identify hubs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.basic_statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">identify_n_hubs</span>
-<span class="n">hubs</span> <span class="o">=</span> <span class="n">identify_n_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="n">identify_n_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1426,7 +1426,7 @@ Method: sampling
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Generate walks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_walks</span>
 <span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                      <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;node2vec&#39;</span><span class="p">)</span>
+                      <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">'node2vec'</span><span class="p">)</span>
 
 <span class="c1"># 2. Learn embeddings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers.node2vec_embedding</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_embeddings</span>
@@ -1443,9 +1443,9 @@ Method: sampling
 <h3>Statistical Analysis Workflow<a class="headerlink" href="#statistical-analysis-workflow" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Layer-level statistics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
-<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
-<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">)</span>
+<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
+<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
 
 <span class="c1"># 2. Node-level statistics</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">important_nodes</span><span class="p">:</span>

@@ -201,16 +201,16 @@ you do not need cross-language compatibility.</p>
 <span class="c1"># Create or load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Save to file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;network.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'network.pkl'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
 <span class="c1"># Load from file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;network.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'network.pkl'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">loaded_network</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="n">loaded_network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -234,7 +234,7 @@ with tools outside Python.</p>
 returns edges as <code class="docutils literal notranslate"><span class="pre">((node,</span> <span class="pre">layer),</span> <span class="pre">(node,</span> <span class="pre">layer))</span></code> tuples. Each line below
 follows <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">source_layer</span> <span class="pre">target</span> <span class="pre">target_layer</span> <span class="pre">weight</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export edges to text file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;edges.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'edges.txt'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
         <span class="n">source</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">edge</span>
         <span class="n">source_node</span><span class="p">,</span> <span class="n">source_layer</span> <span class="o">=</span> <span class="n">source</span>
@@ -242,9 +242,9 @@ follows <code class="docutils literal notranslate"><span class="pre">source</spa
 
         <span class="c1"># Get edge attributes</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'weight'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">source_node</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">source_layer</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_node</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_layer</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">source_node</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">source_layer</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_node</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">target_layer</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -264,15 +264,15 @@ CSV is easier to load in spreadsheets and dataframes than the plain text format.
     <span class="n">attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 
     <span class="n">edges_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">source_node</span><span class="p">,</span>
-        <span class="s1">&#39;source_layer&#39;</span><span class="p">:</span> <span class="n">source_layer</span><span class="p">,</span>
-        <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">target_node</span><span class="p">,</span>
-        <span class="s1">&#39;target_layer&#39;</span><span class="p">:</span> <span class="n">target_layer</span><span class="p">,</span>
-        <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="s1">'source'</span><span class="p">:</span> <span class="n">source_node</span><span class="p">,</span>
+        <span class="s1">'source_layer'</span><span class="p">:</span> <span class="n">source_layer</span><span class="p">,</span>
+        <span class="s1">'target'</span><span class="p">:</span> <span class="n">target_node</span><span class="p">,</span>
+        <span class="s1">'target_layer'</span><span class="p">:</span> <span class="n">target_layer</span><span class="p">,</span>
+        <span class="s1">'weight'</span><span class="p">:</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'weight'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
     <span class="p">})</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">edges_data</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;network_edges.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'network_edges.csv'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -288,18 +288,18 @@ readable.</p>
 
 <span class="c1"># Build JSON structure</span>
 <span class="n">network_data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;edges&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+    <span class="s1">'nodes'</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">'edges'</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">'layers'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
 <span class="p">}</span>
 
 <span class="c1"># Add nodes</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
     <span class="n">node_attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
-    <span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-        <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
-        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
-        <span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">node_attrs</span>
+    <span class="n">network_data</span><span class="p">[</span><span class="s1">'nodes'</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">'id'</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+        <span class="s1">'layer'</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+        <span class="s1">'attributes'</span><span class="p">:</span> <span class="n">node_attrs</span>
     <span class="p">})</span>
 
 <span class="c1"># Add edges</span>
@@ -310,16 +310,16 @@ readable.</p>
 
     <span class="n">attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 
-    <span class="n">network_data</span><span class="p">[</span><span class="s1">&#39;edges&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">source_node</span><span class="p">,</span>
-        <span class="s1">&#39;source_layer&#39;</span><span class="p">:</span> <span class="n">source_layer</span><span class="p">,</span>
-        <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">target_node</span><span class="p">,</span>
-        <span class="s1">&#39;target_layer&#39;</span><span class="p">:</span> <span class="n">target_layer</span><span class="p">,</span>
-        <span class="s1">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">attrs</span>
+    <span class="n">network_data</span><span class="p">[</span><span class="s1">'edges'</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">'source'</span><span class="p">:</span> <span class="n">source_node</span><span class="p">,</span>
+        <span class="s1">'source_layer'</span><span class="p">:</span> <span class="n">source_layer</span><span class="p">,</span>
+        <span class="s1">'target'</span><span class="p">:</span> <span class="n">target_node</span><span class="p">,</span>
+        <span class="s1">'target_layer'</span><span class="p">:</span> <span class="n">target_layer</span><span class="p">,</span>
+        <span class="s1">'attributes'</span><span class="p">:</span> <span class="n">attrs</span>
     <span class="p">})</span>
 
 <span class="c1"># Save</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'network.json'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">network_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -331,18 +331,18 @@ readable.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load JSON</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'network.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="c1"># Reconstruct network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="c1"># Add edges (nodes created automatically)</span>
-<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;edges&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'edges'</span><span class="p">]:</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
-        <span class="n">edge</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s1">&#39;source_layer&#39;</span><span class="p">],</span>
-        <span class="n">edge</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s1">&#39;target_layer&#39;</span><span class="p">],</span>
-        <span class="o">**</span><span class="n">edge</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">]</span>
+        <span class="n">edge</span><span class="p">[</span><span class="s1">'source'</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s1">'source_layer'</span><span class="p">],</span>
+        <span class="n">edge</span><span class="p">[</span><span class="s1">'target'</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s1">'target_layer'</span><span class="p">],</span>
+        <span class="o">**</span><span class="n">edge</span><span class="p">[</span><span class="s1">'attributes'</span><span class="p">]</span>
     <span class="p">)</span>
 
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -376,7 +376,7 @@ the same ID across layers.</p>
     <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">source_node</span><span class="p">,</span> <span class="n">target_node</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
 
 <span class="c1"># Save as GraphML</span>
-<span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s1">&#39;network.graphml&#39;</span><span class="p">)</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s1">'network.graphml'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -387,7 +387,7 @@ the same ID across layers.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="c1"># Extract single layer</span>
-<span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;friends&#39;</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="s1">'friends'</span>
 <span class="n">subgraph</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="c1"># Convert to NetworkX</span>
@@ -397,7 +397,7 @@ the same ID across layers.</p>
     <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Just node IDs; include weights if needed</span>
 
 <span class="c1"># Save</span>
-<span class="n">nx</span><span class="o">.</span><span class="n">write_edgelist</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;layer_</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s1">.edgelist&#39;</span><span class="p">)</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_edgelist</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'layer_</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s1">.edgelist'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -416,21 +416,21 @@ These preserve multilayer identity, attributes, network type, and directedness.<
 <span class="c1"># Create network with attributes</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'age'</span><span class="p">:</span> <span class="mi">25</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'work'</span><span class="p">},</span>
 <span class="p">])</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-01&#39;</span><span class="p">}</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span>
+     <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span>
+     <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s1">'timestamp'</span><span class="p">:</span> <span class="s1">'2024-01-01'</span><span class="p">}</span>
 <span class="p">])</span>
 
 <span class="c1"># Save to Arrow (single file)</span>
-<span class="n">save_to_arrow</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">save_to_arrow</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'network.arrow'</span><span class="p">)</span>
 
 <span class="c1"># Load back with zero loss</span>
-<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_from_arrow</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_from_arrow</span><span class="p">(</span><span class="s1">'network.arrow'</span><span class="p">)</span>
 
 <span class="c1"># Verify preservation</span>
 <span class="k">assert</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span> <span class="o">==</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
@@ -445,10 +445,10 @@ These preserve multilayer identity, attributes, network type, and directedness.<
 <span class="c1"># Creates: network_dir/nodes.parquet</span>
 <span class="c1">#          network_dir/edges.parquet</span>
 <span class="c1">#          network_dir/metadata.json</span>
-<span class="n">save_network_to_parquet</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;network_dir&#39;</span><span class="p">)</span>
+<span class="n">save_network_to_parquet</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'network_dir'</span><span class="p">)</span>
 
 <span class="c1"># Load back</span>
-<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_network_from_parquet</span><span class="p">(</span><span class="s1">&#39;network_dir&#39;</span><span class="p">)</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_network_from_parquet</span><span class="p">(</span><span class="s1">'network_dir'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Canonical Schema</strong></p>
@@ -462,19 +462,19 @@ These preserve multilayer identity, attributes, network type, and directedness.<
 <p>Non-scalar attributes (dict, list, set, tuple) are JSON-encoded automatically:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add node with complex attribute</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;researcher&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">],</span>
-     <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="s1">&#39;CS&#39;</span><span class="p">,</span> <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}}</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span>
+     <span class="s1">'tags'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'researcher'</span><span class="p">,</span> <span class="s1">'python'</span><span class="p">],</span>
+     <span class="s1">'metadata'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'department'</span><span class="p">:</span> <span class="s1">'CS'</span><span class="p">,</span> <span class="s1">'level'</span><span class="p">:</span> <span class="mi">5</span><span class="p">}}</span>
 <span class="p">])</span>
 
 <span class="c1"># Save and load - complex attributes preserved</span>
-<span class="n">save_to_arrow</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
-<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_from_arrow</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">save_to_arrow</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'network.arrow'</span><span class="p">)</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">load_from_arrow</span><span class="p">(</span><span class="s1">'network.arrow'</span><span class="p">)</span>
 
 <span class="c1"># Complex attributes reconstructed</span>
-<span class="n">alice_attrs</span> <span class="o">=</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">alice_attrs</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;researcher&#39;</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">]</span>
-<span class="k">assert</span> <span class="n">alice_attrs</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;department&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CS&#39;</span>
+<span class="n">alice_attrs</span> <span class="o">=</span> <span class="n">loaded</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">alice_attrs</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">'researcher'</span><span class="p">,</span> <span class="s1">'python'</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">alice_attrs</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">][</span><span class="s1">'department'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'CS'</span>
 </pre></div>
 </div>
 <p><strong>QueryResult Export</strong></p>
@@ -484,15 +484,15 @@ These preserve multilayer identity, attributes, network type, and directedness.<
 <span class="c1"># Compute statistics</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Save to Parquet</span>
-<span class="n">save_to_parquet</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;node_stats.parquet&#39;</span><span class="p">)</span>
+<span class="n">save_to_parquet</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">'node_stats.parquet'</span><span class="p">)</span>
 
 <span class="c1"># Load back as DataFrame</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">load_from_parquet</span><span class="p">(</span><span class="s1">&#39;node_stats.parquet&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">load_from_parquet</span><span class="p">(</span><span class="s1">'node_stats.parquet'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -504,11 +504,11 @@ These preserve multilayer identity, attributes, network type, and directedness.<
 
 <span class="c1"># Convert edges to table</span>
 <span class="n">edges_data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;source_layer&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;target_layer&#39;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="p">[]</span>
+    <span class="s1">'source'</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">'source_layer'</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">'target'</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">'target_layer'</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">'weight'</span><span class="p">:</span> <span class="p">[]</span>
 <span class="p">}</span>
 
 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
@@ -518,17 +518,17 @@ These preserve multilayer identity, attributes, network type, and directedness.<
 
     <span class="n">attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 
-    <span class="n">edges_data</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_node</span><span class="p">)</span>
-    <span class="n">edges_data</span><span class="p">[</span><span class="s1">&#39;source_layer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_layer</span><span class="p">)</span>
-    <span class="n">edges_data</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_node</span><span class="p">)</span>
-    <span class="n">edges_data</span><span class="p">[</span><span class="s1">&#39;target_layer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_layer</span><span class="p">)</span>
-    <span class="n">edges_data</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">edges_data</span><span class="p">[</span><span class="s1">'source'</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_node</span><span class="p">)</span>
+    <span class="n">edges_data</span><span class="p">[</span><span class="s1">'source_layer'</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">source_layer</span><span class="p">)</span>
+    <span class="n">edges_data</span><span class="p">[</span><span class="s1">'target'</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_node</span><span class="p">)</span>
+    <span class="n">edges_data</span><span class="p">[</span><span class="s1">'target_layer'</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_layer</span><span class="p">)</span>
+    <span class="n">edges_data</span><span class="p">[</span><span class="s1">'weight'</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'weight'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
 
 <span class="c1"># Create Arrow table</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">edges_data</span><span class="p">)</span>
 
 <span class="c1"># Save as Parquet</span>
-<span class="n">pq</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
+<span class="n">pq</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">'network.parquet'</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -550,13 +550,13 @@ colleagues.</p>
 <span class="c1"># Compute statistics</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Save to CSV</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;node_statistics.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'node_statistics.csv'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -574,13 +574,13 @@ visualization or comparison.</p>
 <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-        <span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
-        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
-        <span class="s1">&#39;community&#39;</span><span class="p">:</span> <span class="n">comm_id</span>
+        <span class="s1">'node'</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+        <span class="s1">'layer'</span><span class="p">:</span> <span class="n">layer</span><span class="p">,</span>
+        <span class="s1">'community'</span><span class="p">:</span> <span class="n">comm_id</span>
     <span class="p">})</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;communities.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'communities.csv'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -603,38 +603,38 @@ formats.</p>
         <span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src_layer</span><span class="p">),</span> <span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">dst_layer</span><span class="p">)</span> <span class="o">=</span> <span class="n">edge</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-            <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span>
-            <span class="s2">&quot;source_layer&quot;</span><span class="p">:</span> <span class="n">src_layer</span><span class="p">,</span>
-            <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">dst</span><span class="p">,</span>
-            <span class="s2">&quot;target_layer&quot;</span><span class="p">:</span> <span class="n">dst_layer</span><span class="p">,</span>
-            <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+            <span class="s2">"source"</span><span class="p">:</span> <span class="n">src</span><span class="p">,</span>
+            <span class="s2">"source_layer"</span><span class="p">:</span> <span class="n">src_layer</span><span class="p">,</span>
+            <span class="s2">"target"</span><span class="p">:</span> <span class="n">dst</span><span class="p">,</span>
+            <span class="s2">"target_layer"</span><span class="p">:</span> <span class="n">dst_layer</span><span class="p">,</span>
+            <span class="s2">"weight"</span><span class="p">:</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"weight"</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
         <span class="p">})</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">records</span><span class="p">)</span>
 
 <span class="n">edges_df</span> <span class="o">=</span> <span class="n">edges_to_df</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="n">network_json</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">l</span><span class="p">}</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()],</span>
-    <span class="s2">&quot;edges&quot;</span><span class="p">:</span> <span class="n">edges_df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">),</span>
-    <span class="s2">&quot;layers&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()),</span>
+    <span class="s2">"nodes"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s2">"layer"</span><span class="p">:</span> <span class="n">l</span><span class="p">}</span> <span class="k">for</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()],</span>
+    <span class="s2">"edges"</span><span class="p">:</span> <span class="n">edges_df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">"records"</span><span class="p">),</span>
+    <span class="s2">"layers"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()),</span>
 <span class="p">}</span>
 
 <span class="c1"># Create output directory</span>
-<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;export&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">'export'</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Export in multiple formats</span>
 <span class="n">formats</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;pickle&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;export/network.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)),</span>
-    <span class="s1">&#39;json&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">network_json</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;export/network.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)),</span>
-    <span class="s1">&#39;csv&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">edges_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;export/edges.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="s1">'pickle'</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'export/network.pkl'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)),</span>
+    <span class="s1">'json'</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">network_json</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'export/network.json'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)),</span>
+    <span class="s1">'csv'</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">edges_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'export/edges.csv'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="p">}</span>
 
 <span class="k">for</span> <span class="n">fmt</span><span class="p">,</span> <span class="n">export_func</span> <span class="ow">in</span> <span class="n">formats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">export_func</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported to </span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exported to </span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to export </span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to export </span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

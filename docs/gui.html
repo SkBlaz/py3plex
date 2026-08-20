@@ -178,7 +178,7 @@
 <span class="c1"># Copy environment configuration</span>
 cp<span class="w"> </span>.env.example<span class="w"> </span>.env
 
-<span class="c1"># Start all services (builds automatically; wait for containers to report &quot;healthy&quot;)</span>
+<span class="c1"># Start all services (builds automatically; wait for containers to report "healthy")</span>
 make<span class="w"> </span>up
 
 <span class="c1"># Open in browser</span>
@@ -470,7 +470,7 @@ make<span class="w"> </span>clean<span class="w">          </span><span class="c
 <h3>Example Dataset<a class="headerlink" href="#example-dataset" title="Link to this heading"></a></h3>
 <p>Try the included toy network (6 nodes, 14 edges, 3 layers):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># From host</span>
-curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@gui/toy_network.edgelist&quot;</span><span class="w"> </span>http://localhost:8080/api/upload
+curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">"file=@gui/toy_network.edgelist"</span><span class="w"> </span>http://localhost:8080/api/upload
 
 <span class="c1"># Or use the Web UI at http://localhost:8080</span>
 </pre></div>
@@ -517,7 +517,7 @@ docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">ex
 <p>The CI workflow runs full integration tests (Docker Compose brings up the full stack and exercises uploads + analysis):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Upload and analyze a network</span>
 <span class="nb">cd</span><span class="w"> </span>gui
-curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@toy_network.edgelist&quot;</span><span class="w"> </span>http://localhost:8080/api/upload
+curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">"file=@toy_network.edgelist"</span><span class="w"> </span>http://localhost:8080/api/upload
 <span class="c1"># Run layout, centrality, and community detection jobs</span>
 </pre></div>
 </div>
@@ -594,7 +594,7 @@ lsof<span class="w"> </span>-ti:8080<span class="w"> </span><span class="p">|</s
 
 <span class="c1"># Or change port in docker-compose.yml</span>
 ports:
-<span class="w">  </span>-<span class="w"> </span><span class="s2">&quot;8081:80&quot;</span><span class="w">  </span><span class="c1"># Use 8081 instead</span>
+<span class="w">  </span>-<span class="w"> </span><span class="s2">"8081:80"</span><span class="w">  </span><span class="c1"># Use 8081 instead</span>
 </pre></div>
 </div>
 </section>
@@ -648,13 +648,13 @@ curl<span class="w"> </span>http://localhost:8000/api/health
 <section id="example-run-analysis">
 <h3>Example: Run Analysis<a class="headerlink" href="#example-run-analysis" title="Link to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Upload</span>
-<span class="nv">GRAPH_ID</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@toy_network.edgelist&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="nv">GRAPH_ID</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">"file=@toy_network.edgelist"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>http://localhost:8080/api/upload<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.graph_id<span class="k">)</span>
 
 <span class="c1"># 2. Start layout job</span>
 <span class="nv">JOB_ID</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;algorithm&quot;:&quot;spring&quot;,&quot;seed&quot;:42,&quot;dimensions&quot;:2}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"algorithm":"spring","seed":42,"dimensions":2}'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>http://localhost:8080/api/graphs/<span class="nv">$GRAPH_ID</span>/layout<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.job_id<span class="k">)</span>
 
 <span class="c1"># 3. Poll job</span>

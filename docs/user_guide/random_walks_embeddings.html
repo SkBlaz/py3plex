@@ -269,8 +269,8 @@ weighted, directed, and multilayer networks with deterministic reproducibility.<
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># for reproducibility</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Walk: </span><span class="si">{</span><span class="n">walk</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 11 nodes (includes start)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Walk: </span><span class="si">{</span><span class="n">walk</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walk</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 11 nodes (includes start)</span>
 </pre></div>
 </div>
 </section>
@@ -373,7 +373,7 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 <span class="c1"># Count backtracking patterns</span>
 <span class="n">backtracks</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">walk_backtrack</span><span class="p">))</span>
                  <span class="k">if</span> <span class="n">walk_backtrack</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">walk_backtrack</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Backtracks: </span><span class="si">{</span><span class="n">backtracks</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Backtracks: </span><span class="si">{</span><span class="n">backtracks</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -396,8 +396,8 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total walks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 340 (34 nodes × 10 walks)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First walk: </span><span class="si">{</span><span class="n">walks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total walks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 340 (34 nodes × 10 walks)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"First walk: </span><span class="si">{</span><span class="n">walks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -417,7 +417,7 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total walks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 15 (3 nodes × 5 walks)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total walks: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 15 (3 nodes × 5 walks)</span>
 </pre></div>
 </div>
 </section>
@@ -473,26 +473,26 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 
 <span class="c1"># Create multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s2">&quot;biological&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s2">"social"</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s2">"biological"</span><span class="p">)</span>
 
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;biological&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;biological&quot;</span><span class="p">)</span>
+    <span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"B"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"C"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"biological"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"B"</span><span class="p">,</span> <span class="s2">"biological"</span><span class="p">)</span>
 <span class="p">])</span>
 
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">((</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">)),</span>
-    <span class="p">((</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;social&quot;</span><span class="p">)),</span>
-    <span class="p">((</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;biological&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;biological&quot;</span><span class="p">)),</span>
+    <span class="p">((</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"B"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">)),</span>
+    <span class="p">((</span><span class="s2">"B"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"C"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">)),</span>
+    <span class="p">((</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"biological"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"B"</span><span class="p">,</span> <span class="s2">"biological"</span><span class="p">)),</span>
 <span class="p">])</span>
 
 <span class="c1"># Walk constrained to social layer</span>
 <span class="n">walk</span> <span class="o">=</span> <span class="n">layer_specific_random_walk</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
-    <span class="n">start_node</span><span class="o">=</span><span class="s2">&quot;A---social&quot;</span><span class="p">,</span>
+    <span class="n">start_node</span><span class="o">=</span><span class="s2">"A---social"</span><span class="p">,</span>
     <span class="n">walk_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span>
+    <span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">,</span>
     <span class="n">cross_layer_prob</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># never cross layers</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>
@@ -512,9 +512,9 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 <span class="c1"># Walk with 10% probability of crossing layers</span>
 <span class="n">walk</span> <span class="o">=</span> <span class="n">layer_specific_random_walk</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
-    <span class="n">start_node</span><span class="o">=</span><span class="s2">&quot;A---social&quot;</span><span class="p">,</span>
+    <span class="n">start_node</span><span class="o">=</span><span class="s2">"A---social"</span><span class="p">,</span>
     <span class="n">walk_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-    <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span>
+    <span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">,</span>
     <span class="n">cross_layer_prob</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># 10% chance to cross</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>
@@ -651,7 +651,7 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
     <span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">G</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">])</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">G</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'weight'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">])</span>
         <span class="n">probs</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">/</span> <span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">probs</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-10</span>  <span class="c1"># Machine epsilon</span>
 </pre></div>
@@ -732,8 +732,8 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 
 <span class="c1"># Load your multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;your_network.multiedgelist&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="s2">"your_network.multiedgelist"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 
@@ -760,8 +760,8 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>             <span class="c1"># For reproducibility</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2"> walks&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample walk: </span><span class="si">{</span><span class="n">walks</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>  <span class="c1"># First 10 nodes of first walk</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2"> walks"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sample walk: </span><span class="si">{</span><span class="n">walks</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>  <span class="c1"># First 10 nodes of first walk</span>
 </pre></div>
 </div>
 </section>
@@ -785,8 +785,8 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>             <span class="c1"># Reproducibility</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Trained embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding dimension: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">vector_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Trained embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Embedding dimension: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">vector_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -799,18 +799,18 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 
 <span class="c1"># Create embedding matrix</span>
 <span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">node_ids</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding matrix shape: </span><span class="si">{</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Embedding matrix shape: </span><span class="si">{</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Get embedding for a specific node</span>
 <span class="n">sample_node</span> <span class="o">=</span> <span class="n">node_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">node_embedding</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="n">sample_node</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding for </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">node_embedding</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">... (dim=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">node_embedding</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Embedding for </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">node_embedding</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">... (dim=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">node_embedding</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
 <span class="c1"># Find similar nodes</span>
 <span class="n">similar_nodes</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">most_similar</span><span class="p">(</span><span class="n">sample_node</span><span class="p">,</span> <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Most similar to </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Most similar to </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">similarity</span> <span class="ow">in</span> <span class="n">similar_nodes</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -828,10 +828,10 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 <span class="c1"># Assign clusters to nodes</span>
 <span class="n">node_clusters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">node_ids</span><span class="p">,</span> <span class="n">clusters</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster distribution:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cluster distribution:"</span><span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 <span class="k">for</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Cluster </span><span class="si">{</span><span class="n">cluster</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Cluster </span><span class="si">{</span><span class="n">cluster</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Node Classification:</strong></p>
@@ -847,9 +847,9 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 <span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">node_ids</span><span class="p">:</span>
     <span class="c1"># Extract layer from node-layer tuple string representation</span>
     <span class="c1"># Adjust this based on your actual node ID format</span>
-    <span class="k">if</span> <span class="s1">&#39;layer1&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">node_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">'layer1'</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">node_id</span><span class="p">):</span>
         <span class="n">labels</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">elif</span> <span class="s1">&#39;layer2&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">node_id</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="s1">'layer2'</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">node_id</span><span class="p">):</span>
         <span class="n">labels</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">labels</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
@@ -870,26 +870,26 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 <span class="c1"># Evaluate</span>
 <span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 <span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Classification accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Classification accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Link Prediction:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">edge_embedding</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;hadamard&#39;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute edge embedding from node embeddings.&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">edge_embedding</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'hadamard'</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute edge embedding from node embeddings."""</span>
     <span class="n">emb1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node1</span><span class="p">)]</span>
     <span class="n">emb2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node2</span><span class="p">)]</span>
 
-    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;hadamard&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'hadamard'</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">emb1</span> <span class="o">*</span> <span class="n">emb2</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;average&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'average'</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">emb1</span> <span class="o">+</span> <span class="n">emb2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;concat&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">'concat'</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">emb1</span><span class="p">,</span> <span class="n">emb2</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Get existing edges (positive examples)</span>
 <span class="n">existing_edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">())[:</span><span class="mi">100</span><span class="p">]</span>  <span class="c1"># Sample for demo</span>
@@ -933,25 +933,25 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 
 <span class="n">accuracy</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Link prediction accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Link prediction accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="step-6-save-and-load-embeddings">
 <h3>Step 6: Save and Load Embeddings<a class="headerlink" href="#step-6-save-and-load-embeddings" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save embeddings in Word2Vec format</span>
-<span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">save_word2vec_format</span><span class="p">(</span><span class="s2">&quot;node_embeddings.txt&quot;</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Embeddings saved to node_embeddings.txt&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">save_word2vec_format</span><span class="p">(</span><span class="s2">"node_embeddings.txt"</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Embeddings saved to node_embeddings.txt"</span><span class="p">)</span>
 
 <span class="c1"># Save as NumPy arrays (for sklearn compatibility)</span>
-<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;embedding_matrix.npy&quot;</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
-<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;node_ids.npy&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">node_ids</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Embeddings saved as NumPy arrays&quot;</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"embedding_matrix.npy"</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"node_ids.npy"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">node_ids</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Embeddings saved as NumPy arrays"</span><span class="p">)</span>
 
 <span class="c1"># Load embeddings later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">gensim.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyedVectors</span>
-<span class="n">loaded_embeddings</span> <span class="o">=</span> <span class="n">KeyedVectors</span><span class="o">.</span><span class="n">load_word2vec_format</span><span class="p">(</span><span class="s2">&quot;node_embeddings.txt&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loaded_embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="n">loaded_embeddings</span> <span class="o">=</span> <span class="n">KeyedVectors</span><span class="o">.</span><span class="n">load_word2vec_format</span><span class="p">(</span><span class="s2">"node_embeddings.txt"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded embeddings for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loaded_embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1109,7 +1109,7 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
 
 <span class="c1"># Check connectivity</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Graph is disconnected!&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Graph is disconnected!"</span><span class="p">)</span>
 
     <span class="c1"># Option 1: Use largest connected component</span>
     <span class="n">largest_cc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
@@ -1216,7 +1216,7 @@ following the Node2Vec algorithm (Grover &amp; Leskovec, 2016).</p>
         <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="o">+</span><span class="n">i</span>
     <span class="p">)</span>
     <span class="n">all_walks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_walks</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Processed </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 
 <span class="c1"># Option 2: Stream walks directly to Word2Vec</span>
 <span class="c1"># (requires custom iterator implementation)</span>
@@ -1251,8 +1251,8 @@ Physical-node embeddings can be derived with <code class="docutils literal notra
     <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
     <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">cross_layer_prob</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
-    <span class="n">node_reduce</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">"both"</span><span class="p">,</span>
+    <span class="n">node_reduce</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">,</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">result_state</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
@@ -1261,7 +1261,7 @@ Physical-node embeddings can be derived with <code class="docutils literal notra
 </div>
 <p>You can access the same models through <code class="docutils literal notranslate"><span class="pre">multi_layer_network.embed</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;supra_node2vec&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"supra_node2vec"</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
     <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
     <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>

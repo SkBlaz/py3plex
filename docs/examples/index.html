@@ -221,8 +221,8 @@
 <span class="w">    </span><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>
 <span class="w">        </span>Q.nodes<span class="o">()</span>
 <span class="w">         </span>.where<span class="o">(</span><span class="nv">degree__gte</span><span class="o">=</span><span class="m">5</span><span class="o">)</span>
-<span class="w">         </span>.compute<span class="o">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="o">)</span>
-<span class="w">         </span>.sort<span class="o">(</span><span class="nv">by</span><span class="o">=</span><span class="s2">&quot;degree_centrality&quot;</span>,<span class="w"> </span><span class="nv">descending</span><span class="o">=</span>True<span class="o">)</span>
+<span class="w">         </span>.compute<span class="o">(</span><span class="s2">"degree_centrality"</span><span class="o">)</span>
+<span class="w">         </span>.sort<span class="o">(</span><span class="nv">by</span><span class="o">=</span><span class="s2">"degree_centrality"</span>,<span class="w"> </span><span class="nv">descending</span><span class="o">=</span>True<span class="o">)</span>
 <span class="w">         </span>.limit<span class="o">(</span><span class="m">15</span><span class="o">)</span>
 <span class="w">         </span>.execute<span class="o">(</span>network<span class="o">)</span>
 <span class="w">    </span><span class="o">)</span>
@@ -231,8 +231,8 @@
 
 *<span class="w"> </span>SQL-like<span class="w"> </span>syntax<span class="w"> </span><span class="k">for</span><span class="w"> </span>network<span class="w"> </span>queries
 *<span class="w"> </span>Python<span class="w"> </span>builder<span class="w"> </span>API<span class="w"> </span>with<span class="w"> </span><span class="nb">type</span><span class="w"> </span>hints
-*<span class="w"> </span>Layer<span class="w"> </span>algebra:<span class="w"> </span><span class="sb">``</span>L<span class="o">[</span><span class="s2">&quot;layer1&quot;</span>,<span class="w"> </span><span class="s2">&quot;layer2&quot;</span><span class="o">]</span><span class="sb">``</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>union
-*<span class="w"> </span>Django-style<span class="w"> </span>WHERE:<span class="w"> </span><span class="sb">``</span><span class="nv">degree__gt</span><span class="o">=</span><span class="m">5</span><span class="sb">``</span>,<span class="w"> </span><span class="sb">``</span><span class="nv">layer__ne</span><span class="o">=</span><span class="s2">&quot;coupling&quot;</span><span class="sb">``</span>
+*<span class="w"> </span>Layer<span class="w"> </span>algebra:<span class="w"> </span><span class="sb">``</span>L<span class="o">[</span><span class="s2">"layer1"</span>,<span class="w"> </span><span class="s2">"layer2"</span><span class="o">]</span><span class="sb">``</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>union
+*<span class="w"> </span>Django-style<span class="w"> </span>WHERE:<span class="w"> </span><span class="sb">``</span><span class="nv">degree__gt</span><span class="o">=</span><span class="m">5</span><span class="sb">``</span>,<span class="w"> </span><span class="sb">``</span><span class="nv">layer__ne</span><span class="o">=</span><span class="s2">"coupling"</span><span class="sb">``</span>
 *<span class="w"> </span>COMPUTE<span class="w"> </span>measures<span class="w"> </span>with<span class="w"> </span>automatic<span class="w"> </span>calculation
 *<span class="w"> </span>Sort,<span class="w"> </span>limit,<span class="w"> </span>explain,<span class="w"> </span><span class="nb">export</span><span class="w"> </span>to<span class="w"> </span>pandas/NetworkX/Arrow
 
@@ -313,7 +313,7 @@ python<span class="w"> </span>.github/scripts/run_examples.py<span class="w"> </
 <section id="example-guidelines">
 <h2>Example Guidelines<a class="headerlink" href="#example-guidelines" title="Link to this heading"></a></h2>
 <p>When creating new examples:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Example title: Describe what this example demonstrates.</span>
 
 <span class="sd">Runtime: FAST (&lt; 5 seconds) or SKIP_CI: slow/interactive/external_deps</span>
@@ -321,7 +321,7 @@ python<span class="w"> </span>.github/scripts/run_examples.py<span class="w"> </
 <span class="sd">Demonstrates:</span>
 <span class="sd">- Primary feature or technique</span>
 <span class="sd">- Key API patterns</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_aarhus_cs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
@@ -330,7 +330,7 @@ python<span class="w"> </span>.github/scripts/run_examples.py<span class="w"> </
 <span class="n">network</span> <span class="o">=</span> <span class="n">load_aarhus_cs</span><span class="p">()</span>
 
 <span class="c1"># 2. Run operation</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree_centrality"</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="c1"># 3. Inspect result</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>

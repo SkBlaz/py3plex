@@ -268,7 +268,7 @@ make<span class="w"> </span>up
 </pre></div>
 </div>
 <p><strong>Expected Response</strong>:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="s2">&quot;ok&quot;</span><span class="p">,</span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="s2">&quot;&lt;current_version&gt;&quot;</span><span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="s2">"ok"</span><span class="p">,</span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"&lt;current_version&gt;"</span><span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -404,7 +404,7 @@ make<span class="w"> </span>up
 <section id="upload-via-api">
 <h4>Upload via API<a class="headerlink" href="#upload-via-api" title="Link to this heading"></a></h4>
 <p>Keep the stack running from the earlier steps.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@example_data/toy_network.edgelist&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-F<span class="w"> </span><span class="s2">"file=@example_data/toy_network.edgelist"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>http://localhost:8080/api/upload
 </pre></div>
 </div>
@@ -421,8 +421,8 @@ curl<span class="w"> </span>http://localhost:8080/api/graphs/<span class="nv">$G
 <section id="start-layout-job">
 <h4>Start Layout Job<a class="headerlink" href="#start-layout-job" title="Link to this heading"></a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;algorithm&quot;:&quot;spring&quot;,&quot;seed&quot;:42,&quot;dimensions&quot;:2}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"algorithm":"spring","seed":42,"dimensions":2}'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>http://localhost:8080/api/graphs/<span class="nv">$GRAPH_ID</span>/layout
 </pre></div>
 </div>
@@ -506,7 +506,7 @@ lsof<span class="w"> </span>-ti:8080<span class="w"> </span><span class="p">|</s
 
 <span class="c1"># Or change port in docker-compose.yml</span>
 ports:
-<span class="w">  </span>-<span class="w"> </span><span class="s2">&quot;8081:80&quot;</span>
+<span class="w">  </span>-<span class="w"> </span><span class="s2">"8081:80"</span>
 </pre></div>
 </div>
 </section>

@@ -184,8 +184,8 @@
 
 <span class="c1"># String DSL: readable and concise</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span><span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes WHERE layer=&quot;social&quot; AND degree &gt; 5 &#39;</span>
-    <span class="s1">&#39;COMPUTE betweenness_centrality&#39;</span>
+    <span class="s1">'SELECT nodes WHERE layer="social" AND degree &gt; 5 '</span>
+    <span class="s1">'COMPUTE betweenness_centrality'</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -195,9 +195,9 @@
 <span class="c1"># Builder API: with IDE autocompletion</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"social"</span><span class="p">])</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>

@@ -202,7 +202,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </
 <span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
 
 <span class="c1"># Install in editable mode with dev dependencies</span>
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 </pre></div>
 </div>
 <p>Both methods install:</p>
@@ -266,7 +266,7 @@ mypy<span class="w"> </span>py3plex/
 <h3>Commit Changes<a class="headerlink" href="#commit-changes" title="Link to this heading"></a></h3>
 <p>Keep commits small and focused. Write clear, descriptive commit messages that explain the change and why it matters:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add feature X to support Y&quot;</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add feature X to support Y"</span>
 <span class="c1"># For multi-line messages, use your editor:</span>
 git<span class="w"> </span>commit
 </pre></div>
@@ -333,7 +333,7 @@ git<span class="w"> </span>commit
 <h3>Docstrings<a class="headerlink" href="#docstrings" title="Link to this heading"></a></h3>
 <p>Use NumPy-style docstrings for all public functions and classes. Keep examples minimal but runnable:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">multilayer_degree_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Compute degree centrality for multilayer network.</span>
 
 <span class="sd">    Parameters</span>
@@ -353,9 +353,9 @@ git<span class="w"> </span>commit
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; network = multinet.multi_layer_network()</span>
-<span class="sd">    &gt;&gt;&gt; network.add_edges([[&#39;A&#39;, &#39;L1&#39;, &#39;B&#39;, &#39;L1&#39;, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; network.add_edges([['A', 'L1', 'B', 'L1', 1]])</span>
 <span class="sd">    &gt;&gt;&gt; centrality = multilayer_degree_centrality(network)</span>
-<span class="sd">    &gt;&gt;&gt; centrality[&#39;A---L1&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; centrality['A---L1']</span>
 <span class="sd">    1.0</span>
 
 <span class="sd">    See Also</span>
@@ -370,7 +370,7 @@ git<span class="w"> </span>commit
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] De Domenico, M., et al. (2013). Mathematical formulation of</span>
 <span class="sd">           multilayer networks. Physical Review X, 3(4), 041022.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
@@ -385,7 +385,7 @@ git<span class="w"> </span>commit
     <span class="n">network</span><span class="p">:</span> <span class="n">multi_layer_network</span><span class="p">,</span>
     <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute network statistics.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Compute network statistics."""</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
@@ -412,24 +412,24 @@ git<span class="w"> </span>commit
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">test_layer_density</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Layer density stays within [0, 1].&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Layer density stays within [0, 1]."""</span>
     <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-        <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+        <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
-    <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">)</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">)</span>
 
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">density</span> <span class="o">&lt;=</span> <span class="mi">1</span>
     <span class="k">assert</span> <span class="n">density</span> <span class="o">==</span> <span class="n">pytest</span><span class="o">.</span><span class="n">approx</span><span class="p">(</span><span class="mf">0.333</span><span class="p">,</span> <span class="nb">abs</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">test_invalid_layer</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Invalid layers raise an error.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Invalid layers raise an error."""</span>
     <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-        <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;nonexistent&#39;</span><span class="p">)</span>
+        <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'nonexistent'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -572,8 +572,8 @@ None.
 
 <span class="sb">```python</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
-<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>  <span class="c1"># -0.5</span>
 <span class="sb">```</span>
 

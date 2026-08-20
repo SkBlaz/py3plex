@@ -190,14 +190,14 @@
 
 <span class="c1"># Build a program without executing</span>
 <span class="n">program</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"social"</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_program</span><span class="p">())</span>
 
 <span class="c1"># Inspect the program</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Program hash: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type signature: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">type_signature</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Program hash: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Type signature: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">type_signature</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -223,7 +223,7 @@
 
 <span class="c1"># Infer the output type</span>
 <span class="n">output_type</span> <span class="o">=</span> <span class="n">infer_type</span><span class="p">(</span><span class="n">program</span><span class="o">.</span><span class="n">canonical_ast</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output type: </span><span class="si">{</span><span class="n">output_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Output type: </span><span class="si">{</span><span class="n">output_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -236,10 +236,10 @@
 <span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Aggressive optimization</span>
-<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">&quot;min_time&quot;</span><span class="p">)</span>
+<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">"min_time"</span><span class="p">)</span>
 
 <span class="c1"># Budget-constrained optimization</span>
-<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">budget</span><span class="o">=</span><span class="s2">&quot;10s&quot;</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">&quot;min_time&quot;</span><span class="p">)</span>
+<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">budget</span><span class="o">=</span><span class="s2">"10s"</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">"min_time"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -290,9 +290,9 @@
 <span class="n">stats</span> <span class="o">=</span> <span class="n">GraphStats</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_edges</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">cost</span> <span class="o">=</span> <span class="n">cost_model</span><span class="o">.</span><span class="n">estimate_program_cost</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">stats</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Estimated time: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">time_estimate_seconds</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time complexity: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">time_complexity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parallelizable: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">parallelizable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Estimated time: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">time_estimate_seconds</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time complexity: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">time_complexity</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Parallelizable: </span><span class="si">{</span><span class="n">cost</span><span class="o">.</span><span class="n">parallelizable</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="budget-enforcement">
@@ -310,8 +310,8 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">execute_program</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">BudgetExceededError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Budget exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Suggestions: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">suggestions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Budget exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Suggestions: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">suggestions</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -378,18 +378,18 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">diff_programs</span>
 
 <span class="c1"># Create two programs</span>
-<span class="n">program1</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
-<span class="n">program2</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
+<span class="n">program1</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
+<span class="n">program2</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness"</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
 
 <span class="c1"># Compare them</span>
 <span class="n">diff</span> <span class="o">=</span> <span class="n">diff_programs</span><span class="p">(</span><span class="n">program1</span><span class="p">,</span> <span class="n">program2</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hash changed: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">hash_changed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type changed: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">type_changed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Hash changed: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">hash_changed</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Type changed: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">type_changed</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">cost_impact</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cost impact: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">cost_impact</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cost impact: </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">cost_impact</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Output:</p>
@@ -406,8 +406,8 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.program</span><span class="w"> </span><span class="kn">import</span> <span class="n">compose</span>
 
 <span class="c1"># Define reusable components</span>
-<span class="n">select_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
-<span class="n">compute_centrality</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
+<span class="n">select_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"social"</span><span class="p">])</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
+<span class="n">compute_centrality</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness"</span><span class="p">)</span><span class="o">.</span><span class="n">to_program</span><span class="p">()</span>
 
 <span class="c1"># Compose them</span>
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">select_nodes</span><span class="p">,</span> <span class="n">compute_centrality</span><span class="p">)</span>
@@ -426,7 +426,7 @@
 
 <span class="c1"># Generate stable network fingerprint</span>
 <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">graph_fingerprint</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network fingerprint: </span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Network fingerprint: </span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -463,9 +463,9 @@
 <span class="c1"># Check cache statistics</span>
 <span class="n">cache</span> <span class="o">=</span> <span class="n">get_global_cache</span><span class="p">()</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">statistics</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache hits: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;hits&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache misses: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;misses&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hit rate: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;hit_rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cache hits: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'hits'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cache misses: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'misses'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Hit rate: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'hit_rate'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Clear cache</span>
 <span class="n">clear_global_cache</span><span class="p">()</span>
@@ -492,8 +492,8 @@
 
 <span class="c1"># Get confidence intervals</span>
 <span class="n">ci_low</span><span class="p">,</span> <span class="n">ci_high</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">ci</span><span class="p">(</span><span class="mf">0.95</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;95% CI: [</span><span class="si">{</span><span class="n">ci_low</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ci_high</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean: </span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">mean</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">std</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"95% CI: [</span><span class="si">{</span><span class="n">ci_low</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ci_high</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean: </span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">mean</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">std</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="distribution-propagation">
@@ -503,7 +503,7 @@
 
 <span class="c1"># Propagate through mean operation</span>
 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>  <span class="c1"># Mix of Distributions and floats</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">propagate_distribution</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">propagate_distribution</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">)</span>
 
 <span class="c1"># Result is a Distribution if any input is a Distribution</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>  <span class="c1"># Distribution</span>
@@ -525,49 +525,49 @@
 
 <span class="c1"># Load network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"network.csv"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">)</span>
 
 <span class="c1"># Build program</span>
 <span class="n">program</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="s2">"clustering"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">to_program</span><span class="p">())</span>
 
 <span class="c1"># Inspect before execution</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Program Info ===&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hash: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">type_signature</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Program Info ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Hash: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">hash</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Type: </span><span class="si">{</span><span class="n">program</span><span class="o">.</span><span class="n">type_signature</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Explain</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Explanation ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Explanation ==="</span><span class="p">)</span>
 <span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_program</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">include_cost</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">explanation</span><span class="o">.</span><span class="n">to_text</span><span class="p">())</span>
 
 <span class="c1"># Optimize</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Optimization ===&quot;</span><span class="p">)</span>
-<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">budget</span><span class="o">=</span><span class="s2">&quot;30s&quot;</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">&quot;min_time&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rewrites applied: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">optimized</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">provenance_chain</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Optimization ==="</span><span class="p">)</span>
+<span class="n">optimized</span> <span class="o">=</span> <span class="n">program</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">budget</span><span class="o">=</span><span class="s2">"30s"</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="s2">"min_time"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rewrites applied: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">optimized</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">provenance_chain</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Compare</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Diff ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Diff ==="</span><span class="p">)</span>
 <span class="n">diff</span> <span class="o">=</span> <span class="n">diff_programs</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">optimized</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
 
 <span class="c1"># Execute with caching</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Execution ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Execution ==="</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">optimized</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 
 <span class="c1"># Cache stats</span>
 <span class="n">cache_stats</span> <span class="o">=</span> <span class="n">get_global_cache</span><span class="p">()</span><span class="o">.</span><span class="n">statistics</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache hit rate: </span><span class="si">{</span><span class="n">cache_stats</span><span class="p">[</span><span class="s1">&#39;hit_rate&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cache hit rate: </span><span class="si">{</span><span class="n">cache_stats</span><span class="p">[</span><span class="s1">'hit_rate'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Export results</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;top_nodes.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results exported: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"top_nodes.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Results exported: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

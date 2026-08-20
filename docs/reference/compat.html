@@ -186,15 +186,15 @@ None disables sidecar.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert py3plex to NetworkX</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3_graph</span><span class="p">,</span> <span class="s2">&quot;networkx&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3_graph</span><span class="p">,</span> <span class="s2">"networkx"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert to scipy sparse with sidecar for attributes</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3_graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;my_graph&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3_graph</span><span class="p">,</span> <span class="s2">"scipy_sparse"</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">"my_graph"</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert from NetworkX to py3plex (via &quot;py3plex&quot; target)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Convert from NetworkX to py3plex (via "py3plex" target)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -931,7 +931,7 @@ compatibility checking.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">diffs</span> <span class="o">=</span> <span class="n">ir_diff</span><span class="p">(</span><span class="n">ir1</span><span class="p">,</span> <span class="n">ir2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">diffs</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">diffs</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Difference: </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Difference: </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

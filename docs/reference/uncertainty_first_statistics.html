@@ -216,7 +216,7 @@
 <span class="n">sv</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span>
     <span class="n">value</span><span class="o">=</span><span class="mf">0.42</span><span class="p">,</span>
     <span class="n">uncertainty</span><span class="o">=</span><span class="n">Delta</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span>
-    <span class="n">provenance</span><span class="o">=</span><span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">provenance</span><span class="o">=</span><span class="n">Provenance</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">,</span> <span class="p">{})</span>
 <span class="p">)</span>
 
 <span class="c1"># Access value</span>
@@ -344,12 +344,12 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Provenance</span>
 
 <span class="n">prov</span> <span class="o">=</span> <span class="n">Provenance</span><span class="p">(</span>
-    <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;brandes&quot;</span><span class="p">,</span>
-    <span class="n">uncertainty_method</span><span class="o">=</span><span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
-    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+    <span class="n">algorithm</span><span class="o">=</span><span class="s2">"brandes"</span><span class="p">,</span>
+    <span class="n">uncertainty_method</span><span class="o">=</span><span class="s2">"bootstrap"</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">"n_samples"</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
-    <span class="n">timestamp</span><span class="o">=</span><span class="s2">&quot;2024-12-12T17:00:00&quot;</span><span class="p">,</span>
-    <span class="n">library_version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span>
+    <span class="n">timestamp</span><span class="o">=</span><span class="s2">"2024-12-12T17:00:00"</span><span class="p">,</span>
+    <span class="n">library_version</span><span class="o">=</span><span class="s2">"1.0.0"</span>
 <span class="p">)</span>
 
 <span class="c1"># Serialize</span>
@@ -381,11 +381,11 @@
     <span class="k">return</span> <span class="n">Delta</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>  <span class="c1"># Deterministic</span>
 
 <span class="n">spec</span> <span class="o">=</span> <span class="n">StatisticSpec</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"degree"</span><span class="p">,</span>
     <span class="n">estimator</span><span class="o">=</span><span class="n">compute_degree</span><span class="p">,</span>
     <span class="n">uncertainty_model</span><span class="o">=</span><span class="n">degree_uncertainty</span><span class="p">,</span>
-    <span class="n">assumptions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;deterministic&quot;</span><span class="p">],</span>
-    <span class="n">supports</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;directed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;weighted&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="n">assumptions</span><span class="o">=</span><span class="p">[</span><span class="s2">"deterministic"</span><span class="p">],</span>
+    <span class="n">supports</span><span class="o">=</span><span class="p">{</span><span class="s2">"directed"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"weighted"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 <span class="p">)</span>
 
 <span class="n">register_statistic</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
@@ -398,11 +398,11 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_statistic</span>
 
 <span class="c1"># Compute with uncertainty</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">compute_statistic</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">with_uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">compute_statistic</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">with_uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># Returns StatValue</span>
 
 <span class="c1"># Compute without uncertainty (raw value)</span>
-<span class="n">value</span> <span class="o">=</span> <span class="n">compute_statistic</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">with_uncertainty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">compute_statistic</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">with_uncertainty</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -414,8 +414,8 @@
 <h3>Basic Operations<a class="headerlink" href="#basic-operations" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatValue</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">Provenance</span>
 
-<span class="n">sv1</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="p">{}))</span>
-<span class="n">sv2</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+<span class="n">sv1</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"gaussian"</span><span class="p">,</span> <span class="p">{}))</span>
+<span class="n">sv2</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"gaussian"</span><span class="p">,</span> <span class="p">{}))</span>
 
 <span class="c1"># Addition</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">sv1</span> <span class="o">+</span> <span class="n">sv2</span>
@@ -442,7 +442,7 @@
 <section id="scalar-operations">
 <h3>Scalar Operations<a class="headerlink" href="#scalar-operations" title="Link to this heading"></a></h3>
 <p>StatValue supports operations with scalars:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sv</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sv</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">Provenance</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"gaussian"</span><span class="p">,</span> <span class="p">{}))</span>
 
 <span class="c1"># Scalar addition</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">sv</span> <span class="o">+</span> <span class="mi">3</span>  <span class="c1"># 5.0 (uncertainty unchanged)</span>
@@ -513,21 +513,21 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sv</span> <span class="o">=</span> <span class="n">StatValue</span><span class="p">(</span>
     <span class="n">value</span><span class="o">=</span><span class="mf">0.42</span><span class="p">,</span>
     <span class="n">uncertainty</span><span class="o">=</span><span class="n">Gaussian</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
-    <span class="n">provenance</span><span class="o">=</span><span class="n">Provenance</span><span class="p">(</span><span class="s2">&quot;betweenness&quot;</span><span class="p">,</span> <span class="s2">&quot;analytic&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">provenance</span><span class="o">=</span><span class="n">Provenance</span><span class="p">(</span><span class="s2">"betweenness"</span><span class="p">,</span> <span class="s2">"analytic"</span><span class="p">,</span> <span class="p">{})</span>
 <span class="p">)</span>
 
 <span class="n">json_dict</span> <span class="o">=</span> <span class="n">sv</span><span class="o">.</span><span class="n">to_json_dict</span><span class="p">()</span>
 <span class="c1"># {</span>
-<span class="c1">#   &quot;value&quot;: 0.42,</span>
-<span class="c1">#   &quot;uncertainty&quot;: {</span>
-<span class="c1">#     &quot;type&quot;: &quot;gaussian&quot;,</span>
-<span class="c1">#     &quot;mean&quot;: 0.0,</span>
-<span class="c1">#     &quot;std&quot;: 0.05</span>
+<span class="c1">#   "value": 0.42,</span>
+<span class="c1">#   "uncertainty": {</span>
+<span class="c1">#     "type": "gaussian",</span>
+<span class="c1">#     "mean": 0.0,</span>
+<span class="c1">#     "std": 0.05</span>
 <span class="c1">#   },</span>
-<span class="c1">#   &quot;provenance&quot;: {</span>
-<span class="c1">#     &quot;algorithm&quot;: &quot;betweenness&quot;,</span>
-<span class="c1">#     &quot;uncertainty_method&quot;: &quot;analytic&quot;,</span>
-<span class="c1">#     &quot;params&quot;: {}</span>
+<span class="c1">#   "provenance": {</span>
+<span class="c1">#     "algorithm": "betweenness",</span>
+<span class="c1">#     "uncertainty_method": "analytic",</span>
+<span class="c1">#     "params": {}</span>
 <span class="c1">#   }</span>
 <span class="c1"># }</span>
 </pre></div>
@@ -536,7 +536,7 @@
 <section id="dataframe-export">
 <h3>DataFrame Export<a class="headerlink" href="#dataframe-export" title="Link to this heading"></a></h3>
 <p>QueryResult can export to pandas with uncertainty columns:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness"</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="c1"># Columns: id, betweenness.value, betweenness.std,</span>
@@ -577,7 +577,7 @@
 <section id="id2">
 <h3>StatValue<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">StatValue</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Statistical value with uncertainty and provenance.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Statistical value with uncertainty and provenance."""</span>
 
     <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">ndarray</span>
     <span class="n">uncertainty</span><span class="p">:</span> <span class="n">Uncertainty</span>

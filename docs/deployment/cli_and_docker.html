@@ -394,10 +394,10 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>data
 <section id="mounting-volumes">
 <h3><a class="toc-backref" href="#id12" role="doc-backlink">Mounting Volumes</a><a class="headerlink" href="#mounting-volumes" title="Link to this heading"></a></h3>
 <p><strong>With docker run:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA_DIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/data&quot;</span><span class="w">  </span><span class="c1"># adjust for Windows shells</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">DATA_DIR</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/data"</span><span class="w">  </span><span class="c1"># adjust for Windows shells</span>
 
-<span class="c1"># Mount current directory&#39;s data folder (Linux/macOS)</span>
-docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DATA_DIR</span><span class="si">}</span><span class="s2">&quot;</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
+<span class="c1"># Mount current directory's data folder (Linux/macOS)</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">DATA_DIR</span><span class="si">}</span><span class="s2">"</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>--output<span class="w"> </span>/data/network.edgelist
 
 <span class="c1"># Windows PowerShell</span>
@@ -457,7 +457,7 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 <span class="c1"># Inside the container, you can run:</span>
 <span class="c1"># py3plex --version</span>
 <span class="c1"># py3plex selftest</span>
-<span class="c1"># python -c &quot;import py3plex; print(py3plex.__version__)&quot;</span>
+<span class="c1"># python -c "import py3plex; print(py3plex.__version__)"</span>
 </pre></div>
 </div>
 </section>
@@ -465,15 +465,15 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 <h3><a class="toc-backref" href="#id16" role="doc-backlink">Using Python API</a><a class="headerlink" href="#using-python-api" title="Link to this heading"></a></h3>
 <p>You can also use py3plex as a Python library inside the container:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a Python script</span>
-cat<span class="w"> </span>&gt;<span class="w"> </span>data/analyze.py<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+cat<span class="w"> </span>&gt;<span class="w"> </span>data/analyze.py<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
 <span class="s">from py3plex.core import multinet</span>
 
 <span class="s"># Create a network</span>
 <span class="s">network = multinet.multi_layer_network()</span>
-<span class="s">nodes = [{&quot;source&quot;: f&quot;node{i}&quot;, &quot;type&quot;: &quot;layer1&quot;} for i in range(10)]</span>
-<span class="s">network.add_nodes(nodes, input_type=&quot;dict&quot;)</span>
+<span class="s">nodes = [{"source": f"node{i}", "type": "layer1"} for i in range(10)]</span>
+<span class="s">network.add_nodes(nodes, input_type="dict")</span>
 
-<span class="s">print(f&quot;Created network with {network.core_network.number_of_nodes()} nodes&quot;)</span>
+<span class="s">print(f"Created network with {network.core_network.number_of_nodes()} nodes")</span>
 <span class="s">EOF</span>
 
 <span class="c1"># Run the script in the container</span>
@@ -500,7 +500,7 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 <section id="docker-compose-with-multiple-services">
 <h3><a class="toc-backref" href="#id18" role="doc-backlink">Docker Compose with Multiple Services</a><a class="headerlink" href="#docker-compose-with-multiple-services" title="Link to this heading"></a></h3>
 <p>You can extend <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> with related services that share the same data mount (example below adds Jupyter; start it with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span> <span class="pre">jupyter</span></code>):</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.8'</span>
 
 <span class="nt">services</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">py3plex</span><span class="p">:</span>
@@ -512,7 +512,7 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 <span class="w">  </span><span class="nt">jupyter</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">py3plex:latest</span>
 <span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8888:8888&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"8888:8888"</span>
 <span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./data:/data</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./notebooks:/notebooks</span>
@@ -743,7 +743,7 @@ mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DATA_DI
 
 <span class="c1"># Create several networks</span>
 <span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..5<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Creating network </span><span class="nv">$i</span><span class="s2">...&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Creating network </span><span class="nv">$i</span><span class="s2">..."</span>
 <span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="k">$((</span><span class="m">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nv">i</span><span class="k">))</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--type<span class="w"> </span>random<span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span><span class="se">\</span>
@@ -752,13 +752,13 @@ mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DATA_DI
 
 <span class="c1"># Analyze each network</span>
 <span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">{</span><span class="m">1</span>..5<span class="o">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Analyzing network </span><span class="nv">$i</span><span class="s2">...&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Analyzing network </span><span class="nv">$i</span><span class="s2">..."</span>
 <span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>stats<span class="w"> </span>/data/network_<span class="nv">$i</span>.edgelist<span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--output<span class="w"> </span>/data/stats_<span class="nv">$i</span>.json
 <span class="k">done</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Done! Results in </span><span class="nv">$DATA_DIR</span><span class="s2">&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Done! Results in </span><span class="nv">$DATA_DIR</span><span class="s2">"</span>
 </pre></div>
 </div>
 </section>
@@ -772,15 +772,15 @@ mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DATA_DI
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;/data/network.edgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"/data/network.edgelist"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">)</span>
 
 <span class="c1"># Compute statistics</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">,</span> <span class="s2">&quot;layer2&quot;</span><span class="p">,</span> <span class="s2">&quot;layer3&quot;</span><span class="p">]</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"layer1"</span><span class="p">,</span> <span class="s2">"layer2"</span><span class="p">,</span> <span class="s2">"layer3"</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
     <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analysis complete!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Analysis complete!"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Run it:</strong></p>
@@ -804,32 +804,32 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 <span class="nv">DATA_DIR</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data
 mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DATA_DIR</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Step 1: Creating network...&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Step 1: Creating network..."</span>
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">200</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>--type<span class="w"> </span>ba<span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.05<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--output<span class="w"> </span>/data/network.edgelist
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Step 2: Computing statistics...&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Step 2: Computing statistics..."</span>
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>stats<span class="w"> </span>/data/network.edgelist<span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--output<span class="w"> </span>/data/stats.json
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Step 3: Detecting communities...&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Step 3: Detecting communities..."</span>
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>community<span class="w"> </span>/data/network.edgelist<span class="w"> </span>--algorithm<span class="w"> </span>louvain<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--output<span class="w"> </span>/data/communities.json
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Step 4: Computing centrality...&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Step 4: Computing centrality..."</span>
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>centrality<span class="w"> </span>/data/network.edgelist<span class="w"> </span>--measure<span class="w"> </span>pagerank<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--top<span class="w"> </span><span class="m">20</span><span class="w"> </span>--output<span class="w"> </span>/data/centrality.json
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Step 5: Visualizing...&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Step 5: Visualizing..."</span>
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>visualize<span class="w"> </span>/data/network.edgelist<span class="w"> </span>--output<span class="w"> </span>/data/network.png<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--layout<span class="w"> </span>multilayer<span class="w"> </span>--width<span class="w"> </span><span class="m">16</span><span class="w"> </span>--height<span class="w"> </span><span class="m">12</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Pipeline complete! Check </span><span class="nv">$DATA_DIR</span><span class="s2"> for results.&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Pipeline complete! Check </span><span class="nv">$DATA_DIR</span><span class="s2"> for results."</span>
 </pre></div>
 </div>
 </section>
@@ -843,21 +843,21 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 <span class="nv">DATA_DIR</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data
 mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$DATA_DIR</span>
 
-<span class="nv">TYPES</span><span class="o">=(</span><span class="s2">&quot;random&quot;</span><span class="w"> </span><span class="s2">&quot;er&quot;</span><span class="w"> </span><span class="s2">&quot;ba&quot;</span><span class="w"> </span><span class="s2">&quot;ws&quot;</span><span class="o">)</span>
+<span class="nv">TYPES</span><span class="o">=(</span><span class="s2">"random"</span><span class="w"> </span><span class="s2">"er"</span><span class="w"> </span><span class="s2">"ba"</span><span class="w"> </span><span class="s2">"ws"</span><span class="o">)</span>
 
-<span class="k">for</span><span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">TYPES</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Creating </span><span class="nv">$type</span><span class="s2"> network...&quot;</span>
+<span class="k">for</span><span class="w"> </span><span class="nb">type</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">TYPES</span><span class="p">[@]</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Creating </span><span class="nv">$type</span><span class="s2"> network..."</span>
 <span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>--type<span class="w"> </span><span class="nv">$type</span><span class="w"> </span>--probability<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--output<span class="w"> </span>/data/network_<span class="si">${</span><span class="nv">type</span><span class="si">}</span>.edgelist
 
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Analyzing </span><span class="nv">$type</span><span class="s2"> network...&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Analyzing </span><span class="nv">$type</span><span class="s2"> network..."</span>
 <span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="nv">$DATA_DIR</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>stats<span class="w"> </span>/data/network_<span class="si">${</span><span class="nv">type</span><span class="si">}</span>.edgelist<span class="w"> </span>--measure<span class="w"> </span>all<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--output<span class="w"> </span>/data/stats_<span class="si">${</span><span class="nv">type</span><span class="si">}</span>.json
 <span class="k">done</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Comparison complete!&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Comparison complete!"</span>
 </pre></div>
 </div>
 </section>

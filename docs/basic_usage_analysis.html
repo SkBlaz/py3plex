@@ -166,29 +166,29 @@
 
 <span class="c1"># Load a multilayer network (ships with the repository)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;../datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="s2">"../datasets/multiedgelist.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Iterate over all edges</span>
 <span class="c1"># Each edge is a tuple: (source_node, target_node, attributes_dict)</span>
 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">edge</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge: </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">, Weight: </span><span class="si">{</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edge: </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">, Weight: </span><span class="si">{</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'weight'</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Iterate over all nodes</span>
 <span class="c1"># Each node is a tuple: (node_id, attributes_dict)</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">node_id</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">node</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node: </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">, Layer: </span><span class="si">{</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node: </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">, Layer: </span><span class="si">{</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'type'</span><span class="p">,</span><span class="w"> </span><span class="s1">'unknown'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output</strong> (example edges and nodes):</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Edge: (&#39;1&#39;, &#39;1&#39;) -&gt; (&#39;2&#39;, &#39;1&#39;), Weight: 1.0
-Edge: (&#39;1&#39;, &#39;1&#39;) -&gt; (&#39;3&#39;, &#39;1&#39;), Weight: 1.0
-Edge: (&#39;2&#39;, &#39;1&#39;) -&gt; (&#39;6&#39;, &#39;2&#39;), Weight: 1.0
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Edge: ('1', '1') -&gt; ('2', '1'), Weight: 1.0
+Edge: ('1', '1') -&gt; ('3', '1'), Weight: 1.0
+Edge: ('2', '1') -&gt; ('6', '2'), Weight: 1.0
 ...
-Node: (&#39;1&#39;, &#39;1&#39;), Layer: 1
-Node: (&#39;2&#39;, &#39;1&#39;), Layer: 1
-Node: (&#39;6&#39;, &#39;2&#39;), Layer: 2
+Node: ('1', '1'), Layer: 1
+Node: ('2', '1'), Layer: 1
+Node: ('6', '2'), Layer: 2
 ...
 </pre></div>
 </div>
@@ -204,16 +204,16 @@ Node: (&#39;6&#39;, &#39;2&#39;), Layer: 2
 <p>Subnetwork extraction narrows the scope before running heavier analyses. Choose the filter that matches how specific you need to be:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract by layer: Get all nodes and edges within specific layers</span>
 <span class="c1"># Useful for comparing structure across layers</span>
-<span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">'1'</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 
 <span class="c1"># Extract by node names: Get specific entities across all their layers</span>
 <span class="c1"># Useful for tracking individuals across contexts</span>
-<span class="n">node_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_names&quot;</span><span class="p">)</span>
+<span class="n">node_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">'1'</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"node_names"</span><span class="p">)</span>
 
 <span class="c1"># Extract by node-layer pairs: Get exactly specified nodes</span>
 <span class="c1"># Useful for precise control over analysis scope</span>
 <span class="n">specific_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">(</span>
-    <span class="p">[(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">)],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span><span class="p">)</span>
+    <span class="p">[(</span><span class="s1">'1'</span><span class="p">,</span><span class="s1">'1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'2'</span><span class="p">,</span><span class="s1">'1'</span><span class="p">)],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"node_layer_names"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use each method:</strong></p>
@@ -229,19 +229,19 @@ Node: (&#39;6&#39;, &#39;2&#39;), Layer: 2
 <p>Py3plex wraps NetworkX so you can call familiar algorithms on the encoded graph. <code class="docutils literal notranslate"><span class="pre">monoplex_nx_wrapper</span></code> invokes the requested NetworkX function on the core <code class="docutils literal notranslate"><span class="pre">MultiGraph</span></code>/<code class="docutils literal notranslate"><span class="pre">MultiDiGraph</span></code> and returns results keyed by encoded node-layer pairs:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply any NetworkX function through the wrapper</span>
 <span class="c1"># Returns results as a dictionary mapping nodes to values</span>
-<span class="n">centralities</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 5 nodes by degree centrality:&quot;</span><span class="p">)</span>
+<span class="n">centralities</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">"degree_centrality"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Top 5 nodes by degree centrality:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">centralities</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="mi">5</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output</strong> (node centrality values):</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Top 5 nodes by degree centrality:
-  (&#39;1&#39;, &#39;1&#39;): 0.5000
-  (&#39;2&#39;, &#39;1&#39;): 0.3333
-  (&#39;3&#39;, &#39;1&#39;): 0.2500
-  (&#39;6&#39;, &#39;2&#39;): 0.2500
-  (&#39;5&#39;, &#39;2&#39;): 0.1667
+  ('1', '1'): 0.5000
+  ('2', '1'): 0.3333
+  ('3', '1'): 0.2500
+  ('6', '2'): 0.2500
+  ('5', '2'): 0.1667
 </pre></div>
 </div>
 <p><strong>Available NetworkX functions:</strong></p>
@@ -266,16 +266,16 @@ Node: (&#39;6&#39;, &#39;2&#39;), Layer: 2
 <span class="c1"># Use any NetworkX function directly</span>
 <span class="c1"># G is a MultiGraph or MultiDiGraph depending on ``directed``</span>
 <span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of connected components: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of connected components: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Compute clustering coefficient</span>
 <span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average clustering: </span><span class="si">{</span><span class="n">clustering</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average clustering: </span><span class="si">{</span><span class="n">clustering</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Find shortest path between nodes</span>
-<span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">has_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">)):</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shortest path: </span><span class="si">{</span><span class="s1">&#39; -&gt; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">has_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">'1'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'6'</span><span class="p">,</span> <span class="s1">'2'</span><span class="p">)):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">'1'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'6'</span><span class="p">,</span> <span class="s1">'2'</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shortest path: </span><span class="si">{</span><span class="s1">' -&gt; '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Some NetworkX algorithms treat multi-edges differently or expect simple graphs. Convert <code class="docutils literal notranslate"><span class="pre">G</span></code> to <code class="docutils literal notranslate"><span class="pre">nx.Graph</span></code>/<code class="docutils literal notranslate"><span class="pre">nx.DiGraph</span></code> if you need to coalesce multi-edges (e.g., by summing weights) before running those algorithms.</p>
@@ -289,22 +289,22 @@ Node: (&#39;6&#39;, &#39;2&#39;), Layer: 2
 
 <span class="c1"># 1. Load and inspect</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;../datasets/multiedgelist.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="s2">"../datasets/multiedgelist.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>  <span class="c1"># prints node/edge counts and layer summary</span>
 
 <span class="c1"># 2. Extract and compare layers (names aligned with returned graphs)</span>
-<span class="n">layer_names</span><span class="p">,</span> <span class="n">layer_graphs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;diagonal&quot;</span><span class="p">,</span> <span class="n">compute_layouts</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">layer_names</span><span class="p">,</span> <span class="n">layer_graphs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"diagonal"</span><span class="p">,</span> <span class="n">compute_layouts</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">layer_id</span><span class="p">,</span> <span class="n">layer_graph</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">layer_names</span><span class="p">,</span> <span class="n">layer_graphs</span><span class="p">):</span>
     <span class="n">density</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">layer_graph</span><span class="p">)</span>
     <span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">layer_graph</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer_id</span><span class="si">}</span><span class="s2">: density=</span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, clustering=</span><span class="si">{</span><span class="n">clustering</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer </span><span class="si">{</span><span class="n">layer_id</span><span class="si">}</span><span class="s2">: density=</span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, clustering=</span><span class="si">{</span><span class="n">clustering</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># 3. Find important nodes across the whole network</span>
-<span class="n">centrality</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+<span class="n">centrality</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">)</span>
 <span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">centrality</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="mi">10</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 10 nodes by PageRank:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Top 10 nodes by PageRank:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_nodes</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Centrality outputs are keyed by encoded node-layer pairs, so interpret scores within their layers unless you explicitly aggregate.</p>

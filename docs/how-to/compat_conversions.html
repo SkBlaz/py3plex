@@ -156,18 +156,18 @@
 
 <span class="c1"># Create a py3plex graph</span>
 <span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">}))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s2">&quot;Bob&quot;</span><span class="p">,</span>
-                   <span class="n">src_layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">dst_layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span>
-                   <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"social"</span><span class="p">))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"Alice"</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">"age"</span><span class="p">:</span> <span class="mi">30</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"Bob"</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">"age"</span><span class="p">:</span> <span class="mi">25</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="s2">"Alice"</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s2">"Bob"</span><span class="p">,</span>
+                   <span class="n">src_layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">,</span> <span class="n">dst_layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">,</span>
+                   <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">"weight"</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}))</span>
 
 <span class="c1"># Convert to NetworkX</span>
-<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;networkx&quot;</span><span class="p">)</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"networkx"</span><span class="p">)</span>
 
 <span class="c1"># Convert back to py3plex</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -189,24 +189,24 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompatibilityError</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="c1"># SciPy sparse can&#39;t store attributes</span>
-    <span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># SciPy sparse can't store attributes</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"scipy_sparse"</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">CompatibilityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot convert: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">suggestion</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
 <dt><strong>Compatibility Mode</strong></dt><dd><p>Uses sidecar bundles to preserve data that target format can’t represent:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert with sidecar for attributes</span>
-<span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"scipy_sparse"</span><span class="p">,</span>
                 <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;graph_data&quot;</span><span class="p">)</span>
+                <span class="n">sidecar</span><span class="o">=</span><span class="s2">"graph_data"</span><span class="p">)</span>
 
 <span class="c1"># Later: restore with all attributes</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">,</span>
-                  <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;graph_data&quot;</span><span class="p">)</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">,</span>
+                  <span class="n">sidecar</span><span class="o">=</span><span class="s2">"graph_data"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -226,14 +226,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert</span>
 
 <span class="c1"># Convert to NetworkX</span>
-<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3plex_graph</span><span class="p">,</span> <span class="s2">&quot;networkx&quot;</span><span class="p">)</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3plex_graph</span><span class="p">,</span> <span class="s2">"networkx"</span><span class="p">)</span>
 
 <span class="c1"># Use NetworkX algorithms</span>
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">)</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">greedy_modularity_communities</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">)</span>
 
 <span class="c1"># Convert back</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -243,16 +243,16 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span>
 
 <span class="c1"># Convert to sparse matrix (compat mode for attributes)</span>
-<span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"scipy_sparse"</span><span class="p">,</span>
                 <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;bundle&quot;</span><span class="p">,</span>
-                <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+                <span class="n">sidecar</span><span class="o">=</span><span class="s2">"bundle"</span><span class="p">,</span>
+                <span class="nb">format</span><span class="o">=</span><span class="s2">"csr"</span><span class="p">)</span>
 
 <span class="c1"># Compute eigenvalues</span>
 <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigs</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="c1"># Restore graph with attributes</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;bundle&quot;</span><span class="p">)</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">"bundle"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Important:</strong> Sparse matrices cannot represent:</p>
@@ -267,16 +267,16 @@
 <p>igraph provides high-performance graph algorithms:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Requires: pip install python-igraph</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">ig_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3plex_graph</span><span class="p">,</span> <span class="s2">&quot;igraph&quot;</span><span class="p">)</span>
+    <span class="n">ig_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3plex_graph</span><span class="p">,</span> <span class="s2">"igraph"</span><span class="p">)</span>
 
     <span class="c1"># Use igraph algorithms</span>
     <span class="n">communities</span> <span class="o">=</span> <span class="n">ig_graph</span><span class="o">.</span><span class="n">community_multilevel</span><span class="p">()</span>
     <span class="n">betweenness</span> <span class="o">=</span> <span class="n">ig_graph</span><span class="o">.</span><span class="n">betweenness</span><span class="p">()</span>
 
     <span class="c1"># Convert back</span>
-    <span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ig_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+    <span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ig_graph</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">ConversionNotSupportedError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Install igraph: pip install python-igraph&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Install igraph: pip install python-igraph"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -291,14 +291,14 @@
 
 <span class="c1"># Infer and check schema</span>
 <span class="n">schema</span> <span class="o">=</span> <span class="n">infer_schema</span><span class="p">(</span><span class="n">ir</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node ID type: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">node_id_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directed: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">directed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multi: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">multi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attributes: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">node_attr_types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node ID type: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">node_id_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Directed: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">directed</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Multi: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">multi</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attributes: </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="n">node_attr_types</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Check for incompatibilities</span>
 <span class="k">if</span> <span class="n">schema</span><span class="o">.</span><span class="n">multi</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Multigraph - SciPy sparse won&#39;t work in strict mode&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Warning: Multigraph - SciPy sparse won't work in strict mode"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -310,7 +310,7 @@
 
 <span class="c1"># Export complete graph data</span>
 <span class="n">ir</span> <span class="o">=</span> <span class="n">to_ir</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-<span class="n">export_sidecar</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">&quot;my_graph&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json+parquet&quot;</span><span class="p">)</span>
+<span class="n">export_sidecar</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">"my_graph"</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"json+parquet"</span><span class="p">)</span>
 
 <span class="c1"># Bundle structure:</span>
 <span class="c1"># my_graph/</span>
@@ -319,7 +319,7 @@
 <span class="c1">#   └── edges.parquet      # Edge table</span>
 
 <span class="c1"># Import later</span>
-<span class="n">restored_ir</span> <span class="o">=</span> <span class="n">import_sidecar</span><span class="p">(</span><span class="s2">&quot;my_graph&quot;</span><span class="p">)</span>
+<span class="n">restored_ir</span> <span class="o">=</span> <span class="n">import_sidecar</span><span class="p">(</span><span class="s2">"my_graph"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -337,11 +337,11 @@
 <span class="c1"># - ir.meta: GraphMeta (directed, multi, layers, global_attrs)</span>
 
 <span class="c1"># Convert IR to any format</span>
-<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">&quot;networkx&quot;</span><span class="p">)</span>
-<span class="n">scipy_matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">nx_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">"networkx"</span><span class="p">)</span>
+<span class="n">scipy_matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="s2">"scipy_sparse"</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Convert back from IR</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">from_ir</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">target_type</span><span class="o">=</span><span class="s2">&quot;multilayer_graph&quot;</span><span class="p">)</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">from_ir</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">target_type</span><span class="o">=</span><span class="s2">"multilayer_graph"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -353,12 +353,12 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompatibilityError</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">convert</span><span class="p">(</span><span class="n">multigraph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">convert</span><span class="p">(</span><span class="n">multigraph</span><span class="p">,</span> <span class="s2">"scipy_sparse"</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">CompatibilityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reason: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Suggestions:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Reason: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Suggestions:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -368,7 +368,7 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="n">validate_against_schema</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">expected_schema</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">SchemaError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field &#39;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Field '</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">field</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -376,7 +376,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConversionNotSupportedError</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;igraph&quot;</span><span class="p">)</span>
+    <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"igraph"</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">ConversionNotSupportedError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>  <span class="c1"># Clear install instructions</span>
 </pre></div>
@@ -391,20 +391,20 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
-<span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
+<span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>py3plex to SciPy sparse with attributes</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;scipy_sparse&quot;</span><span class="p">,</span>
-                <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;/tmp/bundle&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"scipy_sparse"</span><span class="p">,</span>
+                <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">"/tmp/bundle"</span><span class="p">)</span>
 <span class="c1"># Use matrix for computation</span>
-<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">&quot;/tmp/bundle&quot;</span><span class="p">)</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">,</span> <span class="n">sidecar</span><span class="o">=</span><span class="s2">"/tmp/bundle"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Format-to-format via py3plex</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># NetworkX → py3plex → igraph</span>
-<span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">&quot;py3plex&quot;</span><span class="p">)</span>
-<span class="n">ig_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3_graph</span><span class="p">,</span> <span class="s2">&quot;igraph&quot;</span><span class="p">)</span>
+<span class="n">py3_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">,</span> <span class="s2">"py3plex"</span><span class="p">)</span>
+<span class="n">ig_graph</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="n">py3_graph</span><span class="p">,</span> <span class="s2">"igraph"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

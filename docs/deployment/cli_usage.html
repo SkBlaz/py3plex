@@ -262,7 +262,7 @@ py3plex<span class="w"> </span>community<span class="w"> </span>net.graphml<span
 cat<span class="w"> </span>network.edgelist<span class="w"> </span><span class="p">|</span><span class="w"> </span>py3plex<span class="w"> </span>load<span class="w"> </span>-<span class="w"> </span>--info
 
 <span class="c1"># Pipe to query command</span>
-cat<span class="w"> </span>network.edgelist<span class="w"> </span><span class="p">|</span><span class="w"> </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span>
+cat<span class="w"> </span>network.edgelist<span class="w"> </span><span class="p">|</span><span class="w"> </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span>
 </pre></div>
 </div>
 <p>When reading from stdin, set <code class="docutils literal notranslate"><span class="pre">--input-type</span></code> if the format cannot be inferred from a filename (for example when piping raw CSV or JSON).</p>
@@ -272,7 +272,7 @@ cat<span class="w"> </span>network.edgelist<span class="w"> </span><span class="
 <p>Chain py3plex commands together without intermediate files. Commands write logs to stderr, so piping stdout keeps data clean:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a network and immediately query it</span>
 py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">3</span><span class="w"> </span>-o<span class="w"> </span>/dev/stdout<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>table
+<span class="w">    </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span>--format<span class="w"> </span>table
 
 <span class="c1"># Create and compute statistics in one pipeline</span>
 py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">100</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span>-o<span class="w"> </span>/dev/stdout<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
@@ -285,29 +285,29 @@ py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class=
 <p>The <code class="docutils literal notranslate"><span class="pre">query</span></code> command executes DSL queries on networks and outputs results in multiple formats. This is particularly useful for piping workflows.</p>
 <p><strong>String DSL Syntax:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all nodes</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes&quot;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes"</span>
 
 <span class="c1"># Filter by layer</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes WHERE layer=&#39;social&#39;&quot;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes WHERE layer='social'"</span>
 
 <span class="c1"># Compute metrics</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span>
 
 <span class="c1"># Multiple computations</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree betweenness_centrality&quot;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree betweenness_centrality"</span>
 </pre></div>
 </div>
 <p><strong>Python DSL Builder Syntax (use ``–dsl`` flag):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic query with DSL builder</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s1">&#39;Q.nodes().compute(&quot;degree&quot;)&#39;</span><span class="w"> </span>--dsl
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s1">'Q.nodes().compute("degree")'</span><span class="w"> </span>--dsl
 
 <span class="c1"># With filtering, ordering, and limiting</span>
 py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">&#39;Q.nodes().where(layer=&quot;social&quot;).compute(&quot;degree&quot;).order_by(&quot;-degree&quot;).limit(10)&#39;</span><span class="w"> </span>--dsl
+<span class="w">    </span><span class="s1">'Q.nodes().where(layer="social").compute("degree").order_by("-degree").limit(10)'</span><span class="w"> </span>--dsl
 
 <span class="c1"># Layer algebra (union of layers)</span>
 py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">&#39;Q.nodes().from_layers(L[&quot;social&quot;] + L[&quot;work&quot;]).compute(&quot;degree&quot;)&#39;</span><span class="w"> </span>--dsl
+<span class="w">    </span><span class="s1">'Q.nodes().from_layers(L["social"] + L["work"]).compute("degree")'</span><span class="w"> </span>--dsl
 </pre></div>
 </div>
 </section>
@@ -315,13 +315,13 @@ py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<spa
 <h3>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading"></a></h3>
 <p>Control the output format for different use cases:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># JSON output (default) - good for further processing</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>json
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span>--format<span class="w"> </span>json
 
 <span class="c1"># CSV output - good for spreadsheets and data analysis</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>csv<span class="w"> </span>&gt;<span class="w"> </span>results.csv
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span>--format<span class="w"> </span>csv<span class="w"> </span>&gt;<span class="w"> </span>results.csv
 
 <span class="c1"># Table output - good for human reading in terminal</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>table
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span>--format<span class="w"> </span>table
 </pre></div>
 </div>
 <p>Default output is JSON. Use <code class="docutils literal notranslate"><span class="pre">table</span></code> for on-screen inspection and <code class="docutils literal notranslate"><span class="pre">csv</span></code> when you want a spreadsheet-friendly file.</p>
@@ -332,25 +332,25 @@ py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<spa
 <p>Explicitly set <code class="docutils literal notranslate"><span class="pre">--format</span></code> when piping into other tools so output shape stays stable.</p>
 <p><strong>With jq (JSON processing):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get top 5 nodes by degree</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>jq<span class="w"> </span><span class="s1">&#39;.nodes[:5]&#39;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>jq<span class="w"> </span><span class="s1">'.nodes[:5]'</span>
 
 <span class="c1"># Extract just the computed values</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>jq<span class="w"> </span><span class="s1">&#39;.computed.degree&#39;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>jq<span class="w"> </span><span class="s1">'.computed.degree'</span>
 
 <span class="c1"># Count nodes</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes&quot;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>jq<span class="w"> </span><span class="s1">&#39;.count&#39;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>jq<span class="w"> </span><span class="s1">'.count'</span>
 </pre></div>
 </div>
 <p><strong>With grep and other tools:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filter JSON output</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">&#39;&quot;count&quot;: [0-9]*&#39;</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>grep<span class="w"> </span>-o<span class="w"> </span><span class="s1">'"count": [0-9]*'</span>
 
 <span class="c1"># Count rows in CSV output</span>
-py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span>--format<span class="w"> </span>csv<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span>--format<span class="w"> </span>csv<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>wc<span class="w"> </span>-l
 </pre></div>
 </div>
@@ -366,7 +366,7 @@ py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class=
 
 <span class="c1"># Compute centrality and save top nodes using DSL</span>
 py3plex<span class="w"> </span>query<span class="w"> </span>network.edgelist<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">&#39;Q.nodes().compute(&quot;degree&quot;, &quot;betweenness_centrality&quot;).order_by(&quot;-degree&quot;).limit(20)&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s1">'Q.nodes().compute("degree", "betweenness_centrality").order_by("-degree").limit(20)'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--dsl<span class="w"> </span>-o<span class="w"> </span>top_nodes.json
 
 <span class="c1"># Detect communities</span>
@@ -378,16 +378,16 @@ py3plex<span class="w"> </span>community<span class="w"> </span>network.edgelist
 <span class="c1"># Process multiple network files</span>
 
 <span class="k">for</span><span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>networks/*.edgelist<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing </span><span class="nv">$file</span><span class="s2">...&quot;</span>
-<span class="w">    </span>py3plex<span class="w"> </span>query<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$file</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;SELECT nodes COMPUTE degree&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>--format<span class="w"> </span>csv<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">file</span><span class="p">%.edgelist</span><span class="si">}</span><span class="s2">_degrees.csv&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Processing </span><span class="nv">$file</span><span class="s2">..."</span>
+<span class="w">    </span>py3plex<span class="w"> </span>query<span class="w"> </span><span class="s2">"</span><span class="nv">$file</span><span class="s2">"</span><span class="w"> </span><span class="s2">"SELECT nodes COMPUTE degree"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--format<span class="w"> </span>csv<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">file</span><span class="p">%.edgelist</span><span class="si">}</span><span class="s2">_degrees.csv"</span>
 <span class="k">done</span>
 </pre></div>
 </div>
 <p><strong>Example 3: Create and analyze without intermediate files</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create and immediately analyze - no file needed</span>
 py3plex<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">50</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>-o<span class="w"> </span>/dev/stdout<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s1">&#39;Q.nodes().compute(&quot;degree&quot;).order_by(&quot;-degree&quot;).limit(5)&#39;</span><span class="w"> </span>--dsl
+<span class="w">    </span>py3plex<span class="w"> </span>query<span class="w"> </span>-<span class="w"> </span><span class="s1">'Q.nodes().compute("degree").order_by("-degree").limit(5)'</span><span class="w"> </span>--dsl
 </pre></div>
 </div>
 <p>For long pipelines, prefer explicit <code class="docutils literal notranslate"><span class="pre">--format</span></code> choices to keep output predictable for downstream tools.</p>
@@ -500,8 +500,8 @@ py3plex<span class="w"> </span>load<span class="w"> </span>network.csv<span clas
 <p><strong>Batch validation:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Validate multiple files</span>
 <span class="k">for</span><span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>data/*.csv<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Checking </span><span class="nv">$file</span><span class="s2">...&quot;</span>
-<span class="w">    </span>py3plex<span class="w"> </span>check<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$file</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Checking </span><span class="nv">$file</span><span class="s2">..."</span>
+<span class="w">    </span>py3plex<span class="w"> </span>check<span class="w"> </span><span class="s2">"</span><span class="nv">$file</span><span class="s2">"</span>
 <span class="k">done</span>
 </pre></div>
 </div>

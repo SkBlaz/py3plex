@@ -161,21 +161,21 @@
 
 <span class="c1"># Step 2: Store community IDs as node attributes</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;community&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comm_id</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">'community'</span><span class="p">]</span> <span class="o">=</span> <span class="n">comm_id</span>
 
 <span class="c1"># Step 3: Find high-degree nodes in specific community</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">community</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Filter by community ID</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Step 4: Export for further analysis</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;community_hubs.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"community_hubs.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Example output:</span>
 <span class="c1">#                  id  degree  betweenness_centrality</span>
@@ -233,14 +233,14 @@
 
 <span class="c1"># Create or load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.graphml&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"data.graphml"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"graphml"</span><span class="p">)</span>
 
 <span class="c1"># Detect communities using Louvain</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 
 <span class="c1"># Print results</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">community_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> -&gt; Community </span><span class="si">{</span><span class="n">community_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> -&gt; Community </span><span class="si">{</span><span class="n">community_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -288,7 +288,7 @@
 <span class="c1"># Detect communities using Infomap</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
-    <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/infomap&quot;</span>  <span class="c1"># Path to Infomap binary</span>
+    <span class="n">binary_path</span><span class="o">=</span><span class="s2">"/path/to/infomap"</span>  <span class="c1"># Path to Infomap binary</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -298,7 +298,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get hierarchical community structure</span>
 <span class="n">hierarchical_communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
-    <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/infomap&quot;</span><span class="p">,</span>
+    <span class="n">binary_path</span><span class="o">=</span><span class="s2">"/path/to/infomap"</span><span class="p">,</span>
     <span class="n">hierarchical</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 </pre></div>
@@ -331,10 +331,10 @@
 
 <span class="c1"># Provide seed labels for some nodes</span>
 <span class="n">seed_labels</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;node1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">&#39;node2&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">&#39;node3&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;node4&#39;</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="s1">'node1'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">'node2'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">'node3'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">'node4'</span><span class="p">:</span> <span class="mi">1</span>
 <span class="p">}</span>
 
 <span class="c1"># Propagate labels to unlabeled nodes</span>
@@ -414,19 +414,19 @@
 
 <span class="c1"># Load network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"network.csv"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">)</span>
 
 <span class="c1"># Run DC-SBM with AutoCommunity</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">AutoCommunity</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;dc_sbm&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;sbm_log_likelihood&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">"louvain"</span><span class="p">,</span> <span class="s2">"dc_sbm"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">"modularity"</span><span class="p">,</span> <span class="s2">"sbm_log_likelihood"</span><span class="p">)</span>
       <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
       <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selected: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -445,7 +445,7 @@
 
 <span class="c1"># Run DC-SBM</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">run_community_algorithm</span><span class="p">(</span>
-    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span>
+    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">"dc_sbm"</span><span class="p">,</span>
     <span class="n">network</span><span class="o">=</span><span class="n">net</span><span class="p">,</span>
     <span class="n">budget</span><span class="o">=</span><span class="n">budget</span><span class="p">,</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
@@ -454,11 +454,11 @@
 
 <span class="c1"># Access results</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">partition</span>
-<span class="n">K_selected</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;K_selected&quot;</span><span class="p">]</span>
-<span class="n">log_likelihood</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;log_likelihood&quot;</span><span class="p">]</span>
-<span class="n">mdl</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;mdl&quot;</span><span class="p">]</span>  <span class="c1"># Lower is better</span>
+<span class="n">K_selected</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"K_selected"</span><span class="p">]</span>
+<span class="n">log_likelihood</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"log_likelihood"</span><span class="p">]</span>
+<span class="n">mdl</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"mdl"</span><span class="p">]</span>  <span class="c1"># Lower is better</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected K=</span><span class="si">{</span><span class="n">K_selected</span><span class="si">}</span><span class="s2"> with MDL=</span><span class="si">{</span><span class="n">mdl</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selected K=</span><span class="si">{</span><span class="n">K_selected</span><span class="si">}</span><span class="s2"> with MDL=</span><span class="si">{</span><span class="n">mdl</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -467,7 +467,7 @@
 <p>SBM automatically selects the number of communities (K) using <strong>Minimum Description Length (MDL)</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Specify K range for model selection</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">run_community_algorithm</span><span class="p">(</span>
-    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span>
+    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">"dc_sbm"</span><span class="p">,</span>
     <span class="n">network</span><span class="o">=</span><span class="n">net</span><span class="p">,</span>
     <span class="n">budget</span><span class="o">=</span><span class="n">BudgetSpec</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_restarts</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
@@ -475,8 +475,8 @@
 <span class="p">)</span>
 
 <span class="c1"># Best K is selected automatically</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected K: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;K_selected&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MDL score: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;mdl&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Lower = better</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selected K: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">'K_selected'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MDL score: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">'mdl'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># Lower = better</span>
 </pre></div>
 </div>
 <p><strong>Model selection criteria:</strong></p>
@@ -497,7 +497,7 @@
 <span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">run_community_algorithm</span><span class="p">(</span>
-    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span>
+    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">"dc_sbm"</span><span class="p">,</span>
     <span class="n">network</span><span class="o">=</span><span class="n">net</span><span class="p">,</span>
     <span class="n">budget</span><span class="o">=</span><span class="n">budget_uq</span><span class="p">,</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
@@ -505,10 +505,10 @@
 <span class="p">)</span>
 
 <span class="c1"># Access uncertainty metrics</span>
-<span class="n">ll_mean</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;log_likelihood&quot;</span><span class="p">]</span>
-<span class="n">ll_std</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;log_likelihood_std&quot;</span><span class="p">]</span>
+<span class="n">ll_mean</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"log_likelihood"</span><span class="p">]</span>
+<span class="n">ll_std</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"log_likelihood_std"</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Log-likelihood: </span><span class="si">{</span><span class="n">ll_mean</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">ll_std</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Log-likelihood: </span><span class="si">{</span><span class="n">ll_mean</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">ll_std</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -520,13 +520,13 @@
 
 <span class="c1"># Add edges in multiple layers</span>
 <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;work&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'work'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'work'</span><span class="p">},</span>
 <span class="p">])</span>
 
 <span class="c1"># Run DC-SBM (automatically handles multilayer)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">run_community_algorithm</span><span class="p">(</span>
-    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span>
+    <span class="n">algorithm_id</span><span class="o">=</span><span class="s2">"dc_sbm"</span><span class="p">,</span>
     <span class="n">network</span><span class="o">=</span><span class="n">net</span><span class="p">,</span>
     <span class="n">budget</span><span class="o">=</span><span class="n">BudgetSpec</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_restarts</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
@@ -544,13 +544,13 @@
 <p>SBM works with <strong>Successive Halving</strong> for efficient model selection:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">AutoCommunity</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="s2">&quot;dc_sbm&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;sbm_log_likelihood&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">"louvain"</span><span class="p">,</span> <span class="s2">"leiden"</span><span class="p">,</span> <span class="s2">"dc_sbm"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">"modularity"</span><span class="p">,</span> <span class="s2">"sbm_log_likelihood"</span><span class="p">)</span>
       <span class="o">.</span><span class="n">strategy</span><span class="p">(</span>
-          <span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span>
+          <span class="s2">"successive_halving"</span><span class="p">,</span>
           <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-          <span class="n">budget0</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;n_restarts&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
-          <span class="n">utility_method</span><span class="o">=</span><span class="s2">&quot;mean_minus_std&quot;</span>
+          <span class="n">budget0</span><span class="o">=</span><span class="p">{</span><span class="s2">"max_iter"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">"n_restarts"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+          <span class="n">utility_method</span><span class="o">=</span><span class="s2">"mean_minus_std"</span>
       <span class="p">)</span>
       <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
       <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
@@ -612,8 +612,8 @@
 <p>Use these in AutoCommunity for model comparison:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">AutoCommunity</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;dc_sbm&quot;</span><span class="p">,</span> <span class="s2">&quot;louvain&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;sbm_log_likelihood&quot;</span><span class="p">,</span> <span class="s2">&quot;sbm_mdl&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">"dc_sbm"</span><span class="p">,</span> <span class="s2">"louvain"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">"modularity"</span><span class="p">,</span> <span class="s2">"sbm_log_likelihood"</span><span class="p">,</span> <span class="s2">"sbm_mdl"</span><span class="p">)</span>
       <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
       <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 <span class="p">)</span>
@@ -699,7 +699,7 @@
 
 <span class="c1"># Compute modularity</span>
 <span class="n">modularity</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">modularity</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">communities</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Modularity: </span><span class="si">{</span><span class="n">modularity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Modularity: </span><span class="si">{</span><span class="n">modularity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Interpretation:</strong></p>
@@ -717,8 +717,8 @@
 <span class="c1"># Performance: fraction of correctly classified node pairs</span>
 <span class="n">performance</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">performance</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">communities</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coverage: </span><span class="si">{</span><span class="n">coverage</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Performance: </span><span class="si">{</span><span class="n">performance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Coverage: </span><span class="si">{</span><span class="n">coverage</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Performance: </span><span class="si">{</span><span class="n">performance</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -737,8 +737,8 @@
 <span class="n">hairball_plot</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
     <span class="n">node_color</span><span class="o">=</span><span class="n">node_colors</span><span class="p">,</span>
-    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force&#39;</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;tab10&#39;</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">'force'</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">'tab10'</span>
 <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -755,9 +755,9 @@
 
 <span class="c1"># Plot distribution</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">sizes</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Community Size&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Community Size Distribution&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Community Size'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Frequency'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Community Size Distribution'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -810,7 +810,7 @@
 <span class="k">for</span> <span class="n">gamma</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]:</span>
     <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
     <span class="n">num_comms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gamma=</span><span class="si">{</span><span class="n">gamma</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">num_comms</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"gamma=</span><span class="si">{</span><span class="n">gamma</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">num_comms</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Interpretation guide:</strong></p>
@@ -838,7 +838,7 @@
     <span class="c1"># Check cross-layer consistency</span>
     <span class="c1"># (how often does the same node get same community across layers?)</span>
     <span class="c1"># ... (compute consistency metric)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;omega=</span><span class="si">{</span><span class="n">omega</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">num_comms</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"omega=</span><span class="si">{</span><span class="n">omega</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">num_comms</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Interpretation guide:</strong></p>
@@ -859,13 +859,13 @@
 <h3>Diagnosing Bad Partitions<a class="headerlink" href="#diagnosing-bad-partitions" title="Link to this heading"></a></h3>
 <p><strong>Problem: All nodes in one community</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All nodes in single community - try increasing gamma&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"All nodes in single community - try increasing gamma"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>Causes:</em> Network is too dense, γ too low, or network genuinely has no community structure.</p>
 <p><strong>Problem: Each node is its own community</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">partition</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All singletons - try decreasing gamma or increasing omega&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"All singletons - try decreasing gamma or increasing omega"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>Causes:</em> Network is too sparse, γ too high, ω too low.</p>
@@ -893,11 +893,11 @@
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;ppi_multilayer.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+    <span class="s2">"ppi_multilayer.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 
 <span class="c1"># Use moderate coupling - different evidence types should</span>
-<span class="c1"># contribute to same modules, but we don&#39;t require perfect consistency</span>
+<span class="c1"># contribute to same modules, but we don't require perfect consistency</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>     <span class="c1"># Standard resolution</span>
@@ -918,7 +918,7 @@
 <p><strong>Approach:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;transport_network.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+    <span class="s2">"transport_network.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 
 <span class="c1"># Higher coupling - the same station serves multiple modes</span>
@@ -945,8 +945,8 @@
 <span class="n">label_prop_comms</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 
 <span class="c1"># Compare number of communities</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Louvain: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">louvain_comms</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label Prop: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">label_prop_comms</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Louvain: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">louvain_comms</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Label Prop: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">label_prop_comms</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
 
 <span class="c1"># Compare modularity</span>
 <span class="n">louvain_mod</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">modularity</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
@@ -956,8 +956,8 @@
                                     <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">label_prop_comms</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
                                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">label_prop_comms</span><span class="o">.</span><span class="n">values</span><span class="p">())])</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Louvain modularity: </span><span class="si">{</span><span class="n">louvain_mod</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label Prop modularity: </span><span class="si">{</span><span class="n">label_mod</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Louvain modularity: </span><span class="si">{</span><span class="n">louvain_mod</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Label Prop modularity: </span><span class="si">{</span><span class="n">label_mod</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -972,7 +972,7 @@
 
 <span class="c1"># Compute NMI</span>
 <span class="n">nmi</span> <span class="o">=</span> <span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">louvain_list</span><span class="p">,</span> <span class="n">label_list</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NMI between Louvain and Label Prop: </span><span class="si">{</span><span class="n">nmi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"NMI between Louvain and Label Prop: </span><span class="si">{</span><span class="n">nmi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Interpretation:</strong></p>
@@ -1132,14 +1132,14 @@
 
 <span class="c1"># Load network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist_hash&quot;</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"data.edgelist"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist_hash"</span><span class="p">)</span>
 
 <span class="c1"># Run distributional community detection</span>
 <span class="n">dist</span> <span class="o">=</span> <span class="n">multilayer_louvain_distribution</span><span class="p">(</span>
     <span class="n">net</span><span class="p">,</span>
     <span class="n">n_runs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">resampling</span><span class="o">=</span><span class="s1">&#39;perturbation&#39;</span><span class="p">,</span>
-    <span class="n">perturbation_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;edge_drop_p&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+    <span class="n">resampling</span><span class="o">=</span><span class="s1">'perturbation'</span><span class="p">,</span>
+    <span class="n">perturbation_params</span><span class="o">=</span><span class="p">{</span><span class="s1">'edge_drop_p'</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
     <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span>
 <span class="p">)</span>
@@ -1154,8 +1154,8 @@
 <span class="n">stable_mask</span> <span class="o">=</span> <span class="n">confidence</span> <span class="o">&gt;=</span> <span class="mf">0.8</span>
 <span class="n">stable_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dist</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">stable_mask</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">consensus</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stable core: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stable_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">n_nodes</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Communities: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">consensus</span><span class="p">))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stable core: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stable_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dist</span><span class="o">.</span><span class="n">n_nodes</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1208,21 +1208,21 @@
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"network.csv"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">)</span>
 
 <span class="c1"># Run Successive Halving</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">AutoCommunity</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="s2">&quot;label_propagation&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rounds</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">"louvain"</span><span class="p">,</span> <span class="s2">"leiden"</span><span class="p">,</span> <span class="s2">"label_propagation"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">"modularity"</span><span class="p">,</span> <span class="s2">"coverage"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">"successive_halving"</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rounds</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
       <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
       <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Winner</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Winner: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Winner: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1231,22 +1231,22 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Custom budget and utility function</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">AutoCommunity</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">"louvain"</span><span class="p">,</span> <span class="s2">"leiden"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">"modularity"</span><span class="p">,</span> <span class="s2">"coverage"</span><span class="p">)</span>
       <span class="o">.</span><span class="n">strategy</span><span class="p">(</span>
-          <span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span>
+          <span class="s2">"successive_halving"</span><span class="p">,</span>
           <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>                     <span class="c1"># Keep top 1/3 each round</span>
           <span class="n">rounds</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>                  <span class="c1"># Number of rounds</span>
           <span class="n">budget0</span><span class="o">=</span><span class="p">{</span>                  <span class="c1"># Initial budget</span>
-              <span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-              <span class="s2">&quot;n_restarts&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-              <span class="s2">&quot;uq_samples&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+              <span class="s2">"max_iter"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+              <span class="s2">"n_restarts"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="s2">"uq_samples"</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
           <span class="p">},</span>
           <span class="n">budget_growth</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>         <span class="c1"># Budget scales 3x per round</span>
-          <span class="n">utility_method</span><span class="o">=</span><span class="s2">&quot;mean_minus_std&quot;</span><span class="p">,</span>  <span class="c1"># Utility function</span>
+          <span class="n">utility_method</span><span class="o">=</span><span class="s2">"mean_minus_std"</span><span class="p">,</span>  <span class="c1"># Utility function</span>
           <span class="n">metric_weights</span><span class="o">=</span><span class="p">{</span>           <span class="c1"># Custom weights</span>
-              <span class="s2">&quot;modularity&quot;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>
-              <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
+              <span class="s2">"modularity"</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>
+              <span class="s2">"coverage"</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
           <span class="p">},</span>
       <span class="p">)</span>
       <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
@@ -1259,22 +1259,22 @@
 <h3>Racing History<a class="headerlink" href="#racing-history" title="Link to this heading"></a></h3>
 <p>Access complete provenance:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Racing summary</span>
-<span class="n">history</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">provenance</span><span class="p">[</span><span class="s2">&quot;racing_history&quot;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rounds: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;rounds&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Winner: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;winner_algo_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Runtime: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;total_runtime_ms&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">provenance</span><span class="p">[</span><span class="s2">"racing_history"</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rounds: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">'rounds'</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Winner: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">'winner_algo_id'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Runtime: </span><span class="si">{</span><span class="n">history</span><span class="p">[</span><span class="s1">'total_runtime_ms'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms"</span><span class="p">)</span>
 
 <span class="c1"># Per-round details</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">round_rec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s2">&quot;rounds&quot;</span><span class="p">]):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Round </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Algorithms: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">&#39;algorithms&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Survivors: </span><span class="si">{</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">&#39;survivors&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Eliminated: </span><span class="si">{</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">&#39;eliminated&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">round_rec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s2">"rounds"</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Round </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Algorithms: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">'algorithms'</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Survivors: </span><span class="si">{</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">'survivors'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Eliminated: </span><span class="si">{</span><span class="n">round_rec</span><span class="p">[</span><span class="s1">'eliminated'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Show utilities</span>
-    <span class="n">utilities</span> <span class="o">=</span> <span class="n">round_rec</span><span class="p">[</span><span class="s2">&quot;utilities&quot;</span><span class="p">]</span>
+    <span class="n">utilities</span> <span class="o">=</span> <span class="n">round_rec</span><span class="p">[</span><span class="s2">"utilities"</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">algo</span><span class="p">,</span> <span class="n">utility</span> <span class="ow">in</span> <span class="n">utilities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">algo</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">utility</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    </span><span class="si">{</span><span class="n">algo</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">utility</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1294,9 +1294,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use expected regret utility</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">AutoCommunity</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span> <span class="n">utility_method</span><span class="o">=</span><span class="s2">&quot;expected_regret&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">"louvain"</span><span class="p">,</span> <span class="s2">"leiden"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">"modularity"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">"successive_halving"</span><span class="p">,</span> <span class="n">utility_method</span><span class="o">=</span><span class="s2">"expected_regret"</span><span class="p">)</span>
       <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
       <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
@@ -1308,17 +1308,17 @@
 <p>Enable UQ for stability-aware selection:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">AutoCommunity</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">,</span> <span class="s2">&quot;stability&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Enable UQ</span>
-      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">"louvain"</span><span class="p">,</span> <span class="s2">"leiden"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">"modularity"</span><span class="p">,</span> <span class="s2">"coverage"</span><span class="p">,</span> <span class="s2">"stability"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">"seed"</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># Enable UQ</span>
+      <span class="o">.</span><span class="n">strategy</span><span class="p">(</span><span class="s2">"successive_halving"</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
       <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
       <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Check stability</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">community_stats</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stability: </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">stability_score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stability: </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">stability_score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1358,37 +1358,37 @@
 
 <span class="c1"># 1. Load network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;network.csv&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+<span class="n">net</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"network.csv"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">)</span>
 
 <span class="c1"># 2. Run Successive Halving with UQ</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">AutoCommunity</span><span class="p">()</span>
-      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">&quot;louvain&quot;</span><span class="p">,</span> <span class="s2">&quot;leiden&quot;</span><span class="p">,</span> <span class="s2">&quot;label_propagation&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">&quot;modularity&quot;</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">,</span> <span class="s2">&quot;stability&quot;</span><span class="p">)</span>
-      <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="s2">"louvain"</span><span class="p">,</span> <span class="s2">"leiden"</span><span class="p">,</span> <span class="s2">"label_propagation"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">metrics</span><span class="p">(</span><span class="s2">"modularity"</span><span class="p">,</span> <span class="s2">"coverage"</span><span class="p">,</span> <span class="s2">"stability"</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">"seed"</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
       <span class="o">.</span><span class="n">strategy</span><span class="p">(</span>
-          <span class="s2">&quot;successive_halving&quot;</span><span class="p">,</span>
+          <span class="s2">"successive_halving"</span><span class="p">,</span>
           <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
           <span class="n">rounds</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-          <span class="n">budget0</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;uq_samples&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">},</span>
-          <span class="n">utility_method</span><span class="o">=</span><span class="s2">&quot;mean_minus_std&quot;</span><span class="p">,</span>
-          <span class="n">metric_weights</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;modularity&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;stability&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span>
+          <span class="n">budget0</span><span class="o">=</span><span class="p">{</span><span class="s2">"max_iter"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">"uq_samples"</span><span class="p">:</span> <span class="mi">15</span><span class="p">},</span>
+          <span class="n">utility_method</span><span class="o">=</span><span class="s2">"mean_minus_std"</span><span class="p">,</span>
+          <span class="n">metric_weights</span><span class="o">=</span><span class="p">{</span><span class="s2">"modularity"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"coverage"</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">"stability"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span>
       <span class="p">)</span>
       <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
       <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># 3. Results</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Winner: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coverage: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">coverage</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Winner: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">selected</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Communities: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">n_communities</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Coverage: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">community_stats</span><span class="o">.</span><span class="n">coverage</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># 4. Export</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;communities.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"communities.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># 5. Save provenance</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;provenance.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"provenance.json"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">provenance</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
