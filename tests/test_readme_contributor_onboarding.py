@@ -44,3 +44,15 @@ def test_readme_mentions_contributor_safety_policy(readme_content: str):
 def test_readme_uses_test_coverage_badge_label(readme_content: str):
     """README should use the exact test coverage badge label casing."""
     assert "[![Test coverage]" in readme_content
+
+
+def test_readme_coverage_badges_use_shields_workflow_status_urls(readme_content: str):
+    """README coverage badges should use explicit shields workflow-status endpoints."""
+    assert (
+        "https://img.shields.io/github/actions/workflow/status/SkBlaz/py3plex/tests.yml?label=Test%20coverage"
+        in readme_content
+    )
+    assert (
+        "https://img.shields.io/github/actions/workflow/status/SkBlaz/py3plex/type-coverage.yml?label=Type%20coverage"
+        in readme_content
+    )
