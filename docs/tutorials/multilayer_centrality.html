@@ -231,10 +231,10 @@
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Initialize centrality calculator</span>
 <span class="n">calc</span> <span class="o">=</span> <span class="n">MultilayerCentrality</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -251,14 +251,14 @@
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Layer degrees:&quot;</span><span class="p">,</span> <span class="n">layer_degrees</span><span class="p">)</span>
-<span class="c1"># Layer degrees: {&#39;L1&#39;: {&#39;A&#39;: 1, &#39;B&#39;: 2, &#39;C&#39;: 1}, &#39;L2&#39;: {&#39;A&#39;: 1, &#39;C&#39;: 1}}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Layer degrees:"</span><span class="p">,</span> <span class="n">layer_degrees</span><span class="p">)</span>
+<span class="c1"># Layer degrees: {'L1': {'A': 1, 'B': 2, 'C': 1}, 'L2': {'A': 1, 'C': 1}}</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overlapping degrees:&quot;</span><span class="p">,</span> <span class="n">overlapping_degrees</span><span class="p">)</span>
-<span class="c1"># Overlapping degrees: {&#39;A&#39;: 2, &#39;B&#39;: 2, &#39;C&#39;: 2}</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Overlapping degrees:"</span><span class="p">,</span> <span class="n">overlapping_degrees</span><span class="p">)</span>
+<span class="c1"># Overlapping degrees: {'A': 2, 'B': 2, 'C': 2}</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Participation coefficient:&quot;</span><span class="p">,</span> <span class="n">participation</span><span class="p">)</span>
-<span class="c1"># Participation coefficient: {&#39;A&#39;: 1.0, &#39;B&#39;: 0.0, &#39;C&#39;: 1.0}</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Participation coefficient:"</span><span class="p">,</span> <span class="n">participation</span><span class="p">)</span>
+<span class="c1"># Participation coefficient: {'A': 1.0, 'B': 0.0, 'C': 1.0}</span>
 <span class="c1"># (Node B only appears in one layer, so participation is 0)</span>
 </pre></div>
 </div>
@@ -285,18 +285,18 @@
 <h2>Aggregation Methods<a class="headerlink" href="#aggregation-methods" title="Link to this heading"></a></h2>
 <p>The module provides <strong>several methods</strong> to aggregate node-layer centralities to node-level centralities:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sum aggregation (default)</span>
-<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'sum'</span><span class="p">)</span>
 
 <span class="c1"># Mean aggregation</span>
-<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'mean'</span><span class="p">)</span>
 
 <span class="c1"># Maximum aggregation</span>
-<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'max'</span><span class="p">)</span>
 
 <span class="c1"># Weighted sum with custom layer weights</span>
-<span class="n">layer_weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;L1&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+<span class="n">layer_weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'L1'</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 <span class="n">node_centralities</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">aggregate_to_node_level</span><span class="p">(</span><span class="n">layer_centralities</span><span class="p">,</span>
-                                                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weighted_sum&#39;</span><span class="p">,</span>
+                                                <span class="n">method</span><span class="o">=</span><span class="s1">'weighted_sum'</span><span class="p">,</span>
                                                 <span class="n">weights</span><span class="o">=</span><span class="n">layer_weights</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -368,10 +368,10 @@
 <span class="c1"># Compute co-rankings</span>
 <span class="n">node_scores</span><span class="p">,</span> <span class="n">layer_scores</span> <span class="o">=</span> <span class="n">multirank</span><span class="p">([</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Node scores:&quot;</span><span class="p">,</span> <span class="n">node_scores</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Node scores:"</span><span class="p">,</span> <span class="n">node_scores</span><span class="p">)</span>
 <span class="c1"># Node scores: [0.33, 0.34, 0.33] (normalized)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Layer scores:&quot;</span><span class="p">,</span> <span class="n">layer_scores</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Layer scores:"</span><span class="p">,</span> <span class="n">layer_scores</span><span class="p">)</span>
 <span class="c1"># Layer scores: [0.6, 0.4] (L1 has more edges, higher score)</span>
 </pre></div>
 </div>
@@ -394,25 +394,25 @@
 <span class="n">L2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
 <span class="c1"># Neutral variant (baseline, no cross-layer influence)</span>
-<span class="n">result_neutral</span> <span class="o">=</span> <span class="n">multiplex_pagerank</span><span class="p">([</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">],</span> <span class="n">variant</span><span class="o">=</span><span class="s1">&#39;neutral&#39;</span><span class="p">)</span>
+<span class="n">result_neutral</span> <span class="o">=</span> <span class="n">multiplex_pagerank</span><span class="p">([</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">],</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'neutral'</span><span class="p">)</span>
 
 <span class="c1"># Additive variant (cross-layer sum)</span>
-<span class="n">result_additive</span> <span class="o">=</span> <span class="n">multiplex_pagerank</span><span class="p">([</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">],</span> <span class="n">variant</span><span class="o">=</span><span class="s1">&#39;additive&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">result_additive</span> <span class="o">=</span> <span class="n">multiplex_pagerank</span><span class="p">([</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">],</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'additive'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
 <span class="c1"># Multiplicative variant (cross-layer product)</span>
 <span class="n">result_multiplicative</span> <span class="o">=</span> <span class="n">multiplex_pagerank</span><span class="p">([</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">],</span>
-                                           <span class="n">variant</span><span class="o">=</span><span class="s1">&#39;multiplicative&#39;</span><span class="p">,</span>
+                                           <span class="n">variant</span><span class="o">=</span><span class="s1">'multiplicative'</span><span class="p">,</span>
                                            <span class="n">c</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
 <span class="c1"># Combined variant (additive + multiplicative)</span>
 <span class="n">result_combined</span> <span class="o">=</span> <span class="n">multiplex_pagerank</span><span class="p">([</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">],</span>
-                                    <span class="n">variant</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span>
+                                    <span class="n">variant</span><span class="o">=</span><span class="s1">'combined'</span><span class="p">,</span>
                                     <span class="n">c1</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
                                     <span class="n">c2</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 
 <span class="c1"># Access results</span>
-<span class="n">node_scores</span> <span class="o">=</span> <span class="n">result_additive</span><span class="p">[</span><span class="s1">&#39;node_scores&#39;</span><span class="p">]</span>       <span class="c1"># Aggregated node scores</span>
-<span class="n">replica_scores</span> <span class="o">=</span> <span class="n">result_additive</span><span class="p">[</span><span class="s1">&#39;replica_scores&#39;</span><span class="p">]</span> <span class="c1"># Per-layer scores (N x L)</span>
+<span class="n">node_scores</span> <span class="o">=</span> <span class="n">result_additive</span><span class="p">[</span><span class="s1">'node_scores'</span><span class="p">]</span>       <span class="c1"># Aggregated node scores</span>
+<span class="n">replica_scores</span> <span class="o">=</span> <span class="n">result_additive</span><span class="p">[</span><span class="s1">'replica_scores'</span><span class="p">]</span> <span class="c1"># Per-layer scores (N x L)</span>
 </pre></div>
 </div>
 <p><strong>Coupling Functions:</strong></p>
@@ -495,11 +495,11 @@
 <span class="c1"># L-infinity norm (maximum)</span>
 <span class="n">linf_agg</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">lp_aggregated_centrality</span><span class="p">(</span>
     <span class="n">layer_degrees</span><span class="p">,</span>
-    <span class="n">p</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s1">'inf'</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Weighted aggregation</span>
-<span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;L1&#39;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">}</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'L1'</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">}</span>
 <span class="n">weighted_agg</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">lp_aggregated_centrality</span><span class="p">(</span>
     <span class="n">layer_degrees</span><span class="p">,</span>
     <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -515,9 +515,9 @@
 <span class="p">)</span>
 
 <span class="c1"># Access specific measures</span>
-<span class="n">info_centrality</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;information&#39;</span><span class="p">]</span>
-<span class="n">spreading_cent</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;spreading&#39;</span><span class="p">]</span>
-<span class="n">harmonic_close</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;harmonic_closeness&#39;</span><span class="p">]</span>
+<span class="n">info_centrality</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">'information'</span><span class="p">]</span>
+<span class="n">spreading_cent</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">'spreading'</span><span class="p">]</span>
+<span class="n">harmonic_close</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">'harmonic_closeness'</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>
@@ -622,15 +622,15 @@
 
 <span class="c1"># Backward compatibility</span>
 <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>     <span class="c1"># Extracts mean (for plotting, etc.)</span>
-<span class="n">score</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>       <span class="c1"># Dict-like access: {&#39;mean&#39;: ..., &#39;std&#39;: ...}</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>       <span class="c1"># Dict-like access: {'mean': ..., 'std': ...}</span>
 <span class="n">dict_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>  <span class="c1"># Full conversion to dict</span>
 </pre></div>
 </div>
 <p><strong>Checking uncertainty:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">is_deterministic</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Certainty: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">certainty</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 0.0 for uncertain</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Has std: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">std</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Has quantiles: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">quantiles</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Certainty: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">certainty</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 0.0 for uncertain</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Has std: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">std</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Has quantiles: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">quantiles</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -652,9 +652,9 @@
     <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)),</span>
     <span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span>
     <span class="n">yerr</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">std</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">std</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="o">=</span><span class="s1">'o'</span><span class="p">,</span>
     <span class="n">capsize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PageRank ± std&#39;</span>
+    <span class="n">label</span><span class="o">=</span><span class="s1">'PageRank ± std'</span>
 <span class="p">)</span>
 
 <span class="c1"># Or plot with confidence bands</span>
@@ -663,13 +663,13 @@
     <span class="n">result</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.025</span><span class="p">][</span><span class="n">indices</span><span class="p">],</span>
     <span class="n">result</span><span class="o">.</span><span class="n">quantiles</span><span class="p">[</span><span class="mf">0.975</span><span class="p">][</span><span class="n">indices</span><span class="p">],</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-    <span class="n">label</span><span class="o">=</span><span class="s1">&#39;95% CI&#39;</span>
+    <span class="n">label</span><span class="o">=</span><span class="s1">'95% CI'</span>
 <span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Node rank&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PageRank centrality&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Node rank'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'PageRank centrality'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;PageRank with Uncertainty&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'PageRank with Uncertainty'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -691,8 +691,8 @@
     <span class="n">n_runs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">resampling</span><span class="o">=</span><span class="n">ResamplingStrategy</span><span class="o">.</span><span class="n">PERTURBATION</span><span class="p">,</span>
     <span class="n">perturbation_params</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;edge_drop_p&quot;</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span>  <span class="c1"># Drop 10% of edges</span>
-        <span class="s2">&quot;node_drop_p&quot;</span><span class="p">:</span> <span class="mf">0.05</span>   <span class="c1"># Drop 5% of nodes</span>
+        <span class="s2">"edge_drop_p"</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span>  <span class="c1"># Drop 10% of edges</span>
+        <span class="s2">"node_drop_p"</span><span class="p">:</span> <span class="mf">0.05</span>   <span class="c1"># Drop 5% of nodes</span>
     <span class="p">},</span>
     <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>

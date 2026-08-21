@@ -156,12 +156,12 @@
 <span class="c1"># Analyze and export in one pipeline</span>
 <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"social"</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">"work"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;top_influencers.csv&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">export_json</span><span class="p">(</span><span class="s2">&quot;top_influencers.json&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">"top_influencers.csv"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_json</span><span class="p">(</span><span class="s2">"top_influencers.json"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -189,12 +189,12 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span>
 
 <span class="c1"># Auto-detect format from extension</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.csv&#39;</span><span class="p">)</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.json'</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.csv'</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.arrow'</span><span class="p">)</span>
 
 <span class="c1"># Or specify format explicitly</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;myfile.dat&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'myfile.dat'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'json'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -203,12 +203,12 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">write</span>
 
 <span class="c1"># Auto-detect format from extension</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.json'</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.arrow'</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.parquet'</span><span class="p">)</span>
 
 <span class="c1"># Or specify format explicitly</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;myfile.dat&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;json&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'myfile.dat'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'json'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -221,24 +221,24 @@
 <span class="c1"># Create graph</span>
 <span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">(</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Social Network&#39;</span><span class="p">}</span>
+    <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">'name'</span><span class="p">:</span> <span class="s1">'Social Network'</span><span class="p">}</span>
 <span class="p">)</span>
 
 <span class="c1"># Add layers</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">}))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'facebook'</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">'type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'twitter'</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">'type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">}))</span>
 
 <span class="c1"># Add nodes</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'alice'</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">'age'</span><span class="p">:</span> <span class="mi">30</span><span class="p">}))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'bob'</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">'age'</span><span class="p">:</span> <span class="mi">25</span><span class="p">}))</span>
 
 <span class="c1"># Add edges</span>
 <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
-    <span class="n">src</span><span class="o">=</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span>
-    <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span>
-    <span class="n">src_layer</span><span class="o">=</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span>
-    <span class="n">dst_layer</span><span class="o">=</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span>
-    <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}</span>
+    <span class="n">src</span><span class="o">=</span><span class="s1">'alice'</span><span class="p">,</span>
+    <span class="n">dst</span><span class="o">=</span><span class="s1">'bob'</span><span class="p">,</span>
+    <span class="n">src_layer</span><span class="o">=</span><span class="s1">'facebook'</span><span class="p">,</span>
+    <span class="n">dst_layer</span><span class="o">=</span><span class="s1">'facebook'</span><span class="p">,</span>
+    <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">'weight'</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}</span>
 <span class="p">))</span>
 </pre></div>
 </div>
@@ -253,7 +253,7 @@
 <section id="installing-arrow-support">
 <h3>Installing Arrow Support<a class="headerlink" href="#installing-arrow-support" title="Link to this heading"></a></h3>
 <p>Arrow support requires the pyarrow package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;py3plex[arrow]&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">'py3plex[arrow]'</span>
 <span class="c1"># or directly</span>
 pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 </pre></div>
@@ -264,12 +264,12 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
 
 <span class="c1"># Feather format (fast, uncompressed)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.arrow'</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.arrow'</span><span class="p">)</span>
 
 <span class="c1"># Parquet format (compressed)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;parquet&#39;</span><span class="p">)</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.parquet&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;parquet&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.parquet'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'parquet'</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.parquet'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'parquet'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -358,13 +358,13 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
 
 <span class="c1"># Write with sidecars</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;edges.csv&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="n">write_sidecars</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'edges.csv'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'csv'</span><span class="p">,</span> <span class="n">write_sidecars</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># Creates: edges.csv, nodes.csv, layers.csv</span>
 
 <span class="c1"># Read with sidecars</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;edges.csv&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span>
-             <span class="n">nodes_file</span><span class="o">=</span><span class="s1">&#39;nodes.csv&#39;</span><span class="p">,</span>
-             <span class="n">layers_file</span><span class="o">=</span><span class="s1">&#39;layers.csv&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'edges.csv'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'csv'</span><span class="p">,</span>
+             <span class="n">nodes_file</span><span class="o">=</span><span class="s1">'nodes.csv'</span><span class="p">,</span>
+             <span class="n">layers_file</span><span class="o">=</span><span class="s1">'layers.csv'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -374,15 +374,15 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">to_networkx</span><span class="p">,</span> <span class="n">from_networkx</span>
 
 <span class="c1"># Load graph</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.json'</span><span class="p">)</span>
 
 <span class="c1"># Convert to NetworkX</span>
-<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;union&#39;</span><span class="p">)</span>  <span class="c1"># Merge all layers</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'union'</span><span class="p">)</span>  <span class="c1"># Merge all layers</span>
 <span class="c1"># or</span>
-<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>  <span class="c1"># Preserve layers as (node, layer)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'multiplex'</span><span class="p">)</span>  <span class="c1"># Preserve layers as (node, layer)</span>
 
 <span class="c1"># Convert back from NetworkX</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">from_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">from_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'multiplex'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -398,42 +398,42 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 <span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Add layers</span>
-<span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'social'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="s1">'family'</span><span class="p">]:</span>
     <span class="n">graph</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">Layer</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">layer_id</span><span class="p">))</span>
 
 <span class="c1"># Add nodes</span>
-<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;charlie&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'alice'</span><span class="p">,</span> <span class="s1">'bob'</span><span class="p">,</span> <span class="s1">'charlie'</span><span class="p">]:</span>
     <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
 
 <span class="c1"># Add edges</span>
 <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span> <span class="s1">&#39;charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'alice'</span><span class="p">,</span> <span class="s1">'bob'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'bob'</span><span class="p">,</span> <span class="s1">'charlie'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'alice'</span><span class="p">,</span> <span class="s1">'charlie'</span><span class="p">,</span> <span class="s1">'family'</span><span class="p">,</span> <span class="s1">'family'</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src_layer</span><span class="p">,</span> <span class="n">dst_layer</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
     <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
         <span class="n">src</span><span class="o">=</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="n">dst</span><span class="p">,</span>
         <span class="n">src_layer</span><span class="o">=</span><span class="n">src_layer</span><span class="p">,</span> <span class="n">dst_layer</span><span class="o">=</span><span class="n">dst_layer</span><span class="p">,</span>
-        <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="n">weight</span><span class="p">}</span>
+        <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s1">'weight'</span><span class="p">:</span> <span class="n">weight</span><span class="p">}</span>
     <span class="p">))</span>
 
 <span class="c1"># Save in multiple formats</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.json&#39;</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.parquet&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.json'</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.arrow'</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.parquet'</span><span class="p">)</span>
 
 <span class="c1"># Load back</span>
-<span class="n">loaded</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.arrow&#39;</span><span class="p">)</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.arrow'</span><span class="p">)</span>
 
 <span class="c1"># Convert to NetworkX for analysis</span>
-<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">loaded</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;union&#39;</span><span class="p">)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">to_networkx</span><span class="p">(</span><span class="n">loaded</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'union'</span><span class="p">)</span>
 
 <span class="c1"># Use NetworkX algorithms</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most central node: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">centrality</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="o">=</span><span class="n">centrality</span><span class="o">.</span><span class="n">get</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Most central node: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">centrality</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="o">=</span><span class="n">centrality</span><span class="o">.</span><span class="n">get</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -443,8 +443,8 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">supported_formats</span>
 
 <span class="n">formats</span> <span class="o">=</span> <span class="n">supported_formats</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read formats: </span><span class="si">{</span><span class="n">formats</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write formats: </span><span class="si">{</span><span class="n">formats</span><span class="p">[</span><span class="s1">&#39;write&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Read formats: </span><span class="si">{</span><span class="n">formats</span><span class="p">[</span><span class="s1">'read'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Write formats: </span><span class="si">{</span><span class="n">formats</span><span class="p">[</span><span class="s1">'write'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is useful for checking if optional dependencies (like pyarrow) are installed.</p>
@@ -458,16 +458,16 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 <span class="p">)</span>
 
 <span class="n">graph</span> <span class="o">=</span> <span class="n">MultiLayerGraph</span><span class="p">()</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;alice&#39;</span><span class="p">))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'alice'</span><span class="p">))</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="c1"># This will fail - bob doesn&#39;t exist</span>
+    <span class="c1"># This will fail - bob doesn't exist</span>
     <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
-        <span class="n">src</span><span class="o">=</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;bob&#39;</span><span class="p">,</span>
-        <span class="n">src_layer</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="n">dst_layer</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span>
+        <span class="n">src</span><span class="o">=</span><span class="s1">'alice'</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s1">'bob'</span><span class="p">,</span>
+        <span class="n">src_layer</span><span class="o">=</span><span class="s1">'l1'</span><span class="p">,</span> <span class="n">dst_layer</span><span class="o">=</span><span class="s1">'l1'</span>
     <span class="p">))</span>
 <span class="k">except</span> <span class="n">ReferentialIntegrityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Validation error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Validation ensures:</p>
@@ -491,17 +491,17 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 
 <span class="k">def</span><span class="w"> </span><span class="nf">my_writer</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># Custom writing logic</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="c1"># ... write graph ...</span>
         <span class="k">pass</span>
 
 <span class="c1"># Register</span>
-<span class="n">register_reader</span><span class="p">(</span><span class="s1">&#39;myformat&#39;</span><span class="p">,</span> <span class="n">my_reader</span><span class="p">)</span>
-<span class="n">register_writer</span><span class="p">(</span><span class="s1">&#39;myformat&#39;</span><span class="p">,</span> <span class="n">my_writer</span><span class="p">)</span>
+<span class="n">register_reader</span><span class="p">(</span><span class="s1">'myformat'</span><span class="p">,</span> <span class="n">my_reader</span><span class="p">)</span>
+<span class="n">register_writer</span><span class="p">(</span><span class="s1">'myformat'</span><span class="p">,</span> <span class="n">my_writer</span><span class="p">)</span>
 
 <span class="c1"># Now you can use it</span>
-<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;network.myformat&#39;</span><span class="p">)</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;network.myformat&#39;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s1">'network.myformat'</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.myformat'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

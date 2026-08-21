@@ -39,3 +39,20 @@ def test_readme_mentions_contributor_safety_policy(readme_content: str):
     """README should surface key contributor safety constraints."""
     assert "Do not add new markdown files unless explicitly requested" in readme_content
     assert "make ci" in readme_content
+
+
+def test_readme_uses_test_coverage_badge_label(readme_content: str):
+    """README should use the exact test coverage badge label casing."""
+    assert "[![Test coverage]" in readme_content
+
+
+def test_readme_coverage_badges_use_percentage_badge_urls(readme_content: str):
+    """README coverage badges should use shields percentage badge endpoints."""
+    assert (
+        "https://img.shields.io/badge/test_coverage-"
+        in readme_content
+    )
+    assert (
+        "https://img.shields.io/badge/type_coverage-"
+        in readme_content
+    )

@@ -251,14 +251,14 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <p><strong>Solution 1:</strong> Confirm the file exists and your working directory is correct (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code> often differs from the script directory):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current directory:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File exists:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;data.edgelist&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Current directory:"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"File exists:"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">"data.edgelist"</span><span class="p">))</span>
 </pre></div>
 </div>
 <p><strong>Solution 2:</strong> Use an absolute path to avoid ambiguity:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network_path</span> <span class="o">=</span> <span class="s2">&quot;/absolute/path/to/data.edgelist&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network_path</span> <span class="o">=</span> <span class="s2">"/absolute/path/to/data.edgelist"</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="n">network_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">network_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -266,9 +266,9 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;network.edgelist&quot;</span><span class="p">)</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s2">"data"</span><span class="p">,</span> <span class="s2">"network.edgelist"</span><span class="p">)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="n">data_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">data_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -278,10 +278,10 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <p><strong>Problem:</strong> Network loads but has no nodes or edges (zero counts).</p>
 <p><strong>Solution:</strong> Confirm the file contents and chosen <code class="docutils literal notranslate"><span class="pre">input_type</span></code> match. Pick the loader that matches your columns and delimiter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For simple edge lists (source target)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"data.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">)</span>
 
 <span class="c1"># For multilayer edge lists (source target layer)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"data.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">)</span>
 
 <span class="c1"># Always verify after loading</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -319,8 +319,8 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">"force"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"network.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -330,13 +330,13 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <p><strong>Problem:</strong> Error on headless servers or SSH sessions without X11.</p>
 <p><strong>Solution:</strong> Use Agg backend for matplotlib so plots are rendered to files:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'Agg'</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Now visualization will save to file instead of displaying</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
 <span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;output.png&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"output.png"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -344,7 +344,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <h3>Blurry or Low-Quality Plots<a class="headerlink" href="#blurry-or-low-quality-plots" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Plots look pixelated or blurry.</p>
 <p><strong>Solution:</strong> Increase DPI and tighten bounding boxes when saving:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"network.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -356,7 +356,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <h3>“No module named ‘plotly’”<a class="headerlink" href="#no-module-named-plotly" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Interactive visualization features not working.</p>
 <p><strong>Solution:</strong> Install visualization extras (plotly and related dependencies):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[viz]&quot;</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[viz]"</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
 </pre></div>
 </div>
 </section>
@@ -364,7 +364,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <h3>“No module named ‘infomap’”<a class="headerlink" href="#no-module-named-infomap" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Infomap community detection not working.</p>
 <p><strong>Solution:</strong> Install Infomap support:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[infomap]&quot;</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[infomap]"</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
 </pre></div>
 </div>
 <p>Or use alternative community detection methods if you cannot install the extra:</p>
@@ -381,21 +381,21 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <p><strong>Problem:</strong> Loading large networks takes too long.</p>
 <p><strong>Solution 1:</strong> Prefer Arrow/Parquet for large networks to speed up I/O:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Arrow support</span>
-python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[arrow]&quot;</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[arrow]"</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
 
 <span class="c1"># Save in efficient format</span>
-<span class="n">write</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s2">&quot;network.arrow&quot;</span><span class="p">)</span>
+<span class="n">write</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s2">"network.arrow"</span><span class="p">)</span>
 
 <span class="c1"># Load faster from Arrow</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">&quot;network.arrow&quot;</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">"network.arrow"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Solution 2:</strong> Process in chunks or use subnetworks for testing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract a single layer for testing</span>
-<span class="n">layer_1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;layer1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="n">layer_1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">'layer1'</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 
 <span class="c1"># Work with the smaller network</span>
 <span class="n">layer_1</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -442,7 +442,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 
 <span class="c1"># Check connectivity</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Network is not connected&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Warning: Network is not connected"</span><span class="p">)</span>
 
     <span class="c1"># Get largest component</span>
     <span class="n">largest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span>

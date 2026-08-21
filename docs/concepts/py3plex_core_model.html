@@ -237,10 +237,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Heterogeneous network: authors and papers are different node types</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multilayer&#39;</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">'multilayer'</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;author1&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;paper1&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;papers&#39;</span><span class="p">}</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'author1'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'paper1'</span><span class="p">,</span>
+     <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'authors'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'papers'</span><span class="p">}</span>
 <span class="p">])</span>
 </pre></div>
 </div>
@@ -252,8 +252,8 @@
 <li><p>Filter coupling edges using <code class="docutils literal notranslate"><span class="pre">get_edges(multiplex_edges=False)</span></code></p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Social network: same people, different relationship types</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s1">&#39;friends_and_colleagues.edges&#39;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;multiplex_edges&#39;</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">'multiplex'</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s1">'friends_and_colleagues.edges'</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'multiplex_edges'</span><span class="p">)</span>
 
 <span class="c1"># Coupling edges are auto-created between (Alice, friends) &lt;-&gt; (Alice, colleagues)</span>
 
@@ -332,29 +332,29 @@
 </div>
 <p><strong>2. Layer Encoding</strong></p>
 <p>Nodes are internally encoded as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> tuples to distinguish the same logical node across different layers.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Node &#39;Alice&#39; in layer &#39;friends&#39; is stored as (&#39;Alice&#39;, &#39;friends&#39;)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Node 'Alice' in layer 'friends' is stored as ('Alice', 'friends')</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)])</span>
 
 <span class="c1"># Access all node-layer pairs</span>
 <span class="k">for</span> <span class="n">node_layer_pair</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">node_layer_pair</span><span class="p">)</span>  <span class="c1"># (&#39;Alice&#39;, &#39;friends&#39;), (&#39;Bob&#39;, &#39;friends&#39;), ...</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">node_layer_pair</span><span class="p">)</span>  <span class="c1"># ('Alice', 'friends'), ('Bob', 'friends'), ...</span>
 </pre></div>
 </div>
 <p><strong>3. Layer Mapping</strong></p>
 <p>py3plex maintains bidirectional mappings between layer names and internal layer IDs for efficient lookups.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get layer mapping</span>
 <span class="n">layer_map</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layer_name_map</span>
-<span class="c1"># {&#39;friends&#39;: 0, &#39;colleagues&#39;: 1, ...}</span>
+<span class="c1"># {'friends': 0, 'colleagues': 1, ...}</span>
 </pre></div>
 </div>
 <p><strong>4. Attributes</strong></p>
 <p>Node and edge attributes are stored directly in the underlying NetworkX graph and can be accessed and modified using standard NetworkX patterns.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add node with attributes</span>
-<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)][</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
 
 <span class="c1"># Add edge with attributes</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;close&#39;</span><span class="p">}]</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">{</span><span class="s1">'weight'</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'close'</span><span class="p">}]</span>
 <span class="p">])</span>
 </pre></div>
 </div>
@@ -366,8 +366,8 @@
 <h3>Node-Layer Pairs<a class="headerlink" href="#node-layer-pairs" title="Link to this heading"></a></h3>
 <p>The key concept in py3plex’s internal model is the <strong>node-layer pair</strong>: a tuple <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer_id)</span></code> that uniquely identifies a node in a specific layer.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Same logical node, different layers</span>
-<span class="n">alice_friends</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)</span>
-<span class="n">alice_colleagues</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+<span class="n">alice_friends</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)</span>
+<span class="n">alice_colleagues</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">)</span>
 
 <span class="c1"># These are treated as different nodes internally</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span><span class="n">alice_friends</span><span class="p">,</span> <span class="n">alice_colleagues</span><span class="p">])</span>
@@ -384,9 +384,9 @@
 <h3>Edge Types<a class="headerlink" href="#edge-types" title="Link to this heading"></a></h3>
 <p><strong>Intra-Layer Edges</strong></p>
 <p>Edges connecting nodes within the same layer:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edge within &#39;friends&#39; layer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edge within 'friends' layer</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="p">])</span>
 </pre></div>
 </div>
@@ -394,12 +394,12 @@
 <p>Edges connecting nodes across different layers:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Connect Alice across layers (identity edge)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="p">])</span>
 
 <span class="c1"># Connect different nodes across layers</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">]</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">]</span>
 <span class="p">])</span>
 </pre></div>
 </div>
@@ -495,7 +495,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 
 <span class="c1"># Shape: (total_nodes, total_nodes)</span>
 <span class="c1"># where total_nodes = sum of nodes across all layers</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shape: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -522,7 +522,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="p">)</span>
 
 <span class="c1"># Visualize the supra-adjacency matrix</span>
-<span class="n">network</span><span class="o">.</span><span class="n">visualize_matrix</span><span class="p">({</span><span class="s2">&quot;display&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">network</span><span class="o">.</span><span class="n">visualize_matrix</span><span class="p">({</span><span class="s2">"display"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 </pre></div>
 </div>
 <p>The visualization shows the block structure with:</p>
@@ -540,15 +540,15 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <p>Internally, py3plex stores all nodes and edges in a single NetworkX <code class="docutils literal notranslate"><span class="pre">MultiGraph</span></code> (for undirected) or <code class="docutils literal notranslate"><span class="pre">MultiDiGraph</span></code> (for directed networks). The multilayer structure is encoded through the node representation:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># What you write in py3plex:</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
-<span class="c1"># What&#39;s actually stored in NetworkX:</span>
-<span class="c1"># Nodes: (&#39;Alice&#39;, &#39;friends&#39;), (&#39;Bob&#39;, &#39;friends&#39;),</span>
-<span class="c1">#        (&#39;Alice&#39;, &#39;colleagues&#39;), (&#39;Bob&#39;, &#39;colleagues&#39;)</span>
-<span class="c1"># Edges: ((&#39;Alice&#39;, &#39;friends&#39;), (&#39;Bob&#39;, &#39;friends&#39;)),</span>
-<span class="c1">#        ((&#39;Alice&#39;, &#39;colleagues&#39;), (&#39;Bob&#39;, &#39;colleagues&#39;))</span>
+<span class="c1"># What's actually stored in NetworkX:</span>
+<span class="c1"># Nodes: ('Alice', 'friends'), ('Bob', 'friends'),</span>
+<span class="c1">#        ('Alice', 'colleagues'), ('Bob', 'colleagues')</span>
+<span class="c1"># Edges: (('Alice', 'friends'), ('Bob', 'friends')),</span>
+<span class="c1">#        (('Alice', 'colleagues'), ('Bob', 'colleagues'))</span>
 </pre></div>
 </div>
 <p>This means:</p>
@@ -562,12 +562,12 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <h3>Attribute Propagation<a class="headerlink" href="#attribute-propagation" title="Link to this heading"></a></h3>
 <p>When you add nodes or edges with attributes, they’re stored in the NetworkX graph:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Node attributes</span>
-<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;role&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)][</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)][</span><span class="s1">'role'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'admin'</span>
 
 <span class="c1"># Edge attributes</span>
-<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
-<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;close&#39;</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)][(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)][</span><span class="s1">'weight'</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)][(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)][</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'close'</span>
 </pre></div>
 </div>
 <p>Attributes are preserved when you:</p>
@@ -590,7 +590,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()))</span>
 
 <span class="c1"># Shortest paths (work across layers if inter-layer edges exist)</span>
-<span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">))</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">))</span>
 
 <span class="c1"># Community detection (treats node-layer pairs as nodes)</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">louvain_communities</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
@@ -608,8 +608,8 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instead of py3plex:</span>
 <span class="n">layer1</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
 <span class="n">layer2</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-<span class="n">layer1</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">)</span>
-<span class="n">layer2</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">)</span>
+<span class="n">layer1</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">)</span>
+<span class="n">layer2</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>Pros:</em></p>
@@ -626,8 +626,8 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <p><strong>Alternative 2: Single graph with edge type attributes</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instead of py3plex:</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiGraph</span><span class="p">()</span>
-<span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;friends&#39;</span><span class="p">)</span>
-<span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">'friends'</span><span class="p">)</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">'colleagues'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>Pros:</em></p>
@@ -644,9 +644,9 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <p><strong>py3plex approach: Node-layer pairs</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># py3plex representation:</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><em>Pros:</em></p>
@@ -696,10 +696,10 @@ L2  A [ 1    0    0      |  0    0    0 ]
 
 <span class="c1"># Add edges in list format: [source_node, source_layer, target_node, target_layer, weight]</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Method 2: Add nodes and edges separately</strong></p>
@@ -707,16 +707,16 @@ L2  A [ 1    0    0      |  0    0    0 ]
 
 <span class="c1"># Add nodes explicitly</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+    <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">)</span>
 <span class="p">])</span>
 
 <span class="c1"># Add edges between existing nodes</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="p">])</span>
 </pre></div>
 </div>
@@ -724,13 +724,13 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="c1"># Define layers explicitly</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;friends&#39;</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">'friends'</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">'colleagues'</span><span class="p">)</span>
 
 <span class="c1"># Add content (nodes are created automatically with edges)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -741,22 +741,22 @@ L2  A [ 1    0    0      |  0    0    0 ]
 
 <span class="c1"># From simple edge list (source target)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span>
+    <span class="s2">"data.edgelist"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">,</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 
 <span class="c1"># From multilayer edge list (source target layer)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="s2">"data.multiedgelist"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 
 <span class="c1"># From GraphML</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.graphml&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span>
+    <span class="s2">"data.graphml"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"graphml"</span>
 <span class="p">)</span>
 
 <span class="c1"># From NetworkX graph</span>
@@ -777,17 +777,17 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="n">nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Without attributes</span>
 
 <span class="c1"># Get nodes in a specific layer</span>
-<span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">&#39;friends&#39;</span><span class="p">)</span>
+<span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">'friends'</span><span class="p">)</span>
 
 <span class="c1"># Get all edges</span>
 <span class="n">edges</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Get neighbors of a node in a layer</span>
-<span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s1">&#39;friends&#39;</span><span class="p">))</span>
+<span class="n">neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s1">'friends'</span><span class="p">))</span>
 
 <span class="c1"># Get all layers</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -802,23 +802,23 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="c1"># Number of unique nodes (as node-layer tuples): Z</span>
 <span class="c1"># Number of unique node IDs (across all layers): W</span>
 <span class="c1"># Nodes per layer:</span>
-<span class="c1">#   Layer &#39;friends&#39;: N1 nodes</span>
-<span class="c1">#   Layer &#39;colleagues&#39;: N2 nodes</span>
+<span class="c1">#   Layer 'friends': N1 nodes</span>
+<span class="c1">#   Layer 'colleagues': N2 nodes</span>
 </pre></div>
 </div>
 </section>
 <section id="subnetwork-extraction">
 <h3>Subnetwork Extraction<a class="headerlink" href="#subnetwork-extraction" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract a single layer</span>
-<span class="n">layer_1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="n">layer_1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">'friends'</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 
 <span class="c1"># Extract specific nodes (all their appearances)</span>
-<span class="n">node_subset</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_names&quot;</span><span class="p">)</span>
+<span class="n">node_subset</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"node_names"</span><span class="p">)</span>
 
 <span class="c1"># Extract specific node-layer pairs</span>
 <span class="n">specific_pairs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">(</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">)],</span>
-    <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;node_layer_names&quot;</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">)],</span>
+    <span class="n">subset_by</span><span class="o">=</span><span class="s2">"node_layer_names"</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -829,7 +829,7 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Get adjacency matrix for a single layer</span>
-<span class="n">layer_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;friends&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="n">layer_subgraph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">'friends'</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 <span class="n">layer_adj</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">layer_subgraph</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -846,28 +846,28 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="c1"># Create py3plex network</span>
 <span class="n">mlnet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">mlnet</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Access underlying NetworkX graph</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">mlnet</span><span class="o">.</span><span class="n">core_network</span>
 
 <span class="c1"># Use any NetworkX function</span>
 <span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Betweenness centrality: </span><span class="si">{</span><span class="n">betweenness</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Betweenness centrality: </span><span class="si">{</span><span class="n">betweenness</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Shortest paths</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shortest path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shortest path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">nx</span><span class="o">.</span><span class="n">NetworkXNoPath</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No path exists&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"No path exists"</span><span class="p">)</span>
 
 <span class="c1"># Connected components</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">G</span><span class="o">.</span><span class="n">is_directed</span><span class="p">():</span>
     <span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of components: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of components: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -875,14 +875,14 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <h3>NetworkX Wrappers<a class="headerlink" href="#networkx-wrappers" title="Link to this heading"></a></h3>
 <p>py3plex provides convenience wrappers for common NetworkX functions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract a layer</span>
-<span class="n">layer_1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">&#39;layer1&#39;</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="n">layer_1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="s1">'layer1'</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 
 <span class="c1"># Apply NetworkX algorithms via wrapper</span>
-<span class="n">degree_centrality</span> <span class="o">=</span> <span class="n">layer_1</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">)</span>
-<span class="n">betweenness</span> <span class="o">=</span> <span class="n">layer_1</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+<span class="n">degree_centrality</span> <span class="o">=</span> <span class="n">layer_1</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">"degree_centrality"</span><span class="p">)</span>
+<span class="n">betweenness</span> <span class="o">=</span> <span class="n">layer_1</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
 
 <span class="c1"># Results are dictionaries mapping node-layer pairs to values</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Degree centrality: </span><span class="si">{</span><span class="n">degree_centrality</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Degree centrality: </span><span class="si">{</span><span class="n">degree_centrality</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -901,8 +901,8 @@ L2  A [ 1    0    0      |  0    0    0 ]
 <span class="n">G_export</span> <span class="o">=</span> <span class="n">mlnet</span><span class="o">.</span><span class="n">core_network</span>
 
 <span class="c1"># Save as standard NetworkX formats</span>
-<span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">G_export</span><span class="p">,</span> <span class="s2">&quot;output.graphml&quot;</span><span class="p">)</span>
-<span class="n">nx</span><span class="o">.</span><span class="n">write_gml</span><span class="p">(</span><span class="n">G_export</span><span class="p">,</span> <span class="s2">&quot;output.gml&quot;</span><span class="p">)</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">G_export</span><span class="p">,</span> <span class="s2">"output.graphml"</span><span class="p">)</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">write_gml</span><span class="p">(</span><span class="n">G_export</span><span class="p">,</span> <span class="s2">"output.gml"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -944,15 +944,15 @@ L2  A [ 1    0    0      |  0    0    0 ]
 
 <span class="c1"># Access adjacency view for a node (neighbors and edge dictionaries)</span>
 <span class="n">adjacency_view</span> <span class="o">=</span> <span class="n">network</span><span class="p">[</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Neighbors of </span><span class="si">{</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">adjacency_view</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Neighbors of </span><span class="si">{</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">adjacency_view</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Access node attributes explicitly</span>
 <span class="n">node_attrs</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node attributes for </span><span class="si">{</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">node_attrs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node attributes for </span><span class="si">{</span><span class="n">some_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">node_attrs</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Access edge data (adjacency dict keyed by edge IDs in a MultiGraph)</span>
 <span class="n">edge_data</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">[</span><span class="n">some_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]][</span><span class="n">some_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge data: </span><span class="si">{</span><span class="n">edge_data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edge data: </span><span class="si">{</span><span class="n">edge_data</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

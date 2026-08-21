@@ -240,6 +240,25 @@
 <li><p><strong>Complex Queries:</strong> Express “find nodes A, B, C where A connects to B with weight &gt; 0.5, B connects to C, and all are in the social layer”</p></li>
 </ul>
 <p><strong>Comparison to Basic Queries:</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Basic DSL Query</p></th>
+<th class="head"><p>Pattern Matching Query</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().where(degree__gt=3)</span></code>
+Returns individual nodes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Q.pattern().node(&quot;a&quot;).where(...)</span></code>
+Returns complete pattern matches</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Q.edges().where(weight__gt=0.5)</span></code>
+Returns individual edges</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Q.pattern().edge(&quot;a&quot;,</span> <span class="pre">&quot;b&quot;).where(...)</span></code>
+Returns node pairs with context</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="quick-start-your-first-pattern">
 <h2>Quick Start: Your First Pattern<a class="headerlink" href="#quick-start-your-first-pattern" title="Link to this heading"></a></h2>
@@ -251,27 +270,27 @@
 <span class="c1"># Create a simple network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Charlie'</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">},</span>
 <span class="p">])</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span>
+     <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'Charlie'</span><span class="p">,</span>
+     <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">},</span>
 <span class="p">])</span>
 
 <span class="c1"># Find all edges (simple pattern)</span>
 <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>              <span class="c1"># Define node variable &quot;a&quot;</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>              <span class="c1"># Define node variable &quot;b&quot;</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>         <span class="c1"># Require edge between a and b</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span>              <span class="c1"># Define node variable "a"</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span>              <span class="c1"># Define node variable "b"</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span>         <span class="c1"># Require edge between a and b</span>
 <span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> matches&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> matches"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -292,16 +311,16 @@
 <h3>Nodes<a class="headerlink" href="#nodes" title="Link to this heading"></a></h3>
 <p>Define node variables that will be bound to actual nodes during matching:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple node</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span>
 
 <span class="c1"># Node with semantic labels (metadata only)</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="s2">&quot;person&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="s2">"person"</span><span class="p">)</span>
 
 <span class="c1"># Node with predicates</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="c1"># Node with layer constraint</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Node Predicates:</strong></p>
@@ -317,16 +336,16 @@
 <h3>Edges<a class="headerlink" href="#edges" title="Link to this heading"></a></h3>
 <p>Define edges between node variables:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Undirected edge</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Directed edge</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Edge with predicates</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
 <span class="c1"># Edge with optional type</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">etype</span><span class="o">=</span><span class="s2">&quot;friendship&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="n">etype</span><span class="o">=</span><span class="s2">"friendship"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Edge Predicates:</strong></p>
@@ -341,13 +360,13 @@
 <h3>Paths<a class="headerlink" href="#paths" title="Link to this heading"></a></h3>
 <p>Sugar method for defining sequential connections:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2-hop path: a → b → c</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">])</span>
 
 <span class="c1"># Equivalent to:</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)</span>
 
 <span class="c1"># Directed path</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">],</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Paths enforce adjacency in the order you list the variables; with <code class="docutils literal notranslate"><span class="pre">directed=True</span></code> the edges must follow that direction.</p>
@@ -356,10 +375,10 @@
 <h3>Triangles<a class="headerlink" href="#triangles" title="Link to this heading"></a></h3>
 <p>Sugar method for triangle motifs:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Triangle: a-b, b-c, c-a</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">triangle</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">triangle</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)</span>
 
 <span class="c1"># Equivalent to:</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"c"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -373,9 +392,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edges within the social layer</span>
 <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -386,9 +405,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edges between social and work layers</span>
 <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;work&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">between_layers</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"work"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">between_layers</span><span class="p">(</span><span class="s2">"social"</span><span class="p">,</span> <span class="s2">"work"</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -396,7 +415,7 @@
 <section id="any-layer">
 <h3>Any Layer<a class="headerlink" href="#any-layer" title="Link to this heading"></a></h3>
 <p>Allow edges in any layer (default behavior; call it explicitly if you want the query to read clearly):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">any_layer</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">any_layer</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -408,15 +427,15 @@
 <p><strong>Problem:</strong> Find triangles where all edges have weight &gt; 1.0.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"c"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="n">triangles</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">triangles</span><span class="p">)</span><span class="si">}</span><span class="s2"> triangles&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">triangles</span><span class="p">)</span><span class="si">}</span><span class="s2"> triangles"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you prefer the <code class="docutils literal notranslate"><span class="pre">triangle()</span></code> sugar, expand it as above to attach edge predicates, or apply the weight filter after executing the simpler triangle pattern.</p>
@@ -426,18 +445,18 @@
 <p><strong>Problem:</strong> Find all 2-hop paths within the social layer.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"c"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> paths&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> paths"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -456,19 +475,19 @@
 <p><strong>Problem:</strong> Find pairs of high-degree nodes (degree &gt; 2) connected by strong edges (weight &gt; 1.5).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">&quot;a != b&quot;</span><span class="p">)</span>  <span class="c1"># Ensure different nodes</span>
-     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">weight__gt</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">"a != b"</span><span class="p">)</span>  <span class="c1"># Ensure different nodes</span>
+     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> high-degree pairs&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> high-degree pairs"</span><span class="p">)</span>
 
 <span class="c1"># Get unique nodes involved</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unique nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -479,16 +498,16 @@
 <span class="c1"># Find nodes in social layer</span>
 <span class="n">social_hubs</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Find nodes in work layer</span>
 <span class="n">work_hubs</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"work"</span><span class="p">,</span> <span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -497,7 +516,7 @@
 <span class="n">work_nodes</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">work_hubs</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)}</span>
 <span class="n">cross_layer_hubs</span> <span class="o">=</span> <span class="n">social_nodes</span> <span class="o">&amp;</span> <span class="n">work_nodes</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cross-layer hubs: </span><span class="si">{</span><span class="n">cross_layer_hubs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cross-layer hubs: </span><span class="si">{</span><span class="n">cross_layer_hubs</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -511,8 +530,8 @@
 
 <span class="c1"># Get all matches as list of dictionaries</span>
 <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Match: </span><span class="si">{</span><span class="n">match</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="c1"># e.g., {&#39;a&#39;: (&#39;Alice&#39;, &#39;social&#39;), &#39;b&#39;: (&#39;Bob&#39;, &#39;social&#39;)}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Match: </span><span class="si">{</span><span class="n">match</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># e.g., {'a': ('Alice', 'social'), 'b': ('Bob', 'social')}</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">result.count</span></code> is the number of rows returned, equivalent to <code class="docutils literal notranslate"><span class="pre">len(result.rows)</span></code>.
@@ -527,7 +546,7 @@ Each row maps your variable names to concrete <code class="docutils literal notr
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
 
 <span class="c1"># Export to CSV</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;pattern_matches.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"pattern_matches.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Column order follows the variables you specified with <code class="docutils literal notranslate"><span class="pre">.returning(...)</span></code>; if you did not set it, all variables are returned in declaration order.</p>
@@ -541,7 +560,7 @@ Each row maps your variable names to concrete <code class="docutils literal notr
 <span class="n">unique_nodes</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Get nodes for specific variables</span>
-<span class="n">a_nodes</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">a_nodes</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_nodes</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="p">[</span><span class="s2">"a"</span><span class="p">],</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -552,7 +571,7 @@ Each row maps your variable names to concrete <code class="docutils literal notr
 
 <span class="c1"># Each edge is a (source_tuple, target_tuple) pair</span>
 <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge: </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edge: </span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">dst</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -562,19 +581,19 @@ Each row maps your variable names to concrete <code class="docutils literal notr
 <span class="n">subgraph</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_subgraph</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="c1"># Now use NetworkX operations</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subgraph has </span><span class="si">{</span><span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subgraph has </span><span class="si">{</span><span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Subgraph has </span><span class="si">{</span><span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Subgraph has </span><span class="si">{</span><span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2"> edges"</span><span class="p">)</span>
 
 <span class="c1"># Create one subgraph per match</span>
 <span class="n">subgraphs</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_subgraph</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">per_match</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">subgraphs</span><span class="p">)</span><span class="si">}</span><span class="s2"> subgraphs&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Created </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">subgraphs</span><span class="p">)</span><span class="si">}</span><span class="s2"> subgraphs"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="filtering-results">
 <h3>Filtering Results<a class="headerlink" href="#filtering-results" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filter matches using a predicate</span>
-<span class="n">filtered</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="n">match</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">))</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="n">match</span><span class="p">[</span><span class="s2">"a"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"A"</span><span class="p">))</span>
 
 <span class="c1"># Limit number of results</span>
 <span class="n">limited</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -588,20 +607,20 @@ Each row maps your variable names to concrete <code class="docutils literal notr
 <p>Use <code class="docutils literal notranslate"><span class="pre">.explain()</span></code> to see how the pattern will be executed:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">plan</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Root variable: </span><span class="si">{</span><span class="n">plan</span><span class="p">[</span><span class="s1">&#39;root_var&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Join order: </span><span class="si">{</span><span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">plan</span><span class="p">[</span><span class="s1">&#39;join_order&#39;</span><span class="p">]]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Estimated complexity: </span><span class="si">{</span><span class="n">plan</span><span class="p">[</span><span class="s1">&#39;estimated_complexity&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Root variable: </span><span class="si">{</span><span class="n">plan</span><span class="p">[</span><span class="s1">'root_var'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Join order: </span><span class="si">{</span><span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="s1">'var'</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">plan</span><span class="p">[</span><span class="s1">'join_order'</span><span class="p">]]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Estimated complexity: </span><span class="si">{</span><span class="n">plan</span><span class="p">[</span><span class="s1">'estimated_complexity'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Root variable: a
-Join order: [&#39;a&#39;, &#39;b&#39;]
+Join order: ['a', 'b']
 Estimated complexity: 1000
 </pre></div>
 </div>
@@ -613,19 +632,19 @@ The <code class="docutils literal notranslate"><span class="pre">estimated_compl
 <ol class="arabic">
 <li><p><strong>Add Predicates Early:</strong> The more selective predicates you add to the root variable, the faster the query.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good: Restrictive predicate on first node</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span>
 
 <span class="c1"># Less efficient: No predicates</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Use Layer Constraints:</strong> Layer filters significantly reduce the search space.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good: Restrict to one layer</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span>
 
 <span class="c1"># Less efficient: Search all layers</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -635,12 +654,12 @@ The <code class="docutils literal notranslate"><span class="pre">estimated_compl
 </div>
 </li>
 <li><p><strong>Use Constraints:</strong> Add <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">!=</span> <span class="pre">b</span></code> constraints to avoid self-loops if not needed.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">&quot;a != b&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span><span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">"a != b"</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Return only needed variables:</strong> Reducing the result width lowers serialization overhead.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span><span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">])</span><span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -654,14 +673,14 @@ The <code class="docutils literal notranslate"><span class="pre">estimated_compl
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All-different constraint</span>
 <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">&quot;a != b&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">&quot;b != c&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">&quot;a != c&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"c"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">"a != b"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">"b != c"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">constraint</span><span class="p">(</span><span class="s2">"a != c"</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -671,15 +690,15 @@ The <code class="docutils literal notranslate"><span class="pre">estimated_compl
 <p>By default, all variables are returned. You can select specific ones:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">pattern</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>  <span class="c1"># Only return endpoints</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"b"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="s2">"c"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">path</span><span class="p">([</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">returning</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">)</span>  <span class="c1"># Only return endpoints</span>
 <span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="c1"># Result only contains &#39;a&#39; and &#39;c&#39; columns</span>
+<span class="c1"># Result only contains 'a' and 'c' columns</span>
 </pre></div>
 </div>
 </section>
@@ -730,6 +749,24 @@ Finds paths with constraints</p></td>
 </section>
 <section id="pattern-matching-vs-dsl-node-edge-queries">
 <h3>Pattern Matching vs. DSL Node/Edge Queries<a class="headerlink" href="#pattern-matching-vs-dsl-node-edge-queries" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>DSL Node/Edge Query</p></th>
+<th class="head"><p>Pattern Matching</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Returns individual elements</p></td>
+<td><p>Returns complete structural matches</p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">Q.nodes().where(degree__gt=3)</span></code>     | <code class="docutils literal notranslate"><span class="pre">Q.pattern().node(&quot;a&quot;,</span> <span class="pre">degree__gt=3)</span></code>
+Single-element selection               | Part of larger pattern</p></td>
+</tr>
+<tr class="row-even"><td><p>No structural relationships</p></td>
+<td><p>Explicit edge relationships</p></td>
+</tr>
+</tbody>
+</table>
 <p>Use node/edge queries when you need individual elements. Use pattern matching when you need to find subgraph structures.</p>
 </section>
 </section>
@@ -770,11 +807,11 @@ Finds paths with constraints</p></td>
 <li><p>Check if your network has the expected structure</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Debug: Check basic statistics first</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Social layer has </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Social layer has </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">intralayer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network has </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> intralayer edges&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Network has </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> intralayer edges"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

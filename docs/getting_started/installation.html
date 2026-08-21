@@ -327,28 +327,28 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 <section id="advanced-community-detection">
 <h3>Advanced Community Detection<a class="headerlink" href="#advanced-community-detection" title="Link to this heading"></a></h3>
 <p>Install Infomap for advanced overlapping community detection:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[infomap]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[infomap]"</span>
 </pre></div>
 </div>
 </section>
 <section id="additional-algorithms">
 <h3>Additional Algorithms<a class="headerlink" href="#additional-algorithms" title="Link to this heading"></a></h3>
 <p>Install extra community detection algorithms (Louvain, cdlib):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[algos]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[algos]"</span>
 </pre></div>
 </div>
 </section>
 <section id="advanced-visualization">
 <h3>Advanced Visualization<a class="headerlink" href="#advanced-visualization" title="Link to this heading"></a></h3>
 <p>Install Plotly and igraph for interactive and advanced visualizations:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[viz]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[viz]"</span>
 </pre></div>
 </div>
 </section>
 <section id="apache-arrow-support">
 <h3>Apache Arrow Support<a class="headerlink" href="#apache-arrow-support" title="Link to this heading"></a></h3>
 <p>Install pyarrow for high-performance I/O with Arrow/Parquet formats:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[arrow]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[arrow]"</span>
 </pre></div>
 </div>
 <p>Arrow format typically provides faster read/write operations and better compression than JSON/CSV for large graphs.
@@ -357,14 +357,14 @@ See <a class="reference internal" href="../user_guide/io_and_formats.html"><span
 <section id="multiple-extras">
 <h3>Multiple Extras<a class="headerlink" href="#multiple-extras" title="Link to this heading"></a></h3>
 <p>Install multiple feature sets at once:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[infomap,viz,algos,arrow]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[infomap,viz,algos,arrow]"</span>
 </pre></div>
 </div>
 </section>
 <section id="workflow-configuration-support">
 <h3>Workflow Configuration Support<a class="headerlink" href="#workflow-configuration-support" title="Link to this heading"></a></h3>
 <p>Install YAML support for config-driven workflows:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[workflows]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[workflows]"</span>
 </pre></div>
 </div>
 </section>
@@ -379,7 +379,7 @@ curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/in
 <span class="c1"># Create environment and install</span>
 uv<span class="w"> </span>venv<span class="w"> </span>.venv
 <span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 </pre></div>
 </div>
 <p><strong>Using Makefile:</strong></p>
@@ -393,7 +393,7 @@ make<span class="w"> </span>dev-install<span class="w">  </span><span class="c1"
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
 python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
-python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 </pre></div>
 </div>
 <p>All methods install:</p>
@@ -456,7 +456,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <h3>Infomap Community Detection<a class="headerlink" href="#infomap-community-detection" title="Link to this heading"></a></h3>
 <p>For advanced community detection using Infomap:</p>
 <p><strong>Option 1:</strong> Use the bundled Python implementation (recommended):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py3plex[infomap]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[infomap]"</span>
 </pre></div>
 </div>
 <p><strong>Option 2:</strong> Download the C++ binary from the official source:</p>
@@ -592,7 +592,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;py3plex installed successfully!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"py3plex installed successfully!"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Run the test suite:</p>

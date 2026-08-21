@@ -12,7 +12,7 @@ How to Run Community Detection on Multilayer Networks
       :target: https://colab.research.google.com/github/SkBlaz/py3plex/blob/master/notebooks/community_detection.ipynb
       :alt: Open in Google Colab
    
-   Or see the full executable example: :download:`example_community_detection.py <../../examples/communities/example_community_detection.py>`
+   See the `py3plex examples <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ for community detection examples.
 
 **Prerequisites:** 
 
@@ -2396,7 +2396,7 @@ Guardrails are metrics that detect pathological partitions but are not primary o
 
 **Replica Consistency:**
 
-Formula: For each node v with replicas in L_v layers (|L_v| ≥ 2):
+Formula: For each node v with replicas in L_v layers (\|L_v\| ≥ 2):
 
 .. math::
 
@@ -2567,8 +2567,8 @@ These metrics are automatically included in AutoCommunity's multi-objective eval
 
 **Performance characteristics:**
 
-* **RC**: O(Σ_v |L_v|^2) where L_v is layers per node (efficient count-based implementation)
-* **H**: O(|assignments|) linear in node-layer assignments
+* **RC**: O(Σ_v \|L_v\|^2) where L_v is layers per node (efficient count-based implementation)
+* **H**: O(\|assignments\|) linear in node-layer assignments
 * **Both**: Fast enough for large networks (< 1 second for 10,000 node-layers)
 
 **Label-permutation invariance:**
@@ -2896,8 +2896,7 @@ The ``FlowHierarchyResult`` object contains:
 
 **Examples:**
 
-* Basic usage: :download:`example_flow_hierarchy_basic.py <../../examples/communities/example_flow_hierarchy_basic.py>`
-* Multilayer with alpha variations: :download:`example_flow_hierarchy_multilayer.py <../../examples/communities/example_flow_hierarchy_multilayer.py>`
+See the `py3plex examples directory <https://github.com/SkBlaz/py3plex/tree/master/examples>`_ for flow hierarchy usage examples.
 
 **References:**
 

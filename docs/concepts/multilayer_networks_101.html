@@ -219,13 +219,13 @@
 <p><strong>Same nodes, different relationship types.</strong> Use when the <em>entities</em> are the same everywhere, but interactions mean different things per layer.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">"multiplex"</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="s1">'Dave'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Examples:</strong> Social networks across platforms, transportation via air/rail/road, communication via email/phone/chat.</p>
@@ -236,9 +236,9 @@
 <p><strong>Different node types with type-specific relationships.</strong> Use when layers hold different entity types or schemas, not just interaction labels.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">,</span> <span class="s1">&#39;venues&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'authors'</span><span class="p">,</span> <span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'papers'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'papers'</span><span class="p">,</span> <span class="s1">'ICML'</span><span class="p">,</span> <span class="s1">'venues'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Examples:</strong> Academic networks (authors, papers, venues), e-commerce (users, products, sellers), biomedical (drugs, diseases, targets).</p>
@@ -249,10 +249,10 @@
 <p><strong>Networks that evolve over time, with time-sliced layers.</strong> Use when order and timing change interpretation (e.g., diffusion, cascades).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2020&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;2021&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'2020'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'2020'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'2021'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'2021'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'2021'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'2021'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Examples:</strong> Communication over time, social dynamics, disease spread.</p>

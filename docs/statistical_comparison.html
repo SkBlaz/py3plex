@@ -183,24 +183,24 @@
 <span class="c1"># Create networks</span>
 <span class="n">net1</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">net1</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="n">net2</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">net2</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Compare networks</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
     <span class="p">[</span><span class="n">net1</span><span class="p">,</span> <span class="n">net2</span><span class="p">],</span>
-    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;average_degree&#39;</span><span class="p">],</span>
-    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;permutation&#39;</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">'density'</span><span class="p">,</span> <span class="s1">'average_degree'</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">'permutation'</span><span class="p">,</span>
     <span class="n">n_permutations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-    <span class="n">correction</span><span class="o">=</span><span class="s1">&#39;fdr_bh&#39;</span><span class="p">,</span>
+    <span class="n">correction</span><span class="o">=</span><span class="s1">'fdr_bh'</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span>
 <span class="p">)</span>
 
@@ -293,29 +293,29 @@
 <span class="c1"># Create networks with different densities</span>
 <span class="n">net1</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">net1</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Triangle</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Triangle</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="n">net2</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">net2</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Line</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Line</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Compare using permutation test</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
     <span class="p">[</span><span class="n">net1</span><span class="p">,</span> <span class="n">net2</span><span class="p">],</span>
-    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;clustering&#39;</span><span class="p">],</span>
-    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;permutation&#39;</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">'density'</span><span class="p">,</span> <span class="s1">'clustering'</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">'permutation'</span><span class="p">,</span>
     <span class="n">n_permutations</span><span class="o">=</span><span class="mi">10000</span>
 <span class="p">)</span>
 
 <span class="c1"># Show significant differences</span>
-<span class="n">significant</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;significant&#39;</span><span class="p">]]</span>
+<span class="n">significant</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">'significant'</span><span class="p">]]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">significant</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -325,13 +325,13 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare three or more networks</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
     <span class="p">[</span><span class="n">net1</span><span class="p">,</span> <span class="n">net2</span><span class="p">,</span> <span class="n">net3</span><span class="p">,</span> <span class="n">net4</span><span class="p">],</span>
-    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;average_degree&#39;</span><span class="p">],</span>
-    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;kruskal&#39;</span><span class="p">,</span>  <span class="c1"># Non-parametric for multiple groups</span>
-    <span class="n">correction</span><span class="o">=</span><span class="s1">&#39;holm&#39;</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">'density'</span><span class="p">,</span> <span class="s1">'average_degree'</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">'kruskal'</span><span class="p">,</span>  <span class="c1"># Non-parametric for multiple groups</span>
+    <span class="n">correction</span><span class="o">=</span><span class="s1">'holm'</span>
 <span class="p">)</span>
 
 <span class="c1"># Filter by metric</span>
-<span class="n">density_results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;metric&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;density&#39;</span><span class="p">]</span>
+<span class="n">density_results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s1">'metric'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'density'</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">density_results</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -342,7 +342,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.stats_comparison</span><span class="w"> </span><span class="kn">import</span> <span class="n">bootstrap_confidence_interval</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">avg_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute average clustering coefficient.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Compute average clustering coefficient."""</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
     <span class="n">clustering</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multilayer_clustering_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">clustering</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
@@ -356,7 +356,7 @@
 <span class="p">)</span>
 
 <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ci</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">: [</span><span class="si">{</span><span class="n">lower</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">upper</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">: [</span><span class="si">{</span><span class="n">lower</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">upper</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -398,9 +398,9 @@
 <p>Compare disease vs. healthy protein interaction networks across multiple tissues:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
     <span class="n">disease_networks</span> <span class="o">+</span> <span class="n">healthy_networks</span><span class="p">,</span>
-    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;clustering&#39;</span><span class="p">,</span> <span class="s1">&#39;node_activity&#39;</span><span class="p">],</span>
-    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;mann-whitney&#39;</span><span class="p">,</span>
-    <span class="n">correction</span><span class="o">=</span><span class="s1">&#39;fdr_bh&#39;</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">'density'</span><span class="p">,</span> <span class="s1">'clustering'</span><span class="p">,</span> <span class="s1">'node_activity'</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">'mann-whitney'</span><span class="p">,</span>
+    <span class="n">correction</span><span class="o">=</span><span class="s1">'fdr_bh'</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -410,8 +410,8 @@
 <p>Analyze structural differences in social networks before/after interventions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
     <span class="p">[</span><span class="n">pre_intervention_net</span><span class="p">,</span> <span class="n">post_intervention_net</span><span class="p">],</span>
-    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;average_degree&#39;</span><span class="p">,</span> <span class="s1">&#39;coupling_strength&#39;</span><span class="p">],</span>
-    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;permutation&#39;</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">'average_degree'</span><span class="p">,</span> <span class="s1">'coupling_strength'</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">'permutation'</span><span class="p">,</span>
     <span class="n">n_permutations</span><span class="o">=</span><span class="mi">10000</span>
 <span class="p">)</span>
 </pre></div>
@@ -422,8 +422,8 @@
 <p>Compare network snapshots across time periods:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">compare_multilayer_networks</span><span class="p">(</span>
     <span class="p">[</span><span class="n">t1_network</span><span class="p">,</span> <span class="n">t2_network</span><span class="p">,</span> <span class="n">t3_network</span><span class="p">],</span>
-    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="s1">&#39;entropy&#39;</span><span class="p">],</span>
-    <span class="n">test</span><span class="o">=</span><span class="s1">&#39;kruskal&#39;</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">'density'</span><span class="p">,</span> <span class="s1">'entropy'</span><span class="p">],</span>
+    <span class="n">test</span><span class="o">=</span><span class="s1">'kruskal'</span>
 <span class="p">)</span>
 </pre></div>
 </div>

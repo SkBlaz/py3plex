@@ -6530,6 +6530,12 @@ py3plex communities network.edgelist --algorithm louvain --output communities.cs
 
 # Centrality with uncertainty
 py3plex centrality network.edgelist --metric pagerank --uq bootstrap --n-samples 100 --output centrality.csv
+
+# Epidemic simulations (dynamics)
+py3plex dynamics network.edgelist --model SIR --beta 0.3 --gamma 0.1 --steps 100 --replicates 10 --output sir_results.json
+
+# Node embeddings
+py3plex embed network.edgelist --algorithm node2vec --dimensions 128 --walk-length 40 --num-walks 10 --seed 42 --output embeddings.csv
 ```
 
 ---

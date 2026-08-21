@@ -2,6 +2,8 @@
 <img src="https://github.com/user-attachments/assets/47e16a25-cd58-41eb-9ccd-b40191758d91" alt="py3plex logo" width="400">
 
 [![Tests](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
+[![Test coverage](https://img.shields.io/badge/test_coverage-14.7%25-orange)](https://github.com/SkBlaz/py3plex/actions/workflows/tests.yml)
+[![Type Coverage](https://img.shields.io/badge/type_coverage-79.1%25-yellowgreen)](https://github.com/SkBlaz/py3plex/actions/workflows/type-coverage.yml)
 [![Examples](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/examples.yml)
 [![Tutorial](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/tutorial-validation.yml)
 [![Code Quality](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/code-quality.yml)
@@ -14,8 +16,8 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/py3plex)](https://pypistats.org/packages/py3plex)
 ![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 ![Docker](https://img.shields.io/badge/Docker-Available-blue)
-![Lines of Code](https://img.shields.io/badge/lines-211.9K-blue)
-![Test Count](https://img.shields.io/badge/tests-9.3K-blue)
+![Lines of Code](https://img.shields.io/badge/lines-213.3K-blue)
+![Test Count](https://img.shields.io/badge/tests-9.7K-blue)
 
 *Multilayer networks* are complex networks with additional information assigned to nodes or edges (or both). This library includes
 some of the state-of-the-art algorithms for decomposition, visualization and analysis of such networks.
@@ -25,15 +27,6 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 * Multilayer network visualization and analysis
 * Community detection and centrality measures
 * Network decomposition and embeddings
-
-**Formal verification (Lean):** Selected semantic properties of the query
-optimizer are modelled and machine-checked in [Lean 4](https://leanprover.github.io/)
-under `formal/`.  The current formalization is intentionally narrow — it covers
-an abstract filter-fusion equivalence that corresponds to the
-`CombineAdjacentFilters` optimizer rule; it does *not* claim the entire library
-is formally verified.  Lean is a development/release verification tool, **not**
-a runtime dependency; the normal `pip install py3plex` wheel remains a pure
-Python package.  See [`formal/README.md`](formal/README.md) for details.
 
 
 ```python

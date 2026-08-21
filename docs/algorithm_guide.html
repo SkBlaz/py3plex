@@ -206,7 +206,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_wrapper</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">infomap_communities</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
-    <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/infomap&quot;</span>
+    <span class="n">binary_path</span><span class="o">=</span><span class="s2">"/path/to/infomap"</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -237,7 +237,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">label_propagation</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
-    <span class="n">seed_labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;node1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;node2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+    <span class="n">seed_labels</span><span class="o">=</span><span class="p">{</span><span class="s1">'node1'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'node2'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -382,7 +382,7 @@
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m L)\)</span> where <span class="math notranslate nohighlight">\(L\)</span> is number of layers (dominated by the chosen per-layer centrality)</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -436,10 +436,10 @@
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(k)\)</span> per node (overall <span class="math notranslate nohighlight">\(O(m)\)</span>) where <span class="math notranslate nohighlight">\(k\)</span> is node degree across all layers</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Participation coefficient: P_i = 1 - sum_s (k_is / k_i)**2</span>
-<span class="n">pc</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">)</span>
+<span class="n">pc</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="s1">'Alice'</span><span class="p">)</span>
 
 <span class="c1"># Participation entropy: H_i = -sum_s (k_is / k_i) * log(k_is / k_i)</span>
-<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">)</span>
+<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">community_participation_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">communities</span><span class="p">,</span> <span class="s1">'Alice'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Definitions:</strong> <span class="math notranslate nohighlight">\(k_{is}\)</span> is the number of links from node <span class="math notranslate nohighlight">\(i\)</span> to community <span class="math notranslate nohighlight">\(s\)</span> (summing over layers), and <span class="math notranslate nohighlight">\(k_i = \sum_s k_{is}\)</span>. If <span class="math notranslate nohighlight">\(k_i = 0\)</span>, both metrics return 0 to avoid undefined values.</p>
@@ -456,10 +456,10 @@
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(m)\)</span> where <span class="math notranslate nohighlight">\(m\)</span> is edges</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Redundancy coefficient: R_{alpha,beta} = |E_alpha cap E_beta| / |E_alpha|</span>
-<span class="n">redundancy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_redundancy_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">)</span>
+<span class="n">redundancy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_redundancy_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">)</span>
 
 <span class="c1"># Count unique and redundant edges</span>
-<span class="n">unique</span><span class="p">,</span> <span class="n">redundant</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">unique_redundant_edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">)</span>
+<span class="n">unique</span><span class="p">,</span> <span class="n">redundant</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">unique_redundant_edges</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Definition:</strong> <span class="math notranslate nohighlight">\(E_\alpha\)</span> denotes edges in layer <span class="math notranslate nohighlight">\(\alpha\)</span> (treated as unordered pairs unless your data are directed); <span class="math notranslate nohighlight">\(R_{\alpha,\beta}\)</span> is asymmetric because it normalizes by <span class="math notranslate nohighlight">\(|E_\alpha|\)</span>.</p>
@@ -494,14 +494,14 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Estimate percolation threshold</span>
 <span class="n">threshold</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">percolation_threshold</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">removal_strategy</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span>  <span class="c1"># or &#39;random&#39;, &#39;betweenness&#39;</span>
+    <span class="n">removal_strategy</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">,</span>  <span class="c1"># or 'random', 'betweenness'</span>
     <span class="n">trials</span><span class="o">=</span><span class="mi">20</span>
 <span class="p">)</span>
 
 <span class="c1"># Simulate layer removal</span>
 <span class="n">resilience</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">targeted_layer_removal</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;social&#39;</span><span class="p">,</span>
+    <span class="s1">'social'</span><span class="p">,</span>
     <span class="n">return_resilience</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 </pre></div>
@@ -556,19 +556,19 @@
 <h3>Multilayer Statistics<a class="headerlink" href="#multilayer-statistics" title="Link to this heading"></a></h3>
 <p><strong>Layer density</strong> - <span class="math notranslate nohighlight">\(O(m_\alpha)\)</span> per layer: density of edges within layer <span class="math notranslate nohighlight">\(\alpha\)</span></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Inter-layer correlation</strong> - <span class="math notranslate nohighlight">\(O(n)\)</span>: correlation of node degrees across layers (uses only nodes present in both layers)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Edge overlap</strong> - <span class="math notranslate nohighlight">\(O(m)\)</span>: shared edges across two layers</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Versatility centrality</strong> - <span class="math notranslate nohighlight">\(O(m L)\)</span>: multilayer importance that mixes centrality across layers</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;betweenness&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">'betweenness'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -658,7 +658,7 @@
 <p><strong>Scalability:</strong> Practical for tens of thousands of nodes in sparse graphs</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
-<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout_style</span><span class="o">=</span><span class="s1">&#39;diagonal&#39;</span><span class="p">)</span>
+<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout_style</span><span class="o">=</span><span class="s1">'diagonal'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -673,7 +673,7 @@
 <p><strong>Scalability:</strong> Practical up to a few thousand nodes</p>
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
-<span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">&#39;force&#39;</span><span class="p">)</span>
+<span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s1">'force'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -689,7 +689,7 @@
 <p><strong>Usage:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="s1">&#39;toarray&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">adj</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="s1">'toarray'</span><span class="p">)</span> <span class="k">else</span> <span class="n">adj</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'viridis'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>

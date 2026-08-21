@@ -195,18 +195,18 @@
 
 <span class="c1"># Load heterogeneous network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;academic_network.graphml&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"academic_network.graphml"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"graphml"</span><span class="p">)</span>
 
 <span class="c1"># Perform decomposition</span>
 <span class="n">decomposer</span> <span class="o">=</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">HINMINE</span><span class="p">()</span>
 <span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">&#39;author&#39;</span><span class="p">,</span>
+    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">'author'</span><span class="p">,</span>
     <span class="n">max_path_length</span><span class="o">=</span><span class="mi">3</span>
 <span class="p">)</span>
 
 <span class="c1"># Features is a matrix: (num_nodes, num_meta_paths)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Feature matrix shape: </span><span class="si">{</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Feature matrix shape: </span><span class="si">{</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -214,7 +214,7 @@
 <h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">&#39;author&#39;</span><span class="p">,</span>     <span class="c1"># Node type to extract features for</span>
+    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">'author'</span><span class="p">,</span>     <span class="c1"># Node type to extract features for</span>
     <span class="n">max_path_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>              <span class="c1"># Maximum meta-path length</span>
     <span class="n">include_cycles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>            <span class="c1"># Include closed walks</span>
     <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>                  <span class="c1"># Normalize features</span>
@@ -231,10 +231,10 @@
 <span class="n">meta_paths</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">enumerate_meta_paths</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="n">max_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">node_types</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;venue&#39;</span><span class="p">]</span>
+    <span class="n">node_types</span><span class="o">=</span><span class="p">[</span><span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'venue'</span><span class="p">]</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">meta_paths</span><span class="p">)</span><span class="si">}</span><span class="s2"> meta-paths&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">meta_paths</span><span class="p">)</span><span class="si">}</span><span class="s2"> meta-paths"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">mp</span> <span class="ow">in</span> <span class="n">meta_paths</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">mp</span><span class="p">)</span>
 </pre></div>
@@ -252,17 +252,17 @@
 <h3>Compute Meta-Path Instances<a class="headerlink" href="#compute-meta-path-instances" title="Link to this heading"></a></h3>
 <p>Count instances of specific meta-paths:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define a meta-path</span>
-<span class="n">meta_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">]</span>
+<span class="n">meta_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">]</span>
 
 <span class="c1"># Count instances for each node</span>
 <span class="n">instances</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">compute_meta_path_instances</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="n">meta_path</span><span class="p">,</span>
-    <span class="n">source_nodes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;author1&#39;</span><span class="p">,</span> <span class="s1">&#39;author2&#39;</span><span class="p">]</span>
+    <span class="n">source_nodes</span><span class="o">=</span><span class="p">[</span><span class="s1">'author1'</span><span class="p">,</span> <span class="s1">'author2'</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">instances</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> instances&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> instances"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -276,10 +276,10 @@
 <span class="n">cycles</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">enumerate_cycles</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="n">max_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">starting_node_type</span><span class="o">=</span><span class="s1">&#39;author&#39;</span>
+    <span class="n">starting_node_type</span><span class="o">=</span><span class="s1">'author'</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cycles</span><span class="p">)</span><span class="si">}</span><span class="s2"> cycle types&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cycles</span><span class="p">)</span><span class="si">}</span><span class="s2"> cycle types"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -300,11 +300,11 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build feature matrix for author classification</span>
 <span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">build_feature_matrix</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">target_nodes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;author1&#39;</span><span class="p">,</span> <span class="s1">&#39;author2&#39;</span><span class="p">,</span> <span class="s1">&#39;author3&#39;</span><span class="p">],</span>
+    <span class="n">target_nodes</span><span class="o">=</span><span class="p">[</span><span class="s1">'author1'</span><span class="p">,</span> <span class="s1">'author2'</span><span class="p">,</span> <span class="s1">'author3'</span><span class="p">],</span>
     <span class="n">meta_paths</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">],</span>           <span class="c1"># Co-authorship</span>
-        <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;venue&#39;</span><span class="p">],</span>            <span class="c1"># Publishing venues</span>
-        <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">],</span>            <span class="c1"># Citation patterns</span>
+        <span class="p">[</span><span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">],</span>           <span class="c1"># Co-authorship</span>
+        <span class="p">[</span><span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'venue'</span><span class="p">],</span>            <span class="c1"># Publishing venues</span>
+        <span class="p">[</span><span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">],</span>            <span class="c1"># Citation patterns</span>
     <span class="p">],</span>
     <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
@@ -317,16 +317,16 @@
 <section id="normalization-options">
 <h3>Normalization Options<a class="headerlink" href="#normalization-options" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># L1 normalization (sum to 1)</span>
-<span class="n">features_l1</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span><span class="p">)</span>
+<span class="n">features_l1</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'l1'</span><span class="p">)</span>
 
 <span class="c1"># L2 normalization (unit length)</span>
-<span class="n">features_l2</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">)</span>
+<span class="n">features_l2</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'l2'</span><span class="p">)</span>
 
 <span class="c1"># Min-max scaling (0-1 range)</span>
-<span class="n">features_minmax</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;minmax&#39;</span><span class="p">)</span>
+<span class="n">features_minmax</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'minmax'</span><span class="p">)</span>
 
 <span class="c1"># Z-score standardization (mean 0, std 1)</span>
-<span class="n">features_zscore</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;zscore&#39;</span><span class="p">)</span>
+<span class="n">features_zscore</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">normalize_features</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'zscore'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -341,13 +341,13 @@
 
 <span class="c1"># 1. Load network with node labels</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;labeled_network.graphml&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"labeled_network.graphml"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"graphml"</span><span class="p">)</span>
 
 <span class="c1"># 2. Extract features via decomposition</span>
 <span class="n">decomposer</span> <span class="o">=</span> <span class="n">decomposition</span><span class="o">.</span><span class="n">HINMINE</span><span class="p">()</span>
 <span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">&#39;author&#39;</span><span class="p">,</span>
+    <span class="n">target_node_type</span><span class="o">=</span><span class="s1">'author'</span><span class="p">,</span>
     <span class="n">max_path_length</span><span class="o">=</span><span class="mi">3</span>
 <span class="p">)</span>
 
@@ -366,10 +366,10 @@
 <span class="c1"># 6. Evaluate</span>
 <span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 <span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">'weighted'</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1-score: </span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"F1-score: </span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -386,8 +386,8 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">importances</span><span class="p">)),</span> <span class="n">importances</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">importances</span><span class="p">)),</span> <span class="n">meta_path_names</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Feature Importance&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Meta-Path Importance for Classification&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Feature Importance'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Meta-Path Importance for Classification'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -437,7 +437,7 @@
 
 <span class="c1"># 4. Evaluate</span>
 <span class="n">accuracy</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Link prediction accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Link prediction accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -449,10 +449,10 @@
 <p>Define domain-specific meta-paths:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Academic domain</span>
 <span class="n">academic_meta_paths</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">],</span>                    <span class="c1"># Co-authorship</span>
-    <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;venue&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">],</span>  <span class="c1"># Same venue</span>
-    <span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">],</span>           <span class="c1"># Citation-based</span>
-    <span class="p">[</span><span class="s1">&#39;venue&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;venue&#39;</span><span class="p">],</span>   <span class="c1"># Venue similarity</span>
+    <span class="p">[</span><span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">],</span>                    <span class="c1"># Co-authorship</span>
+    <span class="p">[</span><span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'venue'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">],</span>  <span class="c1"># Same venue</span>
+    <span class="p">[</span><span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">],</span>           <span class="c1"># Citation-based</span>
+    <span class="p">[</span><span class="s1">'venue'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">,</span> <span class="s1">'paper'</span><span class="p">,</span> <span class="s1">'venue'</span><span class="p">],</span>   <span class="c1"># Venue similarity</span>
 <span class="p">]</span>
 
 <span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">build_feature_matrix</span><span class="p">(</span>
@@ -468,9 +468,9 @@
 <p>Assign importance weights to different meta-paths:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define meta-paths with weights</span>
 <span class="n">meta_path_weights</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;author-paper-author&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>           <span class="c1"># High importance</span>
-    <span class="s1">&#39;author-paper-venue&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>            <span class="c1"># Normal importance</span>
-    <span class="s1">&#39;author-paper-paper-author&#39;</span><span class="p">:</span> <span class="mf">0.5</span>      <span class="c1"># Lower importance</span>
+    <span class="s1">'author-paper-author'</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>           <span class="c1"># High importance</span>
+    <span class="s1">'author-paper-venue'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>            <span class="c1"># Normal importance</span>
+    <span class="s1">'author-paper-paper-author'</span><span class="p">:</span> <span class="mf">0.5</span>      <span class="c1"># Lower importance</span>
 <span class="p">}</span>
 
 <span class="c1"># Apply weights to features</span>
@@ -490,7 +490,7 @@
     <span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">filter_by_time</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
 
     <span class="c1"># Decompose</span>
-    <span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">subnetwork</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">)</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">subnetwork</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">)</span>
     <span class="n">temporal_features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
 <span class="c1"># Stack temporal features</span>
@@ -506,10 +506,10 @@
 <h3>Caching Results<a class="headerlink" href="#caching-results" title="Link to this heading"></a></h3>
 <p>HINMINE automatically caches decomposition results:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First run: computes and caches</span>
-<span class="n">features1</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">)</span>
+<span class="n">features1</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">)</span>
 
 <span class="c1"># Second run: loads from cache (much faster)</span>
-<span class="n">features2</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;author&#39;</span><span class="p">)</span>
+<span class="n">features2</span> <span class="o">=</span> <span class="n">decomposer</span><span class="o">.</span><span class="n">run_decomposition</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'author'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Cache is stored in <code class="docutils literal notranslate"><span class="pre">.{md5_hash}</span></code> files based on network content.</p>

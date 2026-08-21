@@ -277,7 +277,7 @@ gunicorn<span class="w"> </span><span class="se">\</span>
 <span class="na">autorestart</span><span class="o">=</span><span class="s">true</span>
 <span class="na">redirect_stderr</span><span class="o">=</span><span class="s">true</span>
 <span class="na">stdout_logfile</span><span class="o">=</span><span class="s">/var/log/py3plex-gui.log</span>
-<span class="na">environment=FLASK_ENV</span><span class="o">=</span><span class="s">&quot;production&quot;</span><span class="na">,SECRET_KEY</span><span class="o">=</span><span class="s">&quot;your-secret-key&quot;</span>
+<span class="na">environment=FLASK_ENV</span><span class="o">=</span><span class="s">"production"</span><span class="na">,SECRET_KEY</span><span class="o">=</span><span class="s">"your-secret-key"</span>
 </pre></div>
 </div>
 <p>Start with:</p>
@@ -299,8 +299,8 @@ sudo<span class="w"> </span>supervisorctl<span class="w"> </span>start<span clas
 <span class="na">Type</span><span class="o">=</span><span class="s">notify</span>
 <span class="na">User</span><span class="o">=</span><span class="s">www-data</span>
 <span class="na">WorkingDirectory</span><span class="o">=</span><span class="s">/path/to/py3plex</span>
-<span class="na">Environment</span><span class="o">=</span><span class="s">&quot;FLASK_ENV=production&quot;</span>
-<span class="na">Environment</span><span class="o">=</span><span class="s">&quot;SECRET_KEY=your-secret-key&quot;</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">"FLASK_ENV=production"</span>
+<span class="na">Environment</span><span class="o">=</span><span class="s">"SECRET_KEY=your-secret-key"</span>
 <span class="na">ExecStart</span><span class="o">=</span><span class="s">/path/to/venv/bin/gunicorn --bind 127.0.0.1:5000 --workers 4 gui.app:app</span>
 <span class="na">ExecReload</span><span class="o">=</span><span class="s">/bin/kill -s HUP $MAINPID</span>
 <span class="na">KillMode</span><span class="o">=</span><span class="s">mixed</span>
@@ -339,14 +339,14 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="
 <span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="s">ssl</span><span class="w"> </span><span class="s">http2</span><span class="p">;</span>
 <span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">py3plex.yourdomain.com</span><span class="p">;</span>
 
-<span class="w">    </span><span class="c1"># SSL certificates (use Let&#39;s Encrypt)</span>
+<span class="w">    </span><span class="c1"># SSL certificates (use Let's Encrypt)</span>
 <span class="w">    </span><span class="kn">ssl_certificate</span><span class="w"> </span><span class="s">/etc/letsencrypt/live/py3plex.yourdomain.com/fullchain.pem</span><span class="p">;</span>
 <span class="w">    </span><span class="kn">ssl_certificate_key</span><span class="w"> </span><span class="s">/etc/letsencrypt/live/py3plex.yourdomain.com/privkey.pem</span><span class="p">;</span>
 
 <span class="w">    </span><span class="c1"># Security headers</span>
-<span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-Frame-Options</span><span class="w"> </span><span class="s">&quot;SAMEORIGIN&quot;</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
-<span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-Content-Type-Options</span><span class="w"> </span><span class="s">&quot;nosniff&quot;</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
-<span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-XSS-Protection</span><span class="w"> </span><span class="s">&quot;1</span><span class="p">;</span><span class="w"> </span><span class="kn">mode=block&quot;</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-Frame-Options</span><span class="w"> </span><span class="s">"SAMEORIGIN"</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-Content-Type-Options</span><span class="w"> </span><span class="s">"nosniff"</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">add_header</span><span class="w"> </span><span class="s">X-XSS-Protection</span><span class="w"> </span><span class="s">"1</span><span class="p">;</span><span class="w"> </span><span class="kn">mode=block"</span><span class="w"> </span><span class="s">always</span><span class="p">;</span>
 
 <span class="w">    </span><span class="c1"># Upload size limit</span>
 <span class="w">    </span><span class="kn">client_max_body_size</span><span class="w"> </span><span class="s">100M</span><span class="p">;</span>
@@ -368,7 +368,7 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="
 <span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/static</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="kn">alias</span><span class="w"> </span><span class="s">/path/to/py3plex/gui/static</span><span class="p">;</span>
 <span class="w">        </span><span class="kn">expires</span><span class="w"> </span><span class="s">30d</span><span class="p">;</span>
-<span class="w">        </span><span class="kn">add_header</span><span class="w"> </span><span class="s">Cache-Control</span><span class="w"> </span><span class="s">&quot;public,</span><span class="w"> </span><span class="s">immutable&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">add_header</span><span class="w"> </span><span class="s">Cache-Control</span><span class="w"> </span><span class="s">"public,</span><span class="w"> </span><span class="s">immutable"</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -400,8 +400,8 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>reload<span class="
 <span class="w">    </span><span class="nb">ProxyPassReverse</span><span class="w"> </span>/<span class="w"> </span>http://127.0.0.1:5000/
 
 <span class="w">    </span><span class="c"># Security headers</span>
-<span class="w">    </span><span class="nb">Header</span><span class="w"> </span>always<span class="w"> </span>set<span class="w"> </span>X-Frame-Options<span class="w"> </span><span class="s2">&quot;SAMEORIGIN&quot;</span>
-<span class="w">    </span><span class="nb">Header</span><span class="w"> </span>always<span class="w"> </span>set<span class="w"> </span>X-Content-Type-Options<span class="w"> </span><span class="s2">&quot;nosniff&quot;</span>
+<span class="w">    </span><span class="nb">Header</span><span class="w"> </span>always<span class="w"> </span>set<span class="w"> </span>X-Frame-Options<span class="w"> </span><span class="s2">"SAMEORIGIN"</span>
+<span class="w">    </span><span class="nb">Header</span><span class="w"> </span>always<span class="w"> </span>set<span class="w"> </span>X-Content-Type-Options<span class="w"> </span><span class="s2">"nosniff"</span>
 <span class="nt">&lt;/VirtualHost&gt;</span>
 </pre></div>
 </div>
@@ -427,13 +427,13 @@ sudo<span class="w"> </span>certbot<span class="w"> </span>renew<span class="w">
 <h3>Secret Key Management<a class="headerlink" href="#secret-key-management" title="Link to this heading"></a></h3>
 <p><strong>Never</strong> hardcode secret keys in code or configuration files:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate strong secret key</span>
-python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import secrets; print(secrets.token_hex(32))&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>.secret_key
+python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import secrets; print(secrets.token_hex(32))'</span><span class="w"> </span>&gt;<span class="w"> </span>.secret_key
 
 <span class="c1"># Set in environment</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">SECRET_KEY</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>.secret_key<span class="k">)</span>
 
 <span class="c1"># Or use environment file</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;SECRET_KEY=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import secrets; print(secrets.token_hex(32))&#39;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>.env
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"SECRET_KEY=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import secrets; print(secrets.token_hex(32))'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span>&gt;<span class="w"> </span>.env
 </pre></div>
 </div>
 </section>
@@ -441,13 +441,13 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <h3>File Upload Security<a class="headerlink" href="#file-upload-security" title="Link to this heading"></a></h3>
 <p>Configure upload restrictions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In config.py</span>
-<span class="n">ALLOWED_EXTENSIONS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;txt&#39;</span><span class="p">,</span> <span class="s1">&#39;edgelist&#39;</span><span class="p">,</span> <span class="s1">&#39;graphml&#39;</span><span class="p">,</span> <span class="s1">&#39;gml&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;arrow&#39;</span><span class="p">}</span>
+<span class="n">ALLOWED_EXTENSIONS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'txt'</span><span class="p">,</span> <span class="s1">'edgelist'</span><span class="p">,</span> <span class="s1">'graphml'</span><span class="p">,</span> <span class="s1">'gml'</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">,</span> <span class="s1">'arrow'</span><span class="p">}</span>
 <span class="n">MAX_CONTENT_LENGTH</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 100 MB</span>
 
 <span class="c1"># Validate uploads</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">allowed_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">filename</span> <span class="ow">and</span> \
-           <span class="n">filename</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ALLOWED_EXTENSIONS</span>
+    <span class="k">return</span> <span class="s1">'.'</span> <span class="ow">in</span> <span class="n">filename</span> <span class="ow">and</span> \
+           <span class="n">filename</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ALLOWED_EXTENSIONS</span>
 </pre></div>
 </div>
 </section>
@@ -460,11 +460,11 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <span class="n">limiter</span> <span class="o">=</span> <span class="n">Limiter</span><span class="p">(</span>
     <span class="n">app</span><span class="p">,</span>
     <span class="n">key_func</span><span class="o">=</span><span class="n">get_remote_address</span><span class="p">,</span>
-    <span class="n">default_limits</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;200 per day&quot;</span><span class="p">,</span> <span class="s2">&quot;50 per hour&quot;</span><span class="p">]</span>
+    <span class="n">default_limits</span><span class="o">=</span><span class="p">[</span><span class="s2">"200 per day"</span><span class="p">,</span> <span class="s2">"50 per hour"</span><span class="p">]</span>
 <span class="p">)</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/upload&quot;</span><span class="p">)</span>
-<span class="nd">@limiter</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="s2">&quot;10 per hour&quot;</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">"/api/upload"</span><span class="p">)</span>
+<span class="nd">@limiter</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="s2">"10 per hour"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">():</span>
     <span class="k">pass</span>
 </pre></div>
@@ -478,7 +478,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <span class="n">login_manager</span> <span class="o">=</span> <span class="n">LoginManager</span><span class="p">()</span>
 <span class="n">login_manager</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/dashboard&quot;</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">"/dashboard"</span><span class="p">)</span>
 <span class="nd">@login_required</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">dashboard</span><span class="p">():</span>
     <span class="k">pass</span>
@@ -497,12 +497,12 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 
 <span class="c1"># Configure logging</span>
 <span class="n">handler</span> <span class="o">=</span> <span class="n">RotatingFileHandler</span><span class="p">(</span>
-    <span class="s1">&#39;logs/py3plex-gui.log&#39;</span><span class="p">,</span>
+    <span class="s1">'logs/py3plex-gui.log'</span><span class="p">,</span>
     <span class="n">maxBytes</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>  <span class="c1"># 10 MB</span>
     <span class="n">backupCount</span><span class="o">=</span><span class="mi">5</span>
 <span class="p">)</span>
 <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
-    <span class="s1">&#39;[</span><span class="si">%(asctime)s</span><span class="s1">] </span><span class="si">%(levelname)s</span><span class="s1"> in </span><span class="si">%(module)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+    <span class="s1">'[</span><span class="si">%(asctime)s</span><span class="s1">] </span><span class="si">%(levelname)s</span><span class="s1"> in </span><span class="si">%(module)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">'</span>
 <span class="p">))</span>
 <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
@@ -517,21 +517,21 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <span class="n">metrics</span> <span class="o">=</span> <span class="n">PrometheusMetrics</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
 <span class="c1"># Custom metrics</span>
-<span class="n">metrics</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;app_info&#39;</span><span class="p">,</span> <span class="s1">&#39;Application info&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
+<span class="n">metrics</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">'app_info'</span><span class="p">,</span> <span class="s1">'Application info'</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">'1.0'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="health-checks">
 <h3>Health Checks<a class="headerlink" href="#health-checks" title="Link to this heading"></a></h3>
 <p>Implement a health check endpoint that exercises dependencies:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/health&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/health'</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">():</span>
     <span class="c1"># Check dependencies</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Test database connection, file system, etc.</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;healthy&#39;</span><span class="p">},</span> <span class="mi">200</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'healthy'</span><span class="p">},</span> <span class="mi">200</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;unhealthy&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="mi">503</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'unhealthy'</span><span class="p">,</span> <span class="s1">'error'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)},</span> <span class="mi">503</span>
 </pre></div>
 </div>
 </section>
@@ -552,22 +552,22 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;im
 <section id="aws-ecs-docker">
 <h3>AWS ECS (Docker)<a class="headerlink" href="#aws-ecs-docker" title="Link to this heading"></a></h3>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;family&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;py3plex-gui&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;containerDefinitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gui&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;image&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your-registry/py3plex-gui:latest&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;memory&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2048</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;cpu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;essential&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;portMappings&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
-<span class="w">      </span><span class="nt">&quot;containerPort&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;protocol&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tcp&quot;</span>
+<span class="w">  </span><span class="nt">"family"</span><span class="p">:</span><span class="w"> </span><span class="s2">"py3plex-gui"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"containerDefinitions"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gui"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your-registry/py3plex-gui:latest"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"memory"</span><span class="p">:</span><span class="w"> </span><span class="mi">2048</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"cpu"</span><span class="p">:</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"essential"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"portMappings"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">      </span><span class="nt">"containerPort"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"protocol"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tcp"</span>
 <span class="w">    </span><span class="p">}],</span>
-<span class="w">    </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FLASK_ENV&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;production&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="nt">"environment"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FLASK_ENV"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"production"</span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;secrets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SECRET_KEY&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;valueFrom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;arn:aws:secretsmanager:...&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="nt">"secrets"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SECRET_KEY"</span><span class="p">,</span><span class="w"> </span><span class="nt">"valueFrom"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:secretsmanager:..."</span><span class="p">}</span>
 <span class="w">    </span><span class="p">]</span>
 <span class="w">  </span><span class="p">}]</span>
 <span class="p">}</span>
@@ -628,9 +628,9 @@ gunicorn<span class="w"> </span><span class="se">\</span>
 <p>Implement caching for expensive operations:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_caching</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cache</span>
 
-<span class="n">cache</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;CACHE_TYPE&#39;</span><span class="p">:</span> <span class="s1">&#39;simple&#39;</span><span class="p">})</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">'CACHE_TYPE'</span><span class="p">:</span> <span class="s1">'simple'</span><span class="p">})</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/api/stats/&lt;network_id&gt;&#39;</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/stats/&lt;network_id&gt;'</span><span class="p">)</span>
 <span class="nd">@cache</span><span class="o">.</span><span class="n">cached</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">network_stats</span><span class="p">(</span><span class="n">network_id</span><span class="p">):</span>
     <span class="c1"># Expensive computation</span>
@@ -643,7 +643,7 @@ gunicorn<span class="w"> </span><span class="se">\</span>
 <p>For production, consider a database:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLAlchemy</span>
 
-<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SQLALCHEMY_DATABASE_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;postgresql://user:pass@localhost/py3plex&#39;</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">'SQLALCHEMY_DATABASE_URI'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'postgresql://user:pass@localhost/py3plex'</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">SQLAlchemy</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -656,17 +656,17 @@ gunicorn<span class="w"> </span><span class="se">\</span>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 <span class="c1"># backup.sh</span>
 
-<span class="nv">BACKUP_DIR</span><span class="o">=</span><span class="s2">&quot;/backups/py3plex&quot;</span>
+<span class="nv">BACKUP_DIR</span><span class="o">=</span><span class="s2">"/backups/py3plex"</span>
 <span class="nv">DATE</span><span class="o">=</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span>
 
 <span class="c1"># Backup uploads</span>
-tar<span class="w"> </span>-czf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACKUP_DIR</span><span class="s2">/uploads_</span><span class="nv">$DATE</span><span class="s2">.tar.gz&quot;</span><span class="w"> </span>/path/to/uploads
+tar<span class="w"> </span>-czf<span class="w"> </span><span class="s2">"</span><span class="nv">$BACKUP_DIR</span><span class="s2">/uploads_</span><span class="nv">$DATE</span><span class="s2">.tar.gz"</span><span class="w"> </span>/path/to/uploads
 
 <span class="c1"># Backup database (if using one)</span>
-<span class="c1"># pg_dump py3plex &gt; &quot;$BACKUP_DIR/db_$DATE.sql&quot;</span>
+<span class="c1"># pg_dump py3plex &gt; "$BACKUP_DIR/db_$DATE.sql"</span>
 
 <span class="c1"># Cleanup old backups (keep last 7 days)</span>
-find<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BACKUP_DIR</span><span class="s2">&quot;</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-mtime<span class="w"> </span>+7<span class="w"> </span>-delete
+find<span class="w"> </span><span class="s2">"</span><span class="nv">$BACKUP_DIR</span><span class="s2">"</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-mtime<span class="w"> </span>+7<span class="w"> </span>-delete
 </pre></div>
 </div>
 <p>Add to crontab:</p>

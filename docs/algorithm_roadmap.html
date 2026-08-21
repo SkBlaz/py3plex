@@ -166,13 +166,13 @@
 <h2>Algorithm Categories<a class="headerlink" href="#algorithm-categories" title="Link to this heading"></a></h2>
 <p>The algorithms in py3plex are organized into these main categories:</p>
 <ol class="arabic simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> - Finding community structure</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a> - Computing node importance</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a> - Network-level metrics</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#node-ranking-classification"><span class="std std-ref">Node Ranking &amp; Classification</span></a> - Ranking and classification methods</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#random-walks-embeddings"><span class="std std-ref">Random Walks &amp; Embeddings</span></a> - Random walk-based methods</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#visualization-algorithms"><span class="std std-ref">Visualization Algorithms</span></a> - Layout and rendering</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#benchmark-utilities"><span class="std std-ref">Benchmark &amp; Utilities</span></a> - Testing and evaluation</p></li>
+<li><p><a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> - Finding community structure</p></li>
+<li><p><a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a> - Computing node importance</p></li>
+<li><p><a class="reference internal" href="#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a> - Network-level metrics</p></li>
+<li><p><a class="reference internal" href="#node-ranking-classification"><span class="std std-ref">Node Ranking &amp; Classification</span></a> - Ranking and classification methods</p></li>
+<li><p><a class="reference internal" href="#random-walks-embeddings"><span class="std std-ref">Random Walks &amp; Embeddings</span></a> - Random walk-based methods</p></li>
+<li><p><a class="reference internal" href="#visualization-algorithms"><span class="std std-ref">Visualization Algorithms</span></a> - Layout and rendering</p></li>
+<li><p><a class="reference internal" href="#benchmark-utilities"><span class="std std-ref">Benchmark &amp; Utilities</span></a> - Testing and evaluation</p></li>
 </ol>
 </section>
 <section id="community-detection-algorithms">
@@ -194,8 +194,8 @@
 <p><strong>Complexity:</strong> O(m log n) in typical sparse settings</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a> (multilayer extension)</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#leiden-algorithm"><span class="std std-ref">Leiden Algorithm</span></a> (improved Louvain)</p></li>
+<li><p><a class="reference internal" href="#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a> (multilayer extension)</p></li>
+<li><p><a class="reference internal" href="#leiden-algorithm"><span class="std std-ref">Leiden Algorithm</span></a> (improved Louvain)</p></li>
 </ul>
 </dd>
 </dl>
@@ -213,7 +213,7 @@
 <p><strong>Complexity:</strong> O(m log n) where m is edges, n is nodes (average-case)</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (faster alternative)</p></li>
+<li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (faster alternative)</p></li>
 </ul>
 </dd>
 </dl>
@@ -232,8 +232,8 @@
 <p><strong>Algorithm details:</strong> Implements Mucha et al. (2010) multilayer modularity optimization</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (single-layer version)</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#leiden-multilayer"><span class="std std-ref">Leiden Algorithm</span></a> (alternative optimizer)</p></li>
+<li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (single-layer version)</p></li>
+<li><p><a class="reference internal" href="#leiden-multilayer"><span class="std std-ref">Leiden Algorithm</span></a> (alternative optimizer)</p></li>
 </ul>
 </dd>
 </dl>
@@ -253,8 +253,8 @@
 <p><strong>Complexity:</strong> About O(m) per iteration on the supplied graph (m counts intra + inter-layer edges when using a supra-adjacency), with faster convergence than Louvain</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (predecessor)</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a> (multilayer extension)</p></li>
+<li><p><a class="reference internal" href="#louvain-algorithm"><span class="std std-ref">Louvain Algorithm</span></a> (predecessor)</p></li>
+<li><p><a class="reference internal" href="#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a> (multilayer extension)</p></li>
 </ul>
 </dd>
 </dl>
@@ -273,7 +273,7 @@
 <p><strong>Complexity:</strong> Dominated by PageRank-style iterations on the core graph; scales roughly with O(m * i) where i is iterations</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#community-ranking"><span class="std std-ref">Community Ranking</span></a> (related approach)</p></li>
+<li><p><a class="reference internal" href="#community-ranking"><span class="std std-ref">Community Ranking</span></a> (related approach)</p></li>
 </ul>
 </dd>
 </dl>
@@ -302,7 +302,7 @@
 <p><strong>Best for:</strong> Ranking nodes within detected communities</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a> (general ranking)</p></li>
+<li><p><a class="reference internal" href="#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a> (general ranking)</p></li>
 </ul>
 </dd>
 </dl>
@@ -341,7 +341,7 @@
 <p><strong>Complexity:</strong> O(n_L + m) where n_L is state nodes, m is edges (intra + inter-layer)</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a> (cross-layer activity)</p></li>
+<li><p><a class="reference internal" href="#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a> (cross-layer activity)</p></li>
 </ul>
 </dd>
 </dl>
@@ -359,7 +359,7 @@
 <p><strong>Complexity:</strong> O(m) per iteration on sparse supra-adjacency; typically converges in few iterations</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#hubs-authorities"><span class="std std-ref">Hubs and Authorities (HITS)</span></a> (directed networks)</p></li>
+<li><p><a class="reference internal" href="#hubs-authorities"><span class="std std-ref">Hubs and Authorities (HITS)</span></a> (directed networks)</p></li>
 </ul>
 </dd>
 </dl>
@@ -377,7 +377,7 @@
 <p><strong>Note:</strong> Weighted variants rely on non-negative edge weights for Dijkstra-based shortest paths.</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#centrality-all"><span class="std std-ref">Utility Functions</span></a> (batch computation)</p></li>
+<li><p><a class="reference internal" href="#centrality-all"><span class="std std-ref">Utility Functions</span></a> (batch computation)</p></li>
 </ul>
 </dd>
 </dl>
@@ -389,7 +389,7 @@
 <p><strong>Best for:</strong> Ranking nodes in directed networks (authority = important destination, hub = important source)</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
-<li><p>PageRank in <a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+<li><p>PageRank in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -413,7 +413,7 @@
 <p><strong>Complexity:</strong> O(m L) where L is number of layers (dominated by the chosen per-layer centrality)</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
-<li><p>All centrality measures in <a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+<li><p>All centrality measures in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -430,7 +430,7 @@
 <p><strong>Complexity:</strong> Dense matrix functions scale as O(n_L^2) to O(n_L^3); prefer sparse-aware solvers for larger supra-graphs</p>
 <dl class="simple">
 <dt><strong>Related measures:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a> (standard measures)</p></li>
+<li><p><a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a> (standard measures)</p></li>
 </ul>
 </dd>
 </dl>
@@ -446,7 +446,7 @@
 <p><strong>Algorithm details:</strong> Extends PageRank to multiplex/heterogeneous networks</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p>PageRank in <a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+<li><p>PageRank in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -484,8 +484,8 @@
 <p><strong>Complexity:</strong> Varies by measure; most layer/node summaries are O(n_L + m) on the relevant graph, while spectral routines operate on the supra-graph and can reach O(n_L^2) on dense inputs</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (simpler measures)</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#topology-measures"><span class="std std-ref">Topology Analysis</span></a> (topological properties)</p></li>
+<li><p><a class="reference internal" href="#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (simpler measures)</p></li>
+<li><p><a class="reference internal" href="#topology-measures"><span class="std std-ref">Topology Analysis</span></a> (topological properties)</p></li>
 </ul>
 </dd>
 </dl>
@@ -506,7 +506,7 @@
 <p><strong>Complexity:</strong> O(n + m) on the aggregated core graph for most measures</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#id7"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (advanced measures)</p></li>
+<li><p><a class="reference internal" href="#id7"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (advanced measures)</p></li>
 </ul>
 </dd>
 </dl>
@@ -518,7 +518,7 @@
 <p><strong>Purpose:</strong> Study structural properties like degree distributions, connected components, etc., on the aggregated core graph or per-layer projections.</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a></p></li>
+<li><p><a class="reference internal" href="#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -534,7 +534,7 @@
 <p><strong>Best for:</strong> Creating networks from correlation/similarity matrices</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a> (analysis after construction)</p></li>
+<li><p><a class="reference internal" href="#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a> (analysis after construction)</p></li>
 </ul>
 </dd>
 </dl>
@@ -554,7 +554,7 @@
 <p><strong>Best for:</strong> Finding over-represented terms/annotations in network communities</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> (provides communities for enrichment)</p></li>
+<li><p><a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> (provides communities for enrichment)</p></li>
 </ul>
 </dd>
 </dl>
@@ -580,7 +580,7 @@
 <p><strong>Best for:</strong> Analyzing degree distributions, checking for scale-free properties</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (degree distributions)</p></li>
+<li><p><a class="reference internal" href="#basic-statistics"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a> (degree distributions)</p></li>
 </ul>
 </dd>
 </dl>
@@ -606,8 +606,8 @@
 <p><strong>Complexity:</strong> O(m) per iteration for PageRank; HITS uses similar power iterations with the same per-iteration cost</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p>PageRank in <a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#label-propagation"><span class="std std-ref">Label Propagation</span></a> (classification)</p></li>
+<li><p>PageRank in <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+<li><p><a class="reference internal" href="#label-propagation"><span class="std std-ref">Label Propagation</span></a> (classification)</p></li>
 </ul>
 </dd>
 </dl>
@@ -628,8 +628,8 @@
 <p><strong>Complexity:</strong> O(m * i) where m is edges and i is number of iterations</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#ppr-algorithm"><span class="std std-ref">Personalized PageRank (PPR)</span></a> (personalized version)</p></li>
-<li><p>Label propagation in <a class="reference internal" href="reference/algorithm_reference.html#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a></p></li>
+<li><p><a class="reference internal" href="#ppr-algorithm"><span class="std std-ref">Personalized PageRank (PPR)</span></a> (personalized version)</p></li>
+<li><p>Label propagation in <a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -647,8 +647,8 @@
 <p><strong>Complexity:</strong> O(n^2) for dense computation; sparse power iterations are about O(m * i) where i is iterations</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#label-propagation"><span class="std std-ref">Label Propagation</span></a> (similar propagation mechanism)</p></li>
-<li><p>PageRank in <a class="reference internal" href="reference/algorithm_reference.html#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a></p></li>
+<li><p><a class="reference internal" href="#label-propagation"><span class="std std-ref">Label Propagation</span></a> (similar propagation mechanism)</p></li>
+<li><p>PageRank in <a class="reference internal" href="#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -672,8 +672,8 @@
 <p><strong>Complexity:</strong> O(ell) per walk where ell is the walk length</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a> (uses these walks)</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a> (uses these walks)</p></li>
+<li><p><a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a> (uses these walks)</p></li>
+<li><p><a class="reference internal" href="#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a> (uses these walks)</p></li>
 </ul>
 </dd>
 </dl>
@@ -695,8 +695,8 @@
 </ul>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a> (special case with p=1, q=1)</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#random-walk-primitives"><span class="std std-ref">Random Walk Primitives</span></a> (underlying walks)</p></li>
+<li><p><a class="reference internal" href="#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a> (special case with p=1, q=1)</p></li>
+<li><p><a class="reference internal" href="#random-walk-primitives"><span class="std std-ref">Random Walk Primitives</span></a> (underlying walks)</p></li>
 </ul>
 </dd>
 </dl>
@@ -707,7 +707,7 @@
 <p><strong>Best for:</strong> Simpler alternative to Node2Vec with uniform random walks</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a> (generalization)</p></li>
+<li><p><a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a> (generalization)</p></li>
 </ul>
 </dd>
 </dl>
@@ -726,7 +726,7 @@
 <p><strong>Purpose:</strong> Measure how nodes are entangled across layers</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a> (similar cross-layer analysis)</p></li>
+<li><p><a class="reference internal" href="#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a> (similar cross-layer analysis)</p></li>
 </ul>
 </dd>
 </dl>
@@ -749,7 +749,7 @@
 <p><strong>Best for:</strong> Positioning nodes for visualization</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#multilayer-visualization"><span class="std std-ref">Multilayer Visualization</span></a> (uses these layouts)</p></li>
+<li><p><a class="reference internal" href="#multilayer-visualization"><span class="std std-ref">Multilayer Visualization</span></a> (uses these layouts)</p></li>
 </ul>
 </dd>
 </dl>
@@ -773,7 +773,7 @@
 </ul>
 </dd>
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#layout-algorithms"><span class="std std-ref">Layout Algorithms</span></a> (positioning)</p></li>
+<li><p><a class="reference internal" href="#layout-algorithms"><span class="std std-ref">Layout Algorithms</span></a> (positioning)</p></li>
 </ul>
 </dd>
 </dl>
@@ -790,8 +790,8 @@
 <p>Functions for generating color schemes for communities, layers, node types.</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> (uses colors)</p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#multilayer-visualization"><span class="std std-ref">Multilayer Visualization</span></a> (uses colors)</p></li>
+<li><p><a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> (uses colors)</p></li>
+<li><p><a class="reference internal" href="#multilayer-visualization"><span class="std std-ref">Multilayer Visualization</span></a> (uses colors)</p></li>
 </ul>
 </dd>
 </dl>
@@ -803,8 +803,8 @@
 <p><strong>Best for:</strong> Visualizing results of embedding algorithms</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a></p></li>
+<li><p><a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p></li>
+<li><p><a class="reference internal" href="#deepwalk-embedding"><span class="std std-ref">DeepWalk Embedding</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -822,8 +822,8 @@
 <p><strong>Best for:</strong> Evaluating node classification algorithms</p>
 <dl class="simple">
 <dt><strong>Related algorithms:</strong></dt><dd><ul class="simple">
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#label-propagation"><span class="std std-ref">Label Propagation</span></a></p></li>
-<li><p><a class="reference internal" href="reference/algorithm_reference.html#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p></li>
+<li><p><a class="reference internal" href="#label-propagation"><span class="std std-ref">Label Propagation</span></a></p></li>
+<li><p><a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -846,17 +846,17 @@
 <section id="by-task-type">
 <h3>By Task Type<a class="headerlink" href="#by-task-type" title="Link to this heading"></a></h3>
 <dl class="simple">
-<dt><strong>Community Detection:</strong></dt><dd><p>→ See <a class="reference internal" href="reference/algorithm_reference.html#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a></p>
+<dt><strong>Community Detection:</strong></dt><dd><p>→ See <a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a></p>
 </dd>
-<dt><strong>Node Importance:</strong></dt><dd><p>→ See <a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p>
+<dt><strong>Node Importance:</strong></dt><dd><p>→ See <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p>
 </dd>
-<dt><strong>Node Classification:</strong></dt><dd><p>→ See <a class="reference internal" href="reference/algorithm_reference.html#label-propagation"><span class="std std-ref">Label Propagation</span></a> or <a class="reference internal" href="reference/algorithm_reference.html#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p>
+<dt><strong>Node Classification:</strong></dt><dd><p>→ See <a class="reference internal" href="#label-propagation"><span class="std std-ref">Label Propagation</span></a> or <a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p>
 </dd>
-<dt><strong>Network Comparison:</strong></dt><dd><p>→ See <a class="reference internal" href="reference/algorithm_reference.html#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a></p>
+<dt><strong>Network Comparison:</strong></dt><dd><p>→ See <a class="reference internal" href="#network-statistics-algorithms"><span class="std std-ref">Network Statistics</span></a></p>
 </dd>
-<dt><strong>Feature Learning:</strong></dt><dd><p>→ See <a class="reference internal" href="reference/algorithm_reference.html#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p>
+<dt><strong>Feature Learning:</strong></dt><dd><p>→ See <a class="reference internal" href="#node2vec-embedding"><span class="std std-ref">Node2Vec Embedding</span></a></p>
 </dd>
-<dt><strong>Visualization:</strong></dt><dd><p>→ See <a class="reference internal" href="reference/algorithm_reference.html#visualization-algorithms"><span class="std std-ref">Visualization Algorithms</span></a></p>
+<dt><strong>Visualization:</strong></dt><dd><p>→ See <a class="reference internal" href="#visualization-algorithms"><span class="std std-ref">Visualization Algorithms</span></a></p>
 </dd>
 </dl>
 </section>
@@ -895,18 +895,18 @@
 <dl class="simple">
 <dt><strong>Single-layer networks:</strong></dt><dd><ul class="simple">
 <li><p>Standard algorithms: Louvain, PageRank, betweenness</p></li>
-<li><p>See <a class="reference internal" href="reference/algorithm_reference.html#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> and <a class="reference internal" href="reference/algorithm_reference.html#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
+<li><p>See <a class="reference internal" href="#community-detection-algorithms"><span class="std std-ref">Community Detection Algorithms</span></a> and <a class="reference internal" href="#centrality-measures-algorithms"><span class="std std-ref">Centrality Measures</span></a></p></li>
 </ul>
 </dd>
 <dt><strong>Multiplex/multilayer networks:</strong></dt><dd><ul class="simple">
-<li><p>Multilayer-specific: <a class="reference internal" href="reference/algorithm_reference.html#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a>, <a class="reference internal" href="reference/algorithm_reference.html#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a></p></li>
-<li><p>Layer statistics: <a class="reference internal" href="reference/algorithm_reference.html#id7"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a></p></li>
+<li><p>Multilayer-specific: <a class="reference internal" href="#multilayer-louvain"><span class="std std-ref">Multilayer Louvain</span></a>, <a class="reference internal" href="#versatility-centrality"><span class="std std-ref">Versatility Centrality</span></a></p></li>
+<li><p>Layer statistics: <a class="reference internal" href="#id7"><span class="std std-ref">Multilayer Statistics (Detailed)</span></a></p></li>
 <li><p>Cross-layer measures</p></li>
 </ul>
 </dd>
 <dt><strong>Directed networks:</strong></dt><dd><ul class="simple">
 <li><p>PageRank, HITS algorithm</p></li>
-<li><p>See <a class="reference internal" href="reference/algorithm_reference.html#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a></p></li>
+<li><p>See <a class="reference internal" href="#node-ranking-algorithms"><span class="std std-ref">Node Ranking</span></a></p></li>
 </ul>
 </dd>
 <dt><strong>Weighted networks:</strong></dt><dd><ul class="simple">
@@ -916,7 +916,7 @@
 </dd>
 <dt><strong>Temporal networks:</strong></dt><dd><ul class="simple">
 <li><p>Layer-based representation</p></li>
-<li><p>Time-respecting random walks: <a class="reference internal" href="reference/algorithm_reference.html#random-walk-primitives"><span class="std std-ref">Random Walk Primitives</span></a> (ensure edges respect ordering)</p></li>
+<li><p>Time-respecting random walks: <a class="reference internal" href="#random-walk-primitives"><span class="std std-ref">Random Walk Primitives</span></a> (ensure edges respect ordering)</p></li>
 </ul>
 </dd>
 </dl>
@@ -979,11 +979,11 @@
 
 <span class="c1"># 3. Cross-layer analysis</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 
 <span class="c1"># 4. Identify hubs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.basic_statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">identify_n_hubs</span>
-<span class="n">hubs</span> <span class="o">=</span> <span class="n">identify_n_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="n">hubs</span> <span class="o">=</span> <span class="n">identify_n_hubs</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -992,7 +992,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Generate walks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.general.walkers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_walks</span>
 <span class="n">walks</span> <span class="o">=</span> <span class="n">generate_walks</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                      <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;node2vec&#39;</span><span class="p">)</span>
+                      <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s1">'node2vec'</span><span class="p">)</span>
 
 <span class="c1"># 2. Learn embeddings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers.node2vec_embedding</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_embeddings</span>
@@ -1009,9 +1009,9 @@
 <h3>Statistical Analysis Workflow<a class="headerlink" href="#statistical-analysis-workflow" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Layer-level statistics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
-<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
-<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
-<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">)</span>
+<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
+<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
 
 <span class="c1"># 2. Node-level statistics</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">important_nodes</span><span class="p">:</span>

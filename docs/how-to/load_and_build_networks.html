@@ -190,11 +190,11 @@
 <span class="c1"># Add edges in list format</span>
 <span class="c1"># Format: [source_node, source_layer, target_node, target_layer, weight]</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="s1">'Dave'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Verify</span>
 <span class="n">stats</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -205,8 +205,8 @@
 Number of edges: 4
 Number of unique node IDs (across all layers): 4
 Nodes per layer:
-  Layer &#39;friends&#39;: 3 nodes
-  Layer &#39;colleagues&#39;: 3 nodes
+  Layer 'friends': 3 nodes
+  Layer 'colleagues': 3 nodes
 </pre></div>
 </div>
 </section>
@@ -220,18 +220,18 @@ Use this pattern when you need explicit node-layer registration before edges.</p
 
 <span class="c1"># Add nodes explicitly (as node-layer tuples)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Dave&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">)</span>
+    <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dave'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">)</span>
 <span class="p">])</span>
 
 <span class="c1"># Add edges between existing nodes</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="p">])</span>
 
 <span class="c1"># Verify network was built correctly</span>
@@ -243,8 +243,8 @@ Use this pattern when you need explicit node-layer registration before edges.</p
 Number of edges: 2
 Number of unique node IDs (across all layers): 4
 Nodes per layer:
-  Layer &#39;friends&#39;: 3 nodes
-  Layer &#39;colleagues&#39;: 3 nodes
+  Layer 'friends': 3 nodes
+  Layer 'colleagues': 3 nodes
 </pre></div>
 </div>
 </section>
@@ -258,23 +258,23 @@ Nodes per layer:
 <span class="c1"># Add edges with custom attributes</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
     <span class="p">{</span>
-        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-15&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;interaction_type&#39;</span><span class="p">:</span> <span class="s1">&#39;message&#39;</span>
+        <span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Alice'</span><span class="p">,</span>
+        <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'friends'</span><span class="p">,</span>
+        <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span>
+        <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'friends'</span><span class="p">,</span>
+        <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s1">'timestamp'</span><span class="p">:</span> <span class="s1">'2024-01-15'</span><span class="p">,</span>
+        <span class="s1">'interaction_type'</span><span class="p">:</span> <span class="s1">'message'</span>
     <span class="p">},</span>
     <span class="p">{</span>
-        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
-        <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-16&#39;</span>
+        <span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span>
+        <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'friends'</span><span class="p">,</span>
+        <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'Carol'</span><span class="p">,</span>
+        <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'friends'</span><span class="p">,</span>
+        <span class="s1">'weight'</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
+        <span class="s1">'timestamp'</span><span class="p">:</span> <span class="s1">'2024-01-16'</span>
     <span class="p">}</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;dict&quot;</span><span class="p">)</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"dict"</span><span class="p">)</span>
 
 <span class="c1"># Verify network was built correctly</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -285,7 +285,7 @@ Nodes per layer:
 Number of edges: 2
 Number of unique node IDs (across all layers): 3
 Nodes per layer:
-  Layer &#39;friends&#39;: 3 nodes
+  Layer 'friends': 3 nodes
 </pre></div>
 </div>
 </section>
@@ -310,16 +310,16 @@ Alice colleagues Bob colleagues 1.0
 
 <span class="c1"># Option 1: Load from repository file</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;datasets/simple_multiplex.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"datasets/simple_multiplex.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Option 2: Create from data directly (recommended for examples)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;colleagues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'colleagues'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
@@ -333,10 +333,10 @@ Alice colleagues Bob colleagues 1.0
 
 <span class="c1"># Your data</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+    <span class="s1">'source'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'Alice'</span><span class="p">],</span>
+    <span class="s1">'layer'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">],</span>
+    <span class="s1">'target'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">],</span>
+    <span class="s1">'weight'</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
 <span class="p">})</span>
 
 <span class="c1"># Convert to network</span>
@@ -344,17 +344,17 @@ Alice colleagues Bob colleagues 1.0
 
 <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
-        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">],</span>
-        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">],</span>
-        <span class="n">weight</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span>
+        <span class="n">row</span><span class="p">[</span><span class="s1">'source'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">'layer'</span><span class="p">],</span>
+        <span class="n">row</span><span class="p">[</span><span class="s1">'target'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">'layer'</span><span class="p">],</span>
+        <span class="n">weight</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">'weight'</span><span class="p">]</span>
     <span class="p">)</span>
 
 <span class="c1"># If your dataframe has ``source_layer`` and ``target_layer`` columns,</span>
 <span class="c1"># pass those instead of a single ``layer`` column:</span>
 <span class="c1"># network.add_edge(</span>
-<span class="c1">#     row[&#39;source&#39;], row[&#39;source_layer&#39;],</span>
-<span class="c1">#     row[&#39;target&#39;], row[&#39;target_layer&#39;],</span>
-<span class="c1">#     weight=row[&#39;weight&#39;]</span>
+<span class="c1">#     row['source'], row['source_layer'],</span>
+<span class="c1">#     row['target'], row['target_layer'],</span>
+<span class="c1">#     weight=row['weight']</span>
 <span class="c1"># )</span>
 
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -370,22 +370,22 @@ edge dictionaries consistent: <code class="docutils literal notranslate"><span c
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Load JSON</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;network.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'network.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
-<span class="c1"># Assuming JSON structure: {&quot;edges&quot;: [...], &quot;nodes&quot;: [...]}</span>
-<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;edges&#39;</span><span class="p">]:</span>
+<span class="c1"># Assuming JSON structure: {"edges": [...], "nodes": [...]}</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'edges'</span><span class="p">]:</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
-        <span class="n">edge</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s1">&#39;source_layer&#39;</span><span class="p">],</span>
-        <span class="n">edge</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s1">&#39;target_layer&#39;</span><span class="p">],</span>
-        <span class="o">**</span><span class="n">edge</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">edge</span><span class="p">[</span><span class="s1">'source'</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s1">'source_layer'</span><span class="p">],</span>
+        <span class="n">edge</span><span class="p">[</span><span class="s1">'target'</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="s1">'target_layer'</span><span class="p">],</span>
+        <span class="o">**</span><span class="n">edge</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'attributes'</span><span class="p">,</span> <span class="p">{})</span>
     <span class="p">)</span>
 
 <span class="c1"># Optionally, add nodes first if your JSON includes node attributes</span>
-<span class="c1"># for node in data.get(&#39;nodes&#39;, []):</span>
-<span class="c1">#     network.add_nodes([(node[&#39;id&#39;], node[&#39;layer&#39;])])</span>
+<span class="c1"># for node in data.get('nodes', []):</span>
+<span class="c1">#     network.add_nodes([(node['id'], node['layer'])])</span>
 
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 </pre></div>
@@ -406,7 +406,7 @@ arguments.</p>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -417,13 +417,13 @@ arguments.</p>
 
 <span class="c1"># Intra-layer edges</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Inter-layer edges (same person across layers)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;interlayer&#39;</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;friends&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;work&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;interlayer&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">'interlayer'</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'friends'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'work'</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">'interlayer'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -436,10 +436,10 @@ arguments.</p>
 <p>Multiple relationship types between same people:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -449,10 +449,10 @@ arguments.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Author-Paper bipartite network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper1&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper1&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper2&#39;</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'authors'</span><span class="p">,</span> <span class="s1">'Paper1'</span><span class="p">,</span> <span class="s1">'papers'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'authors'</span><span class="p">,</span> <span class="s1">'Paper1'</span><span class="p">,</span> <span class="s1">'papers'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'authors'</span><span class="p">,</span> <span class="s1">'Paper2'</span><span class="p">,</span> <span class="s1">'papers'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -462,21 +462,21 @@ arguments.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
     <span class="p">{</span>
-        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;t&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-15T10:00:00&#39;</span>  <span class="c1"># Point in time</span>
+        <span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Alice'</span><span class="p">,</span>
+        <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span>
+        <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span>
+        <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span>
+        <span class="s1">'t'</span><span class="p">:</span> <span class="s1">'2024-01-15T10:00:00'</span>  <span class="c1"># Point in time</span>
     <span class="p">},</span>
     <span class="p">{</span>
-        <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;t_start&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-15&#39;</span><span class="p">,</span>     <span class="c1"># Time range</span>
-        <span class="s1">&#39;t_end&#39;</span><span class="p">:</span> <span class="s1">&#39;2024-01-20&#39;</span>
+        <span class="s1">'source'</span><span class="p">:</span> <span class="s1">'Bob'</span><span class="p">,</span>
+        <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span>
+        <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'Carol'</span><span class="p">,</span>
+        <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'social'</span><span class="p">,</span>
+        <span class="s1">'t_start'</span><span class="p">:</span> <span class="s1">'2024-01-15'</span><span class="p">,</span>     <span class="c1"># Time range</span>
+        <span class="s1">'t_end'</span><span class="p">:</span> <span class="s1">'2024-01-20'</span>
     <span class="p">}</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;dict&quot;</span><span class="p">)</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"dict"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="../reference/api_index.html"><span class="doc">API Documentation</span></a> for temporal network details.</p>
@@ -490,19 +490,19 @@ arguments.</p>
 
 <span class="c1"># Get specific information</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total nodes: </span><span class="si">{</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total nodes: </span><span class="si">{</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Check a specific layer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
-<span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Friends layer: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"friends"</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Friends layer: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layers: [&#39;friends&#39;, &#39;colleagues&#39;]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Layers: ['friends', 'colleagues']
 Total nodes: 6
 Friends layer: 3 nodes
 </pre></div>

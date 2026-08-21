@@ -224,12 +224,12 @@
 <li><p><strong>Node ordering:</strong> Methods that return matrices follow the node-layer ordering from <code class="docutils literal notranslate"><span class="pre">network.get_nodes()</span></code></p></li>
 </ol>
 <p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Node &#39;A&#39; in &#39;layer1&#39; is stored internally as &#39;A---layer1&#39;</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Node 'A' in 'layer1' is stored internally as 'A---layer1'</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">)])</span>
 
 <span class="c1"># Access the encoded node</span>
 <span class="n">encoded_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
-<span class="c1"># [&#39;A---layer1&#39;]</span>
+<span class="c1"># ['A---layer1']</span>
 </pre></div>
 </div>
 </section>
@@ -245,25 +245,25 @@
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
 <span class="c1"># Add layers explicitly (optional)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;social&#39;</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">&#39;professional&#39;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">'social'</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">'professional'</span><span class="p">)</span>
 
-<span class="c1"># Add nodes (layer is created if it doesn&#39;t exist)</span>
+<span class="c1"># Add nodes (layer is created if it doesn't exist)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span>
-    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;professional&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;professional&#39;</span><span class="p">)</span>
+    <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'professional'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'professional'</span><span class="p">)</span>
 <span class="p">])</span>
 
 <span class="c1"># Add edges within layers (intra-layer)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="p">])</span>
 
 <span class="c1"># Add edges between layers (inter-layer)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;professional&#39;</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">[(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'professional'</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="p">])</span>
 </pre></div>
 </div>
@@ -273,21 +273,21 @@
 <p>py3plex supports multiple input formats; the loader creates layers on demand when they are discovered in the input.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From edge list</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span>
+    <span class="s2">"data.edgelist"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">,</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 
 <span class="c1"># From multilayer edge list (source, target, layer)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.multiedgelist&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data.multiedgelist"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># From GraphML</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.graphml&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span>
+    <span class="s2">"data.graphml"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"graphml"</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -301,13 +301,13 @@
 <span class="n">nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># yields (node, data_dict)</span>
 
 <span class="c1"># Get nodes in a specific layer</span>
-<span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">'layer1'</span><span class="p">)</span>
 
 <span class="c1"># Get all edges</span>
 <span class="n">edges</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Get neighbors of a node in a layer</span>
-<span class="n">neighbors</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">((</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">))</span>
+<span class="n">neighbors</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">((</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">))</span>
 
 <span class="c1"># Get all layers (sorted by internal ID)</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
@@ -317,13 +317,13 @@
 <section id="network-transformations">
 <h3>Network Transformations<a class="headerlink" href="#network-transformations" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Aggregate multiple layers into one</span>
-<span class="n">aggregated</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">aggregate_layers</span><span class="p">([</span><span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">],</span> <span class="s1">&#39;combined&#39;</span><span class="p">)</span>
+<span class="n">aggregated</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">aggregate_layers</span><span class="p">([</span><span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">],</span> <span class="s1">'combined'</span><span class="p">)</span>
 
 <span class="c1"># Extract a single layer as a NetworkX graph</span>
-<span class="n">layer_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layer_subgraph</span><span class="p">(</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">layer_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layer_subgraph</span><span class="p">(</span><span class="s1">'layer1'</span><span class="p">)</span>
 
 <span class="c1"># Project to a node type (for heterogeneous networks)</span>
-<span class="n">projected</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">project_to_node_type</span><span class="p">(</span><span class="s1">&#39;author&#39;</span><span class="p">)</span>
+<span class="n">projected</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">project_to_node_type</span><span class="p">(</span><span class="s1">'author'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -334,7 +334,7 @@
 <span class="c1"># Row/column ordering matches network.get_nodes() (node-layer pairs)</span>
 
 <span class="c1"># Get adjacency matrix for a single layer</span>
-<span class="n">layer_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_adjacency_matrix</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">layer_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_adjacency_matrix</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">'layer1'</span><span class="p">)</span>
 
 <span class="c1"># Get inter-layer coupling matrix</span>
 <span class="n">coupling</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_coupling_matrix</span><span class="p">()</span>
@@ -404,17 +404,17 @@ Network Operations (add, remove, query)
 <span class="c1"># Create py3plex network</span>
 <span class="n">mlnet</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">mlnet</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">[(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">),</span> <span class="mi">1</span><span class="p">]</span>
 <span class="p">])</span>
 
 <span class="c1"># Access underlying NetworkX graph</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">mlnet</span><span class="o">.</span><span class="n">core_network</span>
-<span class="c1"># Encoded nodes appear as strings (e.g., &#39;A---L1&#39;)</span>
+<span class="c1"># Encoded nodes appear as strings (e.g., 'A---L1')</span>
 
 <span class="c1"># Use any NetworkX function</span>
 <span class="n">betweenness</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">community</span><span class="o">.</span><span class="n">louvain_communities</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-<span class="n">diameter</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+<span class="n">diameter</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'inf'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -464,7 +464,7 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 
 <span class="c1"># Shape: (total_node_layer_pairs, total_node_layer_pairs)</span>
 <span class="c1"># where total_node_layer_pairs = sum of nodes in each layer (node repeated per layer)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Supra-adjacency shape: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Supra-adjacency shape: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -474,12 +474,12 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 <section id="working-with-individual-layers">
 <h3>Working with Individual Layers<a class="headerlink" href="#working-with-individual-layers" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get layer as NetworkX subgraph</span>
-<span class="n">layer_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layer_subgraph</span><span class="p">(</span><span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">layer_graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layer_subgraph</span><span class="p">(</span><span class="s1">'layer1'</span><span class="p">)</span>
 
 <span class="c1"># Compute layer-specific metrics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
-<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">)</span>
+<span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">)</span>
 <span class="n">clustering</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">layer_graph</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -487,13 +487,13 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 <section id="inter-layer-analysis">
 <h3>Inter-Layer Analysis<a class="headerlink" href="#inter-layer-analysis" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inter-layer degree correlation</span>
-<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<span class="n">correlation</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
 
 <span class="c1"># Edge overlap between layers</span>
-<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
 
 <span class="c1"># Layer similarity</span>
-<span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">)</span>
+<span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -507,7 +507,7 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">my_custom_centrality</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute custom centrality for multilayer network.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Compute custom centrality for multilayer network."""</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span>
 
     <span class="c1"># Implement your algorithm</span>
@@ -526,11 +526,11 @@ C_{L1} &amp; C_{L2} &amp; \cdots &amp; A_L
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">custom_plot</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create custom visualization.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Create custom visualization."""</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 
     <span class="c1"># Use drawing machinery primitives</span>
-    <span class="n">pos</span> <span class="o">=</span> <span class="n">dm</span><span class="o">.</span><span class="n">compute_layout</span><span class="p">(</span><span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">)</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">dm</span><span class="o">.</span><span class="n">compute_layout</span><span class="p">(</span><span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="s1">'force'</span><span class="p">)</span>
     <span class="n">dm</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
     <span class="n">dm</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 

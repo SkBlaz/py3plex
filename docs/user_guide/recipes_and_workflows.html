@@ -212,7 +212,7 @@
            <div itemprop="articleBody">
              
   <section id="analysis-recipes-workflows">
-<span id="recipes"></span><h1>Analysis Recipes &amp; Workflows<a class="headerlink" href="#analysis-recipes-workflows" title="Link to this heading"></a></h1>
+<span id="user-recipes"></span><h1>Analysis Recipes &amp; Workflows<a class="headerlink" href="#analysis-recipes-workflows" title="Link to this heading"></a></h1>
 <p>This guide provides <strong>practical recipes</strong> for <strong>common analysis workflows</strong> in py3plex.
 Each recipe is a <strong>complete, ready-to-use solution</strong> for a real-world task.</p>
 <div class="dsl-example admonition">
@@ -224,21 +224,21 @@ Each recipe is a <strong>complete, ready-to-use solution</strong> for a real-wor
 <span class="n">hubs</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Multi-layer comparison</span>
-<span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="s2">&quot;family&quot;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"social"</span><span class="p">,</span> <span class="s2">"work"</span><span class="p">,</span> <span class="s2">"family"</span><span class="p">]:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
          <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"clustering"</span><span class="p">)</span>
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>See the DSL recipes section below for more patterns!</p>
@@ -340,24 +340,24 @@ Each recipe is a <strong>complete, ready-to-use solution</strong> for a real-wor
 
 <span class="c1"># From multiedgelist (node1, layer1, node2, layer2, weight)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 
 <span class="c1"># From GraphML</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.graphml&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span>
+    <span class="s2">"data/network.graphml"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"graphml"</span>
 <span class="p">)</span>
 
 <span class="c1"># From edges list programmatically</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer1&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;layer2&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Verify the network</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
@@ -369,8 +369,8 @@ Number of edges: 3
 Number of unique nodes (as node-layer tuples): 5
 Number of unique node IDs (across all layers): 3
 Nodes per layer:
-  Layer &#39;layer1&#39;: 3 nodes
-  Layer &#39;layer2&#39;: 2 nodes
+  Layer 'layer1': 3 nodes
+  Layer 'layer2': 2 nodes
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Starting any <strong>analysis project</strong> with external data.</p>
@@ -406,19 +406,19 @@ Nodes per layer:
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;input.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"input.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Save as GraphML (standard format, compatible with Gephi, Cytoscape)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">&quot;output.graphml&quot;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">"output.graphml"</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">"graphml"</span><span class="p">)</span>
 
 <span class="c1"># Save as edge list with node mapping</span>
-<span class="n">inverse_map</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">serialize_to_edgelist</span><span class="p">(</span><span class="s2">&quot;output_edges.txt&quot;</span><span class="p">)</span>
+<span class="n">inverse_map</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">serialize_to_edgelist</span><span class="p">(</span><span class="s2">"output_edges.txt"</span><span class="p">)</span>
 
 <span class="c1"># Save as pickle (preserves all Python objects)</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;network.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"network.pkl"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -433,28 +433,28 @@ Nodes per layer:
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Basic statistics</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Basic Statistics ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Basic Statistics ==="</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
 <span class="c1"># Layer information</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Node and edge counts</span>
 <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
 <span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total edges: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Get unique nodes (nodes may appear in multiple layers)</span>
 <span class="n">unique_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unique nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected Output:</strong></p>
@@ -464,11 +464,11 @@ Number of edges: 180
 Number of unique nodes (as node-layer tuples): 250
 Number of unique node IDs (across all layers): 120
 Nodes per layer:
-  Layer &#39;collaboration&#39;: 85 nodes
-  Layer &#39;citation&#39;: 90 nodes
-  Layer &#39;coauthor&#39;: 75 nodes
+  Layer 'collaboration': 85 nodes
+  Layer 'citation': 90 nodes
+  Layer 'coauthor': 75 nodes
 
-Layers: [&#39;collaboration&#39;, &#39;citation&#39;, &#39;coauthor&#39;]
+Layers: ['collaboration', 'citation', 'coauthor']
 Number of layers: 3
 Total nodes: 250
 Total edges: 180
@@ -484,8 +484,8 @@ Unique nodes: 120
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Analyze each layer</span>
@@ -494,33 +494,33 @@ Unique nodes: 120
 
 <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
     <span class="c1"># Extract single layer</span>
-    <span class="n">layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer_name</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer_name</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 
     <span class="c1"># Compute layer statistics</span>
     <span class="n">stats</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
-    <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;edges&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s1">'nodes'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s1">'edges'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
 
     <span class="c1"># NetworkX metrics on layer</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">core_network</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># Check if layer has nodes</span>
-        <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-        <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;avg_degree&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+        <span class="n">stats</span><span class="p">[</span><span class="s1">'density'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+        <span class="n">stats</span><span class="p">[</span><span class="s1">'avg_degree'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">())</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 
         <span class="c1"># Check connectivity</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">layer</span><span class="o">.</span><span class="n">directed</span><span class="p">:</span>
-            <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;connected&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;connected&#39;</span><span class="p">]:</span>
-                <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;diameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s1">'connected'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s1">'connected'</span><span class="p">]:</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s1">'diameter'</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 
     <span class="n">layer_stats</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span>
 
 <span class="c1"># Display results</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Layer-by-Layer Analysis ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Layer-by-Layer Analysis ==="</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">stats</span> <span class="ow">in</span> <span class="n">layer_stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layer: </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Layer: </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Understanding layer-specific properties, identifying important layers.</p>
@@ -533,49 +533,49 @@ Unique nodes: 120
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">multilayer_statistics</span> <span class="k">as</span> <span class="n">mls</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
 
 <span class="c1"># === Layer-Level Statistics ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Layer Statistics ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Layer Statistics ==="</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
     <span class="n">density</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Layer diversity</span>
 <span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">entropy_of_multiplexity</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layer diversity (entropy): </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Layer diversity (entropy): </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> bits"</span><span class="p">)</span>
 
 <span class="c1"># === Node-Level Statistics ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Node Activity ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Node Activity ==="</span><span class="p">)</span>
 <span class="n">sample_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())[:</span><span class="mi">5</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">node_tuple</span> <span class="ow">in</span> <span class="n">sample_nodes</span><span class="p">:</span>
     <span class="n">node</span> <span class="o">=</span> <span class="n">node_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Extract node name</span>
     <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> active in </span><span class="si">{</span><span class="n">activity</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">% of layers&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> active in </span><span class="si">{</span><span class="n">activity</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">% of layers"</span><span class="p">)</span>
 
 <span class="c1"># === Cross-Layer Analysis ===</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Layer Similarity ===&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Cross-Layer Similarity ==="</span><span class="p">)</span>
     <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="c1"># Cosine similarity of adjacency matrices</span>
-    <span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cosine&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cosine similarity (</span><span class="si">{</span><span class="n">layer1</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">layer2</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cosine similarity (</span><span class="si">{</span><span class="n">layer1</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">layer2</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Jaccard similarity of edge sets</span>
     <span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge overlap (Jaccard): </span><span class="si">{</span><span class="n">overlap</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edge overlap (Jaccard): </span><span class="si">{</span><span class="n">overlap</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === Versatility Analysis ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Node Versatility (Cross-Layer Importance) ===&quot;</span><span class="p">)</span>
-<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Node Versatility (Cross-Layer Importance) ==="</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 <span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">versatility</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_nodes</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Quantifying multilayer structure, comparing layers, identifying versatile nodes.</p>
@@ -589,30 +589,30 @@ Unique nodes: 120
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Select a layer</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
 <span class="n">target_layer</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
-<span class="n">layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">(</span><span class="n">target_layer</span><span class="p">,</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">(</span><span class="n">target_layer</span><span class="p">,</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 
 <span class="c1"># Compute multiple centrality measures</span>
 <span class="n">centrality_measures</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;degree_centrality&quot;</span><span class="p">),</span>
-    <span class="s1">&#39;betweenness&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">),</span>
-    <span class="s1">&#39;closeness&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;closeness_centrality&quot;</span><span class="p">),</span>
-    <span class="s1">&#39;eigenvector&#39;</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">&quot;eigenvector_centrality&quot;</span><span class="p">),</span>
+    <span class="s1">'degree'</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">"degree_centrality"</span><span class="p">),</span>
+    <span class="s1">'betweenness'</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">),</span>
+    <span class="s1">'closeness'</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">"closeness_centrality"</span><span class="p">),</span>
+    <span class="s1">'eigenvector'</span><span class="p">:</span> <span class="n">layer</span><span class="o">.</span><span class="n">monoplex_nx_wrapper</span><span class="p">(</span><span class="s2">"eigenvector_centrality"</span><span class="p">),</span>
 <span class="p">}</span>
 
 <span class="c1"># Display top nodes for each measure</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;=== Centrality Analysis for Layer </span><span class="si">{</span><span class="n">target_layer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"=== Centrality Analysis for Layer </span><span class="si">{</span><span class="n">target_layer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> ===</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">measure_name</span><span class="p">,</span> <span class="n">scores</span> <span class="ow">in</span> <span class="n">centrality_measures</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">measure_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> Centrality (Top 5):&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">measure_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> Centrality (Top 5):"</span><span class="p">)</span>
     <span class="n">top_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_nodes</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -626,8 +626,8 @@ Unique nodes: 120
 
 <span class="c1"># Load or create multiplex network (same nodes across all layers)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/multiplex_network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/multiplex_network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Compute MPC (requires true multiplex: identical node set per layer)</span>
@@ -639,23 +639,23 @@ Unique nodes: 120
     <span class="p">)</span>
 
     <span class="c1"># Display results</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Multiplex Participation Coefficient ===&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(0 = active in one layer only, 1 = equally active across all layers)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"=== Multiplex Participation Coefficient ==="</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"(0 = active in one layer only, 1 = equally active across all layers)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Sort by MPC score</span>
     <span class="n">sorted_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mpc</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 most versatile nodes:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Top 10 most versatile nodes:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">sorted_nodes</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 10 most specialized nodes:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Top 10 most specialized nodes:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">sorted_nodes</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Network is not a true multiplex (layers have different node sets)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Network is not a true multiplex (layers have different node sets)"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Analyzing multiplex networks, identifying cross-layer hubs, understanding node specialization.</p>
@@ -672,8 +672,8 @@ Unique nodes: 120
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Run multilayer Louvain algorithm</span>
@@ -688,19 +688,19 @@ Unique nodes: 120
 
 <span class="c1"># Analyze results</span>
 <span class="n">num_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
 
 <span class="c1"># Community size distribution</span>
 <span class="n">community_sizes</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 10 communities by size:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Top 10 communities by size:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">community_sizes</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 
 <span class="c1"># Check which nodes are in largest community</span>
 <span class="n">largest_comm</span> <span class="o">=</span> <span class="n">community_sizes</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">largest_comm_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                       <span class="k">if</span> <span class="n">comm</span> <span class="o">==</span> <span class="n">largest_comm</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Nodes in largest community: </span><span class="si">{</span><span class="n">largest_comm_nodes</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Nodes in largest community: </span><span class="si">{</span><span class="n">largest_comm_nodes</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Understanding network organization, identifying functional modules, clustering nodes.</p>
@@ -715,8 +715,8 @@ Unique nodes: 120
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Method 1: Single-layer Louvain on aggregated network</span>
@@ -731,9 +731,9 @@ Unique nodes: 120
 <span class="p">)</span>
 
 <span class="c1"># Compare results</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Community Detection Comparison ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Single-layer Louvain: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition_louvain</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multilayer Louvain: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition_multilayer</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Community Detection Comparison ===</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Single-layer Louvain: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition_louvain</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Multilayer Louvain: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition_multilayer</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
 
 <span class="c1"># Calculate normalized mutual information (if sklearn available)</span>
 <span class="k">try</span><span class="p">:</span>
@@ -745,10 +745,10 @@ Unique nodes: 120
     <span class="n">labels2</span> <span class="o">=</span> <span class="p">[</span><span class="n">partition_multilayer</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">common_nodes</span><span class="p">]</span>
 
     <span class="n">nmi</span> <span class="o">=</span> <span class="n">normalized_mutual_info_score</span><span class="p">(</span><span class="n">labels1</span><span class="p">,</span> <span class="n">labels2</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Normalized Mutual Information: </span><span class="si">{</span><span class="n">nmi</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(1.0 = identical partitions, 0.0 = independent)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Normalized Mutual Information: </span><span class="si">{</span><span class="n">nmi</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"(1.0 = identical partitions, 0.0 = independent)"</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Install scikit-learn to compute NMI: pip install scikit-learn&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Install scikit-learn to compute NMI: pip install scikit-learn"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Method validation, algorithm selection, robustness analysis.</p>
@@ -763,36 +763,36 @@ Unique nodes: 120
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># For non-interactive environments</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'Agg'</span><span class="p">)</span>  <span class="c1"># For non-interactive environments</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Get network in visualization format</span>
-<span class="n">network_colors</span><span class="p">,</span> <span class="n">graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;hairball&quot;</span><span class="p">)</span>
+<span class="n">network_colors</span><span class="p">,</span> <span class="n">graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"hairball"</span><span class="p">)</span>
 
 <span class="c1"># Create visualization</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
 <span class="n">hairball_plot</span><span class="p">(</span>
     <span class="n">graph</span><span class="p">,</span>
     <span class="n">network_colors</span><span class="p">,</span>
-    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">,</span>        <span class="c1"># Options: &quot;force&quot;, &quot;circular&quot;, &quot;spring&quot;</span>
-    <span class="n">layout_parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">"force"</span><span class="p">,</span>        <span class="c1"># Options: "force", "circular", "spring"</span>
+    <span class="n">layout_parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">"iterations"</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
     <span class="n">edge_width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="n">alpha_channel</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
     <span class="n">scale_by_size</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Multilayer Network&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Multilayer Network"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network_viz.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span>
-            <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"network_viz.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">,</span>
+            <span class="n">facecolor</span><span class="o">=</span><span class="s1">'white'</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">'none'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Visualization saved to network_viz.png&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Visualization saved to network_viz.png"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Presentations, papers, reports, exploratory analysis.</p>
@@ -807,11 +807,11 @@ Unique nodes: 120
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'Agg'</span><span class="p">)</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Detect communities</span>
@@ -827,33 +827,33 @@ Unique nodes: 120
 
 <span class="c1"># Assign colors to nodes</span>
 <span class="n">network_colors</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">color_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">),</span> <span class="s2">&quot;lightgray&quot;</span><span class="p">)</span>
+    <span class="n">color_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">),</span> <span class="s2">"lightgray"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
 <span class="p">]</span>
 
 <span class="c1"># Get network for visualization</span>
-<span class="n">_</span><span class="p">,</span> <span class="n">graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;hairball&quot;</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">graph</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"hairball"</span><span class="p">)</span>
 
 <span class="c1"># Create plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">14</span><span class="p">))</span>
 <span class="n">hairball_plot</span><span class="p">(</span>
     <span class="n">graph</span><span class="p">,</span>
     <span class="n">network_colors</span><span class="p">,</span>
-    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">,</span>
-    <span class="n">layout_parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="mi">150</span><span class="p">},</span>
+    <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">"force"</span><span class="p">,</span>
+    <span class="n">layout_parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">"iterations"</span><span class="p">:</span> <span class="mi">150</span><span class="p">},</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
     <span class="n">edge_width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="n">alpha_channel</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
     <span class="n">scale_by_size</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network with </span><span class="si">{</span><span class="n">top_n</span><span class="si">}</span><span class="s2"> Largest Communities&quot;</span><span class="p">,</span>
-          <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Network with </span><span class="si">{</span><span class="n">top_n</span><span class="si">}</span><span class="s2"> Largest Communities"</span><span class="p">,</span>
+          <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;network_communities.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
-            <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"network_communities.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+            <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">'white'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Community visualization saved to network_communities.png&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Community visualization saved to network_communities.png"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Visualizing analysis results, understanding community structure.</p>
@@ -875,59 +875,59 @@ Unique nodes: 120
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
 <span class="c1"># === 1. Load Data ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Loading Network ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Loading Network ==="</span><span class="p">)</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
 <span class="c1"># === 2. Compute Statistics ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Computing Multilayer Statistics ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Computing Multilayer Statistics ==="</span><span class="p">)</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
 
 <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;num_layers&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">),</span>
-    <span class="s1">&#39;layer_densities&#39;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s1">&#39;layer_diversity&#39;</span><span class="p">:</span> <span class="n">mls</span><span class="o">.</span><span class="n">entropy_of_multiplexity</span><span class="p">(</span><span class="n">network</span><span class="p">),</span>
+    <span class="s1">'num_layers'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">),</span>
+    <span class="s1">'layer_densities'</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">'layer_diversity'</span><span class="p">:</span> <span class="n">mls</span><span class="o">.</span><span class="n">entropy_of_multiplexity</span><span class="p">(</span><span class="n">network</span><span class="p">),</span>
 <span class="p">}</span>
 
 <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-    <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;layer_densities&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">layer</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+    <span class="n">stats</span><span class="p">[</span><span class="s1">'layer_densities'</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">layer</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
 
 <span class="c1"># Versatility</span>
-<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 <span class="n">top_versatile</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">versatility</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>
-<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;top_versatile_nodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">top_versatile</span><span class="p">}</span>
+<span class="n">stats</span><span class="p">[</span><span class="s1">'top_versatile_nodes'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">top_versatile</span><span class="p">}</span>
 
 <span class="c1"># === 3. Community Detection ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Detecting Communities ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Detecting Communities ==="</span><span class="p">)</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">community_sizes</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
-<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;num_communities&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;community_sizes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">community_sizes</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">stats</span><span class="p">[</span><span class="s1">'num_communities'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+<span class="n">stats</span><span class="p">[</span><span class="s1">'community_sizes'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">community_sizes</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 
 <span class="c1"># === 4. Export Results ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Exporting Results ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Exporting Results ==="</span><span class="p">)</span>
 
 <span class="c1"># Save statistics as JSON</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;analysis_results.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"analysis_results.json"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Statistics saved to analysis_results.json&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Statistics saved to analysis_results.json"</span><span class="p">)</span>
 
 <span class="c1"># Save community assignments</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;communities.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"communities.txt"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">comm</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Communities saved to communities.txt&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">comm</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Communities saved to communities.txt"</span><span class="p">)</span>
 
 <span class="c1"># Save processed network</span>
-<span class="n">network</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">&quot;processed_network.graphml&quot;</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;graphml&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Network saved to processed_network.graphml&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">save_network</span><span class="p">(</span><span class="s2">"processed_network.graphml"</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">"graphml"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Network saved to processed_network.graphml"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Analysis Complete ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Analysis Complete ==="</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Reproducible research workflows, batch processing, automated analysis.</p>
@@ -942,20 +942,20 @@ Unique nodes: 120
 
 <span class="c1"># List of networks to compare</span>
 <span class="n">network_files</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s2">&quot;Network A&quot;</span><span class="p">,</span> <span class="s2">&quot;data/network_a.txt&quot;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;Network B&quot;</span><span class="p">,</span> <span class="s2">&quot;data/network_b.txt&quot;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;Network C&quot;</span><span class="p">,</span> <span class="s2">&quot;data/network_c.txt&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Network A"</span><span class="p">,</span> <span class="s2">"data/network_a.txt"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Network B"</span><span class="p">,</span> <span class="s2">"data/network_b.txt"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Network C"</span><span class="p">,</span> <span class="s2">"data/network_c.txt"</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">filepath</span> <span class="ow">in</span> <span class="n">network_files</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Analyzing </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Analyzing </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
 
     <span class="c1"># Load network</span>
     <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
         <span class="n">filepath</span><span class="p">,</span>
-        <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+        <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span>
         <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
@@ -965,29 +965,29 @@ Unique nodes: 120
     <span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">())</span>
 
     <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Network&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-        <span class="s1">&#39;Layers&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">),</span>
-        <span class="s1">&#39;Total Nodes&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">),</span>
-        <span class="s1">&#39;Unique Nodes&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">])),</span>
-        <span class="s1">&#39;Total Edges&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">),</span>
-        <span class="s1">&#39;Layer Diversity&#39;</span><span class="p">:</span> <span class="n">mls</span><span class="o">.</span><span class="n">entropy_of_multiplexity</span><span class="p">(</span><span class="n">network</span><span class="p">),</span>
+        <span class="s1">'Network'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s1">'Layers'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">),</span>
+        <span class="s1">'Total Nodes'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">),</span>
+        <span class="s1">'Unique Nodes'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">])),</span>
+        <span class="s1">'Total Edges'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">),</span>
+        <span class="s1">'Layer Diversity'</span><span class="p">:</span> <span class="n">mls</span><span class="o">.</span><span class="n">entropy_of_multiplexity</span><span class="p">(</span><span class="n">network</span><span class="p">),</span>
     <span class="p">}</span>
 
     <span class="c1"># Average layer density</span>
     <span class="n">densities</span> <span class="o">=</span> <span class="p">[</span><span class="n">mls</span><span class="o">.</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">]</span>
-    <span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;Avg Layer Density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">densities</span><span class="p">)</span>
-    <span class="n">metrics</span><span class="p">[</span><span class="s1">&#39;Std Layer Density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">densities</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="s1">'Avg Layer Density'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">densities</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="s1">'Std Layer Density'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">densities</span><span class="p">)</span>
 
     <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
 
 <span class="c1"># Create comparison table</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Network Comparison ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Network Comparison ==="</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
 <span class="c1"># Save to CSV</span>
-<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;network_comparison.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Comparison saved to network_comparison.csv&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"network_comparison.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Comparison saved to network_comparison.csv"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Comparative studies, evaluating datasets, selecting networks for analysis.</p>
@@ -1004,8 +1004,8 @@ Unique nodes: 120
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Get core NetworkX graph</span>
@@ -1023,8 +1023,8 @@ Unique nodes: 120
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2"> random walks&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First walk (truncated): </span><span class="si">{</span><span class="n">walks</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span><span class="si">}</span><span class="s2"> random walks"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"First walk (truncated): </span><span class="si">{</span><span class="n">walks</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
 
 <span class="c1"># Use walks for downstream tasks:</span>
 <span class="c1"># 1. Train Word2Vec model (if gensim available)</span>
@@ -1046,26 +1046,26 @@ Unique nodes: 120
         <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
     <span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Trained embedding model with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Trained embedding model with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 
     <span class="c1"># Get embedding for a node</span>
     <span class="n">sample_node</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">sample_node</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">:</span>
         <span class="n">embedding</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="n">sample_node</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding for node </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">embedding</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">... (dim=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Embedding for node </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">embedding</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">... (dim=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
         <span class="c1"># Find similar nodes</span>
         <span class="n">similar</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">most_similar</span><span class="p">(</span><span class="n">sample_node</span><span class="p">,</span> <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Most similar nodes to </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Most similar nodes to </span><span class="si">{</span><span class="n">sample_node</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">similarity</span> <span class="ow">in</span> <span class="n">similar</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Save embeddings</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">save_word2vec_format</span><span class="p">(</span><span class="s2">&quot;node_embeddings.txt&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Embeddings saved to node_embeddings.txt&quot;</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">save_word2vec_format</span><span class="p">(</span><span class="s2">"node_embeddings.txt"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Embeddings saved to node_embeddings.txt"</span><span class="p">)</span>
 
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Install gensim for embedding generation: pip install gensim&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Install gensim for embedding generation: pip install gensim"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Node classification, link prediction, network clustering, feature extraction.</p>
@@ -1091,29 +1091,29 @@ Unique nodes: 120
 
 <span class="n">layer_results</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing layer </span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Processing layer </span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
 
     <span class="c1"># Extract and process one layer at a time</span>
-    <span class="n">layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer_name</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer_name</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 
     <span class="c1"># Compute statistics for this layer</span>
     <span class="n">nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
 
-    <span class="n">layer_results</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">nodes</span><span class="p">,</span> <span class="s1">&#39;edges&#39;</span><span class="p">:</span> <span class="n">edges</span><span class="p">}</span>
+    <span class="n">layer_results</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'nodes'</span><span class="p">:</span> <span class="n">nodes</span><span class="p">,</span> <span class="s1">'edges'</span><span class="p">:</span> <span class="n">edges</span><span class="p">}</span>
 
     <span class="c1"># Clean up to free memory</span>
     <span class="k">del</span> <span class="n">layer</span>
     <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Results ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Results ==="</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">stats</span> <span class="ow">in</span> <span class="n">layer_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;edges&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'nodes'</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'edges'</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges"</span><span class="p">)</span>
 
 <span class="c1"># === 3. Use sparse representations ===</span>
 <span class="c1"># When computing supra-adjacency matrix</span>
 <span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Supra-adjacency matrix: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (sparse)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Supra-adjacency matrix: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (sparse)"</span><span class="p">)</span>
 
 <span class="c1"># === 4. Sample for exploratory analysis ===</span>
 <span class="c1"># For visualization or initial exploration, work with a sample</span>
@@ -1125,7 +1125,7 @@ Unique nodes: 120
 
 <span class="c1"># Create subnetwork with sampled nodes</span>
 <span class="c1"># (Implementation depends on network structure)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Sampled </span><span class="si">{</span><span class="n">sample_size</span><span class="si">}</span><span class="s2"> nodes for exploratory analysis&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Sampled </span><span class="si">{</span><span class="n">sample_size</span><span class="si">}</span><span class="s2"> nodes for exploratory analysis"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Networks with &gt;10,000 nodes, limited RAM, large-scale studies.</p>
@@ -1146,32 +1146,32 @@ Unique nodes: 120
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_memory_usage</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get current memory usage in MB&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Get current memory usage in MB"""</span>
     <span class="n">process</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">process</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
 
 <span class="c1"># Load network</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Performance Benchmarking ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Performance Benchmarking ===</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 <span class="n">start_mem</span> <span class="o">=</span> <span class="n">get_memory_usage</span><span class="p">()</span>
 
 <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 <span class="n">load_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
 <span class="n">load_mem</span> <span class="o">=</span> <span class="n">get_memory_usage</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_mem</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Network loading:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Time: </span><span class="si">{</span><span class="n">load_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Memory: </span><span class="si">{</span><span class="n">load_mem</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Network loading:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Time: </span><span class="si">{</span><span class="n">load_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Memory: </span><span class="si">{</span><span class="n">load_mem</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
 
 <span class="c1"># Benchmark statistics computation</span>
 <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 <span class="n">stats_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Basic statistics:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Time: </span><span class="si">{</span><span class="n">stats_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Basic statistics:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Time: </span><span class="si">{</span><span class="n">stats_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 
 <span class="c1"># Benchmark community detection</span>
 <span class="n">start_mem</span> <span class="o">=</span> <span class="n">get_memory_usage</span><span class="p">()</span>
@@ -1180,15 +1180,15 @@ Unique nodes: 120
 <span class="n">comm_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
 <span class="n">comm_mem</span> <span class="o">=</span> <span class="n">get_memory_usage</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_mem</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Community detection:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Time: </span><span class="si">{</span><span class="n">comm_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Memory: </span><span class="si">{</span><span class="n">comm_mem</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Community detection:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Time: </span><span class="si">{</span><span class="n">comm_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Memory: </span><span class="si">{</span><span class="n">comm_mem</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Communities found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Total resource usage</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Total Performance ===&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total time: </span><span class="si">{</span><span class="n">load_time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">stats_time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">comm_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Peak memory: </span><span class="si">{</span><span class="n">get_memory_usage</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Total Performance ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total time: </span><span class="si">{</span><span class="n">load_time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">stats_time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">comm_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Peak memory: </span><span class="si">{</span><span class="n">get_memory_usage</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>When to use:</strong> Optimizing workflows, comparing algorithms, capacity planning.</p>
@@ -1215,13 +1215,13 @@ Unique nodes: 120
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">some_operation</span><span class="p">()</span>
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Operation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Save intermediate results</strong> for long analyses:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;checkpoint.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"checkpoint.pkl"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1266,7 +1266,7 @@ Unique nodes: 120
 </div>
 </li>
 <li><p><strong>Save high-resolution</strong> for publications:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;figure.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"figure.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -1299,13 +1299,13 @@ Unique nodes: 120
 <p><strong>Cause:</strong> Incorrect file format or delimiter.</p>
 <p><strong>Solution:</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check file format</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"data.txt"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[:</span><span class="mi">5</span><span class="p">])</span>  <span class="c1"># Inspect first lines</span>
 
 <span class="c1"># Try different input_type</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>  <span class="c1"># or &quot;edgelist&quot;, &quot;graphml&quot;</span>
+    <span class="s2">"data.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>  <span class="c1"># or "edgelist", "graphml"</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -1323,11 +1323,11 @@ Unique nodes: 120
 <p><strong>Cause:</strong> Using non-interactive backend or missing display.</p>
 <p><strong>Solution:</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># For saving files</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'Agg'</span><span class="p">)</span>  <span class="c1"># For saving files</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># ... create plot ...</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;output.png&quot;</span><span class="p">)</span>  <span class="c1"># Save instead of show</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"output.png"</span><span class="p">)</span>  <span class="c1"># Save instead of show</span>
 </pre></div>
 </div>
 </section>
@@ -1378,17 +1378,17 @@ Unique nodes: 120
 
 <span class="c1"># Load network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data/network.txt&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span>
+    <span class="s2">"data/network.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
 <span class="c1"># Find top 20 hubs by betweenness centrality</span>
 <span class="n">hubs</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Pre-filter by degree for efficiency</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"clustering"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">&quot;top_hubs.csv&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_csv</span><span class="p">(</span><span class="s2">"top_hubs.csv"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -1409,25 +1409,25 @@ Unique nodes: 120
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Analyze each layer separately</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="s2">&quot;family&quot;</span><span class="p">]</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"social"</span><span class="p">,</span> <span class="s2">"work"</span><span class="p">,</span> <span class="s2">"family"</span><span class="p">]</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
          <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="s2">"clustering"</span><span class="p">)</span>
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
 
     <span class="c1"># Calculate layer-level statistics</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
     <span class="n">layer_stats</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer_name</span><span class="p">,</span>
-        <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="p">,</span>
-        <span class="s1">&#39;avg_degree&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;degree&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
-        <span class="s1">&#39;max_centrality&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;betweenness_centrality&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
-        <span class="s1">&#39;avg_clustering&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s1">'layer'</span><span class="p">:</span> <span class="n">layer_name</span><span class="p">,</span>
+        <span class="s1">'nodes'</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="p">,</span>
+        <span class="s1">'avg_degree'</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'degree'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s1">'max_centrality'</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'betweenness_centrality'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+        <span class="s1">'avg_clustering'</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'clustering'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
     <span class="p">}</span>
     <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer_stats</span><span class="p">)</span>
 
@@ -1450,16 +1450,16 @@ Unique nodes: 120
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="c1"># Combine layers using set operations</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;social&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;bots&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"social"</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">"work"</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">"bots"</span><span class="p">])</span>
      <span class="c1"># Multiple filter conditions</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gte</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">clustering__gt</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
      <span class="c1"># Compute multiple measures</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="s2">"pagerank"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
      <span class="c1"># Sort and limit</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-pagerank"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
      <span class="c1"># Export in multiple formats</span>
-     <span class="o">.</span><span class="n">export_json</span><span class="p">(</span><span class="s2">&quot;filtered_nodes.json&quot;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">export_json</span><span class="p">(</span><span class="s2">"filtered_nodes.json"</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">"records"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -1482,32 +1482,32 @@ Unique nodes: 120
 
 <span class="c1"># Define a reusable query template</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_top_nodes</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">degree_threshold</span><span class="p">,</span> <span class="n">top_n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reusable template for finding top nodes in a layer&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Reusable template for finding top nodes in a layer"""</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
          <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
          <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="n">degree_threshold</span><span class="p">)</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
-         <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="s2">"pagerank"</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-betweenness_centrality"</span><span class="p">)</span>
          <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">top_n</span><span class="p">)</span>
     <span class="p">)</span>
 
 <span class="c1"># Use the template with different parameters</span>
-<span class="n">social_hubs</span> <span class="o">=</span> <span class="n">find_top_nodes</span><span class="p">(</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="n">work_hubs</span> <span class="o">=</span> <span class="n">find_top_nodes</span><span class="p">(</span><span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">social_hubs</span> <span class="o">=</span> <span class="n">find_top_nodes</span><span class="p">(</span><span class="s2">"social"</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">work_hubs</span> <span class="o">=</span> <span class="n">find_top_nodes</span><span class="p">(</span><span class="s2">"work"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="c1"># Alternative: Use Param for dynamic parameter binding</span>
 <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">Param</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">)])</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">&quot;min_degree&quot;</span><span class="p">))</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">&quot;top_n&quot;</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">Param</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="s2">"layer"</span><span class="p">)])</span>
+     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">"min_degree"</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">Param</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="s2">"top_n"</span><span class="p">))</span>
 <span class="p">)</span>
 
 <span class="c1"># Execute with different parameters</span>
-<span class="n">result1</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">result2</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">"social"</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">result2</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">"work"</span><span class="p">,</span> <span class="n">min_degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1523,31 +1523,31 @@ Unique nodes: 120
 <span class="c1"># Build a potentially expensive query</span>
 <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>  <span class="c1"># O(n³) operation!</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>  <span class="c1"># O(n³) operation!</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Check the execution plan first</span>
 <span class="n">plan</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Query Execution Plan:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Query Execution Plan:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">plan</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Complexity: </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">estimated_complexity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"- </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Complexity: </span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">estimated_complexity</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Check for warnings</span>
 <span class="k">if</span> <span class="n">plan</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Warnings:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Warnings:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">plan</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Optimized version: filter first to reduce computation</span>
 <span class="n">optimized_query</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># Pre-filter to reduce nodes</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="p">)</span>
 

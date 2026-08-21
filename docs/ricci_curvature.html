@@ -196,26 +196,26 @@
 
 <span class="c1"># Load or create a multilayer network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;path/to/multilayer_network.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;multiedgelist&quot;</span><span class="p">,</span>
+    <span class="s2">"path/to/multilayer_network.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">,</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Compute Ollivier-Ricci curvature on the aggregated core network</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"core"</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">curvature_attr</span><span class="o">=</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span>
+    <span class="n">curvature_attr</span><span class="o">=</span><span class="s2">"ricciCurvature"</span><span class="p">,</span>
     <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Access the graph with curvatures</span>
-<span class="n">G_core</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">]</span>
+<span class="n">G_core</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"core"</span><span class="p">]</span>
 
 <span class="c1"># Inspect edge curvatures</span>
 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_core</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="k">if</span> <span class="s2">&quot;ricciCurvature&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ricciCurvature&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"ricciCurvature"</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">'ricciCurvature'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>After this, edges in <code class="docutils literal notranslate"><span class="pre">net.core_network</span></code> (if <code class="docutils literal notranslate"><span class="pre">inplace=True</span></code>) will have a <code class="docutils literal notranslate"><span class="pre">ricciCurvature</span></code> attribute containing the computed curvature value.</p>
@@ -225,19 +225,19 @@
 <p>Once curvature is computed, you can apply Ricci flow to adjust edge weights:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run Ricci flow on the core network</span>
 <span class="n">result_flow</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci_flow</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"core"</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;OTD&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"OTD"</span><span class="p">,</span>
     <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Now edge weights in net.core_network reflect the Ricci flow metric</span>
-<span class="n">G_flow</span> <span class="o">=</span> <span class="n">result_flow</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">]</span>
+<span class="n">G_flow</span> <span class="o">=</span> <span class="n">result_flow</span><span class="p">[</span><span class="s2">"core"</span><span class="p">]</span>
 
 <span class="c1"># Edge weights are updated to reflect Ricci flow</span>
 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_flow</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: weight after flow = </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: weight after flow = </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'weight'</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>After Ricci flow, edges with negative curvature (community boundaries) will have reduced weights, making them easier to identify or remove during community detection.</p>
@@ -247,7 +247,7 @@
 <p>To compute curvature separately for each layer:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature separately for each layer</span>
 <span class="n">layer_results</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">,</span>
     <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># None means all layers</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -255,17 +255,17 @@
 
 <span class="c1"># layer_results is a dictionary mapping layer identifiers to NetworkX graphs</span>
 <span class="k">for</span> <span class="n">layer_id</span><span class="p">,</span> <span class="n">G_layer</span> <span class="ow">in</span> <span class="n">layer_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Layer: </span><span class="si">{</span><span class="n">layer_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Layer: </span><span class="si">{</span><span class="n">layer_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_layer</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s2">&quot;ricciCurvature&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ricciCurvature&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"ricciCurvature"</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">'ricciCurvature'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can also specify a subset of layers:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature only for specific layers</span>
 <span class="n">layer_results</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">,</span>
-    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;layer1&quot;</span><span class="p">,</span> <span class="s2">&quot;layer2&quot;</span><span class="p">],</span>  <span class="c1"># Only these layers</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"layer1"</span><span class="p">,</span> <span class="s2">"layer2"</span><span class="p">],</span>  <span class="c1"># Only these layers</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
@@ -277,32 +277,32 @@
 <p>The <strong>supra-graph</strong> representation includes both intra-layer edges (within each layer) and inter-layer edges (coupling nodes across layers). This is the most comprehensive view of the multilayer network:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature on the supra-graph representation</span>
 <span class="n">supra_result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;supra&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"supra"</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="n">interlayer_weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Weight for inter-layer coupling edges</span>
     <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">G_supra</span> <span class="o">=</span> <span class="n">supra_result</span><span class="p">[</span><span class="s2">&quot;supra&quot;</span><span class="p">]</span>
+<span class="n">G_supra</span> <span class="o">=</span> <span class="n">supra_result</span><span class="p">[</span><span class="s2">"supra"</span><span class="p">]</span>
 
 <span class="c1"># Identify inter-layer edges with negative curvature (weak coupling)</span>
 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_supra</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># Same node, different layers</span>
-            <span class="n">curvature</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-layer edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">curvature</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">curvature</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"ricciCurvature"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Inter-layer edge </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: curvature = </span><span class="si">{</span><span class="n">curvature</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Similarly, you can apply Ricci flow to the supra-graph:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply Ricci flow on the supra-graph</span>
 <span class="n">supra_flow_result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci_flow</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;supra&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"supra"</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="n">iterations</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
     <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">G_supra_flow</span> <span class="o">=</span> <span class="n">supra_flow_result</span><span class="p">[</span><span class="s2">&quot;supra&quot;</span><span class="p">]</span>
+<span class="n">G_supra_flow</span> <span class="o">=</span> <span class="n">supra_flow_result</span><span class="p">[</span><span class="s2">"supra"</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>
@@ -315,12 +315,12 @@
 <p><strong>Signature:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_ollivier_ricci</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"core"</span><span class="p">,</span>
     <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">weight_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;weight&quot;</span><span class="p">,</span>
-    <span class="n">curvature_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+    <span class="n">weight_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"weight"</span><span class="p">,</span>
+    <span class="n">curvature_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ricciCurvature"</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ERROR"</span><span class="p">,</span>
     <span class="n">backend_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">interlayer_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -413,14 +413,14 @@
 <p><strong>Signature:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_ollivier_ricci_flow</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"core"</span><span class="p">,</span>
     <span class="n">layers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
     <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;OTD&quot;</span><span class="p">,</span>
-    <span class="n">weight_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;weight&quot;</span><span class="p">,</span>
-    <span class="n">curvature_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"OTD"</span><span class="p">,</span>
+    <span class="n">weight_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"weight"</span><span class="p">,</span>
+    <span class="n">curvature_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ricciCurvature"</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ERROR"</span><span class="p">,</span>
     <span class="n">backend_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">interlayer_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -518,19 +518,19 @@
 <h3>Identifying Community Boundaries<a class="headerlink" href="#identifying-community-boundaries" title="Link to this heading"></a></h3>
 <p>Edges with negative curvature often correspond to community boundaries:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">G</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"core"</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"core"</span><span class="p">]</span>
 
 <span class="c1"># Find edges with negative curvature (potential community boundaries)</span>
 <span class="n">boundary_edges</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">])</span>
+    <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">"ricciCurvature"</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.1</span>  <span class="c1"># Threshold</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"ricciCurvature"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.1</span>  <span class="c1"># Threshold</span>
 <span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">boundary_edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> potential community boundary edges&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">boundary_edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> potential community boundary edges"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">curvature</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">boundary_edges</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">curvature</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">curvature</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -541,11 +541,11 @@
 
 <span class="c1"># Apply Ricci flow</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci_flow</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"core"</span><span class="p">,</span>
     <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
-<span class="n">G_flow</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">]</span>
+<span class="n">G_flow</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"core"</span><span class="p">]</span>
 
 <span class="c1"># Run community detection on the flow-adjusted network</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_wrapper</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">G_flow</span><span class="p">)</span>
@@ -556,9 +556,9 @@
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">comm_sizes</span><span class="p">[</span><span class="n">comm_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comm_sizes</span><span class="p">)</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">comm_sizes</span><span class="p">)</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">comm_sizes</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -567,12 +567,12 @@
 <p>Use the supra-graph to analyze relationships between layers:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute curvature on supra-graph</span>
 <span class="n">supra_result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;supra&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"supra"</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="n">interlayer_weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
-<span class="n">G_supra</span> <span class="o">=</span> <span class="n">supra_result</span><span class="p">[</span><span class="s2">&quot;supra&quot;</span><span class="p">]</span>
+<span class="n">G_supra</span> <span class="o">=</span> <span class="n">supra_result</span><span class="p">[</span><span class="s2">"supra"</span><span class="p">]</span>
 
 <span class="c1"># Analyze intra-layer vs. inter-layer curvatures</span>
 <span class="n">intra_curvatures</span> <span class="o">=</span> <span class="p">[]</span>
@@ -580,17 +580,17 @@
 
 <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G_supra</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-        <span class="n">curvature</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ricciCurvature&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">curvature</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"ricciCurvature"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># Same layer (intra-layer edge)</span>
             <span class="n">intra_curvatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curvature</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># Same node, different layers (inter-layer edge)</span>
             <span class="n">inter_curvatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curvature</span><span class="p">)</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Intra-layer curvature: mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">intra_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, &quot;</span>
-      <span class="sa">f</span><span class="s2">&quot;std=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">intra_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-layer curvature: mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">inter_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, &quot;</span>
-      <span class="sa">f</span><span class="s2">&quot;std=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">inter_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Intra-layer curvature: mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">intra_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, "</span>
+      <span class="sa">f</span><span class="s2">"std=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">intra_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Inter-layer curvature: mean=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">inter_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, "</span>
+      <span class="sa">f</span><span class="s2">"std=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">inter_curvatures</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -608,9 +608,9 @@
 <p>Example with parallel computation:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use 4 CPU cores for parallel computation</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compute_ollivier_ricci</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"core"</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">backend_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;proc&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+    <span class="n">backend_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"proc"</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
 </div>

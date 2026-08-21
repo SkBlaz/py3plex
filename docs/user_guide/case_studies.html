@@ -190,21 +190,21 @@
 <span class="n">candidates</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="s2">"clustering"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ppi_network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="c1"># Compare social media presence (social networks)</span>
-<span class="k">for</span> <span class="n">platform</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;twitter&quot;</span><span class="p">,</span> <span class="s2">&quot;facebook&quot;</span><span class="p">,</span> <span class="s2">&quot;instagram&quot;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">platform</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"twitter"</span><span class="p">,</span> <span class="s2">"facebook"</span><span class="p">,</span> <span class="s2">"instagram"</span><span class="p">]:</span>
     <span class="n">influencers</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
          <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">platform</span><span class="p">])</span>
          <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">social_network</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">influencers</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> influencers&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">influencers</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> influencers"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>DSL enables rapid iteration in exploratory analysis!</p>
@@ -282,26 +282,26 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># === 1. Create the network ===</span>
-<span class="c1"># In practice, you&#39;d load from files; here we create a toy example</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+<span class="c1"># In practice, you'd load from files; here we create a toy example</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">'multiplex'</span><span class="p">)</span>
 
 <span class="c1"># Simulated PPI data (protein pairs by evidence type)</span>
 <span class="c1"># Replace with your actual data loading</span>
 <span class="n">ppi_data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Y2H&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CLB2&#39;</span><span class="p">,</span> <span class="s1">&#39;SIC1&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;MYO2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;TPM1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;MYO2&#39;</span><span class="p">,</span> <span class="s1">&#39;TPM1&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CDC6&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC6&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC1&#39;</span><span class="p">),</span>  <span class="c1"># cell cycle proteins</span>
+    <span class="s1">'Y2H'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'CDC28'</span><span class="p">,</span> <span class="s1">'CLB2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'CDC28'</span><span class="p">,</span> <span class="s1">'CLB5'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'CLB2'</span><span class="p">,</span> <span class="s1">'SIC1'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'ACT1'</span><span class="p">,</span> <span class="s1">'MYO2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'ACT1'</span><span class="p">,</span> <span class="s1">'TPM1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'MYO2'</span><span class="p">,</span> <span class="s1">'TPM1'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'CDC28'</span><span class="p">,</span> <span class="s1">'CDC6'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'CDC6'</span><span class="p">,</span> <span class="s1">'ORC1'</span><span class="p">),</span>  <span class="c1"># cell cycle proteins</span>
     <span class="p">],</span>
-    <span class="s1">&#39;APMS&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CKS1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CLB2&#39;</span><span class="p">,</span> <span class="s1">&#39;CKS1&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;ABP1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;TPM1&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;CDC6&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ORC1&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;ORC2&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC3&#39;</span><span class="p">),</span>  <span class="c1"># origin recognition complex</span>
+    <span class="s1">'APMS'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'CDC28'</span><span class="p">,</span> <span class="s1">'CLB2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'CDC28'</span><span class="p">,</span> <span class="s1">'CKS1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'CLB2'</span><span class="p">,</span> <span class="s1">'CKS1'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'ACT1'</span><span class="p">,</span> <span class="s1">'ABP1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'ACT1'</span><span class="p">,</span> <span class="s1">'TPM1'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'CDC6'</span><span class="p">,</span> <span class="s1">'ORC1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'ORC1'</span><span class="p">,</span> <span class="s1">'ORC2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'ORC2'</span><span class="p">,</span> <span class="s1">'ORC3'</span><span class="p">),</span>  <span class="c1"># origin recognition complex</span>
     <span class="p">],</span>
-    <span class="s1">&#39;Literature&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CLB5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;CDC28&#39;</span><span class="p">,</span> <span class="s1">&#39;CKS1&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;ACT1&#39;</span><span class="p">,</span> <span class="s1">&#39;MYO2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;MYO2&#39;</span><span class="p">,</span> <span class="s1">&#39;TPM1&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;CDC6&#39;</span><span class="p">,</span> <span class="s1">&#39;ORC1&#39;</span><span class="p">),</span>  <span class="c1"># well-established interaction</span>
+    <span class="s1">'Literature'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'CDC28'</span><span class="p">,</span> <span class="s1">'CLB2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'CDC28'</span><span class="p">,</span> <span class="s1">'CLB5'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'CDC28'</span><span class="p">,</span> <span class="s1">'CKS1'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'ACT1'</span><span class="p">,</span> <span class="s1">'MYO2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'MYO2'</span><span class="p">,</span> <span class="s1">'TPM1'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'CDC6'</span><span class="p">,</span> <span class="s1">'ORC1'</span><span class="p">),</span>  <span class="c1"># well-established interaction</span>
     <span class="p">],</span>
 <span class="p">}</span>
 
@@ -310,20 +310,20 @@
     <span class="k">for</span> <span class="n">protein1</span><span class="p">,</span> <span class="n">protein2</span> <span class="ow">in</span> <span class="n">interactions</span><span class="p">:</span>
         <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
             <span class="p">[</span><span class="n">protein1</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">protein2</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># === 2. Basic exploration ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Network Overview ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Network Overview ==="</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
 <span class="c1"># === 3. Identify high-confidence interactions ===</span>
 <span class="c1"># Interactions that appear in multiple evidence types are more reliable</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Evidence Overlap Analysis ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Evidence Overlap Analysis ==="</span><span class="p">)</span>
 
 <span class="c1"># Get edges from each layer</span>
 <span class="n">edges_by_layer</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
-    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
     <span class="c1"># Extract edge pairs (ignoring layer info)</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
@@ -342,18 +342,18 @@
     <span class="n">count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">layer_edges</span> <span class="ow">in</span> <span class="n">edges_by_layer</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">layer_edges</span><span class="p">)</span>
     <span class="n">edge_evidence_counts</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;High-confidence interactions (in 3/3 evidence types):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"High-confidence interactions (in 3/3 evidence types):"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">edge</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">edge_evidence_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> evidence types&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> evidence types"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Medium-confidence interactions (in 2/3 evidence types):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Medium-confidence interactions (in 2/3 evidence types):"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">edge</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">edge_evidence_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> evidence types&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> evidence types"</span><span class="p">)</span>
 
 <span class="c1"># === 4. Node activity analysis ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Protein Activity Across Evidence Types ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Protein Activity Across Evidence Types ==="</span><span class="p">)</span>
 <span class="n">unique_proteins</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
     <span class="n">unique_proteins</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Extract protein name</span>
@@ -363,13 +363,13 @@
     <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">protein</span><span class="p">)</span>
     <span class="n">protein_activity</span><span class="p">[</span><span class="n">protein</span><span class="p">]</span> <span class="o">=</span> <span class="n">activity</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Proteins present in all evidence types (activity = 1.0):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Proteins present in all evidence types (activity = 1.0):"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">protein</span><span class="p">,</span> <span class="n">activity</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">protein_activity</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">activity</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">protein</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">protein</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === 5. Community detection (functional modules) ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Functional Module Detection ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Functional Module Detection ==="</span><span class="p">)</span>
 
 <span class="c1"># Lower coupling (omega=0.5) because different evidence types</span>
 <span class="c1"># may reveal different aspects of the interactome</span>
@@ -382,7 +382,7 @@
 
 <span class="c1"># Analyze communities</span>
 <span class="n">num_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> functional modules&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> functional modules"</span><span class="p">)</span>
 
 <span class="c1"># Group proteins by community</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="p">{}</span>
@@ -392,16 +392,16 @@
         <span class="n">communities</span><span class="p">[</span><span class="n">comm</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="n">communities</span><span class="p">[</span><span class="n">comm</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Functional modules found:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Functional modules found:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">proteins</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Module </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">proteins</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Module </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">proteins</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === 6. Versatility analysis (cross-module bridging) ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Bridge Proteins (High Versatility) ===&quot;</span><span class="p">)</span>
-<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Bridge Proteins (High Versatility) ==="</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 <span class="n">top_versatile</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">versatility</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_versatile</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: versatility = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: versatility = </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Interpretation:</strong></p>
@@ -458,28 +458,28 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="c1"># === 1. Create the network ===</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">'multiplex'</span><span class="p">)</span>
 
 <span class="c1"># Simulated social network data</span>
 <span class="c1"># In practice: load from APIs or datasets with user ID mapping</span>
 <span class="n">social_data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Twitter&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_3&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;user_1&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;user_3&#39;</span><span class="p">,</span> <span class="s1">&#39;user_5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_6&#39;</span><span class="p">),</span>
+    <span class="s1">'Twitter'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'influencer_A'</span><span class="p">,</span> <span class="s1">'user_1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_A'</span><span class="p">,</span> <span class="s1">'user_2'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'influencer_A'</span><span class="p">,</span> <span class="s1">'user_3'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_B'</span><span class="p">,</span> <span class="s1">'user_2'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'influencer_B'</span><span class="p">,</span> <span class="s1">'user_4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'user_1'</span><span class="p">,</span> <span class="s1">'user_2'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'user_3'</span><span class="p">,</span> <span class="s1">'user_5'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_C'</span><span class="p">,</span> <span class="s1">'user_6'</span><span class="p">),</span>
     <span class="p">],</span>
-    <span class="s1">&#39;YouTube&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_3&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_3&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_6&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_7&#39;</span><span class="p">),</span>
+    <span class="s1">'YouTube'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'influencer_A'</span><span class="p">,</span> <span class="s1">'user_1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_A'</span><span class="p">,</span> <span class="s1">'user_3'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'influencer_B'</span><span class="p">,</span> <span class="s1">'user_2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_B'</span><span class="p">,</span> <span class="s1">'user_3'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'influencer_B'</span><span class="p">,</span> <span class="s1">'user_4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_C'</span><span class="p">,</span> <span class="s1">'user_6'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'influencer_C'</span><span class="p">,</span> <span class="s1">'user_7'</span><span class="p">),</span>
     <span class="p">],</span>
-    <span class="s1">&#39;Instagram&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_A&#39;</span><span class="p">,</span> <span class="s1">&#39;user_4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_B&#39;</span><span class="p">,</span> <span class="s1">&#39;user_5&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;user_1&#39;</span><span class="p">,</span> <span class="s1">&#39;user_2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;user_2&#39;</span><span class="p">,</span> <span class="s1">&#39;user_3&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_6&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;influencer_C&#39;</span><span class="p">,</span> <span class="s1">&#39;user_8&#39;</span><span class="p">),</span>
+    <span class="s1">'Instagram'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'influencer_A'</span><span class="p">,</span> <span class="s1">'user_1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_A'</span><span class="p">,</span> <span class="s1">'user_2'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'influencer_A'</span><span class="p">,</span> <span class="s1">'user_4'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_B'</span><span class="p">,</span> <span class="s1">'user_5'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'user_1'</span><span class="p">,</span> <span class="s1">'user_2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'user_2'</span><span class="p">,</span> <span class="s1">'user_3'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'influencer_C'</span><span class="p">,</span> <span class="s1">'user_6'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'influencer_C'</span><span class="p">,</span> <span class="s1">'user_8'</span><span class="p">),</span>
     <span class="p">],</span>
 <span class="p">}</span>
 
@@ -487,14 +487,14 @@
     <span class="k">for</span> <span class="n">user1</span><span class="p">,</span> <span class="n">user2</span> <span class="ow">in</span> <span class="n">connections</span><span class="p">:</span>
         <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
             <span class="p">[</span><span class="n">user1</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">user2</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># === 2. Basic statistics ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Network Overview ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Network Overview ==="</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
 <span class="c1"># === 3. Cross-platform presence ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Platform Presence ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Cross-Platform Presence ==="</span><span class="p">)</span>
 <span class="n">unique_users</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
     <span class="n">unique_users</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -503,35 +503,35 @@
     <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
     <span class="n">platforms</span> <span class="o">=</span> <span class="n">activity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">activity</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">: present on ALL platforms&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">: present on ALL platforms"</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">activity</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">: present on </span><span class="si">{</span><span class="n">platforms</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">/3 platforms&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">: present on </span><span class="si">{</span><span class="n">platforms</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">/3 platforms"</span><span class="p">)</span>
 
 <span class="c1"># === 4. Platform-specific centrality ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Centrality by Platform ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Centrality by Platform ==="</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">platform</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
-    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">platform</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">platform</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">core_network</span>
 
     <span class="c1"># Compute degree centrality</span>
     <span class="n">degree_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
     <span class="n">top_users</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">degree_cent</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2"> - Top 3 by degree:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">platform</span><span class="si">}</span><span class="s2"> - Top 3 by degree:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_users</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === 5. Cross-platform influence (versatility) ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Platform Influencers (High Versatility) ===&quot;</span><span class="p">)</span>
-<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Cross-Platform Influencers (High Versatility) ==="</span><span class="p">)</span>
+<span class="n">versatility</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span>
 <span class="n">top_versatile</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">versatility</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top_versatile</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === 6. Layer similarity ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Platform Similarity ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Platform Similarity ==="</span><span class="p">)</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
@@ -541,14 +541,14 @@
         <span class="n">overlap</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">)</span>
 
         <span class="c1"># Jaccard similarity</span>
-        <span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;jaccard&#39;</span><span class="p">)</span>
+        <span class="n">similarity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_similarity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'jaccard'</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">layer1</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">layer2</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Edge overlap: </span><span class="si">{</span><span class="n">overlap</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Jaccard similarity: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">layer1</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">layer2</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Edge overlap: </span><span class="si">{</span><span class="n">overlap</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Jaccard similarity: </span><span class="si">{</span><span class="n">similarity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === 7. Cross-platform community detection ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Platform Communities ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Cross-Platform Communities ==="</span><span class="p">)</span>
 
 <span class="c1"># High coupling because we expect influencers to attract similar audiences</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
@@ -559,7 +559,7 @@
 <span class="p">)</span>
 
 <span class="n">num_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> cross-platform communities&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected </span><span class="si">{</span><span class="n">num_communities</span><span class="si">}</span><span class="s2"> cross-platform communities"</span><span class="p">)</span>
 
 <span class="c1"># Analyze which users are in which community</span>
 <span class="n">communities</span> <span class="o">=</span> <span class="p">{}</span>
@@ -569,13 +569,13 @@
         <span class="n">communities</span><span class="p">[</span><span class="n">comm</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="n">communities</span><span class="p">[</span><span class="n">comm</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Communities (by unique users):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Communities (by unique users):"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">comm_id</span><span class="p">,</span> <span class="n">users</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="n">influencers</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span> <span class="k">if</span> <span class="s1">&#39;influencer&#39;</span> <span class="ow">in</span> <span class="n">u</span><span class="p">]</span>
-    <span class="n">regular</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span> <span class="k">if</span> <span class="s1">&#39;influencer&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">u</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">influencers</span><span class="p">)</span><span class="si">}</span><span class="s2"> influencers, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">regular</span><span class="p">)</span><span class="si">}</span><span class="s2"> regular users&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Influencers: </span><span class="si">{</span><span class="n">influencers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Sample users: </span><span class="si">{</span><span class="n">regular</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">influencers</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span> <span class="k">if</span> <span class="s1">'influencer'</span> <span class="ow">in</span> <span class="n">u</span><span class="p">]</span>
+    <span class="n">regular</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span> <span class="k">if</span> <span class="s1">'influencer'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">u</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Community </span><span class="si">{</span><span class="n">comm_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">influencers</span><span class="p">)</span><span class="si">}</span><span class="s2"> influencers, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">regular</span><span class="p">)</span><span class="si">}</span><span class="s2"> regular users"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Influencers: </span><span class="si">{</span><span class="n">influencers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Sample users: </span><span class="si">{</span><span class="n">regular</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Interpretation:</strong></p>
@@ -635,30 +635,30 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="c1"># === 1. Create the transportation network ===</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">&#39;multiplex&#39;</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s1">'multiplex'</span><span class="p">)</span>
 
 <span class="c1"># Simulated city transport data</span>
 <span class="c1"># Stations are named by neighborhood/landmark</span>
 <span class="n">transport_data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Metro&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Financial&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Financial&#39;</span><span class="p">,</span> <span class="s1">&#39;Tech_Park&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;University&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;University&#39;</span><span class="p">,</span> <span class="s1">&#39;Hospital&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_North&#39;</span><span class="p">),</span>
+    <span class="s1">'Metro'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'Central'</span><span class="p">,</span> <span class="s1">'Financial'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Financial'</span><span class="p">,</span> <span class="s1">'Tech_Park'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Central'</span><span class="p">,</span> <span class="s1">'University'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'University'</span><span class="p">,</span> <span class="s1">'Hospital'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Central'</span><span class="p">,</span> <span class="s1">'Shopping_Mall'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Shopping_Mall'</span><span class="p">,</span> <span class="s1">'Residential_North'</span><span class="p">),</span>
     <span class="p">],</span>
-    <span class="s1">&#39;Bus&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Financial&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Financial&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_East&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;University&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;University&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_South&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_North&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Tech_Park&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_East&#39;</span><span class="p">),</span>  <span class="c1"># Bus connects where metro doesn&#39;t</span>
-        <span class="p">(</span><span class="s1">&#39;Hospital&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_South&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Airport&#39;</span><span class="p">,</span> <span class="s1">&#39;Central&#39;</span><span class="p">),</span>  <span class="c1"># Bus to airport</span>
+    <span class="s1">'Bus'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'Central'</span><span class="p">,</span> <span class="s1">'Financial'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Financial'</span><span class="p">,</span> <span class="s1">'Residential_East'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Central'</span><span class="p">,</span> <span class="s1">'University'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'University'</span><span class="p">,</span> <span class="s1">'Residential_South'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Central'</span><span class="p">,</span> <span class="s1">'Shopping_Mall'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Shopping_Mall'</span><span class="p">,</span> <span class="s1">'Residential_North'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Tech_Park'</span><span class="p">,</span> <span class="s1">'Residential_East'</span><span class="p">),</span>  <span class="c1"># Bus connects where metro doesn't</span>
+        <span class="p">(</span><span class="s1">'Hospital'</span><span class="p">,</span> <span class="s1">'Residential_South'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Airport'</span><span class="p">,</span> <span class="s1">'Central'</span><span class="p">),</span>  <span class="c1"># Bus to airport</span>
     <span class="p">],</span>
-    <span class="s1">&#39;Bikeshare&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;Financial&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Financial&#39;</span><span class="p">,</span> <span class="s1">&#39;Tech_Park&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Central&#39;</span><span class="p">,</span> <span class="s1">&#39;University&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;University&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_South&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Shopping_Mall&#39;</span><span class="p">,</span> <span class="s1">&#39;Residential_North&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;Tech_Park&#39;</span><span class="p">,</span> <span class="s1">&#39;Coffee_District&#39;</span><span class="p">),</span>  <span class="c1"># Bike-only area</span>
-        <span class="p">(</span><span class="s1">&#39;University&#39;</span><span class="p">,</span> <span class="s1">&#39;Student_Housing&#39;</span><span class="p">),</span>  <span class="c1"># Bike-only connection</span>
+    <span class="s1">'Bikeshare'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'Central'</span><span class="p">,</span> <span class="s1">'Financial'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Financial'</span><span class="p">,</span> <span class="s1">'Tech_Park'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Central'</span><span class="p">,</span> <span class="s1">'University'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'University'</span><span class="p">,</span> <span class="s1">'Residential_South'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Shopping_Mall'</span><span class="p">,</span> <span class="s1">'Residential_North'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Tech_Park'</span><span class="p">,</span> <span class="s1">'Coffee_District'</span><span class="p">),</span>  <span class="c1"># Bike-only area</span>
+        <span class="p">(</span><span class="s1">'University'</span><span class="p">,</span> <span class="s1">'Student_Housing'</span><span class="p">),</span>  <span class="c1"># Bike-only connection</span>
     <span class="p">],</span>
 <span class="p">}</span>
 
@@ -666,14 +666,14 @@
     <span class="k">for</span> <span class="n">stop1</span><span class="p">,</span> <span class="n">stop2</span> <span class="ow">in</span> <span class="n">connections</span><span class="p">:</span>
         <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
             <span class="p">[</span><span class="n">stop1</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">stop2</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># === 2. Network overview ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Transportation Network Overview ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Transportation Network Overview ==="</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
 <span class="c1"># === 3. Multimodal hub identification ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Multimodal Hubs ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Multimodal Hubs ==="</span><span class="p">)</span>
 <span class="n">unique_stations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
     <span class="n">unique_stations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -684,23 +684,23 @@
     <span class="n">num_modes</span> <span class="o">=</span> <span class="n">activity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
     <span class="n">station_modes</span><span class="p">[</span><span class="n">station</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_modes</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stations by number of transport modes:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Stations by number of transport modes:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">station</span><span class="p">,</span> <span class="n">modes</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">station_modes</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">mode_names</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
-        <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">mode</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+        <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">mode</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
         <span class="n">layer_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()]</span>
         <span class="k">if</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">layer_nodes</span><span class="p">:</span>
             <span class="n">mode_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">modes</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">station</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">modes</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> modes (</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mode_names</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">station</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">modes</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> modes (</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mode_names</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
 <span class="c1"># === 4. Mode-specific analysis ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Transport Mode Characteristics ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Transport Mode Characteristics ==="</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
-    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">mode</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">mode</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">core_network</span>
 
     <span class="n">num_stops</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
@@ -711,38 +711,38 @@
     <span class="n">degree_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
     <span class="n">top_stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">degree_cent</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Stops: </span><span class="si">{</span><span class="n">num_stops</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Connections: </span><span class="si">{</span><span class="n">num_connections</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Network density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Most connected: </span><span class="si">{</span><span class="n">top_stop</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> (degree=</span><span class="si">{</span><span class="n">top_stop</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Stops: </span><span class="si">{</span><span class="n">num_stops</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Connections: </span><span class="si">{</span><span class="n">num_connections</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Network density: </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Most connected: </span><span class="si">{</span><span class="n">top_stop</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> (degree=</span><span class="si">{</span><span class="n">top_stop</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
 <span class="c1"># === 5. Resilience analysis: What if Central closes? ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Resilience Analysis: Central Station Failure ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Resilience Analysis: Central Station Failure ==="</span><span class="p">)</span>
 
 <span class="c1"># Current connectivity</span>
 <span class="n">G_full</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 <span class="n">num_components_before</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">number_connected_components</span><span class="p">(</span><span class="n">G_full</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Before failure: </span><span class="si">{</span><span class="n">num_components_before</span><span class="si">}</span><span class="s2"> connected component(s)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Before failure: </span><span class="si">{</span><span class="n">num_components_before</span><span class="si">}</span><span class="s2"> connected component(s)"</span><span class="p">)</span>
 
 <span class="c1"># Simulate failure by removing Central from all layers</span>
 <span class="n">G_after</span> <span class="o">=</span> <span class="n">G_full</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">central_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G_after</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Central&#39;</span><span class="p">]</span>
+<span class="n">central_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G_after</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Central'</span><span class="p">]</span>
 <span class="n">G_after</span><span class="o">.</span><span class="n">remove_nodes_from</span><span class="p">(</span><span class="n">central_nodes</span><span class="p">)</span>
 
 <span class="n">num_components_after</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">number_connected_components</span><span class="p">(</span><span class="n">G_after</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;After removing Central: </span><span class="si">{</span><span class="n">num_components_after</span><span class="si">}</span><span class="s2"> connected component(s)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"After removing Central: </span><span class="si">{</span><span class="n">num_components_after</span><span class="si">}</span><span class="s2"> connected component(s)"</span><span class="p">)</span>
 
 <span class="c1"># Which stations become disconnected?</span>
 <span class="k">if</span> <span class="n">num_components_after</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
     <span class="n">components</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G_after</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Resulting network fragments:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Resulting network fragments:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">components</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
         <span class="n">stations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">comp</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Fragment </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stations</span><span class="p">)</span><span class="si">}</span><span class="s2"> stations): </span><span class="si">{</span><span class="n">stations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Fragment </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stations</span><span class="p">)</span><span class="si">}</span><span class="s2"> stations): </span><span class="si">{</span><span class="n">stations</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === 6. Travel basin detection ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Travel Basins (Communities) ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Travel Basins (Communities) ==="</span><span class="p">)</span>
 
 <span class="c1"># Moderate coupling: travel patterns may differ by mode</span>
 <span class="n">partition</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span>
@@ -753,7 +753,7 @@
 <span class="p">)</span>
 
 <span class="n">num_basins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="n">num_basins</span><span class="si">}</span><span class="s2"> travel basins&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected </span><span class="si">{</span><span class="n">num_basins</span><span class="si">}</span><span class="s2"> travel basins"</span><span class="p">)</span>
 
 <span class="c1"># Group stations by basin</span>
 <span class="n">basins</span> <span class="o">=</span> <span class="p">{}</span>
@@ -763,9 +763,9 @@
         <span class="n">basins</span><span class="p">[</span><span class="n">basin</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="n">basins</span><span class="p">[</span><span class="n">basin</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Travel basins:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Travel basins:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">basin_id</span><span class="p">,</span> <span class="n">stations</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">basins</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Basin </span><span class="si">{</span><span class="n">basin_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">stations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Basin </span><span class="si">{</span><span class="n">basin_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">stations</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Interpretation:</strong></p>
@@ -830,53 +830,53 @@
 
 <span class="c1"># Authors write papers</span>
 <span class="n">authorship_data</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Smith&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Smith&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_2&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Jones&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Jones&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_3&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Chen&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_2&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Chen&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_4&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Kim&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_3&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Kim&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_4&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Garcia&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_5&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Lee&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_5&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Smith&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_6&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Lee&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper_6&#39;</span><span class="p">),</span>  <span class="c1"># Cross-institution collab</span>
+    <span class="p">(</span><span class="s1">'Dr_Smith'</span><span class="p">,</span> <span class="s1">'Paper_1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Smith'</span><span class="p">,</span> <span class="s1">'Paper_2'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dr_Jones'</span><span class="p">,</span> <span class="s1">'Paper_1'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Jones'</span><span class="p">,</span> <span class="s1">'Paper_3'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dr_Chen'</span><span class="p">,</span> <span class="s1">'Paper_2'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Chen'</span><span class="p">,</span> <span class="s1">'Paper_4'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dr_Kim'</span><span class="p">,</span> <span class="s1">'Paper_3'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Kim'</span><span class="p">,</span> <span class="s1">'Paper_4'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dr_Garcia'</span><span class="p">,</span> <span class="s1">'Paper_5'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Lee'</span><span class="p">,</span> <span class="s1">'Paper_5'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dr_Smith'</span><span class="p">,</span> <span class="s1">'Paper_6'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Lee'</span><span class="p">,</span> <span class="s1">'Paper_6'</span><span class="p">),</span>  <span class="c1"># Cross-institution collab</span>
 <span class="p">]</span>
 
 <span class="c1"># Papers published in venues</span>
 <span class="n">publication_data</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">&#39;Paper_1&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Paper_2&#39;</span><span class="p">,</span> <span class="s1">&#39;NeurIPS&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Paper_3&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Paper_4&#39;</span><span class="p">,</span> <span class="s1">&#39;NeurIPS&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Paper_5&#39;</span><span class="p">,</span> <span class="s1">&#39;AAAI&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Paper_6&#39;</span><span class="p">,</span> <span class="s1">&#39;ICML&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Paper_1'</span><span class="p">,</span> <span class="s1">'ICML'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Paper_2'</span><span class="p">,</span> <span class="s1">'NeurIPS'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Paper_3'</span><span class="p">,</span> <span class="s1">'ICML'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Paper_4'</span><span class="p">,</span> <span class="s1">'NeurIPS'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Paper_5'</span><span class="p">,</span> <span class="s1">'AAAI'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Paper_6'</span><span class="p">,</span> <span class="s1">'ICML'</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="c1"># Authors affiliated with institutions</span>
 <span class="n">affiliation_data</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Smith&#39;</span><span class="p">,</span> <span class="s1">&#39;MIT&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Jones&#39;</span><span class="p">,</span> <span class="s1">&#39;MIT&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Chen&#39;</span><span class="p">,</span> <span class="s1">&#39;Stanford&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Kim&#39;</span><span class="p">,</span> <span class="s1">&#39;Stanford&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">&#39;Dr_Garcia&#39;</span><span class="p">,</span> <span class="s1">&#39;Berkeley&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Dr_Lee&#39;</span><span class="p">,</span> <span class="s1">&#39;Berkeley&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dr_Smith'</span><span class="p">,</span> <span class="s1">'MIT'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Jones'</span><span class="p">,</span> <span class="s1">'MIT'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dr_Chen'</span><span class="p">,</span> <span class="s1">'Stanford'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Kim'</span><span class="p">,</span> <span class="s1">'Stanford'</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">'Dr_Garcia'</span><span class="p">,</span> <span class="s1">'Berkeley'</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Dr_Lee'</span><span class="p">,</span> <span class="s1">'Berkeley'</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="c1"># Add to network with explicit layer/type information</span>
 <span class="k">for</span> <span class="n">author</span><span class="p">,</span> <span class="n">paper</span> <span class="ow">in</span> <span class="n">authorship_data</span><span class="p">:</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">[</span><span class="n">author</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">author</span><span class="p">,</span> <span class="s1">'authors'</span><span class="p">,</span> <span class="n">paper</span><span class="p">,</span> <span class="s1">'papers'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">paper</span><span class="p">,</span> <span class="n">venue</span> <span class="ow">in</span> <span class="n">publication_data</span><span class="p">:</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">[</span><span class="n">paper</span><span class="p">,</span> <span class="s1">&#39;papers&#39;</span><span class="p">,</span> <span class="n">venue</span><span class="p">,</span> <span class="s1">&#39;venues&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">paper</span><span class="p">,</span> <span class="s1">'papers'</span><span class="p">,</span> <span class="n">venue</span><span class="p">,</span> <span class="s1">'venues'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">author</span><span class="p">,</span> <span class="n">institution</span> <span class="ow">in</span> <span class="n">affiliation_data</span><span class="p">:</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">[</span><span class="n">author</span><span class="p">,</span> <span class="s1">&#39;authors&#39;</span><span class="p">,</span> <span class="n">institution</span><span class="p">,</span> <span class="s1">&#39;institutions&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">author</span><span class="p">,</span> <span class="s1">'authors'</span><span class="p">,</span> <span class="n">institution</span><span class="p">,</span> <span class="s1">'institutions'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># === 2. Network overview ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Academic Network Overview ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Academic Network Overview ==="</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
 <span class="c1"># === 3. Meta-path based analysis ===</span>
 <span class="c1"># Meta-path: Author → Paper → Venue → Paper → Author</span>
 <span class="c1"># This finds authors who publish in the same venues</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Meta-Path Analysis: Authors Publishing in Same Venues ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Meta-Path Analysis: Authors Publishing in Same Venues ==="</span><span class="p">)</span>
 
 <span class="n">G</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span>
 
@@ -887,25 +887,25 @@
         <span class="k">if</span> <span class="n">paper</span> <span class="o">==</span> <span class="n">p</span><span class="p">:</span>
             <span class="n">author_venues</span><span class="p">[</span><span class="n">author</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">venue</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Authors by venue:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Authors by venue:"</span><span class="p">)</span>
 <span class="n">venue_authors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">author</span><span class="p">,</span> <span class="n">venues</span> <span class="ow">in</span> <span class="n">author_venues</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">venue</span> <span class="ow">in</span> <span class="n">venues</span><span class="p">:</span>
         <span class="n">venue_authors</span><span class="p">[</span><span class="n">venue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">venue</span><span class="p">,</span> <span class="n">authors</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">venue_authors</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">venue</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">authors</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">venue</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">authors</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Find co-venue patterns (authors who could collaborate based on venue)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Potential collaborators (same venues):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Potential collaborators (same venues):"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">venue</span><span class="p">,</span> <span class="n">authors</span> <span class="ow">in</span> <span class="n">venue_authors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">authors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">authors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2"> (both publish at </span><span class="si">{</span><span class="n">venue</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">authors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">authors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="si">}</span><span class="s2"> (both publish at </span><span class="si">{</span><span class="n">venue</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
 <span class="c1"># === 4. Cross-institution collaboration analysis ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Cross-Institution Collaborations ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Cross-Institution Collaborations ==="</span><span class="p">)</span>
 
 <span class="c1"># Find author affiliations</span>
 <span class="n">author_institution</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">affiliation_data</span><span class="p">)</span>
@@ -922,17 +922,17 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)):</span>
                 <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">authors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">authors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-                <span class="n">inst1</span> <span class="o">=</span> <span class="n">author_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
-                <span class="n">inst2</span> <span class="o">=</span> <span class="n">author_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
+                <span class="n">inst1</span> <span class="o">=</span> <span class="n">author_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="s1">'Unknown'</span><span class="p">)</span>
+                <span class="n">inst2</span> <span class="o">=</span> <span class="n">author_institution</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="s1">'Unknown'</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">inst1</span> <span class="o">!=</span> <span class="n">inst2</span><span class="p">:</span>
                     <span class="n">cross_institution_collabs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">paper</span><span class="p">,</span> <span class="n">inst1</span><span class="p">,</span> <span class="n">inst2</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cross-institution collaborations:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cross-institution collaborations:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">paper</span><span class="p">,</span> <span class="n">inst1</span><span class="p">,</span> <span class="n">inst2</span> <span class="ow">in</span> <span class="n">cross_institution_collabs</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">a1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">inst1</span><span class="si">}</span><span class="s2">) -- </span><span class="si">{</span><span class="n">a2</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">inst2</span><span class="si">}</span><span class="s2">) on </span><span class="si">{</span><span class="n">paper</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">a1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">inst1</span><span class="si">}</span><span class="s2">) -- </span><span class="si">{</span><span class="n">a2</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">inst2</span><span class="si">}</span><span class="s2">) on </span><span class="si">{</span><span class="n">paper</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === 5. Author influence metrics ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Author Influence ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Author Influence ==="</span><span class="p">)</span>
 
 <span class="c1"># Count papers per author</span>
 <span class="n">author_paper_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">authorship_data</span><span class="p">)</span>
@@ -948,19 +948,19 @@
             <span class="k">if</span> <span class="n">author</span> <span class="o">!=</span> <span class="n">coauthor</span><span class="p">:</span>
                 <span class="n">author_coauthors</span><span class="p">[</span><span class="n">author</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">coauthor</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Author metrics:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Author&#39;</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Papers&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Venues&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Coauthors&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">45</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Author metrics:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Author'</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Papers'</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Venues'</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Coauthors'</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">45</span><span class="p">)</span>
 
 <span class="n">all_authors</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">authorship_data</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_authors</span><span class="p">):</span>
     <span class="n">papers</span> <span class="o">=</span> <span class="n">author_paper_count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">venues</span> <span class="o">=</span> <span class="n">author_venue_count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">coauthors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">author_coauthors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">author</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">papers</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">venues</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">coauthors</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">author</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">papers</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">venues</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">coauthors</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># === 6. Institution collaboration network ===</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Institution Collaboration Network ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Institution Collaboration Network ==="</span><span class="p">)</span>
 
 <span class="c1"># Build institution-level collaboration graph</span>
 <span class="n">inst_collabs</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
@@ -968,9 +968,9 @@
     <span class="n">pair</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">inst1</span><span class="p">,</span> <span class="n">inst2</span><span class="p">]))</span>
     <span class="n">inst_collabs</span><span class="p">[</span><span class="n">pair</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Institution pairs by collaboration count:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Institution pairs by collaboration count:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">pair</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">inst_collabs</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> joint papers&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> joint papers"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Interpretation:</strong></p>
@@ -1020,20 +1020,20 @@
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;your_data.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'your_data.csv'</span><span class="p">)</span>
 <span class="c1"># Expected columns: source, target, layer, weight</span>
 
 <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-        <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]]</span>
-    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">'source'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">'layer'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">'target'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">'layer'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">'weight'</span><span class="p">]]</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>From multiple files (one per layer):</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layer_files</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;layer1&#39;</span><span class="p">:</span> <span class="s1">&#39;layer1_edges.csv&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;layer2&#39;</span><span class="p">:</span> <span class="s1">&#39;layer2_edges.csv&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;layer3&#39;</span><span class="p">:</span> <span class="s1">&#39;layer3_edges.csv&#39;</span><span class="p">,</span>
+    <span class="s1">'layer1'</span><span class="p">:</span> <span class="s1">'layer1_edges.csv'</span><span class="p">,</span>
+    <span class="s1">'layer2'</span><span class="p">:</span> <span class="s1">'layer2_edges.csv'</span><span class="p">,</span>
+    <span class="s1">'layer3'</span><span class="p">:</span> <span class="s1">'layer3_edges.csv'</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
@@ -1042,8 +1042,8 @@
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
         <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-            <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">layer_name</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
-        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">'source'</span><span class="p">],</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">'target'</span><span class="p">],</span> <span class="n">layer_name</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+        <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>From database:</strong></p>
@@ -1052,14 +1052,14 @@
 
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 
-<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;network.db&#39;</span><span class="p">)</span>
+<span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'network.db'</span><span class="p">)</span>
 <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
 
-<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT source, target, layer, weight FROM edges&#39;</span><span class="p">)</span>
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'SELECT source, target, layer, weight FROM edges'</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">():</span>
     <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
         <span class="p">[</span><span class="n">source</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">weight</span><span class="p">]</span>
-    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>

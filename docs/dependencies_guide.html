@@ -221,7 +221,7 @@
 <h3><a class="toc-backref" href="#id3" role="doc-backlink">Verifying Installation</a><a class="headerlink" href="#verifying-installation" title="Link to this heading"></a></h3>
 <p>Confirm that Py3plex and core dependencies import correctly. Run this in the same environment where you installed the package. Add optional imports (<code class="docutils literal notranslate"><span class="pre">plotly</span></code>, <code class="docutils literal notranslate"><span class="pre">igraph</span></code>, <code class="docutils literal notranslate"><span class="pre">infomap</span></code>) if you installed those extras:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">py3plex</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Py3plex version: </span><span class="si">{</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Py3plex version: </span><span class="si">{</span><span class="n">py3plex</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Check key dependencies</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
@@ -229,12 +229,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NetworkX: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NumPy: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SciPy: </span><span class="si">{</span><span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matplotlib: </span><span class="si">{</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"NetworkX: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"NumPy: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SciPy: </span><span class="si">{</span><span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Matplotlib: </span><span class="si">{</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[OK] All core dependencies available&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[OK] All core dependencies available"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -279,9 +279,9 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">plotly</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">igraph</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[OK] Advanced visualization available&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"[OK] Advanced visualization available"</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[X] Install with: pip install py3plex[viz]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"[X] Install with: pip install py3plex[viz]"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -308,7 +308,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
 
 <span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> communities"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -333,10 +333,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if available</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">infomap</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[OK] Infomap available&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"[OK] Infomap available"</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[X] Install with: pip install py3plex[infomap]&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  OR use Louvain algorithm instead&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"[X] Install with: pip install py3plex[infomap]"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"  OR use Louvain algorithm instead"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -352,7 +352,7 @@
 <p>For contributors and developers:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SkBlaz/py3plex.git
 <span class="nb">cd</span><span class="w"> </span>py3plex
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 </pre></div>
 </div>
 <p><strong>Provides:</strong></p>
@@ -489,7 +489,7 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 <p><strong>Cause:</strong> Matplotlib backend issue (often on headless servers).</p>
 <p><strong>Solution:</strong> Use a non-interactive backend.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'Agg'</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 </pre></div>
 </div>
@@ -531,7 +531,7 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>networkx
 
 <span class="c1"># Verify version</span>
-python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import networkx; print(networkx.__version__)&quot;</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import networkx; print(networkx.__version__)"</span>
 <span class="c1"># Should be &gt;= 2.5</span>
 </pre></div>
 </div>
@@ -545,7 +545,7 @@ python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;i
 <p>When a user encounters a missing dependency error:</p>
 <p><strong>Step 1:</strong> Identify the missing package from the error message</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example error:</span>
-<span class="c1"># ModuleNotFoundError: No module named &#39;plotly&#39;</span>
+<span class="c1"># ModuleNotFoundError: No module named 'plotly'</span>
 </pre></div>
 </div>
 <p><strong>Step 2:</strong> Suggest appropriate installation command</p>
@@ -568,50 +568,50 @@ pip<span class="w"> </span>install<span class="w"> </span>py3plex<span class="o"
 <section id="quick-dependency-checker-script">
 <h3><a class="toc-backref" href="#id17" role="doc-backlink">Quick Dependency Checker Script</a><a class="headerlink" href="#quick-dependency-checker-script" title="Link to this heading"></a></h3>
 <p>Provide users with this diagnostic script:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Check Py3plex dependencies.&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">"""Check Py3plex dependencies."""</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">check_dependencies</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check which dependencies are available.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Check which dependencies are available."""</span>
 
     <span class="n">required</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;networkx&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;networkx&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;scipy&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;scipy&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;matplotlib&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;matplotlib&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;pandas&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="s1">&#39;pandas&#39;</span><span class="p">),</span>
+        <span class="s1">'networkx'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Core'</span><span class="p">,</span> <span class="s1">'networkx'</span><span class="p">),</span>
+        <span class="s1">'numpy'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Core'</span><span class="p">,</span> <span class="s1">'numpy'</span><span class="p">),</span>
+        <span class="s1">'scipy'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Core'</span><span class="p">,</span> <span class="s1">'scipy'</span><span class="p">),</span>
+        <span class="s1">'matplotlib'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Core'</span><span class="p">,</span> <span class="s1">'matplotlib'</span><span class="p">),</span>
+        <span class="s1">'pandas'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Core'</span><span class="p">,</span> <span class="s1">'pandas'</span><span class="p">),</span>
     <span class="p">}</span>
 
     <span class="n">optional</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;plotly&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Visualization&#39;</span><span class="p">,</span> <span class="s1">&#39;plotly&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;igraph&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Visualization&#39;</span><span class="p">,</span> <span class="s1">&#39;igraph&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;infomap&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Community detection&#39;</span><span class="p">,</span> <span class="s1">&#39;infomap&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;python-louvain&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Community detection&#39;</span><span class="p">,</span> <span class="s1">&#39;community&#39;</span><span class="p">),</span>
+        <span class="s1">'plotly'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Visualization'</span><span class="p">,</span> <span class="s1">'plotly'</span><span class="p">),</span>
+        <span class="s1">'igraph'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Visualization'</span><span class="p">,</span> <span class="s1">'igraph'</span><span class="p">),</span>
+        <span class="s1">'infomap'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Community detection'</span><span class="p">,</span> <span class="s1">'infomap'</span><span class="p">),</span>
+        <span class="s1">'python-louvain'</span><span class="p">:</span> <span class="p">(</span><span class="s1">'Community detection'</span><span class="p">,</span> <span class="s1">'community'</span><span class="p">),</span>
     <span class="p">}</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Py3plex Dependency Check ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"=== Py3plex Dependency Check ===</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Required packages:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Required packages:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">package</span><span class="p">,</span> <span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">required</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [OK] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  [OK] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [X] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">) - MISSING!&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  [X] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">) - MISSING!"</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Optional packages:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Optional packages:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">package</span><span class="p">,</span> <span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">optional</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">__import__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [OK] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  [OK] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [X] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">) - Not installed&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  [X] </span><span class="si">{</span><span class="n">package</span><span class="si">:</span><span class="s2">20s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">) - Not installed"</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Installation commands:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Core: pip install py3plex&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Viz:  pip install py3plex[viz]&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  All:  pip install py3plex[viz,algos]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Installation commands:"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"  Core: pip install py3plex"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"  Viz:  pip install py3plex[viz]"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"  All:  pip install py3plex[viz,algos]"</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
     <span class="n">check_dependencies</span><span class="p">()</span>
 </pre></div>
 </div>

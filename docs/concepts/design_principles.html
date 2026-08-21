@@ -223,7 +223,7 @@
 <span class="c1"># Simple, intuitive API</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="c1"># List format: [source, source_layer, target, target_layer, weight]</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>  <span class="c1"># Works immediately</span>
 </pre></div>
 </div>
@@ -294,10 +294,10 @@
 <span class="c1"># Multiple ways to create networks</span>
 
 <span class="c1"># Method 1: Direct edge addition</span>
-<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
 
 <span class="c1"># Method 2: Load from file</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">&quot;data.edgelist&quot;</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"data.edgelist"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">)</span>
 
 <span class="c1"># Method 3: From NetworkX</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network_from_networkx</span><span class="p">(</span><span class="n">nx_graph</span><span class="p">)</span>
@@ -305,7 +305,7 @@
 <span class="c1"># Multiple ways to access nodes</span>
 <span class="n">nodes1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
 <span class="n">nodes2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
-<span class="n">nodes3</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">&#39;L1&#39;</span><span class="p">)</span>
+<span class="n">nodes3</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">'L1'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Rationale:</strong> Different users have different preferences and workflows. Flexibility ensures py3plex adapts to the user’s needs, not vice versa.</p>
@@ -340,7 +340,7 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="n">communities</span> <span class="o">=</span> <span class="n">infomap_communities</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Infomap not available. Using Louvain instead.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Infomap not available. Using Louvain instead."</span><span class="p">)</span>
     <span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_partition</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -358,13 +358,13 @@
 <p><strong>Good examples:</strong> be clear about formats, directionality, and layer scope.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Explicit parameter names</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">&quot;data.txt&quot;</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">&quot;edgelist&quot;</span><span class="p">,</span>     <span class="c1"># Explicit format</span>
+    <span class="s2">"data.txt"</span><span class="p">,</span>
+    <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">,</span>     <span class="c1"># Explicit format</span>
     <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>             <span class="c1"># Explicit directionality</span>
 <span class="p">)</span>
 
 <span class="c1"># Explicit layer specification</span>
-<span class="n">neighbors</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s1">&#39;friends&#39;</span><span class="p">)</span>
+<span class="n">neighbors</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_neighbors</span><span class="p">(</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="s1">'friends'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Rationale:</strong> Explicit code is:</p>
@@ -438,14 +438,14 @@
 <p><strong>In practice:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Easy to add custom algorithms</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_centrality</span><span class="p">(</span><span class="n">ml_network</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom centrality measure.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Custom centrality measure."""</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">ml_network</span><span class="o">.</span><span class="n">core_network</span>
     <span class="c1"># Implement your algorithm</span>
     <span class="k">return</span> <span class="n">centrality_scores</span>  <span class="c1"># Dict keyed by (node, layer) tuples</span>
 
 <span class="c1"># Easy to add custom visualizations</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_plot</span><span class="p">(</span><span class="n">ml_network</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom visualization.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Custom visualization."""</span>
     <span class="c1"># Use py3plex drawing machinery</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">drawing_machinery</span> <span class="k">as</span> <span class="n">dm</span>
     <span class="c1"># Implement your plot</span>
@@ -559,7 +559,7 @@ make<span class="w"> </span>fuzz-property<span class="w"> </span><span class="c1
 <span class="n">help</span><span class="p">(</span><span class="n">louvain_multilayer</span><span class="p">)</span>
 <span class="c1"># Docstring includes:</span>
 <span class="c1"># References:</span>
-<span class="c1">#   Mucha et al. (2010). &quot;Community structure in time-dependent...&quot;</span>
+<span class="c1">#   Mucha et al. (2010). "Community structure in time-dependent..."</span>
 </pre></div>
 </div>
 <p><strong>See:</strong> <a class="reference internal" href="../reference/citation_and_acknowledgements.html"><span class="doc">Citation and References</span></a></p>

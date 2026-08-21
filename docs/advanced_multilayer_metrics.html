@@ -178,20 +178,20 @@
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Inter-layer edge</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># Inter-layer edge</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Calculate entropy-based metrics</span>
-<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_connectivity_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">)</span>
-<span class="n">mi</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">)</span>
-<span class="n">influence</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">)</span>
+<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_connectivity_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">)</span>
+<span class="n">mi</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">)</span>
+<span class="n">influence</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connectivity entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mutual information: </span><span class="si">{</span><span class="n">mi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer influence: </span><span class="si">{</span><span class="n">influence</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Connectivity entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mutual information: </span><span class="si">{</span><span class="n">mi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer influence: </span><span class="si">{</span><span class="n">influence</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected Output:</strong></p>
@@ -214,9 +214,9 @@ Layer influence: 1.000
 - Higher values: more diverse connectivity patterns; lower values: more skewed distributions
 - Useful for identifying layers with hub-and-spoke vs. distributed structures</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate for each layer</span>
-<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="s1">'L3'</span><span class="p">]:</span>
     <span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_connectivity_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> connectivity entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> connectivity entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
@@ -236,8 +236,8 @@ Layer L3 connectivity entropy: 2.252
 - Returns 0 if the two layers have no inter-layer edges
 - Identifies layers with specialized bridge nodes</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate inter-layer dependence</span>
-<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_dependence_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-layer dependence entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">inter_layer_dependence_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Inter-layer dependence entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
@@ -256,7 +256,7 @@ Here <span class="math notranslate nohighlight">\(\omega^{ij}\)</span> denotes t
 - Useful for identifying functionally redundant vs. complementary layers</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate global redundancy entropy</span>
 <span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_redundancy_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cross-layer redundancy entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cross-layer redundancy entropy: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
@@ -282,13 +282,13 @@ Here <span class="math notranslate nohighlight">\(\omega^{ij}\)</span> denotes t
 - Guide layer aggregation or dimensionality reduction
 - Predict cross-layer influence patterns</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate mutual information between layer pairs</span>
-<span class="n">mi_12</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">mi_13</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">mi_23</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mi_12</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mi_13</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'L3'</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mi_23</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="s1">'L3'</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I(L1; L2) = </span><span class="si">{</span><span class="n">mi_12</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I(L1; L3) = </span><span class="si">{</span><span class="n">mi_13</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I(L2; L3) = </span><span class="si">{</span><span class="n">mi_23</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"I(L1; L2) = </span><span class="si">{</span><span class="n">mi_12</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"I(L1; L3) = </span><span class="si">{</span><span class="n">mi_13</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"I(L2; L3) = </span><span class="si">{</span><span class="n">mi_23</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
@@ -333,16 +333,16 @@ I(L2; L3) = 0.150 bits
 - Guides targeted interventions or layer removal strategies</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Coupling-based influence</span>
 <span class="n">influence_coupling</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;coupling&#39;</span>
+    <span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'coupling'</span>
 <span class="p">)</span>
 
 <span class="c1"># Flow-based influence</span>
 <span class="n">influence_flow</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="mi">100</span>
+    <span class="n">network</span><span class="p">,</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'flow'</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="mi">100</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer L1 coupling influence: </span><span class="si">{</span><span class="n">influence_coupling</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer L1 flow influence: </span><span class="si">{</span><span class="n">influence_flow</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer L1 coupling influence: </span><span class="si">{</span><span class="n">influence_coupling</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer L1 flow influence: </span><span class="si">{</span><span class="n">influence_flow</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
@@ -376,14 +376,14 @@ Rows follow the returned <code class="docutils literal notranslate"><span class=
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.3f&#39;</span><span class="p">,</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'.3f'</span><span class="p">,</span>
             <span class="n">xticklabels</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">yticklabels</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span>
-            <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;YlOrRd&#39;</span><span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Betweenness Centrality&#39;</span><span class="p">})</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Layers&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Nodes&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Multilayer Betweenness Surface&#39;</span><span class="p">)</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="s1">'YlOrRd'</span><span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="s1">'Betweenness Centrality'</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Layers'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Nodes'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Multilayer Betweenness Surface'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;betweenness_surface.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'betweenness_surface.png'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
@@ -428,13 +428,13 @@ Eve      0.000   0.000   0.000
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.3f&#39;</span><span class="p">,</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'.3f'</span><span class="p">,</span>
             <span class="n">xticklabels</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">yticklabels</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
-            <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;Pearson Correlation&#39;</span><span class="p">})</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Inter-layer Degree Correlation Matrix&#39;</span><span class="p">)</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="s1">'coolwarm'</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="s1">'Pearson Correlation'</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Inter-layer Degree Correlation Matrix'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;degree_correlation_matrix.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'degree_correlation_matrix.png'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example Output:</strong></p>
@@ -462,58 +462,58 @@ L3         -0.250    0.000    1.000
 
 <span class="c1"># Facebook layer (social)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># LinkedIn layer (professional)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="s1">'David'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Twitter layer (public)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="s1">&#39;David&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="s1">'David'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Inter-layer connections</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;Carol&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># 1. Entropy-based complexity measures</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== ENTROPY-BASED MEASURES ===&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">]:</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== ENTROPY-BASED MEASURES ==="</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">]:</span>
     <span class="n">entropy</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_connectivity_entropy</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">entropy</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits"</span><span class="p">)</span>
 
 <span class="c1"># 2. Cross-layer mutual information</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== MUTUAL INFORMATION ===&quot;</span><span class="p">)</span>
-<span class="n">mi</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I(facebook; linkedin) = </span><span class="si">{</span><span class="n">mi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== MUTUAL INFORMATION ==="</span><span class="p">)</span>
+<span class="n">mi</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">cross_layer_mutual_information</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"I(facebook; linkedin) = </span><span class="si">{</span><span class="n">mi</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> bits"</span><span class="p">)</span>
 
 <span class="c1"># 3. Layer influence centrality</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== LAYER INFLUENCE ===&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;facebook&#39;</span><span class="p">,</span> <span class="s1">&#39;linkedin&#39;</span><span class="p">,</span> <span class="s1">&#39;twitter&#39;</span><span class="p">]:</span>
-    <span class="n">influence</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;coupling&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">influence</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== LAYER INFLUENCE ==="</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'facebook'</span><span class="p">,</span> <span class="s1">'linkedin'</span><span class="p">,</span> <span class="s1">'twitter'</span><span class="p">]:</span>
+    <span class="n">influence</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">layer_influence_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'coupling'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">influence</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># 4. Betweenness surface</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== BETWEENNESS SURFACE ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== BETWEENNESS SURFACE ==="</span><span class="p">)</span>
 <span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">layers</span><span class="p">)</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">multilayer_betweenness_surface</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean betweenness: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shape: </span><span class="si">{</span><span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean betweenness: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># 5. Degree correlation matrix</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== DEGREE CORRELATION MATRIX ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== DEGREE CORRELATION MATRIX ==="</span><span class="p">)</span>
 <span class="n">corr_matrix</span><span class="p">,</span> <span class="n">layers</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">interlayer_degree_correlation_matrix</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Correlation matrix:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Correlation matrix:"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">corr_matrix</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -663,7 +663,7 @@ Correlation matrix:
 </section>
 <section id="mathematical-definitions">
 <h3>Mathematical Definitions<a class="headerlink" href="#mathematical-definitions" title="Link to this heading"></a></h3>
-<p>Throughout, let <em>V</em> be the set of physical nodes and <em>L</em> the set of layers. Let <em>N</em><sub>v,ℓ</sub> be the neighbor set of node <em>v</em> within layer <em>ℓ</em>, and <em>k</em><sub>v,ℓ</sub> = <a href="#id12"><span class="problematic" id="id13">|*N*\ :sub:`v,ℓ`|</span></a>.</p>
+<p>Throughout, let <em>V</em> be the set of physical nodes and <em>L</em> the set of layers. Let <em>N</em><sub>v,ℓ</sub> be the neighbor set of node <em>v</em> within layer <em>ℓ</em>, and <em>k</em><sub>v,ℓ</sub> = |*N*<sub>v,ℓ</sub>|.</p>
 <p><strong>Variant A: Intra-layer Local Clustering</strong></p>
 <p>For each node-layer pair (<em>v</em>, <em>ℓ</em>), the intra-layer clustering coefficient is:</p>
 <div class="math notranslate nohighlight">
@@ -721,7 +721,8 @@ k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|\]</div>
 <td><p>(node, layer)</p></td>
 <td><p>Classical clustering per layer</p></td>
 </tr>
-<tr class="row-odd"><td colspan="2"><p><a href="#id2"><span class="problematic" id="id3">``</span></a>”multiplex”<a href="#id4"><span class="problematic" id="id5">``</span></a>| (node, None)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;multiplex&quot;</span></code></p></td>
+<td><p>(node, None)</p></td>
 <td><p>Aggregated across layers</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;supra&quot;</span></code></p></td>
@@ -740,21 +741,21 @@ k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|\]</div>
 <span class="c1"># Create a multilayer network</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">},</span>
 <span class="p">])</span>
 
 <span class="c1"># Compute intra-layer clustering</span>
-<span class="n">cintra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;intra&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">cintra</span><span class="p">)</span>  <span class="c1"># {(&#39;A&#39;, &#39;L1&#39;): 1.0, (&#39;B&#39;, &#39;L1&#39;): 1.0, (&#39;C&#39;, &#39;L1&#39;): 1.0}</span>
+<span class="n">cintra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">"intra"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"local"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cintra</span><span class="p">)</span>  <span class="c1"># {('A', 'L1'): 1.0, ('B', 'L1'): 1.0, ('C', 'L1'): 1.0}</span>
 
 <span class="c1"># Compute multiplex clustering</span>
-<span class="n">cmux</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">cmux</span><span class="p">)</span>  <span class="c1"># {(&#39;A&#39;, None): 1.0, (&#39;B&#39;, None): 1.0, (&#39;C&#39;, None): 1.0}</span>
+<span class="n">cmux</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">"multiplex"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"local"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cmux</span><span class="p">)</span>  <span class="c1"># {('A', None): 1.0, ('B', None): 1.0, ('C', None): 1.0}</span>
 
 <span class="c1"># Compute global (average) clustering</span>
-<span class="n">cg</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;global&quot;</span><span class="p">)</span>
+<span class="n">cg</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">"multiplex"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"global"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cg</span><span class="p">)</span>  <span class="c1"># 1.0</span>
 </pre></div>
 </div>
@@ -762,40 +763,40 @@ k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|\]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a triangle with edges in different layers</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L1&#39;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;target_type&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'L1'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">'source'</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'target'</span><span class="p">:</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'source_type'</span><span class="p">:</span> <span class="s1">'L2'</span><span class="p">,</span> <span class="s1">'target_type'</span><span class="p">:</span> <span class="s1">'L2'</span><span class="p">},</span>
 <span class="p">])</span>
 
 <span class="c1"># Intra-layer: each node has insufficient neighbors in single layers</span>
-<span class="n">cintra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;intra&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+<span class="n">cintra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">"intra"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"local"</span><span class="p">)</span>
 <span class="c1"># Returns 0 for nodes with degree &lt; 2 in any layer</span>
 
 <span class="c1"># Multiplex: aggregates neighbors across layers, triangle is complete</span>
-<span class="n">cmux</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">cmux</span><span class="p">[(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])</span>  <span class="c1"># 1.0 (B and C are neighbors, and connected in L2)</span>
+<span class="n">cmux</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">coefficient</span><span class="o">=</span><span class="s2">"multiplex"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"local"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cmux</span><span class="p">[(</span><span class="s1">'A'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])</span>  <span class="c1"># 1.0 (B and C are neighbors, and connected in L2)</span>
 </pre></div>
 </div>
 <p><strong>Layer Subset Analysis:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute clustering for specific layers only</span>
 <span class="n">cintra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;intra&quot;</span><span class="p">,</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
-    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">]</span>  <span class="c1"># Only consider these layers</span>
+    <span class="n">coefficient</span><span class="o">=</span><span class="s2">"intra"</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"local"</span><span class="p">,</span>
+    <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s1">'L1'</span><span class="p">,</span> <span class="s1">'L2'</span><span class="p">]</span>  <span class="c1"># Only consider these layers</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Supra-adjacency with Inter-layer Edges:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a network with coupling edges</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">&quot;multiplex&quot;</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">"multiplex"</span><span class="p">)</span>
 <span class="c1"># ... load network with inter-layer edges ...</span>
 
 <span class="c1"># Include inter-layer edges in triangle counting</span>
 <span class="n">csupra</span> <span class="o">=</span> <span class="n">multilayer_clustering</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="n">coefficient</span><span class="o">=</span><span class="s2">&quot;supra&quot;</span><span class="p">,</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
+    <span class="n">coefficient</span><span class="o">=</span><span class="s2">"supra"</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"local"</span><span class="p">,</span>
     <span class="n">include_cross_layer</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 </pre></div>
@@ -823,14 +824,14 @@ k_v^{(\mathcal{L})} = |N_v^{(\mathcal{L})}|\]</div>
 <p><strong>Computational Complexity:</strong></p>
 <ul class="simple">
 <li><p><strong>Intra-layer</strong>: <em>O*(Σ:sub:`v,ℓ` *k</em><sup>2</sup><sub>v,ℓ</sub>) — quadratic in local degree</p></li>
-<li><p><strong>Multiplex</strong>: <em>O*(Σ:sub:`v` (*k</em><sup>agg</sup><sub>v</sub>)<sup>2</sup> × <a href="#id14"><span class="problematic" id="id15">|*L*|</span></a>) — quadratic in aggregated degree</p></li>
+<li><p><strong>Multiplex</strong>: <em>O*(Σ:sub:`v` (*k</em><sup>agg</sup><sub>v</sub>)<sup>2</sup> × |*L*|) — quadratic in aggregated degree</p></li>
 <li><p><strong>Supra-adjacency</strong>: roughly cubic in the number of state nodes <span class="math notranslate nohighlight">\(|V_M|\)</span> for the dense matrix multiplications (sparser graphs reduce constants but remain heavy)</p></li>
 </ul>
 <p><strong>Memory Usage:</strong></p>
 <ul class="simple">
-<li><p><strong>Intra-layer</strong>: <a href="#id6"><span class="problematic" id="id7">*</span></a>O*(<a href="#id16"><span class="problematic" id="id17">|*E*|</span></a>) - stores adjacency lists per layer</p></li>
-<li><p><strong>Multiplex</strong>: <a href="#id8"><span class="problematic" id="id9">*</span></a>O*(<a href="#id18"><span class="problematic" id="id19">|*V*|</span></a> × <a href="#id20"><span class="problematic" id="id21">|*L*|</span></a>) - stores aggregated neighbor sets</p></li>
-<li><p><strong>Supra-adjacency</strong>: <em>O*(|*V</em><sub>M`|:sup:`2</sub>) worst case, <em>O*(|*E</em>:sub:<a href="#id10"><span class="problematic" id="id11">`</span></a>total`|) for sparse representation</p></li>
+<li><p><strong>Intra-layer</strong>: <em>O*(|*E</em>|) - stores adjacency lists per layer</p></li>
+<li><p><strong>Multiplex</strong>: <em>O*(|*V</em>| × |*L*|) - stores aggregated neighbor sets</p></li>
+<li><p><strong>Supra-adjacency</strong>: <em>O*(|*V</em><sub>M</sub>|<sup>2</sup>) worst case, <em>O*(|*E</em><sub>total</sub>|) for sparse representation</p></li>
 </ul>
 <p><strong>Performance Recommendations:</strong></p>
 <ul class="simple">

@@ -16,8 +16,8 @@ Both algorithms use:
 
 References
 ----------
-.. [1] Label Propagation and Complex Networks (various sources)
-.. [2] Multilayer network community detection literature
+[1] Label Propagation and Complex Networks (various sources)
+[2] Multilayer network community detection literature
 """
 
 from __future__ import annotations
@@ -96,7 +96,7 @@ def multilayer_label_propagation_supra(
     
     Notes
     -----
-    Complexity: O(max_iter * (|E| + omega * L * |V|)) where E is edges, L layers, V nodes
+    Complexity: O(max_iter * (\\|E\\| + omega * L * \\|V\\|)) where E is edges, L layers, V nodes
     """
     # Validate parameters
     if omega < 0:
@@ -331,7 +331,7 @@ def multiplex_label_propagation_consensus(
     
     Notes
     -----
-    Complexity: O(max_iter * inner_max_iter * |E|) where E is edges
+    Complexity: O(max_iter * inner_max_iter * \\|E\\|) where E is edges
     """
     # Validate parameters
     if max_iter < 1:

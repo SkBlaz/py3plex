@@ -232,7 +232,7 @@ type-coverage: ## Check type annotation coverage with mypy
 		exit 1; \
 	fi
 	@printf "$(COLOR_GREEN) Running type coverage analysis...$(COLOR_RESET)\n"
-	@python docs/check_type_coverage.py --verbose
+	@python docfiles/check_type_coverage.py --verbose
 	@printf "$(COLOR_BOLD)$(COLOR_GREEN) Type coverage check complete!$(COLOR_RESET)\n"
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-.. _recipes:
+.. _user-recipes:
 
 ****************************
 Analysis Recipes & Workflows

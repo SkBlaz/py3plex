@@ -242,8 +242,8 @@ This page is a complete reference with all syntax and operators.</p>
 </section>
 <section id="layer-selection">
 <h3>Layer Selection<a class="headerlink" href="#layer-selection" title="Link to this heading"></a></h3>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>FROM layer=&quot;layer_name&quot;
-FROM layers IN (&quot;layer1&quot;, &quot;layer2&quot;)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>FROM layer="layer_name"
+FROM layers IN ("layer1", "layer2")
 </pre></div>
 </div>
 <p>If <code class="docutils literal notranslate"><span class="pre">FROM</span></code> is omitted, all layers are considered.</p>
@@ -267,9 +267,9 @@ FROM layers IN (&quot;layer1&quot;, &quot;layer2&quot;)
 </ul>
 <p><strong>Examples:</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>WHERE degree &gt; 5
-WHERE layer=&quot;friends&quot; AND degree &gt; 3
+WHERE layer="friends" AND degree &gt; 3
 WHERE degree &gt; 5 OR betweenness_centrality &gt; 0.1
-WHERE NOT layer=&quot;spam&quot;
+WHERE NOT layer="spam"
 </pre></div>
 </div>
 <p>String values must be wrapped in double quotes.</p>
@@ -316,17 +316,17 @@ LIMIT 100
 <span class="c1"># Get high-degree nodes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes WHERE degree &gt; 5&#39;</span>
+    <span class="s1">'SELECT nodes WHERE degree &gt; 5'</span>
 <span class="p">)</span>
 
 <span class="c1"># Get nodes from specific layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes FROM layer=&quot;friends&quot; &#39;</span>
-    <span class="s1">&#39;WHERE degree &gt; 3 &#39;</span>
-    <span class="s1">&#39;COMPUTE betweenness_centrality &#39;</span>
-    <span class="s1">&#39;ORDER BY -betweenness_centrality &#39;</span>
-    <span class="s1">&#39;LIMIT 10&#39;</span>
+    <span class="s1">'SELECT nodes FROM layer="friends" '</span>
+    <span class="s1">'WHERE degree &gt; 3 '</span>
+    <span class="s1">'COMPUTE betweenness_centrality '</span>
+    <span class="s1">'ORDER BY -betweenness_centrality '</span>
+    <span class="s1">'LIMIT 10'</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -351,31 +351,31 @@ LIMIT 100
 <section id="id1">
 <h3>Layer Selection<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p><strong>Single layer:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"friends"</span><span class="p">])</span>
 </pre></div>
 </div>
 <p><strong>Multiple layers (union):</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"friends"</span><span class="p">]</span> <span class="o">+</span> <span class="n">L</span><span class="p">[</span><span class="s2">"work"</span><span class="p">])</span>
 
 <span class="c1"># Or use the new LayerSet algebra:</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends | work&quot;</span><span class="p">])</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"friends | work"</span><span class="p">])</span>
 </pre></div>
 </div>
 <p><strong>Layer intersection:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;work&quot;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"friends"</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">"work"</span><span class="p">])</span>
 </pre></div>
 </div>
 <p><strong>Advanced Layer Set Algebra:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All layers except coupling</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;* - coupling&quot;</span><span class="p">])</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"* - coupling"</span><span class="p">])</span>
 
 <span class="c1"># Complex expressions with set operations</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;(social | work) &amp; ~bots&quot;</span><span class="p">])</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"(social | work) &amp; ~bots"</span><span class="p">])</span>
 
 <span class="c1"># Named groups for reuse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayerSet</span>
-<span class="n">LayerSet</span><span class="o">.</span><span class="n">define_group</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">,</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;ppi&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;gene&quot;</span><span class="p">))</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">&quot;bio&quot;</span><span class="p">))</span>
+<span class="n">LayerSet</span><span class="o">.</span><span class="n">define_group</span><span class="p">(</span><span class="s2">"bio"</span><span class="p">,</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">"ppi"</span><span class="p">)</span> <span class="o">|</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">"gene"</span><span class="p">))</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">LayerSet</span><span class="p">(</span><span class="s2">"bio"</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -406,8 +406,8 @@ string parsing, named groups, and real-world examples, see:
 </section>
 <section id="computing-metrics">
 <h3>Computing Metrics<a class="headerlink" href="#computing-metrics" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -415,19 +415,19 @@ string parsing, named groups, and real-world examples, see:
 <h3>Row-wise Transformations (Mutate)<a class="headerlink" href="#row-wise-transformations-mutate" title="Link to this heading"></a></h3>
 <p>Create new columns or transform existing ones with row-by-row operations:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple transformation</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-    <span class="n">doubled</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+    <span class="n">doubled</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
 <span class="p">)</span>
 
 <span class="c1"># Multiple transformations</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;clustering&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-    <span class="n">hub_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;clustering&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="n">is_hub</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"clustering"</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+    <span class="n">hub_score</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"clustering"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">is_hub</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span>
 <span class="p">)</span>
 
 <span class="c1"># Conditional transformation</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-    <span class="n">category</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="s2">&quot;hub&quot;</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="s2">&quot;peripheral&quot;</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
+    <span class="n">category</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="s2">"hub"</span> <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="s2">"peripheral"</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -441,8 +441,8 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 </section>
 <section id="sorting">
 <h3>Sorting<a class="headerlink" href="#sorting" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>           <span class="c1"># Ascending</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-degree&quot;</span><span class="p">)</span>          <span class="c1"># Descending</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>           <span class="c1"># Ascending</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-degree"</span><span class="p">)</span>          <span class="c1"># Descending</span>
 </pre></div>
 </div>
 </section>
@@ -463,13 +463,13 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <p>All methods can be chained:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;friends&quot;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"friends"</span><span class="p">])</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">mutate</span><span class="p">(</span>
-         <span class="n">influence</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+         <span class="n">influence</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
      <span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-influence&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-influence"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
@@ -484,13 +484,13 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># String syntax</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes AT &quot;2024-01-15T10:00:00&quot;&#39;</span>
+    <span class="s1">'SELECT nodes AT "2024-01-15T10:00:00"'</span>
 <span class="p">)</span>
 
 <span class="c1"># Builder API</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="s2">&quot;2024-01-15T10:00:00&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="s2">"2024-01-15T10:00:00"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -501,13 +501,13 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># String syntax</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_query</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
-    <span class="s1">&#39;SELECT nodes DURING &quot;2024-01-01&quot; TO &quot;2024-01-31&quot;&#39;</span>
+    <span class="s1">'SELECT nodes DURING "2024-01-01" TO "2024-01-31"'</span>
 <span class="p">)</span>
 
 <span class="c1"># Builder API</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">during</span><span class="p">(</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2024-01-31&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">during</span><span class="p">(</span><span class="s2">"2024-01-01"</span><span class="p">,</span> <span class="s2">"2024-01-31"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -531,10 +531,10 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Group by layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>              <span class="c1"># Sugar for .group_by(&quot;layer&quot;)</span>
-        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>    <span class="c1"># Top 5 per layer</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>              <span class="c1"># Sugar for .group_by("layer")</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>    <span class="c1"># Top 5 per layer</span>
      <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
@@ -547,10 +547,10 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Top 10 highest-degree nodes per layer</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
@@ -564,12 +564,12 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes that are top-5 hubs in ALL layers</span>
 <span class="n">multi_hubs</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -578,12 +578,12 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes that are top-5 in any layer</span>
 <span class="n">any_hubs</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"any"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -592,12 +592,12 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes in top-10 of at least 2 layers</span>
 <span class="n">two_layer_hubs</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;at_least&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"at_least"</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -606,12 +606,12 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Layer specialists: top-5 in exactly 1 layer</span>
 <span class="n">specialists</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">per_layer</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"exact"</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -621,13 +621,13 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <h3>Wildcard Layer Selection<a class="headerlink" href="#wildcard-layer-selection" title="Link to this heading"></a></h3>
 <p>Use <code class="docutils literal notranslate"><span class="pre">L[&quot;*&quot;]</span></code> to select all layers:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All layers</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">])</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">])</span>
 
-<span class="c1"># All layers except &quot;bots&quot;</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;bots&quot;</span><span class="p">])</span>
+<span class="c1"># All layers except "bots"</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">"bots"</span><span class="p">])</span>
 
 <span class="c1"># Layer algebra still works</span>
-<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">((</span><span class="n">L</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;spam&quot;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">&quot;verified&quot;</span><span class="p">])</span>
+<span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">((</span><span class="n">L</span><span class="p">[</span><span class="s2">"*"</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="s2">"spam"</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">L</span><span class="p">[</span><span class="s2">"verified"</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>
@@ -637,9 +637,9 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Group by multiple attributes</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;community&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;community&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"community"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">"layer"</span><span class="p">,</span> <span class="s2">"community"</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">top_k</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">end_grouping</span><span class="p">()</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
@@ -661,7 +661,7 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <section id="execution-plan-mode">
 <h3>Execution Plan Mode<a class="headerlink" href="#execution-plan-mode" title="Link to this heading"></a></h3>
 <p>Call <code class="docutils literal notranslate"><span class="pre">.explain()</span></code> with no arguments to get the query execution plan:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">plan</span><span class="p">)</span>  <span class="c1"># Shows query stages and optimization</span>
 </pre></div>
 </div>
@@ -672,10 +672,10 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <p>Call <code class="docutils literal notranslate"><span class="pre">.explain()</span></code> with arguments to attach explanations to each result row:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
-         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;community&quot;</span><span class="p">,</span> <span class="s2">&quot;top_neighbors&quot;</span><span class="p">,</span> <span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
-         <span class="n">attribution</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span> <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span>
+         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">"community"</span><span class="p">,</span> <span class="s2">"top_neighbors"</span><span class="p">,</span> <span class="s2">"attribution"</span><span class="p">],</span>
+         <span class="n">attribution</span><span class="o">=</span><span class="p">{</span><span class="s2">"metric"</span><span class="p">:</span> <span class="s2">"pagerank"</span><span class="p">,</span> <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">42</span><span class="p">}</span>
      <span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
@@ -703,14 +703,14 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <p><strong>Basic Example</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
-         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
+         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">"attribution"</span><span class="p">],</span>
          <span class="n">attribution</span><span class="o">=</span><span class="p">{</span>
-             <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span>
-             <span class="s2">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span>
-             <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;shapley_mc&quot;</span><span class="p">,</span>
-             <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span>
+             <span class="s2">"metric"</span><span class="p">:</span> <span class="s2">"pagerank"</span><span class="p">,</span>
+             <span class="s2">"levels"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"layer"</span><span class="p">],</span>
+             <span class="s2">"method"</span><span class="p">:</span> <span class="s2">"shapley_mc"</span><span class="p">,</span>
+             <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">42</span>
          <span class="p">}</span>
      <span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -822,25 +822,25 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 </table>
 <p><strong>Output Structure</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;objective&quot;</span><span class="p">:</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;utility_def&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># or &quot;margin_to_cutoff(k=10)&quot; for rank</span>
-    <span class="s2">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;shapley_mc&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
-    <span class="s2">&quot;n_permutations&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
-    <span class="s2">&quot;feature_space&quot;</span><span class="p">:</span> <span class="s2">&quot;layers&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;full_value&quot;</span><span class="p">:</span> <span class="mf">0.1186</span><span class="p">,</span>
-    <span class="s2">&quot;baseline_value&quot;</span><span class="p">:</span> <span class="mf">0.0500</span><span class="p">,</span>
-    <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0686</span><span class="p">,</span>
-    <span class="s2">&quot;residual&quot;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>  <span class="c1"># sum(phi) ≈ delta</span>
-    <span class="s2">&quot;layer_contrib&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="s2">&quot;social&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0401</span><span class="p">},</span>
-        <span class="p">{</span><span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="s2">&quot;work&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0285</span><span class="p">}</span>
+    <span class="s2">"metric"</span><span class="p">:</span> <span class="s2">"pagerank"</span><span class="p">,</span>
+    <span class="s2">"objective"</span><span class="p">:</span> <span class="s2">"value"</span><span class="p">,</span>
+    <span class="s2">"utility_def"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># or "margin_to_cutoff(k=10)" for rank</span>
+    <span class="s2">"levels"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"layer"</span><span class="p">],</span>
+    <span class="s2">"method"</span><span class="p">:</span> <span class="s2">"shapley_mc"</span><span class="p">,</span>
+    <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="s2">"n_permutations"</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
+    <span class="s2">"feature_space"</span><span class="p">:</span> <span class="s2">"layers"</span><span class="p">,</span>
+    <span class="s2">"full_value"</span><span class="p">:</span> <span class="mf">0.1186</span><span class="p">,</span>
+    <span class="s2">"baseline_value"</span><span class="p">:</span> <span class="mf">0.0500</span><span class="p">,</span>
+    <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">0.0686</span><span class="p">,</span>
+    <span class="s2">"residual"</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>  <span class="c1"># sum(phi) ≈ delta</span>
+    <span class="s2">"layer_contrib"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"layer"</span><span class="p">:</span> <span class="s2">"social"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0401</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"layer"</span><span class="p">:</span> <span class="s2">"work"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0285</span><span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;edge_contrib&quot;</span><span class="p">:</span> <span class="p">[],</span>  <span class="c1"># populated if levels includes &quot;edge&quot;</span>
-    <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;cache_hit_rate&quot;</span><span class="p">:</span> <span class="mf">0.73</span>
+    <span class="s2">"edge_contrib"</span><span class="p">:</span> <span class="p">[],</span>  <span class="c1"># populated if levels includes "edge"</span>
+    <span class="s2">"warnings"</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s2">"cache_hit_rate"</span><span class="p">:</span> <span class="mf">0.73</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -848,19 +848,19 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edge attribution for betweenness</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;betweenness_centrality&quot;</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-betweenness_centrality&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-betweenness_centrality"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
      <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
-         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
+         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">"attribution"</span><span class="p">],</span>
          <span class="n">attribution</span><span class="o">=</span><span class="p">{</span>
-             <span class="s2">&quot;objective&quot;</span><span class="p">:</span> <span class="s2">&quot;rank&quot;</span><span class="p">,</span>  <span class="c1"># Explain ranking position</span>
-             <span class="s2">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">],</span>
-             <span class="s2">&quot;edge_scope&quot;</span><span class="p">:</span> <span class="s2">&quot;ego_k_hop&quot;</span><span class="p">,</span>
-             <span class="s2">&quot;k_hop&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-             <span class="s2">&quot;max_edges&quot;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
-             <span class="s2">&quot;n_permutations&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
-             <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span>
+             <span class="s2">"objective"</span><span class="p">:</span> <span class="s2">"rank"</span><span class="p">,</span>  <span class="c1"># Explain ranking position</span>
+             <span class="s2">"levels"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"layer"</span><span class="p">,</span> <span class="s2">"edge"</span><span class="p">],</span>
+             <span class="s2">"edge_scope"</span><span class="p">:</span> <span class="s2">"ego_k_hop"</span><span class="p">,</span>
+             <span class="s2">"k_hop"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+             <span class="s2">"max_edges"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+             <span class="s2">"n_permutations"</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
+             <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">42</span>
          <span class="p">}</span>
      <span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -869,15 +869,15 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <span class="c1"># With UQ propagation</span>
 <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;perturbation&quot;</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;pagerank&quot;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">"perturbation"</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
-         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
+         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">"attribution"</span><span class="p">],</span>
          <span class="n">attribution</span><span class="o">=</span><span class="p">{</span>
-             <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="s2">&quot;pagerank&quot;</span><span class="p">,</span>
-             <span class="s2">&quot;uq&quot;</span><span class="p">:</span> <span class="s2">&quot;propagate&quot;</span><span class="p">,</span>  <span class="c1"># Compute attribution per UQ replicate</span>
-             <span class="s2">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">],</span>
-             <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">42</span>
+             <span class="s2">"metric"</span><span class="p">:</span> <span class="s2">"pagerank"</span><span class="p">,</span>
+             <span class="s2">"uq"</span><span class="p">:</span> <span class="s2">"propagate"</span><span class="p">,</span>  <span class="c1"># Compute attribution per UQ replicate</span>
+             <span class="s2">"levels"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"layer"</span><span class="p">],</span>
+             <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">42</span>
          <span class="p">}</span>
      <span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
@@ -906,7 +906,7 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <p><strong>Export</strong>:</p>
 <p>Attribution data serializes to JSON strings when using <code class="docutils literal notranslate"><span class="pre">expand_explanations=True</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_explanations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1"># df[&quot;attribution&quot;] contains JSON-serialized attribution dicts</span>
+<span class="c1"># df["attribution"] contains JSON-serialized attribution dicts</span>
 </pre></div>
 </div>
 </section>
@@ -916,14 +916,14 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <section id="result-object">
 <h3>Result Object<a class="headerlink" href="#result-object" title="Link to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">execute</span></code> returns a <code class="docutils literal notranslate"><span class="pre">QueryResult</span></code> with items, computed attributes, and metadata:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
 <span class="c1"># Counts and identifiers</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>    <span class="c1"># -&gt; number of nodes/edges</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nodes</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c1"># first few nodes (use .edges for edge queries)</span>
 
 <span class="c1"># Attributes are aligned lists keyed by metric name</span>
-<span class="n">degrees</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">]</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">"degree"</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">deg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="n">degrees</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deg</span><span class="p">)</span>
 
@@ -948,9 +948,9 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <p>Register custom DSL operators:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_operator</span>
 
-<span class="nd">@register_operator</span><span class="p">(</span><span class="s1">&#39;my_metric&#39;</span><span class="p">)</span>
+<span class="nd">@register_operator</span><span class="p">(</span><span class="s1">'my_metric'</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_custom_metric</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute custom metric for a node.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Compute custom metric for a node."""</span>
     <span class="c1"># Your implementation</span>
     <span class="k">return</span> <span class="n">value</span>
 </pre></div>

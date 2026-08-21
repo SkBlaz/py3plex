@@ -483,11 +483,11 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <h3>Graph Registry (In-Memory)<a class="headerlink" href="#graph-registry-in-memory" title="Link to this heading"></a></h3>
 <p>In development mode, uploaded graphs are kept in memory and indexed by a generated <code class="docutils literal notranslate"><span class="pre">graph_id</span></code> for subsequent analysis calls. Registry contents are lost if the API container restarts.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">GRAPH_REGISTRY</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;&lt;graph_id&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;graph&quot;</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">(),</span>           <span class="c1"># NetworkX graph</span>
-        <span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="s2">&quot;/data/uploads/...&quot;</span><span class="p">,</span> <span class="c1"># Original file</span>
-        <span class="s2">&quot;positions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">NodePosition</span><span class="p">()],</span>  <span class="c1"># Layout positions</span>
-        <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{}</span>                  <span class="c1"># Extra info</span>
+    <span class="s2">"&lt;graph_id&gt;"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"graph"</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">(),</span>           <span class="c1"># NetworkX graph</span>
+        <span class="s2">"filepath"</span><span class="p">:</span> <span class="s2">"/data/uploads/..."</span><span class="p">,</span> <span class="c1"># Original file</span>
+        <span class="s2">"positions"</span><span class="p">:</span> <span class="p">[</span><span class="n">NodePosition</span><span class="p">()],</span>  <span class="c1"># Layout positions</span>
+        <span class="s2">"metadata"</span><span class="p">:</span> <span class="p">{}</span>                  <span class="c1"># Extra info</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -497,11 +497,11 @@ User ← Frontend ← API /jobs/{job_id} ← Redis result backend
 <h3>Job State (Redis)<a class="headerlink" href="#job-state-redis" title="Link to this heading"></a></h3>
 <p>Celery stores job metadata in Redis so the frontend can poll progress and fetch results.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="s2">&quot;uuid&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span>  <span class="c1"># queued|running|completed|failed</span>
-    <span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>       <span class="c1"># 0-100</span>
-    <span class="s2">&quot;phase&quot;</span><span class="p">:</span> <span class="s2">&quot;computing&quot;</span><span class="p">,</span> <span class="c1"># human-readable</span>
-    <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>       <span class="c1"># Output data</span>
+    <span class="s2">"job_id"</span><span class="p">:</span> <span class="s2">"uuid"</span><span class="p">,</span>
+    <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"running"</span><span class="p">,</span>  <span class="c1"># queued|running|completed|failed</span>
+    <span class="s2">"progress"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>       <span class="c1"># 0-100</span>
+    <span class="s2">"phase"</span><span class="p">:</span> <span class="s2">"computing"</span><span class="p">,</span> <span class="c1"># human-readable</span>
+    <span class="s2">"result"</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>       <span class="c1"># Output data</span>
 <span class="p">}</span>
 </pre></div>
 </div>

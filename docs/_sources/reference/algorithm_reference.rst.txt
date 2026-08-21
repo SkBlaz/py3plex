@@ -20,7 +20,6 @@ The algorithms in py3plex are organized into these main categories:
 6. :ref:`visualization-algorithms` - Layout and rendering
 7. :ref:`benchmark-utilities` - Testing and evaluation
 
-.. _community-detection-algorithms:
 
 Community Detection Algorithms
 -------------------------------
@@ -29,7 +28,6 @@ Community Detection Algorithms
 
 These algorithms identify groups of densely connected nodes (communities) in multilayer networks.
 
-.. _louvain-algorithm:
 
 Louvain Algorithm
 ~~~~~~~~~~~~~~~~~
@@ -119,7 +117,6 @@ Infomap Algorithm
 **Related algorithms:**
   - :ref:`louvain-algorithm` (faster alternative, no external dependencies)
 
-.. _multilayer-louvain:
 
 Multilayer Louvain
 ~~~~~~~~~~~~~~~~~~
@@ -181,8 +178,6 @@ Multilayer Louvain
   - :ref:`louvain-algorithm` (single-layer version)
   - :ref:`leiden-multilayer` (alternative optimizer)
 
-.. _leiden-algorithm:
-.. _leiden-multilayer:
 
 Leiden Algorithm
 ~~~~~~~~~~~~~~~~
@@ -237,7 +232,6 @@ Community Measures
 
 **Related algorithms:** All community detection algorithms above
 
-.. _community-ranking:
 
 Community Ranking
 ~~~~~~~~~~~~~~~~~
@@ -270,7 +264,6 @@ Multilayer Benchmarks
 
 **Related algorithms:** All community detection algorithms
 
-.. _centrality-measures-algorithms:
 
 Centrality Measures
 -------------------
@@ -580,7 +573,6 @@ Path-Based Measures
 **Related measures:**
   - :ref:`centrality-all` (batch computation)
 
-.. _hubs-authorities:
 
 Hubs and Authorities (HITS)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -592,7 +584,6 @@ Hubs and Authorities (HITS)
 **Related measures:**
   - PageRank in :ref:`centrality-measures-algorithms`
 
-.. _centrality-all:
 
 Utility Functions
 ^^^^^^^^^^^^^^^^^
@@ -603,7 +594,6 @@ Utility Functions
 
 **Purpose:** Batch computation of multiple centrality measures
 
-.. _versatility-centrality:
 
 Versatility Centrality
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -728,7 +718,6 @@ MultiXRank
 **Related algorithms:**
   - PageRank in :ref:`centrality-measures-algorithms`
 
-.. _network-statistics-algorithms:
 
 Network Statistics
 ------------------
@@ -771,8 +760,6 @@ Multilayer Statistics
   - :ref:`basic-statistics` (simpler measures)
   - :ref:`topology-measures` (topological properties)
 
-.. _basic-statistics:
-.. _multilayer-statistics:
 
 Multilayer Statistics (Detailed)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -796,7 +783,6 @@ Basic Statistics
 **Related algorithms:**
   - :ref:`multilayer-statistics` (advanced measures)
 
-.. _topology-measures:
 
 Topology Analysis
 ~~~~~~~~~~~~~~~~~
@@ -870,14 +856,12 @@ Functions for testing and fitting power law distributions in networks.
 **Related algorithms:**
   - :ref:`basic-statistics` (degree distributions)
 
-.. _node-ranking-classification:
 
 Node Ranking & Classification
 ------------------------------
 
 **Module:** ``py3plex.algorithms.node_ranking`` and ``py3plex.algorithms.network_classification``
 
-.. _node-ranking-algorithms:
 
 Node Ranking
 ~~~~~~~~~~~~
@@ -901,7 +885,6 @@ Node Ranking
   - PageRank in :ref:`centrality-measures-algorithms`
   - :ref:`label-propagation` (classification)
 
-.. _label-propagation:
 
 Label Propagation
 ~~~~~~~~~~~~~~~~~
@@ -925,7 +908,6 @@ Label Propagation
   - :ref:`ppr-algorithm` (personalized version)
   - Label propagation in :ref:`community-detection-algorithms`
 
-.. _ppr-algorithm:
 
 Personalized PageRank (PPR)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -946,14 +928,12 @@ Personalized PageRank (PPR)
   - :ref:`label-propagation` (similar propagation mechanism)
   - PageRank in :ref:`node-ranking-algorithms`
 
-.. _random-walks-embeddings:
 
 Random Walks & Embeddings
 --------------------------
 
 **Module:** ``py3plex.algorithms.general`` and ``py3plex.wrappers``
 
-.. _random-walk-primitives:
 
 Random Walk Primitives
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -976,7 +956,6 @@ Random Walk Primitives
   - :ref:`node2vec-embedding` (uses these walks)
   - :ref:`deepwalk-embedding` (uses these walks)
 
-.. _node2vec-embedding:
 
 Node2Vec Embedding
 ~~~~~~~~~~~~~~~~~~
@@ -1001,7 +980,6 @@ Node2Vec Embedding
   - :ref:`deepwalk-embedding` (special case with p=1, q=1)
   - :ref:`random-walk-primitives` (underlying walks)
 
-.. _deepwalk-embedding:
 
 DeepWalk Embedding
 ~~~~~~~~~~~~~~~~~~
@@ -1032,14 +1010,12 @@ Entanglement Analysis
 **Related algorithms:**
   - :ref:`versatility-centrality` (similar cross-layer analysis)
 
-.. _visualization-algorithms:
 
 Visualization Algorithms
 ------------------------
 
 **Module:** ``py3plex.visualization``
 
-.. _layout-algorithms:
 
 Layout Algorithms
 ~~~~~~~~~~~~~~~~~
@@ -1059,7 +1035,6 @@ Layout Algorithms
 **Related algorithms:**
   - :ref:`multilayer-visualization` (uses these layouts)
 
-.. _multilayer-visualization:
 
 Multilayer Visualization
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1079,6 +1054,7 @@ Multilayer Visualization
   - Diagonal projection: 10,000+ nodes
   - Force-directed: <5,000 nodes
   - Matrix view: 100,000+ nodes
+
   (Rules of thumb; pick based on hardware and desired visual fidelity)
 
 **Related algorithms:**
@@ -1117,7 +1093,6 @@ Functions for visualizing node embeddings in 2D/3D space.
   - :ref:`node2vec-embedding`
   - :ref:`deepwalk-embedding`
 
-.. _benchmark-utilities:
 
 Benchmark & Utilities
 ---------------------

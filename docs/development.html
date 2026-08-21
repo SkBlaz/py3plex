@@ -163,7 +163,7 @@ uv<span class="w"> </span>venv<span class="w"> </span>.venv
 <span class="nb">source</span><span class="w"> </span>.venv/bin/activate
 
 <span class="c1"># Install package in editable mode with dev dependencies</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 </pre></div>
 </div>
 <p><strong>Using Makefile (auto-detects uv):</strong></p>
@@ -229,7 +229,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> <
 python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>--cov<span class="o">=</span>py3plex<span class="w"> </span>--cov-report<span class="o">=</span>html
 
 <span class="c1"># Run a specific test module or node</span>
-python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_core.py<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;degree&quot;</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_core.py<span class="w"> </span>-k<span class="w"> </span><span class="s2">"degree"</span>
 python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/test_core.py::test_degree<span class="w">  </span><span class="c1"># single test</span>
 </pre></div>
 </div>

@@ -177,19 +177,19 @@
 <span class="c1"># Create a multilayer network</span>
 <span class="n">net</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'collab'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">,</span> <span class="s1">'collab'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Compute centrality</span>
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">multiplex_degree_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 
 <span class="c1"># Explain a single node</span>
-<span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_node_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">),</span> <span class="n">centrality</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Per-layer degree: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;degree_per_layer&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Inter-layer edges: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;num_interlayer_edges&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_node_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">),</span> <span class="n">centrality</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Score: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Per-layer degree: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">'degree_per_layer'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Inter-layer edges: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">'num_interlayer_edges'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -265,13 +265,13 @@
 <span class="n">top_explanations</span> <span class="o">=</span> <span class="n">explain_top_k_central_nodes</span><span class="p">(</span>
     <span class="n">net</span><span class="p">,</span>
     <span class="n">centrality</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">,</span>
     <span class="n">k</span><span class="o">=</span><span class="mi">5</span>
 <span class="p">)</span>
 
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">explanation</span> <span class="ow">in</span> <span class="n">top_explanations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: score=</span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, &quot;</span>
-          <span class="sa">f</span><span class="s2">&quot;rank=</span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: score=</span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">}</span><span class="s2">, "</span>
+          <span class="sa">f</span><span class="s2">"rank=</span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">'rank'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -282,10 +282,10 @@
 <p>Bridge nodes connect different layers and often have high centrality:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_node_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">centrality</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;num_interlayer_edges&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> is a bridge node connecting:&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">degree</span> <span class="ow">in</span> <span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;degree_per_layer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s2"> connections&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">explanation</span><span class="p">[</span><span class="s1">'num_interlayer_edges'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> is a bridge node connecting:"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">degree</span> <span class="ow">in</span> <span class="n">explanation</span><span class="p">[</span><span class="s1">'degree_per_layer'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s2"> connections"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -296,14 +296,14 @@
 
 <span class="c1"># Sort layers by contribution</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-    <span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;layer_breakdown&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+    <span class="n">explanation</span><span class="p">[</span><span class="s1">'layer_breakdown'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
     <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layer contributions for </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer contributions for </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">contrib</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">contrib</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">contrib</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -312,10 +312,10 @@
 <p>Contextualize a node’s centrality score:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">explanation</span> <span class="o">=</span> <span class="n">explain_node_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">centrality</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Rank: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">centrality</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Percentile: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;percentile&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Score: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - Rank: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">'rank'</span><span class="p">]</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">centrality</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - Percentile: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">'percentile'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - Score: </span><span class="si">{</span><span class="n">explanation</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -332,15 +332,15 @@
 
 <span class="c1"># Social layer: A-B-C chain</span>
 <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;social&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'social'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Collaboration layer: B-D-E chain (B is bridge)</span>
 <span class="n">net</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
-    <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;collab&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+    <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'collab'</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">,</span> <span class="s1">'collab'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'D'</span><span class="p">,</span> <span class="s1">'collab'</span><span class="p">,</span> <span class="s1">'E'</span><span class="p">,</span> <span class="s1">'collab'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s1">'list'</span><span class="p">)</span>
 
 <span class="c1"># Compute and explain</span>
 <span class="n">centrality</span> <span class="o">=</span> <span class="n">multiplex_degree_centrality</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -348,12 +348,12 @@
 
 <span class="c1"># Display results</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">explanations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Score: </span><span class="si">{</span><span class="n">exp</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Layers: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">exp</span><span class="p">[</span><span class="s1">&#39;degree_per_layer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Score: </span><span class="si">{</span><span class="n">exp</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Layers: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">exp</span><span class="p">[</span><span class="s1">'degree_per_layer'</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="p">[</span><span class="s1">&#39;degree_per_layer&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ** Bridge node **&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exp</span><span class="p">[</span><span class="s1">'degree_per_layer'</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"  ** Bridge node **"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
