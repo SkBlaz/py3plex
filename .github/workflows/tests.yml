@@ -40,8 +40,13 @@ jobs:
       timeout-minutes: 3
 
     - name: Install uv
-      run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      timeout-minutes: 5
+      run: |
+        for i in 1 2 3; do
+          curl -LsSf https://astral.sh/uv/install.sh | sh && break
+          echo "uv install attempt $i failed, retrying in 10s..."
+          sleep 10
+        done
+      timeout-minutes: 7
 
     - name: Cache uv dependencies
       uses: actions/cache@v3
