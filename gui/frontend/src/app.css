@@ -85,3 +85,7 @@ input:focus-visible {
   transition: none !important;
 }
 
+.dark .scrollbar-visible::-webkit-scrollbar-thumb {
+  background-color: #6b7280;
+}
+

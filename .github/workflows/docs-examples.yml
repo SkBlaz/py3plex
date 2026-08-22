@@ -34,7 +34,7 @@ jobs:
       run: |
         uv venv .venv
         source .venv/bin/activate
-        uv pip install numpy scipy
+        uv pip install numpy scipy pyarrow
         uv pip install -e .
       timeout-minutes: 10
 
@@ -73,3 +73,4 @@ jobs:
           exit 1
         }
       timeout-minutes: 1
+
