@@ -1,6 +1,7 @@
 """Tests for contributor onboarding guidance in README."""
 
 from pathlib import Path
+import re
 
 import pytest
 
@@ -56,3 +57,13 @@ def test_readme_coverage_badges_use_percentage_badge_urls(readme_content: str):
         "https://img.shields.io/badge/type_coverage-"
         in readme_content
     )
+
+
+def test_readme_test_coverage_badge_threshold_at_least_40(readme_content: str):
+    """README test coverage badge should display at least 40%."""
+    match = re.search(
+        r"https://img\.shields\.io/badge/test_coverage-([0-9]+(?:\.[0-9]+)?)%25",
+        readme_content,
+    )
+    assert match is not None, "Missing test_coverage shields badge in README"
+    assert float(match.group(1)) >= 40.0
