@@ -323,11 +323,11 @@ Specifies what to select from the network::
 
     SELECT nodes     # Select nodes
 
-.. warning::
-
-   **Edge Queries (Experimental)**: Edge queries (``SELECT edges``) are currently in development and not fully supported. The DSL primarily focuses on node queries at this time. Use node-based queries for production work.
-
-**Note**: Current version primarily supports node queries.
+``SELECT edges`` is fully supported, including intralayer/interlayer
+predicates and per-layer-pair edge counts -- see
+``examples/dsl_zoo/08_edge_counts_per_layer_pair.py``,
+``09_intra_layer_edges.py``, ``10_inter_layer_edges.py``, and
+``11_interlayer_specific_pair.py`` for worked examples.
 
 WHERE Clause
 ~~~~~~~~~~~~

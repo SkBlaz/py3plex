@@ -614,11 +614,11 @@ Found 1 high-degree nodes
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="n">nodes</span>     <span class="c1"># Select nodes</span>
 </pre></div>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><strong>Edge Queries (Experimental)</strong>: Edge queries (<code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">edges</span></code>) are currently in development and not fully supported. The DSL primarily focuses on node queries at this time. Use node-based queries for production work.</p>
-</div>
-<p><strong>Note</strong>: Current version primarily supports node queries.</p>
+<p><code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">edges</span></code> is fully supported, including intralayer/interlayer
+predicates and per-layer-pair edge counts – see
+<code class="docutils literal notranslate"><span class="pre">examples/dsl_zoo/08_edge_counts_per_layer_pair.py</span></code>,
+<code class="docutils literal notranslate"><span class="pre">09_intra_layer_edges.py</span></code>, <code class="docutils literal notranslate"><span class="pre">10_inter_layer_edges.py</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">11_interlayer_specific_pair.py</span></code> for worked examples.</p>
 </section>
 <section id="where-clause">
 <h3><a class="toc-backref" href="#id21" role="doc-backlink">WHERE Clause</a><a class="headerlink" href="#where-clause" title="Link to this heading"></a></h3>

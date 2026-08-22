@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Aug 21, 2026}
+\date{Aug 22, 2026}
 \release{2.0.1}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -37413,21 +37413,16 @@ DSL Extensions (v2.1):
 \PYG{g+gp}{... }    \PYG{k}{return} \PYG{n}{result}
 \end{sphinxVerbatim}
 
-\sphinxlineitem{The DSL also supports a string syntax:}
-\sphinxAtStartPar
-SELECT nodes
-FROM LAYER(“social”) + LAYER(“work”)
-WHERE intralayer AND degree \textgreater{} 5
-COMPUTE betweenness\_centrality AS bc
-ORDER BY bc DESC
-LIMIT 20
-TO pandas
-
 \end{description}
 
 \sphinxAtStartPar
-All frontends (string DSL, builder API) compile into a single AST which is
-executed by the same engine, ensuring consistent behavior.
+A separate legacy string syntax also exists (see \sphinxcode{\sphinxupquote{py3plex.dsl\_legacy}} /
+\sphinxcode{\sphinxupquote{execute\_query()}}), but it is a distinct hand\sphinxhyphen{}written parser and executor,
+not compiled onto this module’s AST \textendash{} it does not support layer set
+algebra, intralayer/interlayer predicates, per\sphinxhyphen{}layer grouping, or coverage.
+A unified string syntax that compiles onto this AST and is executed by the
+same engine as the builder API (ensuring consistent behavior across both
+frontends) is planned but not yet implemented.
 
 
 \begin{savenotes}\begin{fulllineitems}

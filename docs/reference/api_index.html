@@ -4296,17 +4296,14 @@ analyzing multilayer networks. DSL v2 introduces:</p>
 </pre></div>
 </div>
 </dd>
-<dt>The DSL also supports a string syntax:</dt><dd><p>SELECT nodes
-FROM LAYER(“social”) + LAYER(“work”)
-WHERE intralayer AND degree &gt; 5
-COMPUTE betweenness_centrality AS bc
-ORDER BY bc DESC
-LIMIT 20
-TO pandas</p>
-</dd>
 </dl>
-<p>All frontends (string DSL, builder API) compile into a single AST which is
-executed by the same engine, ensuring consistent behavior.</p>
+<p>A separate legacy string syntax also exists (see <code class="docutils literal notranslate"><span class="pre">py3plex.dsl_legacy</span></code> /
+<code class="docutils literal notranslate"><span class="pre">execute_query()</span></code>), but it is a distinct hand-written parser and executor,
+not compiled onto this module’s AST – it does not support layer set
+algebra, intralayer/interlayer predicates, per-layer grouping, or coverage.
+A unified string syntax that compiles onto this AST and is executed by the
+same engine as the builder API (ensuring consistent behavior across both
+frontends) is planned but not yet implemented.</p>
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">py3plex.dsl.</span></span><span class="sig-name descname"><span class="pre">ApproximationSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagnostics:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span></dt>
