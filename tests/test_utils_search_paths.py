@@ -12,6 +12,10 @@ from py3plex.utils import (
     MAX_UPWARD_SEARCH_LEVELS,
     _search_upward_from_script,
     get_data_path,
+    get_dataset_path,
+    get_example_image_path,
+    get_layer_names,
+    get_multilayer_dataset_path,
 )
 
 
@@ -46,3 +50,85 @@ def test_search_upward_respects_max_levels(tmp_path):
         potential_root = potential_root.parent
 
     assert candidates == expected
+
+
+def test_dataset_and_image_path_helpers_normalize_prefix(monkeypatch):
+    """Convenience helpers should pass expected prefixed paths to get_data_path."""
+    captured = []
+
+    def fake_get_data_path(path):
+        captured.append(path)
+        return f"/abs/{path}"
+
+    monkeypatch.setattr("py3plex.utils.get_data_path", fake_get_data_path)
+
+    assert get_dataset_path("demo.csv") == "/abs/datasets/demo.csv"
+    assert get_dataset_path("datasets/demo.csv") == "/abs/datasets/demo.csv"
+    assert get_example_image_path("plot.png") == "/abs/example_images/plot.png"
+    assert (
+        get_example_image_path("example_images/plot.png")
+        == "/abs/example_images/plot.png"
+    )
+
+    assert captured == [
+        "datasets/demo.csv",
+        "datasets/demo.csv",
+        "example_images/plot.png",
+        "example_images/plot.png",
+    ]
+
+
+def test_multilayer_dataset_helper_normalize_prefix(monkeypatch):
+    """Multilayer helper should prepend folder only when missing."""
+    captured = []
+
+    def fake_get_data_path(path):
+        captured.append(path)
+        return f"/abs/{path}"
+
+    monkeypatch.setattr("py3plex.utils.get_data_path", fake_get_data_path)
+
+    assert (
+        get_multilayer_dataset_path("MLKing/sample.edges")
+        == "/abs/multilayer_datasets/MLKing/sample.edges"
+    )
+    assert (
+        get_multilayer_dataset_path("multilayer_datasets/MLKing/sample.edges")
+        == "/abs/multilayer_datasets/MLKing/sample.edges"
+    )
+    assert captured == [
+        "multilayer_datasets/MLKing/sample.edges",
+        "multilayer_datasets/MLKing/sample.edges",
+    ]
+
+
+def test_get_layer_names_ignores_non_tuple_and_sorts():
+    """Layer extraction should ignore malformed nodes and sort unique layers."""
+
+    class DummyCoreNetwork:
+        def nodes(self):
+            return [
+                ("A", "work"),
+                ("B", "social"),
+                ("C", "work"),  # duplicate layer
+                "not-a-tuple",
+                ("missing_layer_only",),
+            ]
+
+    class DummyNet:
+        core_network = DummyCoreNetwork()
+
+    assert get_layer_names(DummyNet()) == ["social", "work"]
+
+
+def test_get_layer_names_returns_empty_on_core_network_errors():
+    """Layer extraction should be defensive when core network access fails."""
+
+    class BrokenCoreNetwork:
+        def nodes(self):
+            raise RuntimeError("boom")
+
+    class DummyNet:
+        core_network = BrokenCoreNetwork()
+
+    assert get_layer_names(DummyNet()) == []
