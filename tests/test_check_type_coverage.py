@@ -257,13 +257,13 @@ def test_main_json_and_verbose_warns_when_low_coverage(monkeypatch, capsys, tmp_
     with pytest.raises(SystemExit) as excinfo:
         ctc.main()
 
-    assert excinfo.value.code == 0
+    assert excinfo.value.code == 1
 
     captured = capsys.readouterr()
     assert "TYPE COVERAGE REPORT" in captured.out
     assert "Top 20 Most Imprecise Modules" in captured.out
     assert "py3plex.alpha" in captured.out
-    assert "Warning: Type coverage is below 50" in captured.err
+    assert "Error: Type coverage is below target of 85.00%" in captured.err
 
     data = json.loads(output_json.read_text())
     assert data["total_loc"] == 200
@@ -325,7 +325,7 @@ def test_main_succeeds_without_warning_when_coverage_high(
     }
     monkeypatch.setattr(ctc, "parse_linecount_report", lambda path: metrics)
 
-    monkeypatch.setattr(sys, "argv", ["prog"])
+    monkeypatch.setattr(sys, "argv", ["prog", "--min-coverage", "75"])
 
     with pytest.raises(SystemExit) as excinfo:
         ctc.main()
@@ -335,6 +335,82 @@ def test_main_succeeds_without_warning_when_coverage_high(
     captured = capsys.readouterr()
     assert "TYPE COVERAGE REPORT" in captured.out
     assert "Type Coverage:            80.00%" in captured.out
-    assert "Warning" not in captured.err
+    assert "Error: Type coverage is below target" not in captured.err
     assert "Top" not in captured.out  # only shown in verbose mode
     assert run_calls == [pkg_dir]
+
+
+def test_main_fails_with_default_min_coverage_when_result_is_below_threshold(
+    monkeypatch, tmp_path, capsys
+):
+    project_root = tmp_path
+    doc_dir = project_root / "docfiles"
+    pkg_dir = project_root / "py3plex"
+    doc_dir.mkdir()
+    pkg_dir.mkdir()
+
+    fake_script = doc_dir / "check_type_coverage.py"
+    fake_script.write_text("# stub\n")
+    monkeypatch.setattr(ctc, "__file__", str(fake_script))
+    monkeypatch.setattr(
+        ctc,
+        "run_mypy_coverage",
+        lambda pkg_path, temp_dir: (str(temp_dir / "txt" / "index.txt"), 0),
+    )
+    monkeypatch.setattr(
+        ctc,
+        "parse_linecount_report",
+        lambda path: {
+            "total_loc": 100,
+            "precise_loc": 84,
+            "imprecise_loc": 16,
+            "precise_percent": 84.0,
+            "imprecise_percent": 16.0,
+            "modules": [],
+        },
+    )
+    monkeypatch.setattr(sys, "argv", ["prog"])
+
+    with pytest.raises(SystemExit) as excinfo:
+        ctc.main()
+
+    assert excinfo.value.code == 1
+    assert "Error: Type coverage is below target of 85.00%" in capsys.readouterr().err
+
+
+def test_main_fails_when_mypy_returns_nonzero_and_report_is_empty(
+    monkeypatch, tmp_path, capsys
+):
+    project_root = tmp_path
+    doc_dir = project_root / "docfiles"
+    pkg_dir = project_root / "py3plex"
+    doc_dir.mkdir()
+    pkg_dir.mkdir()
+
+    fake_script = doc_dir / "check_type_coverage.py"
+    fake_script.write_text("# stub\n")
+    monkeypatch.setattr(ctc, "__file__", str(fake_script))
+    monkeypatch.setattr(
+        ctc,
+        "run_mypy_coverage",
+        lambda pkg_path, temp_dir: (str(temp_dir / "txt" / "index.txt"), 2),
+    )
+    monkeypatch.setattr(
+        ctc,
+        "parse_linecount_report",
+        lambda path: {
+            "total_loc": 0,
+            "precise_loc": 0,
+            "imprecise_loc": 0,
+            "precise_percent": 100.0,
+            "imprecise_percent": 0.0,
+            "modules": [],
+        },
+    )
+    monkeypatch.setattr(sys, "argv", ["prog"])
+
+    with pytest.raises(SystemExit) as excinfo:
+        ctc.main()
+
+    assert excinfo.value.code == 2
+    assert "mypy failed and produced an empty coverage report" in capsys.readouterr().err

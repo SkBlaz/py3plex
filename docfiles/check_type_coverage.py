@@ -16,6 +16,7 @@ Usage:
     python check_type_coverage.py --verbose
     python check_type_coverage.py --json coverage.json
     python check_type_coverage.py --badge-only
+    python check_type_coverage.py --min-coverage 85
 """
 
 import argparse
@@ -27,6 +28,9 @@ import sys
 import tempfile
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+
+DEFAULT_MIN_COVERAGE = 85.0
 
 
 def run_mypy_coverage(package_path: Path, temp_dir: Path) -> Tuple[str, int]:
@@ -228,6 +232,12 @@ def main():
         default="py3plex",
         help="Package to analyze (default: py3plex)"
     )
+    parser.add_argument(
+        "--min-coverage",
+        type=float,
+        default=DEFAULT_MIN_COVERAGE,
+        help=f"Minimum required precise type coverage percentage (default: {DEFAULT_MIN_COVERAGE})",
+    )
     
     args = parser.parse_args()
     
@@ -250,6 +260,14 @@ def main():
         
         # Parse results
         metrics = parse_linecount_report(report_path)
+
+    if exit_code != 0 and metrics["total_loc"] == 0:
+        print(
+            "Error: mypy failed and produced an empty coverage report. "
+            "Type coverage cannot be computed.",
+            file=sys.stderr,
+        )
+        sys.exit(exit_code)
     
     # Generate badge
     badge_url = generate_badge_url(metrics["precise_percent"])
@@ -290,12 +308,14 @@ def main():
         print("\n" + "=" * 80)
     
     # Exit with appropriate code
-    # Success if coverage is reasonable (>50%) or improving
-    if metrics["precise_percent"] >= 50:
+    if metrics["precise_percent"] >= args.min_coverage:
         sys.exit(0)
     else:
-        print(f"\nWarning: Type coverage is below 50%", file=sys.stderr)
-        sys.exit(0)  # Don't fail CI, just warn
+        print(
+            f"\nError: Type coverage is below target of {args.min_coverage:.2f}%",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 
 if __name__ == "__main__":
