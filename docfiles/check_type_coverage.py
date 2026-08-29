@@ -16,6 +16,7 @@ Usage:
     python check_type_coverage.py --verbose
     python check_type_coverage.py --json coverage.json
     python check_type_coverage.py --badge-only
+    python check_type_coverage.py --min-coverage 85
 """
 
 import argparse
@@ -26,16 +27,25 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
-def run_mypy_coverage(package_path: Path, temp_dir: Path) -> Tuple[str, int]:
+DEFAULT_MIN_COVERAGE = 79.0
+
+
+def run_mypy_coverage(
+    package_path: Path,
+    temp_dir: Path,
+    working_dir: Path,
+    extra_args: Optional[List[str]] = None,
+) -> Tuple[str, int]:
     """
     Run mypy with coverage reports.
     
     Args:
         package_path: Path to the package to analyze
         temp_dir: Temporary directory for reports
+        working_dir: Working directory used when invoking mypy
     
     Returns:
         Tuple of (txt report path, exit code)
@@ -54,13 +64,16 @@ def run_mypy_coverage(package_path: Path, temp_dir: Path) -> Tuple[str, int]:
         "--txt-report", str(txt_dir),
         "--any-exprs-report", str(any_dir),
     ]
+    if extra_args:
+        cmd.extend(extra_args)
     
     try:
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
-            timeout=300
+            timeout=300,
+            cwd=working_dir,
         )
         
         txt_report = txt_dir / "index.txt"
@@ -228,6 +241,12 @@ def main():
         default="py3plex",
         help="Package to analyze (default: py3plex)"
     )
+    parser.add_argument(
+        "--min-coverage",
+        type=float,
+        default=DEFAULT_MIN_COVERAGE,
+        help=f"Minimum required precise type coverage percentage (default: {DEFAULT_MIN_COVERAGE})",
+    )
     
     args = parser.parse_args()
     
@@ -246,10 +265,34 @@ def main():
     
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
-        report_path, exit_code = run_mypy_coverage(package_path, temp_path)
+        report_path, exit_code = run_mypy_coverage(package_path, temp_path, repo_root)
         
         # Parse results
         metrics = parse_linecount_report(report_path)
+
+    if exit_code != 0 and metrics["total_loc"] == 0:
+        print(
+            "Warning: mypy produced an empty coverage report. "
+            "Retrying with compatibility fallback flags.",
+            file=sys.stderr,
+        )
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            report_path, exit_code = run_mypy_coverage(
+                package_path,
+                temp_path,
+                repo_root,
+                extra_args=["--no-site-packages", "--python-version", "3.10"],
+            )
+            metrics = parse_linecount_report(report_path)
+
+    if exit_code != 0 and metrics["total_loc"] == 0:
+        print(
+            "Error: mypy failed and produced an empty coverage report. "
+            "Type coverage cannot be computed.",
+            file=sys.stderr,
+        )
+        sys.exit(exit_code)
     
     # Generate badge
     badge_url = generate_badge_url(metrics["precise_percent"])
@@ -290,12 +333,14 @@ def main():
         print("\n" + "=" * 80)
     
     # Exit with appropriate code
-    # Success if coverage is reasonable (>50%) or improving
-    if metrics["precise_percent"] >= 50:
+    if metrics["precise_percent"] >= args.min_coverage:
         sys.exit(0)
     else:
-        print(f"\nWarning: Type coverage is below 50%", file=sys.stderr)
-        sys.exit(0)  # Don't fail CI, just warn
+        print(
+            f"\nError: Type coverage is below target of {args.min_coverage:.2f}%",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 
 if __name__ == "__main__":

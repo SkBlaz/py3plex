@@ -172,7 +172,7 @@ def test_main_badge_only_uses_metrics(monkeypatch, capsys, tmp_path):
 
     run_calls = []
 
-    def fake_run(pkg_path, temp_dir):
+    def fake_run(pkg_path, temp_dir, extra_args=None):
         run_calls.append((pkg_path, temp_dir))
         return str(temp_dir / "txt" / "index.txt"), 0
 
@@ -228,7 +228,7 @@ def test_main_json_and_verbose_warns_when_low_coverage(monkeypatch, capsys, tmp_
     monkeypatch.setattr(
         ctc,
         "run_mypy_coverage",
-        lambda pkg_path, temp_dir: (str(temp_dir / "txt" / "index.txt"), 0),
+        lambda pkg_path, temp_dir, extra_args=None: (str(temp_dir / "txt" / "index.txt"), 0),
     )
 
     metrics = {
@@ -257,13 +257,13 @@ def test_main_json_and_verbose_warns_when_low_coverage(monkeypatch, capsys, tmp_
     with pytest.raises(SystemExit) as excinfo:
         ctc.main()
 
-    assert excinfo.value.code == 0
+    assert excinfo.value.code == 1
 
     captured = capsys.readouterr()
     assert "TYPE COVERAGE REPORT" in captured.out
     assert "Top 20 Most Imprecise Modules" in captured.out
     assert "py3plex.alpha" in captured.out
-    assert "Warning: Type coverage is below 50" in captured.err
+    assert "Error: Type coverage is below target of 79.00%" in captured.err
 
     data = json.loads(output_json.read_text())
     assert data["total_loc"] == 200
@@ -307,7 +307,7 @@ def test_main_succeeds_without_warning_when_coverage_high(
 
     run_calls = []
 
-    def fake_run(pkg_path, temp_dir):
+    def fake_run(pkg_path, temp_dir, extra_args=None):
         run_calls.append(pkg_path)
         return str(temp_dir / "txt" / "index.txt"), 0
 
@@ -325,7 +325,7 @@ def test_main_succeeds_without_warning_when_coverage_high(
     }
     monkeypatch.setattr(ctc, "parse_linecount_report", lambda path: metrics)
 
-    monkeypatch.setattr(sys, "argv", ["prog"])
+    monkeypatch.setattr(sys, "argv", ["prog", "--min-coverage", "75"])
 
     with pytest.raises(SystemExit) as excinfo:
         ctc.main()
@@ -335,6 +335,136 @@ def test_main_succeeds_without_warning_when_coverage_high(
     captured = capsys.readouterr()
     assert "TYPE COVERAGE REPORT" in captured.out
     assert "Type Coverage:            80.00%" in captured.out
-    assert "Warning" not in captured.err
+    assert "Error: Type coverage is below target" not in captured.err
     assert "Top" not in captured.out  # only shown in verbose mode
     assert run_calls == [pkg_dir]
+
+
+def test_main_fails_with_default_min_coverage_when_result_is_below_threshold(
+    monkeypatch, tmp_path, capsys
+):
+    project_root = tmp_path
+    doc_dir = project_root / "docfiles"
+    pkg_dir = project_root / "py3plex"
+    doc_dir.mkdir()
+    pkg_dir.mkdir()
+
+    fake_script = doc_dir / "check_type_coverage.py"
+    fake_script.write_text("# stub\n")
+    monkeypatch.setattr(ctc, "__file__", str(fake_script))
+    monkeypatch.setattr(
+        ctc,
+        "run_mypy_coverage",
+        lambda pkg_path, temp_dir, extra_args=None: (str(temp_dir / "txt" / "index.txt"), 0),
+    )
+    monkeypatch.setattr(
+        ctc,
+        "parse_linecount_report",
+        lambda path: {
+            "total_loc": 100,
+            "precise_loc": 78,
+            "imprecise_loc": 22,
+            "precise_percent": 78.0,
+            "imprecise_percent": 22.0,
+            "modules": [],
+        },
+    )
+    monkeypatch.setattr(sys, "argv", ["prog"])
+
+    with pytest.raises(SystemExit) as excinfo:
+        ctc.main()
+
+    assert excinfo.value.code == 1
+    assert "Error: Type coverage is below target of 79.00%" in capsys.readouterr().err
+
+
+def test_main_fails_when_mypy_returns_nonzero_and_report_is_empty(
+    monkeypatch, tmp_path, capsys
+):
+    project_root = tmp_path
+    doc_dir = project_root / "docfiles"
+    pkg_dir = project_root / "py3plex"
+    doc_dir.mkdir()
+    pkg_dir.mkdir()
+
+    fake_script = doc_dir / "check_type_coverage.py"
+    fake_script.write_text("# stub\n")
+    monkeypatch.setattr(ctc, "__file__", str(fake_script))
+    calls = []
+
+    def fake_run(pkg_path, temp_dir, extra_args=None):
+        calls.append(extra_args)
+        return str(temp_dir / "txt" / "index.txt"), 2
+
+    monkeypatch.setattr(ctc, "run_mypy_coverage", fake_run)
+    monkeypatch.setattr(
+        ctc,
+        "parse_linecount_report",
+        lambda path: {
+            "total_loc": 0,
+            "precise_loc": 0,
+            "imprecise_loc": 0,
+            "precise_percent": 100.0,
+            "imprecise_percent": 0.0,
+            "modules": [],
+        },
+    )
+    monkeypatch.setattr(sys, "argv", ["prog"])
+
+    with pytest.raises(SystemExit) as excinfo:
+        ctc.main()
+
+    assert excinfo.value.code == 2
+    assert calls == [None, ["--no-site-packages", "--python-version", "3.10"]]
+    err = capsys.readouterr().err
+    assert "Retrying with compatibility fallback flags" in err
+    assert "mypy failed and produced an empty coverage report" in err
+
+
+def test_main_retry_succeeds_when_first_report_is_empty(monkeypatch, tmp_path, capsys):
+    project_root = tmp_path
+    doc_dir = project_root / "docfiles"
+    pkg_dir = project_root / "py3plex"
+    doc_dir.mkdir()
+    pkg_dir.mkdir()
+
+    fake_script = doc_dir / "check_type_coverage.py"
+    fake_script.write_text("# stub\n")
+    monkeypatch.setattr(ctc, "__file__", str(fake_script))
+
+    calls = []
+
+    def fake_run(pkg_path, temp_dir, extra_args=None):
+        calls.append(extra_args)
+        return str(temp_dir / "txt" / "index.txt"), (2 if extra_args is None else 0)
+
+    monkeypatch.setattr(ctc, "run_mypy_coverage", fake_run)
+
+    def fake_parse(path):
+        if len(calls) == 1:
+            return {
+                "total_loc": 0,
+                "precise_loc": 0,
+                "imprecise_loc": 0,
+                "precise_percent": 100.0,
+                "imprecise_percent": 0.0,
+                "modules": [],
+            }
+        return {
+            "total_loc": 100,
+            "precise_loc": 80,
+            "imprecise_loc": 20,
+            "precise_percent": 80.0,
+            "imprecise_percent": 20.0,
+            "modules": [],
+        }
+
+    monkeypatch.setattr(ctc, "parse_linecount_report", fake_parse)
+    monkeypatch.setattr(sys, "argv", ["prog"])
+
+    with pytest.raises(SystemExit) as excinfo:
+        ctc.main()
+
+    assert excinfo.value.code == 0
+    assert calls == [None, ["--no-site-packages", "--python-version", "3.10"]]
+    assert "Retrying with compatibility fallback flags" in capsys.readouterr().err

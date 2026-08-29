@@ -230,7 +230,7 @@ ignore = [
 "__init__.py" = ["F401"]  # Allow unused imports in __init__.py
 
 [tool.mypy]
-python_version = "3.9"  # mypy requires 3.9+
+python_version = "3.10"  # Keep aligned with type-coverage workflow runtime
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
