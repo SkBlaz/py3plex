@@ -276,6 +276,72 @@ Layers distinguish financial instruments and ownership ties:
 
 See :doc:`../how-to/run_community_detection` for detecting financial communities and :doc:`../how-to/simulate_dynamics` for contagion modeling.
 
+Clinical Consensus Networks
+----------------------------
+
+Layers can separate different structuring choices for data labelled by
+multiple experts (e.g. radiologists reading scans):
+
+* Patients as layers, radiologists as nodes, with edges weighted by measured
+  inter-rater agreement rather than raw participation
+* Patients as layers, with annotators and their findings as nodes (structure
+  only, no agreement embedded in the edges)
+* Annotators as layers, with shared findings as nodes across their caseloads
+
+**Example applications:**
+
+* Identifying radiologists who are central to the *consensus* structure
+  itself, not just the busiest readers
+* Tuning inter-layer coupling strength to separate participation volume from
+  genuine agreement signal
+* Detecting stable groups of mutually-agreeing annotators via community
+  detection
+
+**Example: Agreement-weighted consensus network**
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+    from py3plex.algorithms.multilayer_algorithms import centrality as ml_centrality
+    from py3plex.algorithms.community_detection.community_louvain import best_partition
+
+    # Example: patients as layers, radiologists as nodes. Edge weight is the
+    # measured agreement between two radiologists on that patient's findings
+    # (0-1), not a fixed participation weight.
+    network = multinet.multi_layer_network(network_type="multilayer", directed=False)
+    network.add_edges([
+        {"source": "reader_1", "target": "reader_2", "source_type": "patient_1",
+         "target_type": "patient_1", "weight": 0.82},
+        {"source": "reader_1", "target": "reader_3", "source_type": "patient_2",
+         "target_type": "patient_2", "weight": 0.65},
+    ])
+
+    # Couple a reader's own instances across patient-layers with a small
+    # weight, well below the agreement edges (see note below)
+    network.add_edges([
+        {"source": "reader_1", "target": "reader_1", "source_type": "patient_1",
+         "target_type": "patient_2", "weight": 0.005},
+    ])
+
+    supra = network.get_supra_adjacency_matrix(mtype="sparse")
+    katz = ml_centrality.katz_centrality(supra, tol=1e-6)
+
+    # Map each score back to the (reader, patient) instance it belongs to
+    node_list = list(network.core_network.nodes())
+    for node, score in zip(node_list, katz):
+        print(node, score)
+
+    # Detect groups of radiologists whose agreement edges cluster together
+    communities = best_partition(network.core_network, weight="weight")
+    print(communities)
+
+The inter-layer coupling weight matters more than it looks: at a "natural"
+weight of 1.0, coupling edges dominate the [0,1]-weighted agreement edges and
+centrality collapses back to tracking case volume rather than agreement.
+Scaling coupling weight down toward the size of the agreement edges is
+generally what recovers a centrality signal that tracks measured consensus
+instead of participation.
+
 Next Steps
 ----------
 
