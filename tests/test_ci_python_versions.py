@@ -26,3 +26,15 @@ def test_pyproject_classifiers_include_python_313():
     text = pyproject.read_text(encoding="utf-8")
 
     assert "Programming Language :: Python :: 3.13" in text
+
+
+def test_coverage_workflow_publishes_the_measured_badge_value():
+    workflow = Path(__file__).resolve().parents[1] / ".github/workflows/tests.yml"
+    text = workflow.read_text(encoding="utf-8")
+
+    coverage_job = text.split("\n  coverage:\n", 1)[1]
+    assert "contents: write" in coverage_job
+    assert "uv run coverage json -o coverage-summary.json" in coverage_job
+    assert 'echo "COVERAGE=$COVERAGE" >> "$GITHUB_ENV"' in coverage_job
+    assert "test_coverage-" in coverage_job
+    assert "git push" in coverage_job
