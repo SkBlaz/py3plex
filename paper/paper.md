@@ -10,22 +10,33 @@ tags:
 - visualization
 
 authors:
+  - name: Evgenija Popchanovska
+    equal-contrib: true
+    affiliation: 2
+  - name: Boshko Koloski
+    orcid: 0000-0002-7330-0579
+    equal-contrib: true
+    affiliation: 1
+  - name: Yana Melnik
+    equal-contrib: true
+    affiliation: 4
+  - name: Benjamin Renoust
+    equal-contrib: true
+    affiliation: 3
   - name: Blaž Škrlj
     orcid: 0000-0002-9916-8756
     equal-contrib: true
     affiliation: 1
-  - name: Boshko Koloski
-    equal-contrib: true
-    affiliation: 1
-  - name: Evgenija Popchanovska
-    equal-contrib: true
-    affiliation: 2
 
 affiliations: 
 - index: 1
    name: Jožef Stefan Institute, Ljubljana, Slovenia
 - index: 2
    name: Faculty of Computer Science and Engineering, Skopje, North Macedonia
+- index: 3
+   name: Institute for Datability Science Osaka University, Japan
+- index: 4
+   name: Epitech - L'école de l'excellence informatique
 date: 25 May 2026
 bibliography: paper.bib
 ---
@@ -111,6 +122,6 @@ Large language models (Gemini and ChatGPT) helped draft documentation and perfor
 
 # Acknowledgements
 
-The authors would like to thank Benjamin Renoust (Median Technologies) and Yana Melnik (Epitech - L'école de l'excellence informatique) for their valuable feedback and contributions to the development of py3plex.
+The authors would like to thank Benjamin Renoust and Yana Melnik for their valuable feedback and contributions to the development of py3plex.
 
 # References
