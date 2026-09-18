@@ -340,12 +340,11 @@ multiple experts (e.g. radiologists reading scans):
     communities = best_partition(network.core_network, weight="weight")
     print(communities)
 
-The inter-layer coupling weight matters more than it looks: at a "natural"
-weight of 1.0, coupling edges dominate the [0,1]-weighted agreement edges and
-centrality collapses back to tracking case volume rather than agreement.
-Scaling coupling weight down toward the size of the agreement edges is
-generally what recovers a centrality signal that tracks measured consensus
-instead of participation.
+The choice of what to encode as layers, nodes and edge weights determines
+what the analysis can answer. A structure-only network mostly recovers
+participation: its centralities track how much each annotator worked, not
+how well annotators agree. Embedding a measured agreement score in the edge
+weights turns the same machinery into a consensus analysis.
 
 Next Steps
 ----------
