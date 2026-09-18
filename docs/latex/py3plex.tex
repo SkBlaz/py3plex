@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Sep 11, 2026}
+\date{Sep 18, 2026}
 \release{2.0.1}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -1107,6 +1107,100 @@ Regulatory network analysis
 
 \sphinxAtStartPar
 See {\hyperref[\detokenize{how-to/run_community_detection::doc}]{\sphinxcrossref{\DUrole{doc}{How to Run Community Detection on Multilayer Networks}}}} for detecting financial communities and {\hyperref[\detokenize{how-to/simulate_dynamics::doc}]{\sphinxcrossref{\DUrole{doc}{How to Simulate Multilayer Dynamics}}}} for contagion modeling.
+
+
+\subsubsection{Clinical Consensus Networks}
+\label{\detokenize{overview/key_use_cases:clinical-consensus-networks}}
+\sphinxAtStartPar
+Layers can separate different structuring choices for data labelled by
+multiple experts (e.g. radiologists reading scans):
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Patients as layers, radiologists as nodes, with edges weighted by measured
+inter\sphinxhyphen{}rater agreement rather than raw participation
+
+\item {} 
+\sphinxAtStartPar
+Patients as layers, with annotators and their findings as nodes (structure
+only, no agreement embedded in the edges)
+
+\item {} 
+\sphinxAtStartPar
+Annotators as layers, with shared findings as nodes across their caseloads
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example applications:}
+\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+Identifying radiologists who are central to the \sphinxstyleemphasis{consensus} structure
+itself, not just the busiest readers
+
+\item {} 
+\sphinxAtStartPar
+Tuning inter\sphinxhyphen{}layer coupling strength to separate participation volume from
+genuine agreement signal
+
+\item {} 
+\sphinxAtStartPar
+Detecting stable groups of mutually\sphinxhyphen{}agreeing annotators via community
+detection
+
+\end{itemize}
+
+\sphinxAtStartPar
+\sphinxstylestrong{Example: Agreement\sphinxhyphen{}weighted consensus network}
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{core}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{multinet}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{multilayer\PYGZus{}algorithms}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{centrality} \PYG{k}{as} \PYG{n}{ml\PYGZus{}centrality}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{algorithms}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}detection}\PYG{n+nn}{.}\PYG{n+nn}{community\PYGZus{}louvain}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{best\PYGZus{}partition}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{py3plex}\PYG{n+nn}{.}\PYG{n+nn}{dsl}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Q}
+
+\PYG{c+c1}{\PYGZsh{} Example: patients as layers, radiologists as nodes. Edge weight is the}
+\PYG{c+c1}{\PYGZsh{} measured agreement between two radiologists on that patient\PYGZsq{}s findings}
+\PYG{c+c1}{\PYGZsh{} (0\PYGZhy{}1), not a fixed participation weight.}
+\PYG{n}{network} \PYG{o}{=} \PYG{n}{multinet}\PYG{o}{.}\PYG{n}{multi\PYGZus{}layer\PYGZus{}network}\PYG{p}{(}\PYG{n}{network\PYGZus{}type}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multilayer}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{directed}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{source}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{reader\PYGZus{}1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{target}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{reader\PYGZus{}2}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{source\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{patient\PYGZus{}1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+     \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{target\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{patient\PYGZus{}1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+m+mf}{0.82}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{source}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{reader\PYGZus{}1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{target}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{reader\PYGZus{}3}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{source\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{patient\PYGZus{}2}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+     \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{target\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{patient\PYGZus{}2}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+m+mf}{0.65}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Couple a reader\PYGZsq{}s own instances across patient\PYGZhy{}layers with a small}
+\PYG{c+c1}{\PYGZsh{} weight, well below the agreement edges (see note below)}
+\PYG{n}{network}\PYG{o}{.}\PYG{n}{add\PYGZus{}edges}\PYG{p}{(}\PYG{p}{[}
+    \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{source}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{reader\PYGZus{}1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{target}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{reader\PYGZus{}1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{source\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{patient\PYGZus{}1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}
+     \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{target\PYGZus{}type}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{patient\PYGZus{}2}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+m+mf}{0.005}\PYG{p}{\PYGZcb{}}\PYG{p}{,}
+\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Option 1: matrix path (Katz centrality on the supra\PYGZhy{}adjacency matrix)}
+\PYG{n}{supra} \PYG{o}{=} \PYG{n}{network}\PYG{o}{.}\PYG{n}{get\PYGZus{}supra\PYGZus{}adjacency\PYGZus{}matrix}\PYG{p}{(}\PYG{n}{mtype}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{sparse}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{katz} \PYG{o}{=} \PYG{n}{ml\PYGZus{}centrality}\PYG{o}{.}\PYG{n}{katz\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{supra}\PYG{p}{,} \PYG{n}{tol}\PYG{o}{=}\PYG{l+m+mf}{1e\PYGZhy{}6}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{node}\PYG{p}{,} \PYG{n}{score} \PYG{o+ow}{in} \PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,} \PYG{n}{katz}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{n}{score}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Option 2: DSL path. Scores come back already labelled by (reader, patient)}
+\PYG{c+c1}{\PYGZsh{} instance, so no manual mapping is needed. PageRank is used here because}
+\PYG{c+c1}{\PYGZsh{} it honours the edge weights, including the coupling edges.}
+\PYG{n}{df} \PYG{o}{=} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{nodes}\PYG{p}{(}\PYG{p}{)}\PYG{o}{.}\PYG{n}{compute}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{order\PYGZus{}by}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}pagerank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{network}\PYG{p}{)}\PYG{o}{.}\PYG{n}{to\PYGZus{}pandas}\PYG{p}{(}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{df}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Detect groups of radiologists whose agreement edges cluster together}
+\PYG{n}{communities} \PYG{o}{=} \PYG{n}{best\PYGZus{}partition}\PYG{p}{(}\PYG{n}{network}\PYG{o}{.}\PYG{n}{core\PYGZus{}network}\PYG{p}{,} \PYG{n}{weight}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{weight}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{communities}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+\sphinxAtStartPar
+The choice of what to encode as layers, nodes and edge weights determines
+what the analysis can answer. A structure\sphinxhyphen{}only network mostly recovers
+participation: its centralities track how much each annotator worked, not
+how well annotators agree. Embedding a measured agreement score in the edge
+weights turns the same machinery into a consensus analysis.
 
 
 \subsubsection{Next Steps}

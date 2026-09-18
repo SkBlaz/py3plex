@@ -57,6 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#epidemic-modeling">Epidemic Modeling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#communication-networks">Communication Networks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#financial-networks">Financial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clinical-consensus-networks">Clinical Consensus Networks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
@@ -422,6 +423,73 @@ person identifiers.</p>
 <li><p><strong>Portfolio diversification:</strong> Understand correlation structures across asset types</p></li>
 </ul>
 <p>See <a class="reference internal" href="../how-to/run_community_detection.html"><span class="doc">How to Run Community Detection on Multilayer Networks</span></a> for detecting financial communities and <a class="reference internal" href="../how-to/simulate_dynamics.html"><span class="doc">How to Simulate Multilayer Dynamics</span></a> for contagion modeling.</p>
+</section>
+<section id="clinical-consensus-networks">
+<h2>Clinical Consensus Networks<a class="headerlink" href="#clinical-consensus-networks" title="Link to this heading"></a></h2>
+<p>Layers can separate different structuring choices for data labelled by
+multiple experts (e.g. radiologists reading scans):</p>
+<ul class="simple">
+<li><p>Patients as layers, radiologists as nodes, with edges weighted by measured
+inter-rater agreement rather than raw participation</p></li>
+<li><p>Patients as layers, with annotators and their findings as nodes (structure
+only, no agreement embedded in the edges)</p></li>
+<li><p>Annotators as layers, with shared findings as nodes across their caseloads</p></li>
+</ul>
+<p><strong>Example applications:</strong></p>
+<ul class="simple">
+<li><p>Identifying radiologists who are central to the <em>consensus</em> structure
+itself, not just the busiest readers</p></li>
+<li><p>Tuning inter-layer coupling strength to separate participation volume from
+genuine agreement signal</p></li>
+<li><p>Detecting stable groups of mutually-agreeing annotators via community
+detection</p></li>
+</ul>
+<p><strong>Example: Agreement-weighted consensus network</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.multilayer_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">centrality</span> <span class="k">as</span> <span class="n">ml_centrality</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.community_louvain</span><span class="w"> </span><span class="kn">import</span> <span class="n">best_partition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
+
+<span class="c1"># Example: patients as layers, radiologists as nodes. Edge weight is the</span>
+<span class="c1"># measured agreement between two radiologists on that patient's findings</span>
+<span class="c1"># (0-1), not a fixed participation weight.</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">network_type</span><span class="o">=</span><span class="s2">"multilayer"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"reader_1"</span><span class="p">,</span> <span class="s2">"target"</span><span class="p">:</span> <span class="s2">"reader_2"</span><span class="p">,</span> <span class="s2">"source_type"</span><span class="p">:</span> <span class="s2">"patient_1"</span><span class="p">,</span>
+     <span class="s2">"target_type"</span><span class="p">:</span> <span class="s2">"patient_1"</span><span class="p">,</span> <span class="s2">"weight"</span><span class="p">:</span> <span class="mf">0.82</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"reader_1"</span><span class="p">,</span> <span class="s2">"target"</span><span class="p">:</span> <span class="s2">"reader_3"</span><span class="p">,</span> <span class="s2">"source_type"</span><span class="p">:</span> <span class="s2">"patient_2"</span><span class="p">,</span>
+     <span class="s2">"target_type"</span><span class="p">:</span> <span class="s2">"patient_2"</span><span class="p">,</span> <span class="s2">"weight"</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Couple a reader's own instances across patient-layers with a small</span>
+<span class="c1"># weight, well below the agreement edges (see note below)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">"source"</span><span class="p">:</span> <span class="s2">"reader_1"</span><span class="p">,</span> <span class="s2">"target"</span><span class="p">:</span> <span class="s2">"reader_1"</span><span class="p">,</span> <span class="s2">"source_type"</span><span class="p">:</span> <span class="s2">"patient_1"</span><span class="p">,</span>
+     <span class="s2">"target_type"</span><span class="p">:</span> <span class="s2">"patient_2"</span><span class="p">,</span> <span class="s2">"weight"</span><span class="p">:</span> <span class="mf">0.005</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># Option 1: matrix path (Katz centrality on the supra-adjacency matrix)</span>
+<span class="n">supra</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"sparse"</span><span class="p">)</span>
+<span class="n">katz</span> <span class="o">=</span> <span class="n">ml_centrality</span><span class="o">.</span><span class="n">katz_centrality</span><span class="p">(</span><span class="n">supra</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">(),</span> <span class="n">katz</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+
+<span class="c1"># Option 2: DSL path. Scores come back already labelled by (reader, patient)</span>
+<span class="c1"># instance, so no manual mapping is needed. PageRank is used here because</span>
+<span class="c1"># it honours the edge weights, including the coupling edges.</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-pagerank"</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># Detect groups of radiologists whose agreement edges cluster together</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">"weight"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">communities</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The choice of what to encode as layers, nodes and edge weights determines
+what the analysis can answer. A structure-only network mostly recovers
+participation: its centralities track how much each annotator worked, not
+how well annotators agree. Embedding a measured agreement score in the edge
+weights turns the same machinery into a consensus analysis.</p>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
