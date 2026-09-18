@@ -304,7 +304,7 @@ multiple experts (e.g. radiologists reading scans):
     from py3plex.core import multinet
     from py3plex.algorithms.multilayer_algorithms import centrality as ml_centrality
     from py3plex.algorithms.community_detection.community_louvain import best_partition
-    from py3plex.dsl import Q, L
+    from py3plex.dsl import Q
 
     # Example: patients as layers, radiologists as nodes. Edge weight is the
     # measured agreement between two radiologists on that patient's findings
@@ -324,24 +324,17 @@ multiple experts (e.g. radiologists reading scans):
          "target_type": "patient_2", "weight": 0.005},
     ])
 
+    # Option 1: matrix path (Katz centrality on the supra-adjacency matrix)
     supra = network.get_supra_adjacency_matrix(mtype="sparse")
     katz = ml_centrality.katz_centrality(supra, tol=1e-6)
-
-    # Map each score back to the (reader, patient) instance it belongs to
-    node_list = list(network.core_network.nodes())
-    for node, score in zip(node_list, katz):
+    for node, score in zip(network.core_network.nodes(), katz):
         print(node, score)
 
-    # Or, via the DSL builder API: select and display per-node results
-    # without a manual node_list/zip loop. Below, pagerank (DSL-native COMPUTE mesure)
-    # captures similar indirect-influence structure and is available out of the box.
-    result = (
-        Q.nodes()
-         .from_layers(L["patient_1"] + L["patient_2"])
-         .compute("pagerank")
-         .execute(network)
-    )
-    print(result.to_pandas()[["id", "layer", "pagerank"]])
+    # Option 2: DSL path. Scores come back already labelled by (reader, patient)
+    # instance, so no manual mapping is needed. PageRank is used here because
+    # it honours the edge weights, including the coupling edges.
+    df = Q.nodes().compute("pagerank").order_by("-pagerank").execute(network).to_pandas()
+    print(df)
 
     # Detect groups of radiologists whose agreement edges cluster together
     communities = best_partition(network.core_network, weight="weight")
