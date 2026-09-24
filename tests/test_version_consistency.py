@@ -95,3 +95,5 @@ def test_release_metadata_alignment_in_docs_and_readme():
 
     assert "img.shields.io/badge/lines-213.5K-blue" in readme
     assert "img.shields.io/badge/tests-9.7K-blue" in readme
+    assert "img.shields.io/pypi/v/py3plex" in readme
+    assert not re.search(r"img\.shields\.io/badge/[^)]*PyPI[^)]*[0-9]+\.[0-9]+\.[0-9]+", readme, re.IGNORECASE)
