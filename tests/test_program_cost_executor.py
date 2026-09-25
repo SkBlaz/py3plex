@@ -649,6 +649,19 @@ class TestIntegration:
         # Both should be valid programs
         assert program.hash() != "" or optimized.hash() != ""
 
+    def test_zero_optimize_budget_returns_valid_unmodified_program(self):
+        program = Q.nodes().compute("degree").where(layer="social").to_program()
+
+        optimized = program.optimize(budget=0)
+
+        assert optimized.hash() == program.hash()
+
+    def test_optimize_objective_reports_unsupported_feature(self):
+        program = Q.nodes().compute("degree").to_program()
+
+        with pytest.raises(NotImplementedError, match="Cost objectives are not supported"):
+            program.optimize(objective=CostObjective.MIN_TIME)
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

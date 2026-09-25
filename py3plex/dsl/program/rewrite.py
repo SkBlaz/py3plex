@@ -30,6 +30,7 @@ Example:
 from __future__ import annotations
 
 import copy
+import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 
@@ -76,12 +77,14 @@ class RewriteContext:
         layer_info: Information about layers in the network
         cost_hints: Cost model hints for estimation
         safety_mode: If True, only apply conservative rewrites
+        time_budget: Maximum time allowed for the rewrite search, in seconds
     """
     network_stats: Optional[Dict[str, Any]] = None
     available_metrics: Set[str] = field(default_factory=set)
     layer_info: Optional[Dict[str, Any]] = None
     cost_hints: Optional[Dict[str, Any]] = None
     safety_mode: bool = False
+    time_budget: Optional[float] = None
 
 
 @dataclass
@@ -212,12 +215,23 @@ class RewriteEngine:
         
         iteration = 0
         changed = True
+        started = time.monotonic()
+
+        def budget_exhausted() -> bool:
+            return (
+                context.time_budget is not None
+                and time.monotonic() - started >= context.time_budget
+            )
         
         while changed and iteration < self.max_iterations:
+            if budget_exhausted():
+                break
             changed = False
             iteration += 1
             
             for rule in sorted_rules:
+                if budget_exhausted():
+                    break
                 match = rule.matches(current_ast)
                 if match and rule.is_applicable(match, context):
                     # Apply the rewrite
