@@ -130,10 +130,25 @@ class GraphProgram:
         >>> result = program.execute(network)
     """
     
-    canonical_ast: Query
-    type_signature: Type
+    _canonical_ast: Query
+    _type_signature: Type
     program_hash: str
-    metadata: ProgramMetadata
+    _metadata: ProgramMetadata
+
+    @property
+    def canonical_ast(self) -> Query:
+        """Return an independent AST so callers cannot alter this program."""
+        return copy.deepcopy(self._canonical_ast)
+
+    @property
+    def type_signature(self) -> Type:
+        """Return an independent type signature."""
+        return copy.deepcopy(self._type_signature)
+
+    @property
+    def metadata(self) -> ProgramMetadata:
+        """Return independent provenance and cost metadata."""
+        return copy.deepcopy(self._metadata)
     
     @classmethod
     def from_ast(
@@ -176,19 +191,19 @@ class GraphProgram:
             creation_timestamp=time.time(),
             dsl_version=DSL_VERSION,
             library_version=LIBRARY_VERSION,
-            cost_model_hints=cost_hints,
-            randomness_metadata=randomness_meta,
-            provenance_chain=provenance or ["from_ast"],
+            cost_model_hints=copy.deepcopy(cost_hints),
+            randomness_metadata=copy.deepcopy(randomness_meta),
+            provenance_chain=copy.deepcopy(provenance) if provenance is not None else ["from_ast"],
         )
         
         # Compute stable hash
         program_hash = cls._compute_hash(canonical_ast, metadata)
         
         return cls(
-            canonical_ast=canonical_ast,
-            type_signature=type_signature,
+            _canonical_ast=canonical_ast,
+            _type_signature=type_signature,
             program_hash=program_hash,
-            metadata=metadata,
+            _metadata=metadata,
         )
     
     @staticmethod
