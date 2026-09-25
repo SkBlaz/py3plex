@@ -102,7 +102,7 @@ jobs:
         if [ -f "run_tests.py" ]; then
           timeout 600 uv run python run_tests.py
         else
-          uv run pytest tests/
+          uv run pytest tests/ --junitxml=pytest-results.xml
         fi
       timeout-minutes: 30
       shell: bash
@@ -122,12 +122,13 @@ jobs:
       timeout-minutes: 5
       shell: bash
 
-    - name: Upload test results
+    - name: Upload pytest results
       if: always()
-      run: |
-        echo "Test execution completed"
-        echo "Check the logs above for detailed test results"
-      timeout-minutes: 1
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-results-${{ matrix.os }}-${{ matrix.python-version }}
+        path: pytest-results.xml
+        if-no-files-found: ignore
 
   test-minimal:
     runs-on: ubuntu-latest
