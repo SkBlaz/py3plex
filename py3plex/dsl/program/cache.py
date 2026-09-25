@@ -44,69 +44,52 @@ class CacheKey:
 
 
 def graph_fingerprint(network: Any) -> str:
-    """Compute stable fingerprint of network structure.
-    
-    Args:
-        network: py3plex multi_layer_network object
-        
-    Returns:
-        64-character hex hash of network structure
+    """Hash the complete graph state read by DSL queries.
+
+    Raise TypeError for values that cannot be represented faithfully. Callers
+    must then execute without caching, rather than reusing a false match.
     """
-    # Extract network properties in deterministic order.
-    #
-    # Deliberately network.layers, not network.get_layers(): the latter
-    # computes a full force-directed visualization layout as a side effect
-    # (network.get_layers() -> converters.prepare_for_visualization(...,
-    # compute_layouts="force")), which is extremely expensive on large
-    # networks -- and it returns a tuple of visualization artifacts
-    # (layer names, per-layer graphs, coordinates, ...), not a list of
-    # layers, so the old code below was iterating over that tuple's
-    # top-level elements and hashing their *types* (e.g. "list"), not their
-    # actual layer identities. network.layers is the cheap, correct
-    # property: a plain sorted list of layer name strings.
-    layers_list = []
-    try:
-        if hasattr(network, "layers"):
-            layers_list = [str(layer) for layer in network.layers]
-    except Exception:
-        pass
-    
-    data = {
-        "directed": getattr(network, "directed", False),
-        "layers": sorted(layers_list),
+    graph = getattr(network, "core_network", None)
+    if graph is None:
+        raise TypeError("Graph cache requires a core_network")
+
+    def encode(value: Any) -> Any:
+        if value is None or isinstance(value, (bool, int, str)):
+            return [type(value).__name__, value]
+        if isinstance(value, float):
+            if not math.isfinite(value):
+                raise TypeError("Non-finite graph values cannot be fingerprinted")
+            return ["float", value]
+        if isinstance(value, (list, tuple)):
+            return [type(value).__name__, [encode(item) for item in value]]
+        if isinstance(value, dict):
+            pairs = [[encode(key), encode(item)] for key, item in value.items()]
+            pairs.sort(key=lambda pair: json.dumps(pair[0], sort_keys=True))
+            return ["dict", pairs]
+        raise TypeError(f"Cannot fingerprint graph value of type {type(value).__name__}")
+
+    def packed(value: Any) -> str:
+        return json.dumps(encode(value), sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+    nodes = sorted(packed((node, attrs)) for node, attrs in graph.nodes(data=True))
+    if graph.is_multigraph():
+        edges = sorted(packed((source, target, key, attrs))
+                       for source, target, key, attrs in graph.edges(keys=True, data=True))
+    else:
+        edges = sorted(packed((source, target, attrs))
+                       for source, target, attrs in graph.edges(data=True))
+
+    state = {
+        "directed": graph.is_directed(),
+        "multigraph": graph.is_multigraph(),
+        "network_type": getattr(network, "network_type", None),
+        "graph_attributes": packed(graph.graph),
+        "nodes": nodes,
+        "edges": edges,
+        "partitions": packed(getattr(network, "_partitions", {})),
     }
-    
-    # Get nodes and edges in sorted order
-    try:
-        nodes = []
-        edges = []
-        
-        if hasattr(network, "get_nodes"):
-            # Convert all nodes to strings before sorting to handle mixed types
-            nodes = sorted([str(n) for n in network.get_nodes()])
-        
-        if hasattr(network, "get_edges"):
-            edge_list = network.get_edges()
-            # Sort edges deterministically
-            edges = sorted([(str(e[0]), str(e[1]), str(e[2]), str(e[3])) for e in edge_list])
-        
-        data["num_nodes"] = len(nodes)
-        data["num_edges"] = len(edges)
-        
-        # Sample first 100 edges for large networks
-        if len(edges) > 100:
-            data["edge_sample"] = edges[:100]
-        else:
-            data["edges"] = edges
-            
-    except Exception:
-        # Fallback: just use basic structure
-        data["num_nodes"] = getattr(network, "N", 0)
-        data["num_edges"] = getattr(network, "E", 0)
-    
-    # Serialize deterministically
-    json_str = json.dumps(data, sort_keys=True)
-    return hashlib.sha256(json_str.encode()).hexdigest()
+    payload = json.dumps(state, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode()).hexdigest()
 
 
 def program_fingerprint(program_hash: str, optimization_level: int = 0) -> str:
