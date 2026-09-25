@@ -81,6 +81,25 @@ class TestGraphProgram:
         
         with pytest.raises((AttributeError, TypeError)):
             program.program_hash = "new_hash"
+
+    def test_program_nested_state_cannot_change_after_hashing(self):
+        ast = Q.nodes().compute("degree").to_ast()
+        hints = {"cost": [1]}
+        provenance = ["created"]
+        program = GraphProgram.from_ast(ast, provenance=provenance, cost_hints=hints)
+        original_hash = program.hash()
+
+        ast.select.limit = 1
+        hints["cost"].append(2)
+        provenance.append("external")
+        program.canonical_ast.select.limit = 2
+        program.metadata.cost_model_hints["cost"].append(3)
+        program.metadata.provenance_chain.append("external")
+
+        assert program.hash() == original_hash
+        assert program.canonical_ast.select.limit is None
+        assert program.metadata.cost_model_hints == {"cost": [1]}
+        assert program.metadata.provenance_chain == ["created"]
     
     def test_program_hash_stability(self):
         """Test that identical programs have identical hashes."""
