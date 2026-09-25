@@ -11,6 +11,24 @@ on:
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
+  package-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    name: "Package metadata and release version"
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: Install build frontend
+      run: python -m pip install build
+    - name: Build wheel and sdist
+      run: python -m build --outdir "$RUNNER_TEMP/py3plex-dist"
+    - name: Verify distribution and release versions
+      run: python scripts/check_dist_metadata.py "$RUNNER_TEMP/py3plex-dist"
+
   test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30  # Set overall job timeout

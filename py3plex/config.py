@@ -218,8 +218,9 @@ WARN_DEPRECATED: bool = True
 # Library Metadata
 # ─────────────────────────────────────────────────────────────────────────────
 
-__api_version__ = "2.0.1"
-__version__ = "2.0.1"
+from ._version import __version__
+
+__api_version__ = __version__
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Helper Functions

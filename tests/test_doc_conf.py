@@ -1,7 +1,7 @@
 import importlib.util
 import os
+import re
 import sys
-import tomllib
 from pathlib import Path
 
 import pytest
@@ -13,8 +13,14 @@ PYPROJECT_PATH = DOC_DIR.parent / "pyproject.toml"
 
 
 def _project_version() -> str:
-    data = tomllib.loads(PYPROJECT_PATH.read_text(encoding="utf-8"))
-    return data["project"]["version"]
+    version_path = PYPROJECT_PATH.parent / "py3plex" / "_version.py"
+    match = re.search(
+        r'^__version__\s*=\s*"([^"]+)"',
+        version_path.read_text(encoding="utf-8"),
+        re.MULTILINE,
+    )
+    assert match, "Version source must define py3plex.__version__"
+    return match.group(1)
 
 
 @pytest.fixture

@@ -7,10 +7,10 @@ Usage:
     pip install py3plex[mcp]
     py3plex-mcp
 
-Version: 2.0.0
+Version: 2.0.7
 """
 
-__version__ = "2.0.1"
+from py3plex._version import __version__
 
 __all__ = [
     "__version__",
