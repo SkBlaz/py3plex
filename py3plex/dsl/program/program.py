@@ -31,7 +31,7 @@ import hashlib
 import json
 import time
 from pathlib import Path
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields, replace
 from typing import Any, Dict, List, Optional
 
 from ..ast import Query, SelectStmt, Target, ast_from_json, ast_to_json
@@ -712,19 +712,36 @@ class GraphProgram:
         Returns:
             Reconstructed GraphProgram
         
-        Raises:
-            NotImplementedError: AST deserialization is complex and not yet implemented
-        
         Example:
             >>> program_dict = program.to_dict()
             >>> restored = GraphProgram.from_dict(program_dict)
             >>> assert restored.hash() == program.hash()
         """
-        # AST deserialization is complex and requires complete reconstruction
-        # of all AST node types. This is deferred for future implementation.
-        raise NotImplementedError(
-            "AST deserialization not yet implemented. "
-            "Use GraphProgram.from_ast() to create programs."
+        ast = ast_from_json(json.dumps(data["canonical_ast"]))
+        if ast.select is not None and isinstance(ast.select.target, str):
+            ast.select.target = Target(ast.select.target)
+        type_check(ast)
+        signature = infer_type(ast)
+        if signature.to_dict() != data["type_signature"]:
+            raise ValueError("GraphProgram type signature does not match its AST")
+
+        metadata = ProgramMetadata.from_dict(data["metadata"])
+        actual_hash = cls._compute_hash(ast, metadata)
+        if actual_hash != data["program_hash"]:
+            raise ValueError(
+                "GraphProgram hash mismatch: "
+                f"expected {data['program_hash']}, got {actual_hash}"
+            )
+        # Construct through the public factory so this also works when the
+        # immutable program stores its fields privately.
+        restored = cls.from_ast(ast)
+        metadata_field = next(
+            item.name for item in fields(restored)
+            if item.name.lstrip("_") == "metadata"
+        )
+        return replace(
+            restored,
+            **{metadata_field: copy.deepcopy(metadata), "program_hash": actual_hash},
         )
 
     @classmethod

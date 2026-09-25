@@ -474,15 +474,29 @@ class TestProgramSerialization:
         json_str = json.dumps(program_dict, default=str)
         assert json_str is not None
     
-    def test_from_dict_not_implemented(self):
-        """Test that from_dict raises NotImplementedError (AST deserialization complex)."""
-        ast = Q.nodes().compute("degree").to_ast()
+    def test_from_dict_roundtrip(self):
+        """The dictionary form reconstructs the same executable program."""
+        ast = Q.nodes().compute("degree").limit(Param.int("k")).to_ast()
         program = GraphProgram.from_ast(ast)
-        
-        program_dict = program.to_dict()
-        
-        # Currently not implemented
-        with pytest.raises(NotImplementedError):
+
+        program_dict = json.loads(json.dumps(program.to_dict()))
+        restored = GraphProgram.from_dict(program_dict)
+
+        assert restored.hash() == program.hash()
+        assert restored.to_dict() == program_dict
+
+        net = multinet.multi_layer_network(directed=False)
+        net.add_nodes([
+            {"source": "A", "type": "social"},
+            {"source": "B", "type": "social"},
+        ])
+        assert len(restored.execute(net, params={"k": 1}, progress=False).items) == 1
+
+    def test_from_dict_rejects_tampered_hash(self):
+        program_dict = Q.nodes().compute("degree").to_program().to_dict()
+        program_dict["program_hash"] = "0" * 64
+
+        with pytest.raises(ValueError, match="hash mismatch"):
             GraphProgram.from_dict(program_dict)
 
 
