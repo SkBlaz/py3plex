@@ -1929,6 +1929,17 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
     """
     if canonical:
         query = canonicalize_ast(query)
+
+    from .layers import LayerSet
+
+    def _serialize_layer_expr(expr):
+        return {
+            'kind': expr.kind,
+            'value': expr.value,
+            'left': _serialize_layer_expr(expr.left) if expr.left is not None else None,
+            'right': _serialize_layer_expr(expr.right) if expr.right is not None else None,
+            'operand': _serialize_layer_expr(expr.operand) if expr.operand is not None else None,
+        }
     
     def _serialize(obj):
         """Convert dataclass to dict recursively."""
@@ -1940,6 +1951,8 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
             return [_serialize(item) for item in obj]
         if isinstance(obj, dict):
             return {k: _serialize(v) for k, v in obj.items()}
+        if isinstance(obj, LayerSet):
+            return {'__type__': 'LayerSet', 'expr': _serialize_layer_expr(obj.expr)}
         if hasattr(obj, '__dataclass_fields__'):
             # Dataclass
             result = {'__type__': obj.__class__.__name__}
@@ -1984,6 +1997,19 @@ def ast_from_json(json_str: str) -> Query:
     
     # Remove schema version marker
     data.pop('__schema_version__', None)
+
+    from .layers import LayerExpr as LayerSetExpr, LayerSet
+
+    def _deserialize_layer_expr(data):
+        if data is None:
+            return None
+        return LayerSetExpr(
+            kind=data['kind'],
+            value=data.get('value'),
+            left=_deserialize_layer_expr(data.get('left')),
+            right=_deserialize_layer_expr(data.get('right')),
+            operand=_deserialize_layer_expr(data.get('operand')),
+        )
     
     def _deserialize(obj, target_type=None):
         """Convert dict back to dataclass recursively."""
@@ -2008,6 +2034,8 @@ def ast_from_json(json_str: str) -> Query:
             if '__type__' in obj:
                 # Reconstruct dataclass
                 type_name = obj['__type__']
+                if type_name == 'LayerSet':
+                    return LayerSet(_deserialize_layer_expr(obj['expr']))
                 obj_data = {k: v for k, v in obj.items() if k != '__type__'}
                 
                 # Find dataclass type
@@ -2049,6 +2077,8 @@ def ast_from_json(json_str: str) -> Query:
                 # plain string. Restore its type for execution and hashing.
                 if target_class is SelectStmt and isinstance(deserialized_data.get('target'), str):
                     deserialized_data['target'] = Target(deserialized_data['target'])
+                if target_class is SelectStmt and isinstance(deserialized_data.get('layer_set'), str):
+                    raise ValueError('Legacy LayerSet string cannot be restored; rebuild the query')
                 
                 return target_class(**deserialized_data)
             # Regular dict
