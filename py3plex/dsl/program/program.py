@@ -685,7 +685,7 @@ class GraphProgram:
             >>> json.dumps(program_dict)
         """
         return {
-            "canonical_ast": _ast_to_dict(self.canonical_ast),
+            "canonical_ast": ast_to_json(self.canonical_ast, canonical=False),
             "type_signature": self.type_signature.to_dict(),
             "program_hash": self.program_hash,
             "metadata": self.metadata.to_dict(),
@@ -714,18 +714,52 @@ class GraphProgram:
             Reconstructed GraphProgram
         
         Raises:
-            NotImplementedError: AST deserialization is complex and not yet implemented
+            ValueError: If the AST is invalid or its stored hash does not match.
         
         Example:
             >>> program_dict = program.to_dict()
             >>> restored = GraphProgram.from_dict(program_dict)
             >>> assert restored.hash() == program.hash()
         """
-        # AST deserialization is complex and requires complete reconstruction
-        # of all AST node types. This is deferred for future implementation.
-        raise NotImplementedError(
-            "AST deserialization not yet implemented. "
-            "Use GraphProgram.from_ast() to create programs."
+        if not isinstance(data, dict):
+            raise TypeError("GraphProgram data must be a dictionary")
+        try:
+            ast_data = data["canonical_ast"]
+            metadata_data = data["metadata"]
+        except KeyError as exc:
+            raise ValueError(f"Missing GraphProgram field: {exc.args[0]}") from exc
+
+        # Use the versioned AST codec as the single reconstruction path.
+        if isinstance(ast_data, str):
+            ast = ast_from_json(ast_data)
+        else:
+            raise ValueError(
+                "Unsupported GraphProgram AST encoding; expected versioned AST JSON"
+            )
+        metadata = ProgramMetadata.from_dict(metadata_data)
+        if isinstance(ast.select.target, str):
+            ast.select.target = Target(ast.select.target)
+
+        # Re-run type checking and inference rather than trusting serialized
+        # derived state, then verify it agrees with the serialized signature.
+        type_signature = infer_type(ast)
+        serialized_type = data.get("type_signature")
+        if serialized_type is not None and Type.from_dict(serialized_type) != type_signature:
+            raise ValueError("Serialized GraphProgram type signature does not match its AST")
+
+        program_hash = cls._compute_hash(ast, metadata)
+        expected_hash = data.get("program_hash")
+        if expected_hash is not None and expected_hash != program_hash:
+            raise ValueError(
+                "Serialized GraphProgram hash mismatch: "
+                f"expected {expected_hash}, got {program_hash}"
+            )
+
+        return cls(
+            canonical_ast=copy.deepcopy(ast),
+            type_signature=type_signature,
+            program_hash=program_hash,
+            metadata=metadata,
         )
 
     @classmethod

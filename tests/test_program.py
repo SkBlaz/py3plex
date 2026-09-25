@@ -463,16 +463,38 @@ class TestProgramSerialization:
         json_str = json.dumps(program_dict, default=str)
         assert json_str is not None
     
-    def test_from_dict_not_implemented(self):
-        """Test that from_dict raises NotImplementedError (AST deserialization complex)."""
+    def test_from_dict_roundtrip(self):
+        """Test that serialized programs can be reconstructed."""
         ast = Q.nodes().compute("degree").to_ast()
         program = GraphProgram.from_ast(ast)
-        
-        program_dict = program.to_dict()
-        
-        # Currently not implemented
-        with pytest.raises(NotImplementedError):
-            GraphProgram.from_dict(program_dict)
+        restored = GraphProgram.from_dict(program.to_dict())
+        assert restored.hash() == program.hash()
+        assert restored.canonical_ast == program.canonical_ast
+
+    def test_from_dict_rejects_tampered_hash(self):
+        """Reject altered AST payloads instead of trusting their old identity."""
+        program = GraphProgram.from_ast(Q.nodes().compute("degree").to_ast())
+        payload = program.to_dict()
+        payload["canonical_ast"] = payload["canonical_ast"].replace(
+            '"name": "degree"', '"name": "pagerank"', 1
+        )
+        with pytest.raises(ValueError, match="hash mismatch"):
+            GraphProgram.from_dict(payload)
+
+    @pytest.mark.parametrize(
+        "query",
+        [
+            Q.nodes().where(degree__gt=1).compute("degree"),
+            Q.nodes().uq(method="bootstrap", n_samples=10, seed=7).compute("degree"),
+            Q.nodes().group_by("layer").compute("degree"),
+            Q.nodes().select("node", "degree"),
+        ],
+    )
+    def test_from_dict_roundtrips_ast_features(self, query):
+        program = GraphProgram.from_ast(query.to_ast())
+        restored = GraphProgram.from_dict(program.to_dict())
+        assert restored.hash() == program.hash()
+        assert restored.canonical_ast == program.canonical_ast
 
 
 class TestProgramProvenance:
