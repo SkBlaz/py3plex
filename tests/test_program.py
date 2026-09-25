@@ -13,7 +13,7 @@ import json
 import time
 import pytest
 
-from py3plex.dsl import Q, L
+from py3plex.dsl import Q, L, Param
 from py3plex.dsl.ast import Query, SelectStmt, Target, ComputeItem
 from py3plex.dsl.program import GraphProgram, ProgramMetadata, compose
 from py3plex.dsl.program.types import TypeCheckError, NodeSetType
@@ -190,6 +190,56 @@ class TestGraphProgram:
         result = program.execute(net, params={}, progress=False)
         
         assert result is not None
+
+    def test_seeded_cache_separates_parameter_bindings(self):
+        from py3plex.dsl.program.cache import clear_global_cache
+
+        net = multinet.multi_layer_network(directed=False)
+        net.add_nodes([
+            {"source": "A", "type": "social"},
+            {"source": "B", "type": "social"},
+        ])
+        program = Q.nodes().limit(Param.int("k")).to_program()
+        clear_global_cache()
+
+        first = program.execute(net, params={"k": 1}, seed=42, progress=False)
+        second = program.execute(net, params={"k": 2}, seed=42, progress=False)
+
+        assert len(first.items) == 1
+        assert len(second.items) == 2
+
+    def test_seeded_cache_separates_graphs_with_same_counts(self):
+        from py3plex.dsl.program.cache import clear_global_cache, graph_fingerprint
+
+        def make_network(edges):
+            net = multinet.multi_layer_network(directed=False)
+            net.add_nodes([{"source": node, "type": "social"} for node in "ABC"])
+            net.add_edges([
+                {"source": source, "target": target,
+                 "source_type": "social", "target_type": "social"}
+                for source, target in edges
+            ])
+            return net
+
+        first_graph = make_network([("A", "B"), ("B", "C")])
+        second_graph = make_network([("A", "C"), ("B", "C")])
+        assert graph_fingerprint(first_graph) != graph_fingerprint(second_graph)
+
+        clear_global_cache()
+        program = Q.nodes().compute("degree").to_program()
+        first = program.execute(first_graph, seed=42, progress=False)
+        second = program.execute(second_graph, seed=42, progress=False)
+        assert first.attributes["degree"][("B", "social")] == 2
+        assert second.attributes["degree"][("B", "social")] == 1
+
+    def test_graph_fingerprint_tracks_attribute_changes(self):
+        from py3plex.dsl.program.cache import graph_fingerprint
+
+        net = multinet.multi_layer_network(directed=False)
+        net.add_nodes([{"source": "A", "type": "social"}])
+        before = graph_fingerprint(net)
+        net.set_node_attribute("A", "score", 7, "social")
+        assert graph_fingerprint(net) != before
 
     def test_query_builder_compile_alias(self):
         """Test QueryBuilder.compile() returns GraphProgram aliasing to_program()."""
