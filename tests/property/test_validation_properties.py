@@ -235,8 +235,9 @@ def test_validate_file_exists_error_contains_filename(filename):
 )
 def test_validate_file_exists_preserves_file_content(file_content, file_suffix):
     """Test that validate_file_exists doesn't modify the file."""
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix=file_suffix) as f:
-        f.write(file_content)
+    content_bytes = file_content.encode("utf-8")
+    with tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix=file_suffix) as f:
+        f.write(content_bytes)
         temp_path = f.name
     
     try:
@@ -244,10 +245,10 @@ def test_validate_file_exists_preserves_file_content(file_content, file_suffix):
         validate_file_exists(temp_path)
         
         # Check file content unchanged
-        with open(temp_path, 'r') as f:
+        with open(temp_path, 'rb') as f:
             content_after = f.read()
-        
-        assert content_after == file_content, \
+
+        assert content_after == content_bytes, \
             "validate_file_exists should not modify file content"
     finally:
         if os.path.exists(temp_path):
