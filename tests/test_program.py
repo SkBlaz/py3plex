@@ -111,6 +111,18 @@ class TestGraphProgram:
         program2 = GraphProgram.from_ast(ast2)
         
         assert program1.hash() != program2.hash()
+
+    def test_program_hash_includes_uq_settings(self):
+        first = Q.nodes().compute("degree").uq(method="bootstrap", n_samples=10).to_program()
+        second = Q.nodes().compute("degree").uq(method="bootstrap", n_samples=20).to_program()
+
+        assert first.hash() != second.hash()
+
+    def test_program_hash_includes_group_limit(self):
+        first = Q.nodes().compute("degree").per_layer().top_k(2, "degree").to_program()
+        second = Q.nodes().compute("degree").per_layer().top_k(3, "degree").to_program()
+
+        assert first.hash() != second.hash()
     
     def test_program_type_signature(self):
         """Test that type signature is correctly inferred."""

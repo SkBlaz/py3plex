@@ -775,12 +775,10 @@ def _ast_to_dict(ast: Query) -> Dict[str, Any]:
     
     Ensures deterministic serialization for stable hashing.
     """
-    result = {
-        "explain": ast.explain,
-        "dsl_version": ast.dsl_version,
-        "select": _select_to_dict(ast.select),
-    }
-    return result
+    # Reuse the AST serializer so parameter references and every declared
+    # SelectStmt field contribute to the hash. The former hand-written subset
+    # omitted UQ, temporal, grouping, and other execution settings.
+    return json.loads(ast_to_json(ast, canonical=False))
 
 
 def _select_to_dict(select: SelectStmt) -> Dict[str, Any]:
