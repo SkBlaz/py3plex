@@ -791,7 +791,7 @@ def _type_check_select(stmt: SelectStmt) -> bool:
         )
         if not has_uq_target:
             raise TypeCheckError(
-                "UQ requires a computed metric, an autocomputed order metric, "
+                "UQ requires computed metrics, an autocomputed order metric, "
                 "or community detection.",
                 stmt
             )
