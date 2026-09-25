@@ -6,6 +6,7 @@ program hash, and execution context.
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional, Tuple
+import copy
 import hashlib
 import json
 import platform
@@ -207,8 +208,15 @@ class ProgramCache:
         """
         key_str = key.to_string()
         if key_str in self._cache:
+            try:
+                result = copy.deepcopy(self._cache[key_str][1])
+            except Exception:
+                # An entry that cannot be safely isolated must not be reused.
+                del self._cache[key_str]
+                self._misses += 1
+                return None
             self._hits += 1
-            return self._cache[key_str][1]
+            return result
         else:
             self._misses += 1
             return None
@@ -221,7 +229,13 @@ class ProgramCache:
             result: Result to cache
         """
         key_str = key.to_string()
-        self._cache[key_str] = (key, result)
+        try:
+            snapshot = copy.deepcopy(result)
+        except Exception:
+            # Query results can contain user values that do not support copying.
+            # Execute those queries normally rather than cache shared state.
+            return
+        self._cache[key_str] = (key, snapshot)
     
     def clear(self) -> None:
         """Clear all cache entries."""
