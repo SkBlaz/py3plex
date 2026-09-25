@@ -1605,6 +1605,7 @@ class TestSafeDSLExpression:
         [
             '__import__("os").system("touch /tmp/py3plex_cli_pwned")',
             'Q.nodes().__class__',
+            'L.__class__',
             'Q.nodes().execute.__globals__',
             '[x for x in (1, 2)]',
             'lambda: Q.nodes()',
