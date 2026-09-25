@@ -291,12 +291,13 @@ class GraphProgram:
                     planner_config=planner_config,
                     explain_plan=explain_plan,
                 )
+                network_fingerprint = graph_fingerprint(network)
             except (TypeError, ValueError):
                 execution_context = None
 
             if execution_context is not None:
                 cache_key = CacheKey(
-                    graph_fingerprint=graph_fingerprint(network),
+                    graph_fingerprint=network_fingerprint,
                     program_hash=self.program_hash,
                     execution_context=execution_context,
                     environment_signature=environment_signature(),
