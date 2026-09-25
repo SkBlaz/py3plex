@@ -377,17 +377,17 @@ class GraphProgram:
         objective=None,
         **kwargs
     ) -> GraphProgram:
-        """Optimize the program via rewrite rules with optional cost-based optimization.
+        """Optimize the program via correctness-preserving rewrite rules.
         
         Applies correctness-preserving rewrite rules to optimize the program
-        without changing semantics. Can also use cost-based optimization with budget.
+        without changing semantics. A time budget limits the rewrite search.
         
         Args:
             rules: List of rewrite rules (defaults to standard rules)
             context: RewriteContext with network statistics
             fixpoint: If True, iterate until no more rules apply
             budget: Optional time budget (float seconds or string like "30s")
-            objective: Optional CostObjective for multi-objective optimization
+            objective: Reserved for cost-based rule selection, which is not yet supported
             **kwargs: Additional optimization configuration
         
         Returns:
@@ -396,26 +396,28 @@ class GraphProgram:
         Example:
             >>> optimized = program.optimize()
             >>> optimized = program.optimize(rules=get_conservative_rules())
-            >>> optimized = program.optimize(budget="30s", objective=CostObjective.MIN_TIME)
+            >>> optimized = program.optimize(budget="30s")
         """
         from .rewrite import apply_rewrites
-        
-        # If budget is specified, use cost-based optimization
-        if budget is not None or objective is not None:
+        from .cost import parse_time_budget
+
+        if objective is not None:
+            raise NotImplementedError(
+                "Cost objectives are not supported by GraphProgram.optimize yet"
+            )
+
+        if budget is not None:
             from .rewrite import RewriteContext
-            
-            # Create or update context with objective
+
+            budget_seconds = parse_time_budget(budget)
+            if budget_seconds < 0:
+                raise ValueError("Optimization budget must be non-negative")
             if context is None:
                 context = RewriteContext()
-            
-            if objective is not None:
-                # Store objective in context for cost-aware rewrite decisions
-                context = RewriteContext(
-                    safety_mode=context.safety_mode,
-                    preserve_order=context.preserve_order,
-                    network_stats=context.network_stats,
-                    metadata={**context.metadata, "cost_objective": objective},
-                )
+            elif not isinstance(context, RewriteContext):
+                raise TypeError("context must be a RewriteContext")
+            context = copy.deepcopy(context)
+            context.time_budget = budget_seconds
         
         return apply_rewrites(self, rules=rules, context=context, fixpoint=fixpoint)
     
