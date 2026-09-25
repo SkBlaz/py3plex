@@ -14,6 +14,17 @@ from py3plex.dsl.errors import DSLCompileError
 from py3plex.core import multinet
 
 
+def test_program_plan_propagates_planner_errors(monkeypatch):
+    from py3plex.dsl import planner
+
+    def fail_to_plan(*args, **kwargs):
+        raise ValueError("invalid planner input")
+
+    monkeypatch.setattr(planner, "plan_query", fail_to_plan)
+    with pytest.raises(ValueError, match="invalid planner input"):
+        Q.nodes().to_program().plan()
+
+
 # ---------------------------------------------------------------------------
 # Tiny deterministic test network
 # ---------------------------------------------------------------------------
