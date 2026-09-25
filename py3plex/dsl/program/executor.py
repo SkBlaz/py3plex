@@ -495,8 +495,8 @@ def create_execution_plan(
             logger.info("Estimated cost exceeds budget, attempting optimization...")
             
             # Apply rewrites
-            rewrite_engine = RewriteEngine()
-            optimized_program = rewrite_engine.apply_rules(program)
+            from .rewrite import apply_rewrites
+            optimized_program = apply_rewrites(program)
             
             # Re-estimate
             if optimized_program.hash() != program.hash():
@@ -597,7 +597,7 @@ def execute_program(
     
     if context.explain:
         # Return plan instead of executing
-        result = QueryResult(data=[])
+        result = QueryResult(target=program.canonical_ast.select.target.value, items=[])
         result.meta["plan"] = plan.to_dict()
         result.meta["plan_summary"] = plan.summary()
         result.meta["planning_time"] = planning_time
