@@ -421,6 +421,12 @@ class LayerSet:
     def __repr__(self) -> str:
         """String representation."""
         return f"LayerSet({self._repr_expr(self.expr)})"
+
+    def __eq__(self, other: object) -> bool:
+        """Compare the layer expressions, rather than object identities."""
+        if not isinstance(other, LayerSet):
+            return NotImplemented
+        return self.expr == other.expr
     
     def _repr_expr(self, expr: LayerExpr) -> str:
         """Generate compact representation of expression."""
