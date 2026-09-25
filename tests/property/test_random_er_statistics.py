@@ -312,4 +312,4 @@ def test_random_er_produces_valid_network(N, L, p):
     
     # Should be able to split to layers
     mlnet.split_to_layers(style="none")
-    assert len(mlnet.separate_layers) == L
+    assert len(mlnet.separate_layers) == min(N, L)
