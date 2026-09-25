@@ -31,7 +31,7 @@ import hashlib
 import json
 import time
 from pathlib import Path
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields, replace
 from typing import Any, Dict, List, Optional
 
 from ..ast import Query, SelectStmt, Target, ast_from_json, ast_to_json
@@ -731,11 +731,16 @@ class GraphProgram:
                 "GraphProgram hash mismatch: "
                 f"expected {data['program_hash']}, got {actual_hash}"
             )
-        return cls(
-            canonical_ast=copy.deepcopy(ast),
-            type_signature=signature,
-            program_hash=actual_hash,
-            metadata=copy.deepcopy(metadata),
+        # Construct through the public factory so this also works when the
+        # immutable program stores its fields privately.
+        restored = cls.from_ast(ast)
+        metadata_field = next(
+            item.name for item in fields(restored)
+            if item.name.lstrip("_") == "metadata"
+        )
+        return replace(
+            restored,
+            **{metadata_field: copy.deepcopy(metadata), "program_hash": actual_hash},
         )
 
     @classmethod
