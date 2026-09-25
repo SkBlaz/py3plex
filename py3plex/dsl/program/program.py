@@ -324,10 +324,11 @@ class GraphProgram:
         return result
     
     def compose(self, other: GraphProgram) -> GraphProgram:
-        """Compose this program with another program sequentially.
+        """Combine compatible metric computations into one program.
         
-        Creates a new program that executes self, then other. Type checks that
-        the output type of self matches the input type of other.
+        Both programs must select the same target and contain only compute
+        operations. Other query stages cannot be represented by the merged
+        SelectStmt without changing their order or meaning.
         
         Args:
             other: Program to compose with
@@ -343,16 +344,6 @@ class GraphProgram:
             >>> p2 = GraphProgram.from_ast(Q.nodes().compute("betweenness").to_ast())
             >>> composed = p1.compose(p2)
         """
-        # For now, composition is sequential execution with result passing
-        # This is a placeholder - full composition requires AST merging
-        # which depends on the specific query structure
-        
-        # Type check compatibility (simplified - needs enhancement)
-        # In a full implementation, we'd check that other's expected input
-        # matches self's output. For now, we just compose the ASTs.
-        
-        # Merge ASTs by creating a new SelectStmt that combines both
-        # This is a basic implementation - can be enhanced with proper AST merging
         merged_ast = _merge_asts(self.canonical_ast, other.canonical_ast)
         
         # Merge provenance
@@ -856,12 +847,7 @@ def _layer_expr_to_dict(layer_expr) -> Dict[str, Any]:
 
 
 def _merge_asts(ast1: Query, ast2: Query) -> Query:
-    """Merge two ASTs for composition.
-    
-    This is a simplified merge that combines compute items.
-    Full implementation would need sophisticated AST merging logic.
-    """
-    # Create a new select statement that combines both
+    """Merge compute-only queries without dropping query stages."""
     select1 = ast1.select
     select2 = ast2.select
     
@@ -873,31 +859,42 @@ def _merge_asts(ast1: Query, ast2: Query) -> Query:
             ast1
         )
     
-    # Merge compute items (avoid duplicates)
-    compute_names = {c.name for c in select1.compute}
-    merged_compute = list(select1.compute)
-    
-    for compute_item in select2.compute:
-        if compute_item.name not in compute_names:
-            merged_compute.append(compute_item)
-    
-    # Create merged select statement
-    merged_select = SelectStmt(
-        target=select1.target,
-        layer_expr=select1.layer_expr or select2.layer_expr,
-        layer_set=select1.layer_set or select2.layer_set,
-        where=select1.where or select2.where,
-        compute=merged_compute,
-        order_by=select2.order_by or select1.order_by,  # Prefer second
-        limit=select2.limit or select1.limit,  # Prefer second
-        group_by=select1.group_by or select2.group_by,
-    )
-    
-    # Create merged query
+    if ast1.explain or ast2.explain or ast1.dsl_version != ast2.dsl_version:
+        raise TypeCheckError("Cannot compose EXPLAIN queries or different DSL versions", ast1)
+
+    allowed = {"target", "compute", "autocompute"}
+    declared = set(SelectStmt.__dataclass_fields__)
+    for select in (select1, select2):
+        default = SelectStmt(target=select.target)
+        actual_fields = json.loads(ast_to_json(Query(explain=False, select=select), canonical=False))["select"]
+        default_fields = json.loads(ast_to_json(Query(explain=False, select=default), canonical=False))["select"]
+        unsupported = [name for name in declared - allowed if actual_fields[name] != default_fields[name]]
+        unsupported.extend(set(vars(select)) - declared)
+        if unsupported:
+            raise TypeCheckError(
+                f"Cannot compose a query containing {', '.join(sorted(unsupported))}; "
+                "only metric computations can be combined",
+                ast1,
+            )
+    if select1.autocompute != select2.autocompute:
+        raise TypeCheckError("Cannot compose queries with different autocompute settings", ast1)
+
+    merged_compute = copy.deepcopy(select1.compute)
+    by_name = {item.name: item for item in merged_compute}
+    for item in select2.compute:
+        if item.name in by_name:
+            if item != by_name[item.name]:
+                raise TypeCheckError(f"Conflicting configurations for metric {item.name}", ast1)
+        else:
+            merged_compute.append(copy.deepcopy(item))
+            by_name[item.name] = item
+
+    merged_select = SelectStmt(target=select1.target, compute=merged_compute,
+                               autocompute=select1.autocompute)
     return Query(
-        explain=ast1.explain or ast2.explain,
+        explain=False,
         select=merged_select,
-        dsl_version=DSL_VERSION,
+        dsl_version=ast1.dsl_version,
     )
 
 

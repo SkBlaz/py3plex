@@ -303,6 +303,26 @@ class TestProgramComposition:
         assert "degree" in df.columns
         assert "clustering" in df.columns
 
+    @pytest.mark.parametrize("modifier", [
+        lambda q: q.where(degree__gt=1),
+        lambda q: q.limit(2),
+        lambda q: q.order_by("degree"),
+        lambda q: q.from_layers(L["social"]),
+    ])
+    def test_compose_rejects_stages_it_cannot_preserve(self, modifier):
+        first = modifier(Q.nodes().compute("degree")).to_program()
+        second = Q.nodes().compute("clustering").to_program()
+
+        with pytest.raises(TypeCheckError, match="only metric computations"):
+            first.compose(second)
+
+    def test_compose_rejects_conflicting_metric_settings(self):
+        first = Q.nodes().compute("degree", alias="deg").to_program()
+        second = Q.nodes().compute("degree", alias="degree_count").to_program()
+
+        with pytest.raises(TypeCheckError, match="Conflicting configurations"):
+            first.compose(second)
+
 
 class TestProgramOperations:
     """Tests for program operations (optimize, explain, diff)."""
