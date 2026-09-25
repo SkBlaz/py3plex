@@ -114,6 +114,7 @@ class TestGraphProgram:
 
     def test_layer_set_program_save_restores_layer_selection(self, tmp_path):
         from py3plex.dsl.layers import LayerSet
+        from py3plex.dsl.ast import ast_equals
 
         program = Q.nodes().from_layers(LayerSet.parse("* - coupling")).to_program()
         path = tmp_path / "layers.json"
@@ -122,6 +123,7 @@ class TestGraphProgram:
 
         assert restored.hash() == program.hash()
         assert isinstance(restored.canonical_ast.select.layer_set, LayerSet)
+        assert ast_equals(restored.canonical_ast, program.canonical_ast)
 
         net = multinet.multi_layer_network(directed=False)
         net.add_nodes([
