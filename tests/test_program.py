@@ -13,7 +13,7 @@ import json
 import time
 import pytest
 
-from py3plex.dsl import Q, L
+from py3plex.dsl import Q, L, Param
 from py3plex.dsl.ast import Query, SelectStmt, Target, ComputeItem
 from py3plex.dsl.program import GraphProgram, ProgramMetadata, compose
 from py3plex.dsl.program.types import TypeCheckError, NodeSetType
@@ -190,6 +190,23 @@ class TestGraphProgram:
         result = program.execute(net, params={}, progress=False)
         
         assert result is not None
+
+    def test_seeded_cache_separates_parameter_bindings(self):
+        from py3plex.dsl.program.cache import clear_global_cache
+
+        net = multinet.multi_layer_network(directed=False)
+        net.add_nodes([
+            {"source": "A", "type": "social"},
+            {"source": "B", "type": "social"},
+        ])
+        program = Q.nodes().limit(Param.int("k")).to_program()
+        clear_global_cache()
+
+        first = program.execute(net, params={"k": 1}, seed=42, progress=False)
+        second = program.execute(net, params={"k": 2}, seed=42, progress=False)
+
+        assert len(first.items) == 1
+        assert len(second.items) == 2
 
     def test_query_builder_compile_alias(self):
         """Test QueryBuilder.compile() returns GraphProgram aliasing to_program()."""

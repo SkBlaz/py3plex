@@ -269,8 +269,10 @@ class GraphProgram:
             random.seed(seed)
             np.random.seed(seed)
         
-        # Check cache if enabled
-        if cache_policy != "disabled":
+        # Cache only seeded executions. Unrepresentable parameter values are
+        # executed normally rather than assigned an incomplete cache key.
+        cache_key = None
+        if cache_policy != "disabled" and seed is not None:
             from .cache import (
                 get_global_cache,
                 graph_fingerprint,
@@ -281,17 +283,29 @@ class GraphProgram:
             cache = get_global_cache()
             
             # Create cache key
-            key = CacheKey(
-                graph_fingerprint=graph_fingerprint(network),
-                program_hash=self.program_hash,
-                execution_context=execution_fingerprint(seed=seed, n_jobs=n_jobs),
-                environment_signature=environment_signature(),
-            )
+            try:
+                execution_context = execution_fingerprint(
+                    seed=seed,
+                    n_jobs=n_jobs,
+                    params=params,
+                    planner_config=planner_config,
+                    explain_plan=explain_plan,
+                )
+            except (TypeError, ValueError):
+                execution_context = None
+
+            if execution_context is not None:
+                cache_key = CacheKey(
+                    graph_fingerprint=graph_fingerprint(network),
+                    program_hash=self.program_hash,
+                    execution_context=execution_context,
+                    environment_signature=environment_signature(),
+                )
             
             # Try to get from cache
-            cached_result = cache.get(key)
-            if cached_result is not None:
-                return cached_result
+                cached_result = cache.get(cache_key)
+                if cached_result is not None:
+                    return cached_result
         
         # Execute the query
         result = execute_ast(
@@ -304,22 +318,8 @@ class GraphProgram:
         )
         
         # Store in cache if enabled
-        if cache_policy != "disabled" and seed is not None:
-            from .cache import (
-                get_global_cache,
-                graph_fingerprint,
-                execution_fingerprint,
-                environment_signature,
-                CacheKey,
-            )
-            cache = get_global_cache()
-            key = CacheKey(
-                graph_fingerprint=graph_fingerprint(network),
-                program_hash=self.program_hash,
-                execution_context=execution_fingerprint(seed=seed, n_jobs=n_jobs),
-                environment_signature=environment_signature(),
-            )
-            cache.put(key, result)
+        if cache_key is not None:
+            cache.put(cache_key, result)
         
         return result
     

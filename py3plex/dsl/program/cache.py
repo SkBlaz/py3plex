@@ -10,6 +10,7 @@ import hashlib
 import json
 import platform
 import sys
+import math
 
 import py3plex
 
@@ -125,7 +126,10 @@ def program_fingerprint(program_hash: str, optimization_level: int = 0) -> str:
 def execution_fingerprint(
     seed: Optional[int] = None,
     n_jobs: int = 1,
-    uq_params: Optional[Dict[str, Any]] = None
+    uq_params: Optional[Dict[str, Any]] = None,
+    params: Optional[Dict[str, Any]] = None,
+    planner_config: Optional[Dict[str, Any]] = None,
+    explain_plan: bool = False,
 ) -> str:
     """Compute fingerprint of execution context.
     
@@ -133,6 +137,9 @@ def execution_fingerprint(
         seed: Random seed
         n_jobs: Number of parallel jobs
         uq_params: UQ parameters (method, n_samples, etc.)
+        params: Query parameter bindings
+        planner_config: Planner configuration that affects result metadata
+        explain_plan: Whether to attach the execution plan
         
     Returns:
         Hash of execution context
@@ -140,10 +147,34 @@ def execution_fingerprint(
     context = {
         "seed": seed,
         "n_jobs": n_jobs,
-        "uq_params": uq_params or {},
+        "uq_params": _cache_value(uq_params or {}),
+        "params": _cache_value(params or {}),
+        "planner_config": _cache_value(planner_config or {}),
+        "explain_plan": explain_plan,
     }
-    json_str = json.dumps(context, sort_keys=True)
+    json_str = json.dumps(context, sort_keys=True, allow_nan=False)
     return hashlib.sha256(json_str.encode()).hexdigest()
+
+
+def _cache_value(value: Any) -> Any:
+    """Encode supported values without conflating distinct Python types.
+
+    Unknown objects must not be represented by ``repr``: it can change between
+    runs or omit state that affects a query. Callers can skip caching instead.
+    """
+    if value is None or isinstance(value, (bool, int, str)):
+        return [type(value).__name__, value]
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError("Non-finite values cannot be used in cache keys")
+        return ["float", value]
+    if isinstance(value, (list, tuple)):
+        return [type(value).__name__, [_cache_value(item) for item in value]]
+    if isinstance(value, dict):
+        if not all(isinstance(key, str) for key in value):
+            raise TypeError("Cache key dictionaries require string keys")
+        return ["dict", [[key, _cache_value(value[key])] for key in sorted(value)]]
+    raise TypeError(f"Cannot cache execution parameter of type {type(value).__name__}")
 
 
 def environment_signature() -> str:
