@@ -95,7 +95,9 @@ def robustness_centrality(
     """
     # Validate inputs
     if target not in ("node", "layer"):
-        raise ValueError("target must be one of: node, layer")
+        raise Py3plexException(
+            f"Invalid target type {target!r}; expected one of: node, layer"
+        )
     
     valid_metrics = [
         "giant_component",
@@ -104,7 +106,10 @@ def robustness_centrality(
         "sir_final_size",
     ]
     if metric not in valid_metrics:
-        raise ValueError(f"metric must be one of: {', '.join(valid_metrics)}")
+        raise Py3plexException(
+            f"Unknown robustness metric {metric!r}; expected one of: "
+            f"{', '.join(valid_metrics)}"
+        )
 
     # py3plex.core.multinet.multi_layer_network may keep `core_network=None` until
     # something is added. In that case the graph is effectively empty, and any
