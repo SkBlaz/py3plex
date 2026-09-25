@@ -4472,8 +4472,7 @@ class CommunityQueryBuilder(QueryBuilder):
         super().__init__(Target.COMMUNITIES, autocompute=autocompute)
         self._partition_name = partition_name
         # Store partition name in select for executor
-        if not hasattr(self._select, "partition_name"):
-            self._select.partition_name = partition_name
+        self._select.partition_name = partition_name
         
         # Store auto-detection parameters
         self._auto_detect_mode = mode

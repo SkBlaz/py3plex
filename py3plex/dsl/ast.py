@@ -703,6 +703,9 @@ class SelectStmt:
     contract_spec: Optional["ContractSpec"] = None
     auto_community_config: Optional["AutoCommunityConfig"] = None
     embedding_spec: Optional["EmbeddingSpec"] = None
+    community_config: Optional[Dict[str, Any]] = None
+    provenance_config: Optional[Dict[str, Any]] = None
+    partition_name: str = "default"
 
 
 @dataclass
@@ -1773,6 +1776,10 @@ def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
         sensitivity_spec=select.sensitivity_spec,
         contract_spec=select.contract_spec,
         auto_community_config=select.auto_community_config,
+        embedding_spec=select.embedding_spec,
+        community_config=select.community_config,
+        provenance_config=select.provenance_config,
+        partition_name=select.partition_name,
     )
 
 
@@ -2026,6 +2033,7 @@ def ast_from_json(json_str: str) -> Query:
                     'CounterfactualSpec': CounterfactualSpec,
                     'ContractSpec': ContractSpec,
                     'AutoCommunityConfig': AutoCommunityConfig,
+                    'EmbeddingSpec': EmbeddingSpec,
                 }
                 
                 target_class = type_map.get(type_name)
@@ -2036,6 +2044,11 @@ def ast_from_json(json_str: str) -> Query:
                 deserialized_data = {}
                 for field_name, field_value in obj_data.items():
                     deserialized_data[field_name] = _deserialize(field_value)
+
+                # Target is a str-valued Enum, so older JSON encodes it as a
+                # plain string. Restore its type for execution and hashing.
+                if target_class is SelectStmt and isinstance(deserialized_data.get('target'), str):
+                    deserialized_data['target'] = Target(deserialized_data['target'])
                 
                 return target_class(**deserialized_data)
             # Regular dict
@@ -2204,6 +2217,10 @@ def _canonicalize_select_stmt_scoped(
         sensitivity_spec=base.sensitivity_spec,
         contract_spec=base.contract_spec,
         auto_community_config=base.auto_community_config,
+        embedding_spec=base.embedding_spec,
+        community_config=base.community_config,
+        provenance_config=base.provenance_config,
+        partition_name=base.partition_name,
     )
 
 
