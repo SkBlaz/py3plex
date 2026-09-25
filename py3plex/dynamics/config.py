@@ -373,46 +373,18 @@ def _evaluate_expression(
     Returns:
         Evaluated float value
     
-    Note:
-        This is a simplified safe evaluator. For production use,
-        consider using a proper expression parser library.
     """
-    # Replace parameter names with values
-    safe_expr = expr
-    
-    # Replace neighbor count references
-    # e.g., "infected_neighbors" -> value
-    comp_map = {
+    from py3plex._safe_expression import evaluate_expression
+
+    neighbor_values = {
         'infected_neighbors': neighbor_counts.get('I', 0),
         'susceptible_neighbors': neighbor_counts.get('S', 0),
         'exposed_neighbors': neighbor_counts.get('E', 0),
         'recovered_neighbors': neighbor_counts.get('R', 0),
     }
-    
-    for name, value in comp_map.items():
-        safe_expr = safe_expr.replace(name, str(value))
-    
-    # Replace parameter names
-    for param_name, param_value in params.items():
-        safe_expr = safe_expr.replace(param_name, str(param_value))
-    
-    # Validate expression only contains safe characters
-    # Allow scientific notation produced by float stringification (e.g., "1e-06").
-    allowed_chars = set('0123456789.+-*/() eE')
-    if not all(c in allowed_chars for c in safe_expr):
-        raise ValueError(f"Unsafe expression: {expr}")
-    
+    values = {**params, **neighbor_values}
     try:
-        # Evaluate using Python's eval with very restricted namespace
-        # Only allow basic arithmetic operations
-        allowed_names = {
-            '__builtins__': {},
-            # Allow only safe math operations
-        }
-        result = eval(safe_expr, allowed_names, {})
+        result = evaluate_expression(expr, values, arithmetic_only=True)
         return float(result)
-    except (SyntaxError, ValueError, NameError, TypeError) as e:
+    except (ValueError, TypeError, OverflowError) as e:
         raise ValueError(f"Failed to evaluate expression '{expr}': {e}")
-    except Exception as e:
-        # Catch any other exceptions for safety
-        raise ValueError(f"Unsafe or invalid expression '{expr}': {e}")
