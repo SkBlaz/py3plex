@@ -611,24 +611,20 @@ class GraphProgram:
             network: Optional network used for layer resolution and cost hints.
 
         Returns:
-            :class:`~py3plex.dsl.planner.PlannedQuery` (or a plain dict if
-            planner is unavailable).
+            :class:`~py3plex.dsl.planner.PlannedQuery`.
 
         Example:
             >>> plan = Q.nodes().compute("betweenness_centrality").compile().plan(net)
             >>> print(plan.plan_hash)
         """
-        try:
-            from ..planner import plan_query
+        from ..planner import plan_query
 
-            return plan_query(
-                ast=self.canonical_ast,
-                network=network,
-                params=None,
-                config=None,
-            )
-        except Exception:  # pragma: no cover
-            return {"ast_hash": self.program_hash, "planned_stages": []}
+        return plan_query(
+            ast=self.canonical_ast,
+            network=network,
+            params=None,
+            config=None,
+        )
 
     def diff(self, other: GraphProgram) -> Dict[str, Any]:
         """Compute structural difference between two programs.
