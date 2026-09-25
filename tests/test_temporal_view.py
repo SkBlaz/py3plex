@@ -241,14 +241,14 @@ class TestTemporalViewIntegration:
 
     def test_view_preserves_base_network(self, temporal_network):
         """Test that view doesn't modify base network."""
-        original_edges = temporal_network.get_edges()
+        original_edges = list(temporal_network.get_edges())
         
         view = TemporalMultinetView(temporal_network)
         sliced_view = view.with_slice(100.0, 150.0)
         _ = sliced_view.get_edges()
         
         # Original network should be unchanged
-        assert temporal_network.get_edges() == original_edges
+        assert list(temporal_network.get_edges()) == original_edges
 
     def test_different_time_attributes(self):
         """Test using different time attribute names."""

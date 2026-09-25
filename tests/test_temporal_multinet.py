@@ -211,6 +211,30 @@ class TestWindowIteration:
         for t_start, t_end, window_net in windows:
             assert isinstance(window_net, multinet.multi_layer_network)
 
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {"window_size": 0},
+            {"window_size": -1},
+            {"window_size": float("inf")},
+            {"window_size": float("nan")},
+            {"window_size": 1, "step": 0},
+            {"window_size": 1, "step": -1},
+            {"window_size": 1, "step": float("inf")},
+        ],
+    )
+    def test_window_iter_rejects_non_positive_or_non_finite_durations(
+        self, sample_temporal_network, kwargs
+    ):
+        with pytest.raises(ValueError):
+            next(sample_temporal_network.window_iter(**kwargs))
+
+    def test_window_iter_rejects_unknown_return_type_even_for_empty_network(self):
+        tnet = TemporalMultiLayerNetwork()
+
+        with pytest.raises(ValueError, match="return_type"):
+            next(tnet.window_iter(window_size=1, return_type="invalid"))
+
 
 class TestFactoryMethods:
     """Test factory methods for creating temporal networks."""
