@@ -711,19 +711,31 @@ class GraphProgram:
         Returns:
             Reconstructed GraphProgram
         
-        Raises:
-            NotImplementedError: AST deserialization is complex and not yet implemented
-        
         Example:
             >>> program_dict = program.to_dict()
             >>> restored = GraphProgram.from_dict(program_dict)
             >>> assert restored.hash() == program.hash()
         """
-        # AST deserialization is complex and requires complete reconstruction
-        # of all AST node types. This is deferred for future implementation.
-        raise NotImplementedError(
-            "AST deserialization not yet implemented. "
-            "Use GraphProgram.from_ast() to create programs."
+        ast = ast_from_json(json.dumps(data["canonical_ast"]))
+        if ast.select is not None and isinstance(ast.select.target, str):
+            ast.select.target = Target(ast.select.target)
+        type_check(ast)
+        signature = infer_type(ast)
+        if signature.to_dict() != data["type_signature"]:
+            raise ValueError("GraphProgram type signature does not match its AST")
+
+        metadata = ProgramMetadata.from_dict(data["metadata"])
+        actual_hash = cls._compute_hash(ast, metadata)
+        if actual_hash != data["program_hash"]:
+            raise ValueError(
+                "GraphProgram hash mismatch: "
+                f"expected {data['program_hash']}, got {actual_hash}"
+            )
+        return cls(
+            canonical_ast=copy.deepcopy(ast),
+            type_signature=signature,
+            program_hash=actual_hash,
+            metadata=copy.deepcopy(metadata),
         )
 
     @classmethod
