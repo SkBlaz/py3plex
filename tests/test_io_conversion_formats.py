@@ -98,6 +98,40 @@ def test_canonical_tables_roundtrip_preserves_structure_and_attributes():
     assert restored_payload_attrs["payload"] == {"kind": "coupling"}
 
 
+def test_canonical_tables_roundtrip_preserves_parallel_edge_keys_and_attributes():
+    net = multi_layer_network(network_type="multilayer", directed=False)
+    net.add_nodes([
+        {"source": "A", "type": "social"},
+        {"source": "B", "type": "social"},
+    ])
+    net.add_edges([
+        {
+            "source": "A", "target": "B",
+            "source_type": "social", "target_type": "social",
+            "key": 3, "weight": 1.0, "label": "first",
+        },
+        {
+            "source": "A", "target": "B",
+            "source_type": "social", "target_type": "social",
+            "key": 8, "weight": 9.0, "label": "second",
+        },
+    ])
+
+    nodes_df, edges_df, metadata = network_to_tables(net)
+    assert edges_df["key"].tolist() == [3, 8]
+    assert edges_df["label"].tolist() == ["first", "second"]
+
+    restored = tables_to_network(nodes_df, edges_df, metadata)
+    restored_edges = restored.core_network.get_edge_data(
+        ("A", "social"), ("B", "social")
+    )
+    assert set(restored_edges) == {3, 8}
+    assert restored_edges[3]["weight"] == 1.0
+    assert restored_edges[3]["label"] == "first"
+    assert restored_edges[8]["weight"] == 9.0
+    assert restored_edges[8]["label"] == "second"
+
+
 def test_canonical_tables_raises_on_uninitialized_empty_network():
     net = multi_layer_network(network_type="multilayer", directed=True)
 

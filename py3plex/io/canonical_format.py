@@ -121,44 +121,46 @@ def network_to_tables(net: multi_layer_network) -> Tuple[pd.DataFrame, pd.DataFr
         
         # Build edges table
         edges_data = []
-        for edge_tuple in net.get_edges():
-            if len(edge_tuple) >= 2:
-                src_tuple, dst_tuple = edge_tuple[0], edge_tuple[1]
-                
-                # Extract node IDs and layers
-                if isinstance(src_tuple, tuple) and len(src_tuple) >= 2:
-                    src, src_layer = src_tuple[0], src_tuple[1]
-                else:
-                    src = src_tuple
-                    src_layer = 'default'
-                    
-                if isinstance(dst_tuple, tuple) and len(dst_tuple) >= 2:
-                    dst, dst_layer = dst_tuple[0], dst_tuple[1]
-                else:
-                    dst = dst_tuple
-                    dst_layer = 'default'
-                
-                # Get edge attributes
-                edge_attrs = {}
-                if net.core_network.has_edge((src, src_layer), (dst, dst_layer)):
-                    # MultiGraph may have multiple edges
-                    edge_data = net.core_network.get_edge_data((src, src_layer), (dst, dst_layer))
-                    if edge_data:
-                        edge_attrs = dict(edge_data.get(0, {}))
-                        edge_attrs = _encode_attributes(edge_attrs)
-                
-                # Create row
-                row = {
-                    'source': src,
-                    'target': dst,
-                    'source_layer': src_layer,
-                    'target_layer': dst_layer
-                }
-                row.update(edge_attrs)
-                edges_data.append(row)
+        # Iterate the underlying multigraph with keys.  ``get_edges()`` omits
+        # keys for multilayer networks, which makes parallel edges
+        # indistinguishable and used to serialize every one with key 0's data.
+        core = net.core_network
+        if core is None:
+            raise ConversionError("Network is empty. Load or create a network first.")
+        if core.is_multigraph():
+            edge_iter = core.edges(keys=True, data=True)
+        else:
+            edge_iter = ((src, dst, 0, attrs) for src, dst, attrs in core.edges(data=True))
+
+        for src_tuple, dst_tuple, edge_key, edge_attrs in edge_iter:
+            # Extract node IDs and layers
+            if isinstance(src_tuple, tuple) and len(src_tuple) >= 2:
+                src, src_layer = src_tuple[0], src_tuple[1]
+            else:
+                src = src_tuple
+                src_layer = 'default'
+
+            if isinstance(dst_tuple, tuple) and len(dst_tuple) >= 2:
+                dst, dst_layer = dst_tuple[0], dst_tuple[1]
+            else:
+                dst = dst_tuple
+                dst_layer = 'default'
+
+            edge_attrs = _encode_attributes(dict(edge_attrs))
+
+            # Create row
+            row = {
+                'source': src,
+                'target': dst,
+                'source_layer': src_layer,
+                'target_layer': dst_layer,
+                'key': edge_key,
+            }
+            row.update(edge_attrs)
+            edges_data.append(row)
         
         edges_df = pd.DataFrame(edges_data) if edges_data else pd.DataFrame(
-            columns=['source', 'target', 'source_layer', 'target_layer']
+            columns=['source', 'target', 'source_layer', 'target_layer', 'key']
         )
         
         # Build metadata
@@ -262,10 +264,18 @@ def tables_to_network(
                     'source_type': row['source_layer'],
                     'target_type': row['target_layer']
                 }
+
+                # Preserve multigraph keys when the canonical table carries
+                # them. Older tables without a key column retain NetworkX's
+                # default key allocation behavior.
+                if 'key' in edges_df.columns:
+                    edge_key = row['key']
+                    if not (isinstance(edge_key, float) and pd.isna(edge_key)):
+                        edge_dict['key'] = edge_key
                 
                 # Add attributes (excluding schema columns)
                 for col in edges_df.columns:
-                    if col not in ['source', 'target', 'source_layer', 'target_layer']:
+                    if col not in ['source', 'target', 'source_layer', 'target_layer', 'key']:
                         value = row[col]
                         # Skip NaN values (handle arrays/lists separately)
                         try:
