@@ -112,6 +112,42 @@ class TestGraphProgram:
         
         assert program1.hash() != program2.hash()
 
+    def test_layer_set_program_save_restores_layer_selection(self, tmp_path):
+        from py3plex.dsl.layers import LayerSet
+        from py3plex.dsl.ast import ast_equals
+
+        program = Q.nodes().from_layers(LayerSet.parse("* - coupling")).to_program()
+        path = tmp_path / "layers.json"
+        program.save(path)
+        restored = GraphProgram.load(path)
+
+        assert restored.hash() == program.hash()
+        assert isinstance(restored.canonical_ast.select.layer_set, LayerSet)
+        assert ast_equals(restored.canonical_ast, program.canonical_ast)
+
+        net = multinet.multi_layer_network(directed=False)
+        net.add_nodes([
+            {"source": "A", "type": "social"},
+            {"source": "A", "type": "coupling"},
+        ])
+        assert restored.canonical_ast.select.layer_set.resolve(net) == {"social"}
+        assert restored.execute(net, progress=False).items == [("A", "social")]
+
+    def test_legacy_layer_set_string_is_rejected(self, tmp_path):
+        from py3plex.dsl.layers import LayerSet
+
+        program = Q.nodes().from_layers(LayerSet("social")).to_program()
+        path = tmp_path / "legacy.json"
+        program.save(path)
+        payload = json.loads(path.read_text())
+        ast_payload = json.loads(payload["ast_json"])
+        ast_payload["select"]["layer_set"] = "LayerSet(\"social\")"
+        payload["ast_json"] = json.dumps(ast_payload)
+        path.write_text(json.dumps(payload))
+
+        with pytest.raises(ValueError, match="Legacy LayerSet"):
+            GraphProgram.load(path)
+
     def test_program_hash_includes_uq_settings(self):
         first = Q.nodes().compute("degree").uq(method="bootstrap", n_samples=10).to_program()
         second = Q.nodes().compute("degree").uq(method="bootstrap", n_samples=20).to_program()
