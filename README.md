@@ -12,7 +12,7 @@
 [![Formal Verification](https://github.com/SkBlaz/py3plex/actions/workflows/verify.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/verify.yml)
 [![Lean formal verification](https://github.com/SkBlaz/py3plex/actions/workflows/formal.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/formal.yml)
 [![Fuzzing](https://github.com/SkBlaz/py3plex/actions/workflows/fuzzing.yml/badge.svg)](https://github.com/SkBlaz/py3plex/actions/workflows/fuzzing.yml)
-[![PyPI version](https://img.shields.io/pypi/v/py3plex.svg)](https://pypi.org/project/py3plex/)
+[![PyPI version](https://img.shields.io/pypi/v/py3plex.svg?cacheSeconds=300)](https://pypi.org/project/py3plex/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/py3plex)](https://pypistats.org/packages/py3plex)
 ![CLI Tool](https://img.shields.io/badge/CLI%20Tool-Available-brightgreen)
 ![Docker](https://img.shields.io/badge/Docker-Available-blue)
