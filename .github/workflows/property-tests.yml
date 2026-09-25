@@ -64,7 +64,7 @@ jobs:
     - name: Run property tests (excluding slow)
       run: |
         source .venv/bin/activate
-        uv run pytest tests/property/ -v -m "property and not slow" --tb=short
+        uv run pytest tests/property/ -v -m "property and not slow" --tb=short --junitxml=property-results.xml
       timeout-minutes: 12
     
     - name: Upload test results
@@ -73,6 +73,7 @@ jobs:
       with:
         name: property-test-results-${{ matrix.os }}-${{ matrix.python-version }}
         path: |
+          property-results.xml
           .pytest_cache/
           *.log
         retention-days: 7
@@ -126,7 +127,7 @@ jobs:
     - name: Run all property tests (including slow)
       run: |
         source .venv/bin/activate
-        uv run pytest tests/property/ -v -m property --tb=short
+        uv run pytest tests/property/ -v -m property --tb=short --junitxml=property-results.xml
       timeout-minutes: 25
     
     - name: Upload test results
@@ -135,6 +136,7 @@ jobs:
       with:
         name: property-test-results-slow
         path: |
+          property-results.xml
           .pytest_cache/
           *.log
         retention-days: 14
@@ -170,5 +172,13 @@ jobs:
     - name: Run property tests (minimal, skip tests with missing deps)
       run: |
         source .venv/bin/activate
-        uv run pytest tests/property/ -v -m "property and not slow" --tb=short || echo " Some tests skipped due to missing deps"
+        uv run pytest tests/property/ -v -m "property and not slow" --tb=short --junitxml=property-results.xml
       timeout-minutes: 10
+
+    - name: Upload minimal property test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: property-test-results-minimal
+        path: property-results.xml
+        if-no-files-found: ignore
