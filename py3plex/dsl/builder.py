@@ -4554,8 +4554,7 @@ class CommunityQueryBuilder(QueryBuilder):
         node_builder = QueryBuilder(Target.NODES, autocompute=self._select.autocompute)
 
         # Mark that this is derived from a community query
-        if not hasattr(node_builder._select, "_from_communities"):
-            node_builder._select._from_communities = self._select
+        node_builder._select._from_communities = copy.deepcopy(self._select)
 
         return node_builder
 
@@ -4575,9 +4574,8 @@ class CommunityQueryBuilder(QueryBuilder):
         edge_builder = QueryBuilder(Target.EDGES, autocompute=self._select.autocompute)
 
         # Mark that this is derived from a community query (boundary edges)
-        if not hasattr(edge_builder._select, "_from_communities"):
-            edge_builder._select._from_communities = self._select
-            edge_builder._select._community_edge_type = "boundary"
+        edge_builder._select._from_communities = copy.deepcopy(self._select)
+        edge_builder._select._community_edge_type = "boundary"
 
         return edge_builder
     

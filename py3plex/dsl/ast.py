@@ -706,6 +706,8 @@ class SelectStmt:
     community_config: Optional[Dict[str, Any]] = None
     provenance_config: Optional[Dict[str, Any]] = None
     partition_name: str = "default"
+    _from_communities: Optional["SelectStmt"] = None
+    _community_edge_type: Optional[str] = None
 
 
 @dataclass
@@ -1738,6 +1740,10 @@ def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
     
     # Canonicalize UQ config
     canonical_uq = _canonicalize_uq_config(select.uq_config)
+    community_select = (
+        _canonicalize_select_stmt(select._from_communities)
+        if select._from_communities is not None else None
+    )
     
     # Create canonicalized SelectStmt
     return SelectStmt(
@@ -1780,6 +1786,8 @@ def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
         community_config=select.community_config,
         provenance_config=select.provenance_config,
         partition_name=select.partition_name,
+        _from_communities=community_select,
+        _community_edge_type=select._community_edge_type,
     )
 
 
@@ -2221,6 +2229,8 @@ def _canonicalize_select_stmt_scoped(
         community_config=base.community_config,
         provenance_config=base.provenance_config,
         partition_name=base.partition_name,
+        _from_communities=base._from_communities,
+        _community_edge_type=base._community_edge_type,
     )
 
 

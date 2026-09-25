@@ -153,6 +153,34 @@ class TestGraphProgram:
         assert restored.canonical_ast.select.community_config["gamma"] == 2.0
         assert restored.canonical_ast.select.provenance_config["capture"] == "snapshot"
 
+    def test_community_bridge_config_is_hashed_and_saved(self, tmp_path):
+        from py3plex.dsl.ast import ast_equals
+
+        network = multinet.multi_layer_network(directed=False)
+        network.add_nodes([
+            {"source": node, "type": "social"} for node in ("A", "B", "C")
+        ])
+        network.add_edges([
+            {"source": "A", "target": "B", "source_type": "social", "target_type": "social"},
+            {"source": "B", "target": "C", "source_type": "social", "target_type": "social"},
+        ])
+        network.assign_partition({
+            ("A", "social"): 0,
+            ("B", "social"): 0,
+            ("C", "social"): 1,
+        })
+
+        small = Q.communities().where(size__gt=0).members().to_program()
+        large = Q.communities().where(size__gt=1).members().to_program()
+        assert small.hash() != large.hash()
+
+        path = tmp_path / "community-bridge.json"
+        large.save(path)
+        restored = GraphProgram.load(path)
+        assert ast_equals(restored.canonical_ast, large.canonical_ast)
+        assert restored.hash() == large.hash()
+        assert len(restored.execute(network, progress=False).items) == 2
+
     def test_embedding_spec_survives_canonicalization_and_save(self, tmp_path):
         from py3plex.dsl.ast import canonicalize_ast
 
