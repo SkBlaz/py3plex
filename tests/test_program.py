@@ -208,6 +208,31 @@ class TestGraphProgram:
         assert len(first.items) == 1
         assert len(second.items) == 2
 
+    def test_seeded_cache_returns_independent_result_snapshots(self):
+        from py3plex.dsl.program.cache import clear_global_cache, get_global_cache
+
+        net = multinet.multi_layer_network(directed=False)
+        net.add_nodes([
+            {"source": "A", "type": "social"},
+            {"source": "B", "type": "social"},
+        ])
+        program = Q.nodes().compute("degree").to_program()
+        clear_global_cache()
+
+        first = program.execute(net, seed=42, progress=False)
+        original_count = len(first.items)
+        first.items.clear()
+        first.attributes["degree"].clear()
+
+        second = program.execute(net, seed=42, progress=False)
+        assert len(second.items) == original_count
+        assert len(second.attributes["degree"]) == original_count
+        assert get_global_cache().statistics()["hits"] == 1
+
+        second.items.clear()
+        third = program.execute(net, seed=42, progress=False)
+        assert len(third.items) == original_count
+
     def test_seeded_cache_separates_graphs_with_same_counts(self):
         from py3plex.dsl.program.cache import clear_global_cache, graph_fingerprint
 
