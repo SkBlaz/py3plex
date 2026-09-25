@@ -782,9 +782,17 @@ def _type_check_select(stmt: SelectStmt) -> bool:
     
     # Check UQ compatibility
     if stmt.uq_config and stmt.uq_config.method:
-        if not stmt.compute:
+        # Community detection quantifies the partition, and an ordered metric
+        # can be computed by the executor when autocompute is enabled.
+        has_uq_target = (
+            bool(stmt.compute)
+            or bool(getattr(stmt, "community_config", None))
+            or bool(stmt.autocompute and stmt.order_by)
+        )
+        if not has_uq_target:
             raise TypeCheckError(
-                "UQ requires computed metrics. Add .compute() before .uq().",
+                "UQ requires a computed metric, an autocomputed order metric, "
+                "or community detection.",
                 stmt
             )
     
