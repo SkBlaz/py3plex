@@ -1587,3 +1587,32 @@ class TestCLITutorial:
         # Should include code snippets
         assert "from py3plex.core import multinet" in captured.out
         assert "network.add_edges" in captured.out
+
+
+class TestSafeDSLExpression:
+    def test_accepts_documented_builder_chains(self):
+        from py3plex.dsl.builder import QueryBuilder
+        from py3plex.safe_dsl_expression import evaluate_dsl_expression
+
+        builder = evaluate_dsl_expression(
+            'Q.nodes().from_layers(L["social"] + L["work"]).compute("degree").order_by("degree")'
+        )
+        assert isinstance(builder, QueryBuilder)
+        assert builder.to_ast().select.compute[0].name == "degree"
+
+    @pytest.mark.parametrize(
+        "expression",
+        [
+            '__import__("os").system("touch /tmp/py3plex_cli_pwned")',
+            'Q.nodes().__class__',
+            'Q.nodes().execute.__globals__',
+            '[x for x in (1, 2)]',
+            'lambda: Q.nodes()',
+            'Q.nodes().where(degree__gt=(1).__class__)',
+        ],
+    )
+    def test_rejects_python_execution_and_introspection(self, expression):
+        from py3plex.safe_dsl_expression import evaluate_dsl_expression
+
+        with pytest.raises(ValueError):
+            evaluate_dsl_expression(expression)
