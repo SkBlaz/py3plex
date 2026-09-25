@@ -1779,37 +1779,10 @@ def cmd_query(args: argparse.Namespace) -> int:
         # Execute query. Some lower-level layout/progress utilities print
         # diagnostics directly to stdout; keep command stdout parseable.
         if args.dsl:
-            # Interpret as Python DSL builder syntax
-            from py3plex.dsl import Q, L, Param
-            
-            # Create a restricted namespace with only DSL classes
-            # and no builtins for safety
-            namespace = {
-                "Q": Q,
-                "L": L,
-                "Param": Param,
-                "__builtins__": {},  # Disable all builtins for security
-            }
-            
-            # Basic validation: only allow expected patterns
-            
-            # Check for potentially dangerous patterns
-            dangerous_patterns = [
-                "__", "import", "exec", "eval", "compile", "open",
-                "file", "input", "raw_input", "os.", "sys.", "subprocess",
-            ]
-            
-            query_lower = query_str.lower()
-            for pattern in dangerous_patterns:
-                if pattern in query_lower:
-                    raise ValueError(f"Potentially unsafe pattern '{pattern}' not allowed in DSL query")
-            
-            # Execute the builder expression with restricted namespace
-            try:
-                query_builder = eval(query_str, namespace)  # noqa: S307
-            except NameError as e:
-                raise ValueError(f"Invalid DSL syntax: {e}. Only Q, L, and Param are allowed.")
-            
+            # Parse builder syntax as a restricted AST expression; never run it as Python.
+            from py3plex.safe_dsl_expression import evaluate_dsl_expression
+
+            query_builder = evaluate_dsl_expression(query_str)
             with contextlib.redirect_stdout(sys.stderr):
                 result = query_builder.execute(network)
         else:
@@ -1953,32 +1926,18 @@ def cmd_dsl_lint(args: argparse.Namespace) -> int:
                 logger.error(f"Failed to load network: {e}")
                 return 2
         
-        # Parse query using builder API
-        # NOTE: Currently uses eval() with restricted namespace for builder syntax parsing.
-        # This is safe because:
-        # 1. Namespace contains only Q, L, Param (no builtins)
-        # 2. Used only for interactive CLI, not production code
-        # Future: Implement proper string DSL parser to eliminate eval()
-        from py3plex.dsl import Q, L, Param, lint, explain
-        
-        # Try to parse as builder syntax first
+        # Parse documented builder expressions without evaluating Python code.
+        from py3plex.dsl import lint, explain
+        from py3plex.safe_dsl_expression import evaluate_dsl_expression
+
         try:
-            # Create a restricted namespace
-            namespace = {
-                "Q": Q,
-                "L": L,
-                "Param": Param,
-                "__builtins__": {},
-            }
-            
-            query_builder = eval(query_str, namespace)  # noqa: S307
+            query_builder = evaluate_dsl_expression(query_str)
             query_ast = query_builder.to_ast()
-        except Exception:
-            # Fall back to treating it as a note that we need string DSL support
-            logger.error("String DSL syntax not yet supported for linting.")
-            logger.error("Please use builder syntax: Q.nodes().from_layers(L['social']).where(degree__gt=5)")
+        except (ValueError, TypeError) as exc:
+            logger.error("Invalid DSL builder expression: %s", exc)
+            logger.error("Use builder syntax such as Q.nodes().from_layers(L['social']).where(degree__gt=5)")
             return 2
-        
+
         # Run linting
         if args.explain:
             # Get detailed explanation
