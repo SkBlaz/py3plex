@@ -251,7 +251,7 @@ class GraphProgram:
             progress: If True, log progress messages
             explain_plan: If True, populate result.meta["plan"]
             seed: Random seed for reproducibility
-            n_jobs: Number of parallel jobs for execution
+            n_jobs: Must be 1; parallel execution is not implemented on this method
             cache_policy: Cache policy ("auto", "enabled", "disabled")
             **kwargs: Additional execution parameters
         
@@ -262,6 +262,18 @@ class GraphProgram:
             >>> result = program.execute(network, params={"k": 10}, seed=42)
             >>> df = result.to_pandas()
         """
+        if cache_policy not in {"auto", "enabled", "disabled"}:
+            raise ValueError(
+                "cache_policy must be one of 'auto', 'enabled', or 'disabled'"
+            )
+        if isinstance(n_jobs, bool) or not isinstance(n_jobs, int) or n_jobs < 1:
+            raise ValueError("n_jobs must be a positive integer")
+        if n_jobs != 1:
+            raise ValueError(
+                "GraphProgram.execute currently supports n_jobs=1 only; "
+                "parallel execution is not implemented on this path"
+            )
+
         # Set random seed if provided
         if seed is not None:
             import random

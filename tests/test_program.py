@@ -248,6 +248,22 @@ class TestGraphProgram:
         # Check that degree was computed
         df = result.to_pandas()
         assert "degree" in df.columns
+
+    def test_execute_rejects_unknown_cache_policy(self):
+        program = Q.nodes().to_program()
+        with pytest.raises(ValueError, match="cache_policy"):
+            program.execute(None, cache_policy="enabeld", progress=False)
+
+    @pytest.mark.parametrize("n_jobs", [0, -1, 1.5, True])
+    def test_execute_requires_positive_integer_n_jobs(self, n_jobs):
+        program = Q.nodes().to_program()
+        with pytest.raises(ValueError, match="positive integer"):
+            program.execute(None, n_jobs=n_jobs, progress=False)
+
+    def test_execute_rejects_unimplemented_parallelism(self):
+        program = Q.nodes().to_program()
+        with pytest.raises(ValueError, match="supports n_jobs=1 only"):
+            program.execute(None, n_jobs=2, progress=False)
     
     def test_program_execution_with_params(self):
         """Test executing program with parameter bindings."""
