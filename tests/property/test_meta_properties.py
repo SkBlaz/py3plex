@@ -454,6 +454,16 @@ def test_equal_weight_studies_give_simple_average(effect1, effect2, se1, se2):
         f"Equal-weight pooling should give simple average: {pooled_effect} != {expected}"
 
 
+def test_equal_weight_pooling_handles_subnormal_effects():
+    result = meta_analysis(
+        np.array([0.0, np.nextafter(0.0, 1.0)]),
+        np.array([1.0, 1.0]),
+        model="fixed",
+    )
+
+    assert result.pooled_effect == 0.0
+
+
 # ============================================================================
 # Property Tests: Confidence Intervals
 # ============================================================================

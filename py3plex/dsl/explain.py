@@ -527,23 +527,19 @@ def _precompute_attribution(
     if context is None:
         context = {}
     
-    # Compute attributions for all rows
-    try:
-        enriched_rows, metadata = compute_attribution_for_rows(
-            network, rows, metric_values, config, context
-        )
-        
-        # Extract attribution results into a map
-        attribution_map = {}
-        for row in enriched_rows:
-            if "attribution" in row:
-                # Key by node identifier
-                node_id = row.get("id")
-                layer = row.get("layer")
-                key = (node_id, layer) if layer else node_id
-                attribution_map[key] = row["attribution"]
-        
-        return attribution_map
-    except Exception as e:
-        logger.error(f"Failed to compute attributions: {e}")
-        return {}
+    # Compute attributions for all rows. Invalid configurations and metrics
+    # should reach the query caller instead of silently dropping the requested
+    # explanation block.
+    enriched_rows, _metadata = compute_attribution_for_rows(
+        network, rows, metric_values, config, context
+    )
+
+    attribution_map = {}
+    for row in enriched_rows:
+        if "attribution" in row:
+            node_id = row.get("id")
+            layer = row.get("layer")
+            key = (node_id, layer) if layer else node_id
+            attribution_map[key] = row["attribution"]
+
+    return attribution_map

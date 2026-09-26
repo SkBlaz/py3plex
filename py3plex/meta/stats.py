@@ -114,11 +114,19 @@ def fixed_effect_meta(
         raise ValueError("Non-finite weights detected. Check standard errors.")
 
     sum_w = np.sum(weights)
-    if sum_w <= 0:
+    if not np.isfinite(sum_w) or sum_w <= 0:
         raise ValueError("Sum of weights is non-positive.")
 
-    # Pooled effect
-    pooled_effect = np.sum(weights * effects) / sum_w
+    # Normalize before multiplying by effects.  Besides avoiding an
+    # unnecessarily large intermediate, this preserves correct rounding for
+    # subnormal effect values (e.g. equal weights on 0 and 5e-324).
+    normalized_weights = weights / sum_w
+    if np.all(effects == effects[0]):
+        # Multiplying a subnormal effect by normalized weights can underflow
+        # even when the weighted mean is exactly the original value.
+        pooled_effect = effects[0]
+    else:
+        pooled_effect = np.sum(normalized_weights * effects)
     pooled_se = np.sqrt(1.0 / sum_w)
 
     # Confidence interval

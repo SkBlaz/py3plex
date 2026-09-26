@@ -736,12 +736,12 @@ class TestCLIDynamics:
         """Create a simple test network."""
         net_file = tmp_path / "test_network.edgelist"
         net_file.write_text(
-            "A B social\n"
-            "B C social\n"
-            "C D social\n"
-            "D A social\n"
-            "A C work\n"
-            "B D work\n"
+            "A social B social\n"
+            "B social C social\n"
+            "C social D social\n"
+            "D social A social\n"
+            "A work C work\n"
+            "B work D work\n"
         )
         return str(net_file)
 
@@ -800,6 +800,33 @@ class TestCLIDynamics:
         )
         assert result == 0
         assert output_file.exists()
+
+    def test_dynamics_accepts_explicit_seed_nodes(self, test_network, tmp_path):
+        output_file = tmp_path / "seeded_results.json"
+        result = cli.main(
+            [
+                "dynamics",
+                test_network,
+                "--model",
+                "sis",
+                "--beta",
+                "0.3",
+                "--mu",
+                "0.1",
+                "--steps",
+                "1",
+                "--layers",
+                "work",
+                "--seed-nodes",
+                "A",
+                "B",
+                "--output",
+                str(output_file),
+            ]
+        )
+        assert result == 0
+        data = json.loads(output_file.read_text())
+        assert data["trajectories"][0]["infected"] == 0.5
 
     def test_dynamics_seir_basic(self, test_network, tmp_path):
         """Test basic SEIR simulation."""
@@ -884,13 +911,13 @@ class TestCLIEmbed:
         """Create a small test network."""
         network_file = tmp_path / "network.edgelist"
         with open(network_file, "w") as f:
-            f.write("A B social\n")
-            f.write("B C social\n")
-            f.write("C D social\n")
-            f.write("D E social\n")
-            f.write("E A social\n")
-            f.write("A C social\n")
-            f.write("B D social\n")
+            f.write("A social B social\n")
+            f.write("B social C social\n")
+            f.write("C social D social\n")
+            f.write("D social E social\n")
+            f.write("E social A social\n")
+            f.write("A social C social\n")
+            f.write("B social D social\n")
         return network_file
 
     def test_embed_node2vec_basic(self, test_network, tmp_path):

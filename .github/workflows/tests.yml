@@ -100,9 +100,9 @@ jobs:
         fi
         uv pip install pytest hypothesis pyarrow
         if [ -f "run_tests.py" ]; then
-          timeout 600 uv run python run_tests.py || echo " Tests timed out after 10 minutes"
+          timeout 600 uv run python run_tests.py
         else
-          uv run pytest tests/ || echo " Tests failed"
+          uv run pytest tests/ --junitxml=pytest-results.xml
         fi
       timeout-minutes: 30
       shell: bash
@@ -118,16 +118,17 @@ jobs:
         else
           source .venv/bin/activate
         fi
-        uv run pytest -q -k metamorphic tests/ || echo " Metamorphic tests failed"
+        uv run pytest -q -k metamorphic tests/
       timeout-minutes: 5
       shell: bash
 
-    - name: Upload test results
+    - name: Upload pytest results
       if: always()
-      run: |
-        echo "Test execution completed"
-        echo "Check the logs above for detailed test results"
-      timeout-minutes: 1
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-results-${{ matrix.os }}-${{ matrix.python-version }}
+        path: pytest-results.xml
+        if-no-files-found: ignore
 
   test-minimal:
     runs-on: ubuntu-latest
@@ -158,6 +159,7 @@ jobs:
         uv pip install setuptools wheel
         # Only install absolutely required dependencies
         uv pip install numpy scipy tqdm bitarray rdflib
+        uv pip install pytest
         # Try to install networkx with version flexibility
         uv pip install "networkx>=2.5" || uv pip install networkx
       timeout-minutes: 10
@@ -169,7 +171,7 @@ jobs:
         source .venv/bin/activate
         uv pip list | head -20
         echo " Running tests with minimal dependencies..."
-        timeout 400 uv run python run_tests.py || echo " Minimal tests timed out after 6.7 minutes"
+        timeout 400 uv run pytest -q tests/test_capabilities_optional_missing.py
         echo " Minimal dependency tests completed"
         echo "Note: Some tests may be skipped due to missing optional dependencies"
       timeout-minutes: 8

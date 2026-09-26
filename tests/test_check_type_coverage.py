@@ -13,13 +13,14 @@ import docfiles.check_type_coverage as ctc
 def test_run_mypy_coverage_invokes_subprocess(monkeypatch, tmp_path):
     calls = []
 
-    def fake_run(cmd, capture_output, text, timeout):
+    def fake_run(cmd, capture_output, text, timeout, cwd):
         calls.append(
             {
                 "cmd": cmd,
                 "capture_output": capture_output,
                 "text": text,
                 "timeout": timeout,
+                "cwd": cwd,
             }
         )
         return SimpleNamespace(returncode=0)
@@ -29,7 +30,7 @@ def test_run_mypy_coverage_invokes_subprocess(monkeypatch, tmp_path):
     package = tmp_path / "pkg"
     package.mkdir()
 
-    report_path, code = ctc.run_mypy_coverage(package, tmp_path)
+    report_path, code = ctc.run_mypy_coverage(package, tmp_path, tmp_path)
 
     assert code == 0
     assert report_path == str(tmp_path / "txt" / "index.txt")
@@ -44,10 +45,11 @@ def test_run_mypy_coverage_invokes_subprocess(monkeypatch, tmp_path):
     assert calls[0]["capture_output"] is True
     assert calls[0]["text"] is True
     assert calls[0]["timeout"] == 300
+    assert calls[0]["cwd"] == tmp_path
 
 
 def test_run_mypy_coverage_times_out(monkeypatch, tmp_path, capsys):
-    def fake_run(cmd, capture_output, text, timeout):
+    def fake_run(cmd, capture_output, text, timeout, cwd):
         raise subprocess.TimeoutExpired(cmd, timeout)
 
     monkeypatch.setattr(ctc.subprocess, "run", fake_run)
@@ -56,14 +58,14 @@ def test_run_mypy_coverage_times_out(monkeypatch, tmp_path, capsys):
     pkg.mkdir()
 
     with pytest.raises(SystemExit) as excinfo:
-        ctc.run_mypy_coverage(pkg, tmp_path)
+        ctc.run_mypy_coverage(pkg, tmp_path, tmp_path)
 
     assert excinfo.value.code == 1
     assert "mypy timed out" in capsys.readouterr().err
 
 
 def test_run_mypy_coverage_missing_binary(monkeypatch, tmp_path, capsys):
-    def fake_run(cmd, capture_output, text, timeout):
+    def fake_run(cmd, capture_output, text, timeout, cwd):
         raise FileNotFoundError("mypy missing")
 
     monkeypatch.setattr(ctc.subprocess, "run", fake_run)
@@ -72,7 +74,7 @@ def test_run_mypy_coverage_missing_binary(monkeypatch, tmp_path, capsys):
     pkg.mkdir()
 
     with pytest.raises(SystemExit) as excinfo:
-        ctc.run_mypy_coverage(pkg, tmp_path)
+        ctc.run_mypy_coverage(pkg, tmp_path, tmp_path)
 
     assert excinfo.value.code == 1
     assert "mypy not found" in capsys.readouterr().err
@@ -172,7 +174,7 @@ def test_main_badge_only_uses_metrics(monkeypatch, capsys, tmp_path):
 
     run_calls = []
 
-    def fake_run(pkg_path, temp_dir, extra_args=None):
+    def fake_run(pkg_path, temp_dir, working_dir, extra_args=None):
         run_calls.append((pkg_path, temp_dir))
         return str(temp_dir / "txt" / "index.txt"), 0
 
@@ -307,7 +309,7 @@ def test_main_succeeds_without_warning_when_coverage_high(
 
     run_calls = []
 
-    def fake_run(pkg_path, temp_dir, extra_args=None):
+    def fake_run(pkg_path, temp_dir, working_dir, extra_args=None):
         run_calls.append(pkg_path)
         return str(temp_dir / "txt" / "index.txt"), 0
 
@@ -392,7 +394,7 @@ def test_main_fails_when_mypy_returns_nonzero_and_report_is_empty(
     monkeypatch.setattr(ctc, "__file__", str(fake_script))
     calls = []
 
-    def fake_run(pkg_path, temp_dir, extra_args=None):
+    def fake_run(pkg_path, temp_dir, working_dir, extra_args=None):
         calls.append(extra_args)
         return str(temp_dir / "txt" / "index.txt"), 2
 
@@ -434,7 +436,7 @@ def test_main_retry_succeeds_when_first_report_is_empty(monkeypatch, tmp_path, c
 
     calls = []
 
-    def fake_run(pkg_path, temp_dir, extra_args=None):
+    def fake_run(pkg_path, temp_dir, working_dir, extra_args=None):
         calls.append(extra_args)
         return str(temp_dir / "txt" / "index.txt"), (2 if extra_args is None else 0)
 

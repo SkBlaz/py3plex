@@ -97,21 +97,16 @@ def variation_of_information(
     p_j = contingency.sum(axis=0) / n  # P(C2=j)
     p_ij = contingency / n  # P(C1=i, C2=j)
     
-    # Compute entropies
-    # H(X) = -sum_i p_i log(p_i)
-    h1 = -np.sum(p_i[p_i > 0] * np.log(p_i[p_i > 0]))
-    h2 = -np.sum(p_j[p_j > 0] * np.log(p_j[p_j > 0]))
-    
-    # Compute mutual information
-    # I(X, Y) = sum_ij p_ij log(p_ij / (p_i * p_j))
-    mi = 0.0
+    # Compute VI as the sum of conditional entropy contributions. This is
+    # algebraically equivalent to H(X) + H(Y) - 2 I(X,Y), but avoids
+    # subtracting nearly equal entropy values and producing tiny negatives.
+    vi = 0.0
     for i in range(contingency.shape[0]):
         for j in range(contingency.shape[1]):
             if p_ij[i, j] > 0 and p_i[i] > 0 and p_j[j] > 0:
-                mi += p_ij[i, j] * np.log(p_ij[i, j] / (p_i[i] * p_j[j]))
-    
-    # VI = H(X) + H(Y) - 2*I(X, Y)
-    vi = h1 + h2 - 2 * mi
+                vi -= p_ij[i, j] * np.log(
+                    (p_ij[i, j] * p_ij[i, j]) / (p_i[i] * p_j[j])
+                )
     
     if normalized:
         # Normalize by log(n)

@@ -2910,6 +2910,18 @@ def _execute_select(
             attributes=attributes,
             explain_spec=select.explain_spec,
             target=select.target,
+            context={
+                "layers": list(dict.fromkeys(
+                    item[1] for item in items
+                    if isinstance(item, tuple) and len(item) >= 2
+                )),
+                "limit": select.limit,
+                **(
+                    {"order_by": select.order_by[0].key}
+                    if select.order_by
+                    else {}
+                ),
+            },
         )
 
     # Create result
@@ -4044,6 +4056,7 @@ def _apply_explanations(
     attributes: Dict[str, Dict],
     explain_spec: "ExplainSpec",
     target: Target,
+    context: Optional[Dict[str, Any]] = None,
 ) -> Tuple[List[Any], Dict[str, Dict]]:
     """Apply explanations to result items.
 
@@ -4092,9 +4105,13 @@ def _apply_explanations(
             community_cfg=explain_spec.community_cfg,
             layer_footprint_cfg=explain_spec.layer_footprint_cfg,
             attribution_cfg=explain_spec.attribution_cfg,
+            metric_values=attributes,
+            context=context,
             cache=explain_spec.cache,
         )
     except Exception as e:
+        if "attribution" in explain_spec.include:
+            raise
         logger.warning(f"Failed to generate explanations: {e}")
         return items, attributes
 
@@ -6285,6 +6302,10 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
         seed_result = _execute_select(network, stmt.seed_query, params={})
         initial_dict["infected"] = InitialSpec(query=stmt.seed_query)
         initial_condition["infections_nodes"] = seed_result.items
+    elif getattr(stmt, "seed_nodes", None) is not None:
+        seeded_nodes = list(stmt.seed_nodes)
+        initial_dict["infected"] = InitialSpec(constant=seeded_nodes)
+        initial_condition["infections_nodes"] = seeded_nodes
     elif stmt.seed_fraction is not None:
         # Use fraction-based seeding
         initial_dict["infected"] = InitialSpec(constant=stmt.seed_fraction)

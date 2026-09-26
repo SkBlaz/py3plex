@@ -16,6 +16,7 @@ _QUANTILE_TOLERANCE = 0.01
 _EXPLANATION_ATTRS = {
     "top_neighbors",  # List of dicts
     "layers_present",  # List of strings
+    "attribution",  # Shapley attribution payload
 }
 
 
@@ -1082,6 +1083,27 @@ class QueryResult:
                 "replayable": self.is_replayable,
             },
         }
+
+    def to_json(self) -> str:
+        """Serialize result items, attributes, metadata, and summary to JSON."""
+        def _json_safe(value: Any) -> Any:
+            if isinstance(value, dict):
+                return {str(key): _json_safe(item) for key, item in value.items()}
+            if isinstance(value, (list, tuple, set)):
+                return [_json_safe(item) for item in value]
+            if hasattr(value, "tolist"):
+                return _json_safe(value.tolist())
+            if hasattr(value, "item"):
+                return _json_safe(value.item())
+            if value is None or isinstance(value, (str, int, float, bool)):
+                return value
+            return str(value)
+
+        return json.dumps(
+            _json_safe(self.canonical_export_dict()),
+            sort_keys=True,
+            ensure_ascii=False,
+        )
 
     def inspect_json(self) -> str:
         """Return stable JSON payload suitable for machine handoff."""

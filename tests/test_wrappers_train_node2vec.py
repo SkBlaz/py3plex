@@ -271,3 +271,17 @@ class TestErrorMessages:
                     assert "30" in error_msg
                     # Should provide guidance
                     assert "timeout" in error_msg.lower()
+
+
+def test_grid_search_requires_optional_gensim_backend(monkeypatch):
+    from py3plex.wrappers import train_node2vec_embedding as module
+
+    monkeypatch.setattr(module, "benchmark_node_classification", None)
+    with pytest.raises(ImportError, match=r"py3plex\[algos\]"):
+        module.n2v_embedding(
+            nx.Graph(),
+            targets=[],
+            outfile_name="unused.emb",
+            parameter_range=[0.5],
+            binary_path="unused-node2vec",
+        )

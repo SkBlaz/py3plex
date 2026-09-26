@@ -58,9 +58,40 @@ try:
     RICCI_AVAILABLE = True
 except ImportError:
     RICCI_AVAILABLE = False
+    compute_ollivier_ricci_single_graph = None
+    compute_ollivier_ricci_flow_single_graph = None
 
     class RicciBackendNotAvailable(ImportError):
         pass
+
+
+def _load_ricci_backend():
+    """Load optional curvature helpers after core import has completed.
+
+    Importing ``py3plex.algorithms`` initializes its package namespace, which
+    can re-enter core imports. Retrying lazily avoids mistaking that import
+    cycle for a missing optional dependency.
+    """
+    global RICCI_AVAILABLE
+    global compute_ollivier_ricci_single_graph
+    global compute_ollivier_ricci_flow_single_graph
+
+    if RICCI_AVAILABLE:
+        return
+
+    try:
+        from py3plex.algorithms.curvature.ollivier_ricci_multilayer import (
+            compute_ollivier_ricci_single_graph as compute_single,
+            compute_ollivier_ricci_flow_single_graph as compute_flow,
+        )
+    except ImportError as exc:
+        raise RicciBackendNotAvailable(
+            "GraphRicciCurvature is not installed. Install with: pip install GraphRicciCurvature"
+        ) from exc
+
+    compute_ollivier_ricci_single_graph = compute_single
+    compute_ollivier_ricci_flow_single_graph = compute_flow
+    RICCI_AVAILABLE = True
 
 # Mapping of sparse matrix format names to conversion method names (for get_tensor)
 SPARSE_FORMAT_METHODS = {
@@ -3983,8 +4014,7 @@ class multi_layer_network:
             >>> # Compute on supra-graph
             >>> result = net.compute_ollivier_ricci(mode="supra", inplace=False)  # doctest: +SKIP
         """
-        if not RICCI_AVAILABLE:
-            raise RicciBackendNotAvailable("GraphRicciCurvature is not installed. Install with: pip install GraphRicciCurvature")
+        _load_ricci_backend()
 
         if mode not in ["core", "layers", "supra"]:
             raise ValueError(f"Invalid mode: {mode}. Must be 'core', 'layers', or 'supra'.")
@@ -4137,8 +4167,7 @@ class multi_layer_network:
             >>> # Apply to each layer
             >>> result = net.compute_ollivier_ricci_flow(mode="layers", iterations=10)  # doctest: +SKIP
         """
-        if not RICCI_AVAILABLE:
-            raise RicciBackendNotAvailable("GraphRicciCurvature is not installed. Install with: pip install GraphRicciCurvature")
+        _load_ricci_backend()
 
         if mode not in ["core", "layers", "supra"]:
             raise ValueError(f"Invalid mode: {mode}. Must be 'core', 'layers', or 'supra'.")
@@ -4201,11 +4230,15 @@ class multi_layer_network:
                     for u, v, data in G_flow.edges(data=True):
                         # Update both weight and curvature in the core network
                         if self.core_network.has_edge(u, v):
-                            for key in self.core_network[u][v]:
+                            if self.core_network.is_multigraph():
+                                edge_data = self.core_network[u][v].values()
+                            else:
+                                edge_data = [self.core_network[u][v]]
+                            for edge_attrs in edge_data:
                                 if weight_attr in data:
-                                    self.core_network[u][v][key][weight_attr] = data[weight_attr]
+                                    edge_attrs[weight_attr] = data[weight_attr]
                                 if curvature_attr in data:
-                                    self.core_network[u][v][key][curvature_attr] = data[curvature_attr]
+                                    edge_attrs[curvature_attr] = data[curvature_attr]
 
                 result[layer] = G_flow
 

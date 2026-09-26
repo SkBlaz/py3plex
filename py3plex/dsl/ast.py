@@ -1934,6 +1934,10 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
             return {'__enum__': obj.__class__.__name__, 'value': obj.value}
         if obj is None:
             return None
+        # String enums (for example Target) also satisfy isinstance(obj, str);
+        # preserve their enum identity before handling primitive strings.
+        if isinstance(obj, Enum):
+            return {'__enum__': obj.__class__.__name__, 'value': obj.value}
         if isinstance(obj, (str, int, float, bool)):
             return obj
         if isinstance(obj, (list, tuple)):

@@ -74,6 +74,7 @@ def test_layer_dissimilarity_index_averages_pairwise():
             ("C", "L2"),
             ("D", "L3"),
             ("A", "L3"),
+            ("B", "L3"),
         ]
     )
     g.add_edges_from(
@@ -87,6 +88,6 @@ def test_layer_dissimilarity_index_averages_pairwise():
 
     dissimilarity = ls.layer_dissimilarity_index(net, method="jaccard")
 
-    # Pairwise node overlaps: L1-L2 (1/3), L1-L3 (1/2), L2-L3 (1/3); average similarity = 7/18
-    expected_similarity = (1 / 3 + 1 / 2 + 1 / 3) / 3
+    # Pairwise node overlaps: L1-L2 (1/3), L1-L3 (2/3), L2-L3 (1/4).
+    expected_similarity = (1 / 3 + 2 / 3 + 1 / 4) / 3
     assert dissimilarity == pytest.approx(1 - expected_similarity)

@@ -83,7 +83,7 @@ class TestParseTime:
         """Test parsing ISO format string."""
         # ISO format string
         timestamp = _parse_time("2009-02-13T23:31:30Z")
-        expected = datetime.datetime(2009, 2, 13, 23, 31, 30).timestamp()
+        expected = datetime.datetime(2009, 2, 13, 23, 31, 30, tzinfo=datetime.timezone.utc).timestamp()
         assert timestamp == expected
 
     def test_parse_datetime_object(self):
@@ -139,7 +139,7 @@ class TestExtractEdgeTime:
         """Test extraction with ISO string timestamp."""
         edge = {'source': 'A', 'target': 'B', 't': "2009-02-13T23:31:30Z"}
         interval = extract_edge_time(edge)
-        expected = datetime.datetime(2009, 2, 13, 23, 31, 30).timestamp()
+        expected = datetime.datetime(2009, 2, 13, 23, 31, 30, tzinfo=datetime.timezone.utc).timestamp()
         assert interval.start == expected
         assert interval.end == expected
 
@@ -163,17 +163,14 @@ class TestExtractEdgeTimeUnbounded:
         assert interval.start == float('-inf')
         assert interval.end == 150.0
 
-    def test_extract_handles_invalid_timestamp(self):
-        """Test that invalid timestamps are handled gracefully."""
+    def test_extract_rejects_invalid_timestamp(self):
+        """Malformed explicit timestamps should not silently become atemporal."""
         edge = {'source': 'A', 'target': 'B', 't': 'invalid'}
-        interval = extract_edge_time(edge)
-        # Should return atemporal interval when parsing fails
-        assert interval.start is None
-        assert interval.end is None
+        with pytest.raises(ParsingError):
+            extract_edge_time(edge)
 
-    def test_extract_partial_interval_with_invalid_end_keeps_unbounded(self):
-        """Invalid t_end with valid t_start should produce unbounded end interval."""
+    def test_extract_rejects_invalid_interval_endpoint(self):
+        """Malformed interval endpoints should report a parsing error."""
         edge = {'source': 'A', 'target': 'B', 't_start': 100.0, 't_end': 'invalid'}
-        interval = extract_edge_time(edge)
-        assert interval.start == 100.0
-        assert interval.end == float('inf')
+        with pytest.raises(ParsingError):
+            extract_edge_time(edge)

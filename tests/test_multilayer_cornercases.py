@@ -316,7 +316,7 @@ class TestNetworkTypeSpecific(unittest.TestCase):
         ]
         network.add_nodes(nodes, input_type="dict")
         network._couple_all_edges()
-        edges = list(network.get_edges())
+        edges = list(network.get_edges(multiplex_edges=True))
         # Should have coupling edges between layers
         # One edge from layer1 to layer2 and one from layer2 to layer1 (directed)
         self.assertGreater(len(edges), 0)
@@ -496,7 +496,8 @@ class TestNetworkConversion(unittest.TestCase):
         json_data = self.network.to_json()
         self.assertIsNotNone(json_data)
         self.assertIn('nodes', json_data)
-        self.assertIn('edges', json_data)
+        # NetworkX calls this field "links" in its legacy node-link schema.
+        self.assertTrue('edges' in json_data or 'links' in json_data)
     
     def test_to_json_with_data(self):
         """Test converting network with data to JSON."""

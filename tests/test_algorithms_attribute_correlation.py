@@ -42,6 +42,15 @@ class TestCorrelateAttributesWithCentrality:
             assert isinstance(pval, (int, float))
             assert -1 <= corr <= 1
             assert 0 <= pval <= 1
+
+    def test_correlation_clamps_roundoff_outside_probability_range(self, monkeypatch):
+        """A floating-point p-value just above one must remain a probability."""
+        from py3plex.algorithms import attribute_correlation as module
+
+        monkeypatch.setattr(module, "pearsonr", lambda x, y: (1.0, 1.0000000000000002))
+        corr, pval = module._compute_correlation(np.array([1, 2]), np.array([1, 2]), "pearson")
+        assert corr == 1.0
+        assert pval == 1.0
             
     def test_correlation_methods(self):
         """Test different correlation methods."""

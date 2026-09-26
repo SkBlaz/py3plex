@@ -9,8 +9,10 @@ convenience aliases added to DynamicsBuilder:
 """
 
 import pytest
+import numpy as np
 from py3plex.core import multinet
 from py3plex.dsl import D, Q, L, DynamicsBuilder
+from py3plex.dynamics.processes import get_process
 
 
 @pytest.fixture
@@ -68,6 +70,32 @@ class TestDFactory:
         assert builder._stmt.params["beta"] == 0.3
         assert builder._stmt.params["sigma"] == 0.2
         assert builder._stmt.params["gamma"] == 0.1
+
+    def test_seir_process_transitions_all_compartments(self):
+        process = get_process("SEIR")
+        update = process.update_fn(
+            {"beta": 1.0, "sigma": 1.0, "gamma": 1.0}, {}
+        )
+        adjacency = np.array(
+            [[0, 1, 0], [1, 0, 0], [0, 0, 0]], dtype=float
+        )
+        # S at node 0 is exposed by infected node 1; node 1 recovers;
+        # exposed node 2 progresses to infectious.
+        state = np.array([0, 1, 3])
+
+        next_state = update(adjacency, state, np.random.default_rng(3))
+
+        assert next_state.tolist() == [3, 2, 1]
+
+    def test_seir_incidence_counts_exposed_progression(self):
+        from py3plex.dynamics.registry import measure_registry
+
+        incidence = measure_registry.get("SEIR", "incidence")
+        value = incidence(
+            np.array([1, 1]),
+            {"prev_state": np.array([3, 1])},
+        )
+        assert value == 1
     
     def test_d_simulate_random_walk(self):
         """Test D.simulate() with RANDOM_WALK model."""

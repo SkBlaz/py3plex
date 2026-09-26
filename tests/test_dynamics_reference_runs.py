@@ -257,17 +257,16 @@ EXPECTED_TRAJECTORY_RANDOM_WALK_RING = [0, 3, 0, 1, 2, 1, 2, 1, 0, 1]
 # REFERENCE DATA: SIS DYNAMICS
 # =============================================================================
 
-# Generated on 2025-12-06 with py3plex v1.0
+# Regenerated on 2026-09-26 with the deterministic replicate SeedSequence
+# used by the current dynamics executor. Prevalence is recorded before each step.
 # SIS on 4-node chain, beta=0.4, mu=0.3, initial_infected=0.5, steps=10, seed=42
-# Prevalence = fraction of infected nodes at each time step
 EXPECTED_PREVALENCE_SIS_CHAIN = [
-    0.5, 0.75, 0.75, 0.75, 0.75, 1.0, 0.75, 0.25, 0.25, 0.5
+    0.5, 0.75, 1.0, 1.0, 0.75, 0.5, 0.75, 0.75, 0.5, 0.5
 ]
 
-# Generated on 2025-12-06 with py3plex v1.0
 # SIS on 4-node ring, beta=0.3, mu=0.2, initial_infected=0.5, steps=10, seed=123
 EXPECTED_PREVALENCE_SIS_RING = [
-    0.5, 0.5, 0.5, 0.75, 1.0, 0.75, 0.75, 0.75, 0.75, 0.75
+    0.5, 0.25, 0.5, 0.5, 0.5, 0.5, 0.75, 0.75, 0.75, 0.75
 ]
 
 

@@ -313,7 +313,7 @@ class TestLeidenInputFormats(unittest.TestCase):
         
         # 3 resolutions for 2 layers should fail
         with self.assertRaises(ValueError):
-            leiden_multilayer(network, resolution=[1.0, 1.0, 1.0])
+            leiden_multilayer(network, resolution=[1.0, 1.0, 1.0], seed=42)
     
     def test_invalid_coupling_matrix_shape(self):
         """Test with mismatched coupling matrix shape."""
@@ -327,7 +327,7 @@ class TestLeidenInputFormats(unittest.TestCase):
         coupling = np.ones((3, 3))
         
         with self.assertRaises(ValueError):
-            leiden_multilayer(network, interlayer_coupling=coupling)
+            leiden_multilayer(network, interlayer_coupling=coupling, seed=42)
 
 
 if __name__ == '__main__':

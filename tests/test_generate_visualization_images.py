@@ -14,8 +14,9 @@ def viz_module():
 
 
 def test_save_figure_writes_file_and_closes(viz_module, tmp_path, capsys):
-    # Redirect output directory to temporary path
+    # Redirect output directory to temporary path and preserve caller figures.
     viz_module.OUTPUT_DIR = tmp_path
+    existing_figures = set(plt.get_fignums())
 
     plt.figure()
     viz_module.save_figure("test_image.png", dpi=50)
@@ -23,8 +24,8 @@ def test_save_figure_writes_file_and_closes(viz_module, tmp_path, capsys):
     saved_file = tmp_path / "test_image.png"
     assert saved_file.exists()
 
-    # matplotlib should close the figure after saving
-    assert plt.get_fignums() == []
+    # matplotlib should close only the figure created for this save.
+    assert set(plt.get_fignums()) == existing_figures
 
     captured = capsys.readouterr()
     assert f"[OK] Saved: {saved_file}" in captured.out

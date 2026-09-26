@@ -7,14 +7,14 @@ Significance testing methods.
 import scipy.stats as st
 
 
-def is_redundant(rule, new_rule):
+def is_redundant(rule, new_rule) -> bool:
     """
     Computes the redundancy coefficient of a new rule compared to its
     immediate generalization.
 
     Rules with a coeff > 1 are deemed non-redundant.
     """
-    return _fisher(new_rule, "greater") > _fisher(rule, "greater")
+    return bool(_fisher(new_rule, "greater") > _fisher(rule, "greater"))
 
 
 def fisher(rule):

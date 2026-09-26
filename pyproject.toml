@@ -46,6 +46,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "tomli>=2.0.1; python_version < '3.11'",
     "pytest>=7.0",
     "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
@@ -63,6 +64,7 @@ dev = [
 ]
 # Testing dependencies (for property-based and integration tests)
 tests = [
+    "tomli>=2.0.1; python_version < '3.11'",
     "pytest>=7.0",
     "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
