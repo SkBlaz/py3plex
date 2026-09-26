@@ -130,10 +130,25 @@ class GraphProgram:
         >>> result = program.execute(network)
     """
     
-    canonical_ast: Query
-    type_signature: Type
+    _canonical_ast: Query
+    _type_signature: Type
     program_hash: str
-    metadata: ProgramMetadata
+    _metadata: ProgramMetadata
+
+    @property
+    def canonical_ast(self) -> Query:
+        """Return an independent AST so callers cannot alter this program."""
+        return copy.deepcopy(self._canonical_ast)
+
+    @property
+    def type_signature(self) -> Type:
+        """Return an independent type signature."""
+        return copy.deepcopy(self._type_signature)
+
+    @property
+    def metadata(self) -> ProgramMetadata:
+        """Return independent provenance and cost metadata."""
+        return copy.deepcopy(self._metadata)
     
     @classmethod
     def from_ast(
@@ -176,19 +191,19 @@ class GraphProgram:
             creation_timestamp=time.time(),
             dsl_version=DSL_VERSION,
             library_version=LIBRARY_VERSION,
-            cost_model_hints=cost_hints,
-            randomness_metadata=randomness_meta,
-            provenance_chain=provenance or ["from_ast"],
+            cost_model_hints=copy.deepcopy(cost_hints),
+            randomness_metadata=copy.deepcopy(randomness_meta),
+            provenance_chain=copy.deepcopy(provenance) if provenance is not None else ["from_ast"],
         )
         
         # Compute stable hash
         program_hash = cls._compute_hash(canonical_ast, metadata)
         
         return cls(
-            canonical_ast=canonical_ast,
-            type_signature=type_signature,
+            _canonical_ast=canonical_ast,
+            _type_signature=type_signature,
             program_hash=program_hash,
-            metadata=metadata,
+            _metadata=metadata,
         )
     
     @staticmethod
@@ -269,8 +284,10 @@ class GraphProgram:
             random.seed(seed)
             np.random.seed(seed)
         
-        # Check cache if enabled
-        if cache_policy != "disabled":
+        # Cache only seeded executions. Unsupported values execute normally
+        # without caching rather than receiving an incomplete cache identity.
+        cache_key = None
+        if cache_policy != "disabled" and seed is not None:
             from .cache import (
                 get_global_cache,
                 graph_fingerprint,
@@ -280,18 +297,30 @@ class GraphProgram:
             )
             cache = get_global_cache()
             
-            # Create cache key
-            key = CacheKey(
-                graph_fingerprint=graph_fingerprint(network),
-                program_hash=self.program_hash,
-                execution_context=execution_fingerprint(seed=seed, n_jobs=n_jobs),
-                environment_signature=environment_signature(),
-            )
+            try:
+                execution_context = execution_fingerprint(
+                    seed=seed,
+                    n_jobs=n_jobs,
+                    params=params,
+                    planner_config=planner_config,
+                    explain_plan=explain_plan,
+                )
+            except (TypeError, ValueError):
+                execution_context = None
+
+            if execution_context is not None:
+                cache_key = CacheKey(
+                    graph_fingerprint=graph_fingerprint(network),
+                    program_hash=self.program_hash,
+                    execution_context=execution_context,
+                    environment_signature=environment_signature(),
+                )
             
             # Try to get from cache
-            cached_result = cache.get(key)
-            if cached_result is not None:
-                return cached_result
+            if cache_key is not None:
+                cached_result = cache.get(cache_key)
+                if cached_result is not None:
+                    return cached_result
         
         # Execute the query
         result = execute_ast(
@@ -304,30 +333,17 @@ class GraphProgram:
         )
         
         # Store in cache if enabled
-        if cache_policy != "disabled" and seed is not None:
-            from .cache import (
-                get_global_cache,
-                graph_fingerprint,
-                execution_fingerprint,
-                environment_signature,
-                CacheKey,
-            )
-            cache = get_global_cache()
-            key = CacheKey(
-                graph_fingerprint=graph_fingerprint(network),
-                program_hash=self.program_hash,
-                execution_context=execution_fingerprint(seed=seed, n_jobs=n_jobs),
-                environment_signature=environment_signature(),
-            )
-            cache.put(key, result)
+        if cache_key is not None:
+            cache.put(cache_key, result)
         
         return result
     
     def compose(self, other: GraphProgram) -> GraphProgram:
-        """Compose this program with another program sequentially.
+        """Combine compatible metric computations into one program.
         
-        Creates a new program that executes self, then other. Type checks that
-        the output type of self matches the input type of other.
+        Both programs must select the same target and contain only compute
+        operations. Other query stages cannot be represented by the merged
+        SelectStmt without changing their order or meaning.
         
         Args:
             other: Program to compose with
@@ -343,16 +359,6 @@ class GraphProgram:
             >>> p2 = GraphProgram.from_ast(Q.nodes().compute("betweenness").to_ast())
             >>> composed = p1.compose(p2)
         """
-        # For now, composition is sequential execution with result passing
-        # This is a placeholder - full composition requires AST merging
-        # which depends on the specific query structure
-        
-        # Type check compatibility (simplified - needs enhancement)
-        # In a full implementation, we'd check that other's expected input
-        # matches self's output. For now, we just compose the ASTs.
-        
-        # Merge ASTs by creating a new SelectStmt that combines both
-        # This is a basic implementation - can be enhanced with proper AST merging
         merged_ast = _merge_asts(self.canonical_ast, other.canonical_ast)
         
         # Merge provenance
@@ -611,24 +617,20 @@ class GraphProgram:
             network: Optional network used for layer resolution and cost hints.
 
         Returns:
-            :class:`~py3plex.dsl.planner.PlannedQuery` (or a plain dict if
-            planner is unavailable).
+            :class:`~py3plex.dsl.planner.PlannedQuery`.
 
         Example:
             >>> plan = Q.nodes().compute("betweenness_centrality").compile().plan(net)
             >>> print(plan.plan_hash)
         """
-        try:
-            from ..planner import plan_query
+        from ..planner import plan_query
 
-            return plan_query(
-                ast=self.canonical_ast,
-                network=network,
-                params=None,
-                config=None,
-            )
-        except Exception:  # pragma: no cover
-            return {"ast_hash": self.program_hash, "planned_stages": []}
+        return plan_query(
+            ast=self.canonical_ast,
+            network=network,
+            params=None,
+            config=None,
+        )
 
     def diff(self, other: GraphProgram) -> Dict[str, Any]:
         """Compute structural difference between two programs.
@@ -683,7 +685,7 @@ class GraphProgram:
             >>> json.dumps(program_dict)
         """
         return {
-            "canonical_ast": _ast_to_dict(self.canonical_ast),
+            "canonical_ast": ast_to_json(self.canonical_ast, canonical=False),
             "type_signature": self.type_signature.to_dict(),
             "program_hash": self.program_hash,
             "metadata": self.metadata.to_dict(),
@@ -712,18 +714,52 @@ class GraphProgram:
             Reconstructed GraphProgram
         
         Raises:
-            NotImplementedError: AST deserialization is complex and not yet implemented
+            ValueError: If the AST is invalid or its stored hash does not match.
         
         Example:
             >>> program_dict = program.to_dict()
             >>> restored = GraphProgram.from_dict(program_dict)
             >>> assert restored.hash() == program.hash()
         """
-        # AST deserialization is complex and requires complete reconstruction
-        # of all AST node types. This is deferred for future implementation.
-        raise NotImplementedError(
-            "AST deserialization not yet implemented. "
-            "Use GraphProgram.from_ast() to create programs."
+        if not isinstance(data, dict):
+            raise TypeError("GraphProgram data must be a dictionary")
+        try:
+            ast_data = data["canonical_ast"]
+            metadata_data = data["metadata"]
+        except KeyError as exc:
+            raise ValueError(f"Missing GraphProgram field: {exc.args[0]}") from exc
+
+        # Use the versioned AST codec as the single reconstruction path.
+        if isinstance(ast_data, str):
+            ast = ast_from_json(ast_data)
+        else:
+            raise ValueError(
+                "Unsupported GraphProgram AST encoding; expected versioned AST JSON"
+            )
+        metadata = ProgramMetadata.from_dict(metadata_data)
+        if isinstance(ast.select.target, str):
+            ast.select.target = Target(ast.select.target)
+
+        # Re-run type checking and inference rather than trusting serialized
+        # derived state, then verify it agrees with the serialized signature.
+        type_signature = infer_type(ast)
+        serialized_type = data.get("type_signature")
+        if serialized_type is not None and Type.from_dict(serialized_type) != type_signature:
+            raise ValueError("Serialized GraphProgram type signature does not match its AST")
+
+        program_hash = cls._compute_hash(ast, metadata)
+        expected_hash = data.get("program_hash")
+        if expected_hash is not None and expected_hash != program_hash:
+            raise ValueError(
+                "Serialized GraphProgram hash mismatch: "
+                f"expected {expected_hash}, got {program_hash}"
+            )
+
+        return cls(
+            canonical_ast=copy.deepcopy(ast),
+            type_signature=type_signature,
+            program_hash=program_hash,
+            metadata=metadata,
         )
 
     @classmethod
@@ -784,12 +820,10 @@ def _ast_to_dict(ast: Query) -> Dict[str, Any]:
     
     Ensures deterministic serialization for stable hashing.
     """
-    result = {
-        "explain": ast.explain,
-        "dsl_version": ast.dsl_version,
-        "select": _select_to_dict(ast.select),
-    }
-    return result
+    # Reuse the AST serializer so parameter references and every declared
+    # SelectStmt field contribute to the hash. The former hand-written subset
+    # omitted UQ, temporal, grouping, and other execution settings.
+    return json.loads(ast_to_json(ast, canonical=False))
 
 
 def _select_to_dict(select: SelectStmt) -> Dict[str, Any]:
@@ -856,12 +890,7 @@ def _layer_expr_to_dict(layer_expr) -> Dict[str, Any]:
 
 
 def _merge_asts(ast1: Query, ast2: Query) -> Query:
-    """Merge two ASTs for composition.
-    
-    This is a simplified merge that combines compute items.
-    Full implementation would need sophisticated AST merging logic.
-    """
-    # Create a new select statement that combines both
+    """Merge compute-only queries without dropping query stages."""
     select1 = ast1.select
     select2 = ast2.select
     
@@ -873,31 +902,42 @@ def _merge_asts(ast1: Query, ast2: Query) -> Query:
             ast1
         )
     
-    # Merge compute items (avoid duplicates)
-    compute_names = {c.name for c in select1.compute}
-    merged_compute = list(select1.compute)
-    
-    for compute_item in select2.compute:
-        if compute_item.name not in compute_names:
-            merged_compute.append(compute_item)
-    
-    # Create merged select statement
-    merged_select = SelectStmt(
-        target=select1.target,
-        layer_expr=select1.layer_expr or select2.layer_expr,
-        layer_set=select1.layer_set or select2.layer_set,
-        where=select1.where or select2.where,
-        compute=merged_compute,
-        order_by=select2.order_by or select1.order_by,  # Prefer second
-        limit=select2.limit or select1.limit,  # Prefer second
-        group_by=select1.group_by or select2.group_by,
-    )
-    
-    # Create merged query
+    if ast1.explain or ast2.explain or ast1.dsl_version != ast2.dsl_version:
+        raise TypeCheckError("Cannot compose EXPLAIN queries or different DSL versions", ast1)
+
+    allowed = {"target", "compute", "autocompute"}
+    declared = set(SelectStmt.__dataclass_fields__)
+    for select in (select1, select2):
+        default = SelectStmt(target=select.target)
+        actual_fields = json.loads(ast_to_json(Query(explain=False, select=select), canonical=False))["select"]
+        default_fields = json.loads(ast_to_json(Query(explain=False, select=default), canonical=False))["select"]
+        unsupported = [name for name in declared - allowed if actual_fields[name] != default_fields[name]]
+        unsupported.extend(set(vars(select)) - declared)
+        if unsupported:
+            raise TypeCheckError(
+                f"Cannot compose a query containing {', '.join(sorted(unsupported))}; "
+                "only metric computations can be combined",
+                ast1,
+            )
+    if select1.autocompute != select2.autocompute:
+        raise TypeCheckError("Cannot compose queries with different autocompute settings", ast1)
+
+    merged_compute = copy.deepcopy(select1.compute)
+    by_name = {item.name: item for item in merged_compute}
+    for item in select2.compute:
+        if item.name in by_name:
+            if item != by_name[item.name]:
+                raise TypeCheckError(f"Conflicting configurations for metric {item.name}", ast1)
+        else:
+            merged_compute.append(copy.deepcopy(item))
+            by_name[item.name] = item
+
+    merged_select = SelectStmt(target=select1.target, compute=merged_compute,
+                               autocompute=select1.autocompute)
     return Query(
-        explain=ast1.explain or ast2.explain,
+        explain=False,
         select=merged_select,
-        dsl_version=DSL_VERSION,
+        dsl_version=ast1.dsl_version,
     )
 
 

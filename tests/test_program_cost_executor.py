@@ -6,7 +6,7 @@ Tests cost estimation, budget enforcement, and execution planning.
 import pytest
 import time
 
-from py3plex.dsl import Q
+from py3plex.dsl import Q, F
 from py3plex.dsl.program import (
     GraphProgram,
     Cost,
@@ -263,7 +263,7 @@ class TestCostModel:
             Q.nodes()
             .compute("degree")
             .compute("betweenness_centrality")
-            .where(lambda n: n["degree"] > 2)
+            .where(F.degree > 2)
             .order_by("degree")
             .to_ast()
         )
@@ -393,7 +393,7 @@ class TestExecutionPlan:
             Q.nodes()
             .compute("degree")
             .compute("betweenness_centrality")
-            .where(lambda n: n["degree"] > 2)
+            .where(F.degree > 2)
             .order_by("degree")
             .limit(10)
             .to_ast()
@@ -606,8 +606,8 @@ class TestIntegration:
         query_ast = (
             Q.nodes()
             .compute("degree")
-            .where(lambda n: n["degree"] > 1)
-            .order_by("degree", reverse=True)
+            .where(F.degree > 1)
+            .order_by("degree", desc=True)
             .limit(10)
             .to_ast()
         )
@@ -627,8 +627,8 @@ class TestIntegration:
         
         # Verify results
         assert result is not None
-        assert len(result.data) > 0
-        assert len(result.data) <= 10
+        assert len(result.items) > 0
+        assert len(result.items) <= 10
         assert "execution_time" in result.meta
         assert result.meta["execution_time"] < 30.0
     

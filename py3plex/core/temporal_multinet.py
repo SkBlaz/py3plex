@@ -31,6 +31,7 @@ Example:
 from __future__ import annotations
 
 import bisect
+import math
 from datetime import timedelta
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple, Union
 
@@ -301,21 +302,31 @@ class TemporalMultiLayerNetwork:
         Yields:
             Tuples of (t_start, t_end, window_network)
         """
+        if return_type not in ("temporal", "snapshot"):
+            raise ValueError(
+                f"Unknown return_type: {return_type}. Must be 'temporal' or 'snapshot'"
+            )
+
+        def _positive_seconds(value: Union[float, timedelta], name: str) -> float:
+            seconds = value.total_seconds() if isinstance(value, timedelta) else value
+            if isinstance(seconds, bool) or not isinstance(seconds, (int, float)):
+                raise TypeError(f"{name} must be a number or timedelta")
+            seconds = float(seconds)
+            if not math.isfinite(seconds) or seconds <= 0:
+                raise ValueError(f"{name} must be a finite positive duration")
+            return seconds
+
+        window_size = _positive_seconds(window_size, "window_size")
+        step = window_size if step is None else _positive_seconds(step, "step")
+
         if not self.time_index:
             return  # No edges, nothing to iterate
-        
-        # Convert window_size and step to numeric
-        if isinstance(window_size, timedelta):
-            window_size = window_size.total_seconds()
-        
-        if step is None:
-            step = window_size
-        elif isinstance(step, timedelta):
-            step = step.total_seconds()
         
         # Determine time range
         t_start = _parse_time(start) if start is not None else self.time_index[0]
         t_end = _parse_time(end) if end is not None else self.time_index[-1]
+        if not math.isfinite(t_start) or not math.isfinite(t_end):
+            raise ValueError("start and end must be finite timestamps")
         
         # Iterate over windows
         current_start = t_start
@@ -327,9 +338,6 @@ class TemporalMultiLayerNetwork:
                 window_net = self.slice_time_window(current_start, current_end, layers)
             elif return_type == "snapshot":
                 window_net = self.snapshot_at(current_end, mode="up_to", layers=layers)
-            else:
-                raise ValueError(f"Unknown return_type: {return_type}")
-            
             yield (current_start, current_end, window_net)
             
             current_start += step

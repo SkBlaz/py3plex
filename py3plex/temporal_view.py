@@ -194,6 +194,13 @@ class TemporalMultinetView:
             >>> for edge in view.iter_edges():
             ...     print(edge)
         """
+        # A freshly constructed multi_layer_network is empty but leaves its
+        # NetworkX graph uninitialized. Treat that state like an empty edge
+        # iterator instead of forwarding into get_edges() and dereferencing
+        # ``None.edges``.
+        if hasattr(self._base, "core_network") and self._base.core_network is None:
+            return
+
         # Get edges from base network
         for edge in self._base.get_edges(*args, **kwargs):
             # Extract edge data/attributes from core_network
