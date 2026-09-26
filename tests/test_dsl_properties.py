@@ -198,6 +198,8 @@ class TestParameterBindingProperties:
     @settings(max_examples=50)
     def test_param_binding_succeeds_with_value(self, param_name, param_value):
         """Property: Parameter binding should succeed when value provided."""
+        # These names are arguments to execute(), not query parameters.
+        assume(param_name not in {"network", "progress", "explain_plan", "planner"})
         network = multinet.multi_layer_network(directed=False)
         network.add_nodes([
             {'source': 'A', 'type': 'test'},
