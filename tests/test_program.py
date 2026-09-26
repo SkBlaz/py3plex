@@ -13,7 +13,7 @@ import json
 import time
 import pytest
 
-from py3plex.dsl import Q, L
+from py3plex.dsl import Param, Q, L
 from py3plex.dsl.ast import Query, SelectStmt, Target, ComputeItem
 from py3plex.dsl.program import GraphProgram, ProgramMetadata, compose
 from py3plex.dsl.program.types import TypeCheckError, NodeSetType
@@ -485,6 +485,7 @@ class TestProgramSerialization:
         "query",
         [
             Q.nodes().where(degree__gt=1).compute("degree"),
+            Q.nodes().where(degree__gt=Param.int("min_degree")),
             Q.nodes().uq(method="bootstrap", n_samples=10, seed=7).compute("degree"),
             Q.nodes().group_by("layer").compute("degree"),
             Q.nodes().select("node", "degree"),
