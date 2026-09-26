@@ -15,7 +15,11 @@ from py3plex.core.nx_compat import nx_info
 from py3plex.exceptions import ExternalToolError
 
 from ..logging_config import get_logger
-from .benchmark_nodes import benchmark_node_classification
+
+try:
+    from .benchmark_nodes import benchmark_node_classification
+except ImportError:  # gensim is an optional dependency of benchmark_nodes
+    benchmark_node_classification = None
 
 logger = get_logger(__name__)
 
@@ -182,6 +186,12 @@ def n2v_embedding(
         )
 
     else:
+
+        if benchmark_node_classification is None:
+            raise ImportError(
+                "Grid-search Node2Vec training requires the optional 'algos' "
+                "dependencies (including gensim). Install py3plex[algos]."
+            )
 
         # commence the grid search
         for x in vals:
