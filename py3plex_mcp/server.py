@@ -35,7 +35,7 @@ except ImportError:
 
 from py3plex.core import multinet
 from py3plex.dsl_legacy import execute_query
-from py3plex.dsl import Q, L, Param, QueryResult  # DSL v2 support
+from py3plex.safe_dsl_expression import evaluate_dsl_expression
 from py3plex_mcp.errors import (
     MCPError,
     NetworkNotFoundError,
@@ -216,18 +216,9 @@ async def py3plex_run_query(
         # Execute query based on DSL version
         try:
             if use_v2:
-                # DSL v2: Evaluate Python expression to build query
-                # Security: We only expose Q, L, Param from dsl module
-                safe_globals = {
-                    "Q": Q,
-                    "L": L,
-                    "Param": Param,
-                    "__builtins__": {},
-                }
-                # Evaluate the query expression
-                query_builder = eval(query, safe_globals, {})
-                
-                # Execute the query
+                # MCP query strings are untrusted input. Parse only the
+                # documented DSL builder expression grammar.
+                query_builder = evaluate_dsl_expression(query)
                 result = query_builder.execute(net, progress=False)
             else:
                 # Legacy DSL: String-based query
