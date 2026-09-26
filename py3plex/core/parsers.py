@@ -835,7 +835,23 @@ def parse_network(
         parsed_network, labels = parse_detangler_json(input_name, directed)
 
     elif f_type == "edgelist":
-        parsed_network, labels = parse_simple_edgelist(input_name, directed)
+        # ``save_edgelist`` writes multilayer nodes as
+        # ``node layer node layer``. Detect that representation here so that
+        # files produced by the paired writer can be loaded through the same
+        # public format name; ordinary two/three-column edge lists keep their
+        # existing parser and semantics.
+        multilayer_rows = False
+        with open(input_name) as edge_file:
+            for line in edge_file:
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#"):
+                    continue
+                multilayer_rows = len(stripped.split()) in (4, 5)
+                break
+        if multilayer_rows:
+            parsed_network, labels = parse_multi_edgelist(input_name, directed)
+        else:
+            parsed_network, labels = parse_simple_edgelist(input_name, directed)
 
     elif f_type == "edgelist_spin":
         parsed_network, labels = parse_spin_edgelist(input_name, directed)

@@ -151,9 +151,9 @@ class TestNetworkConversion:
         network = multinet.multi_layer_network(directed=directed)
         
         if format_type == "gpickle":
-            network.load_network(filepath, input_type="gpickle")
+            network.load_network(filepath, directed=directed, input_type="gpickle")
         elif format_type == "edgelist":
-            network.load_network(filepath, input_type="edgelist")
+            network.load_network(filepath, directed=directed, input_type="edgelist")
         elif format_type == "json":
             import json
             from networkx.readwrite import json_graph
