@@ -197,16 +197,10 @@ def extract_edge_time(attrs: dict[str, Any]) -> EdgeTimeInterval:
         end = None
         
         if 't_start' in attrs:
-            try:
-                start = _parse_time(attrs['t_start'])
-            except (ValueError, TypeError, ParsingError):
-                pass
+            start = _parse_time(attrs['t_start'])
         
         if 't_end' in attrs:
-            try:
-                end = _parse_time(attrs['t_end'])
-            except (ValueError, TypeError, ParsingError):
-                pass
+            end = _parse_time(attrs['t_end'])
         
         # Handle unbounded intervals
         if start is not None and end is None:
@@ -218,11 +212,8 @@ def extract_edge_time(attrs: dict[str, Any]) -> EdgeTimeInterval:
     
     # Check for point-in-time form
     if 't' in attrs:
-        try:
-            t = _parse_time(attrs['t'])
-            return EdgeTimeInterval(start=t, end=t)
-        except (ValueError, TypeError, ParsingError):
-            pass
+        t = _parse_time(attrs['t'])
+        return EdgeTimeInterval(start=t, end=t)
     
     # No temporal information
     return EdgeTimeInterval(start=None, end=None)
