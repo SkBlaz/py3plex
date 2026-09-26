@@ -8,6 +8,7 @@ import pytest
 from py3plex.centrality import robustness_centrality
 from py3plex.centrality.robustness import _compute_avg_shortest_path
 from py3plex.core import multinet
+from py3plex.exceptions import Py3plexException
 
 try:
     from hypothesis import given, settings, strategies as st
@@ -37,10 +38,10 @@ def test_uninitialized_empty_network_returns_empty_or_zero_scores():
 def test_uninitialized_network_still_validates_inputs():
     net = multinet.multi_layer_network(directed=False, verbose=False)
 
-    with pytest.raises(ValueError, match="target must be"):
+    with pytest.raises(Py3plexException, match="Invalid target type"):
         robustness_centrality(net, target="bad_target")  # type: ignore[arg-type]
 
-    with pytest.raises(ValueError, match="metric must be one of"):
+    with pytest.raises(Py3plexException, match="Unknown robustness metric"):
         robustness_centrality(net, metric="bad_metric")  # type: ignore[arg-type]
 
 
