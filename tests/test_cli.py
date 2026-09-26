@@ -911,13 +911,13 @@ class TestCLIEmbed:
         """Create a small test network."""
         network_file = tmp_path / "network.edgelist"
         with open(network_file, "w") as f:
-            f.write("A B social\n")
-            f.write("B C social\n")
-            f.write("C D social\n")
-            f.write("D E social\n")
-            f.write("E A social\n")
-            f.write("A C social\n")
-            f.write("B D social\n")
+            f.write("A social B social\n")
+            f.write("B social C social\n")
+            f.write("C social D social\n")
+            f.write("D social E social\n")
+            f.write("E social A social\n")
+            f.write("A social C social\n")
+            f.write("B social D social\n")
         return network_file
 
     def test_embed_node2vec_basic(self, test_network, tmp_path):

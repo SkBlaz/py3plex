@@ -1037,6 +1037,9 @@ Examples:
         default="csv",
         help="Output format (default: csv)",
     )
+    embed_parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Print detailed progress information"
+    )
 
     # EXPERIMENT command group
     from py3plex.experiments.cli import add_experiment_subparser
@@ -4126,15 +4129,21 @@ def cmd_embed(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        if args.verbose:
+        verbose = getattr(args, "verbose", False)
+        if verbose:
             print(f"Loading network from: {args.input}")
 
         # Load network
         net = multinet.multi_layer_network(directed=False)
         net.load_network(args.input, input_type="multiedgelist")
+        network_nodes = list(net.get_nodes())
+        network_edges = list(net.get_edges())
+        network_layers = sorted(
+            {node[1] for node in network_nodes if isinstance(node, tuple) and len(node) > 1}
+        )
 
-        if args.verbose:
-            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
+        if verbose:
+            print(f"Network loaded: {len(network_nodes)} nodes, {len(network_edges)} edges")
 
         # Prepare embedding parameters
         embed_params = {
@@ -4160,7 +4169,7 @@ def cmd_embed(args: argparse.Namespace) -> int:
         if args.seed is not None:
             embed_params["seed"] = args.seed
 
-        if args.verbose:
+        if verbose:
             print(f"Learning {args.algorithm} embeddings...")
             print(f"  Dimensions: {args.dimensions}")
             if args.algorithm in ["node2vec", "deepwalk"]:
@@ -4176,18 +4185,22 @@ def cmd_embed(args: argparse.Namespace) -> int:
         # Learn embeddings using the unified embed() API
         result = net.embed(**embed_params)
 
-        if args.verbose:
+        if verbose:
             print("Embeddings learned successfully!")
 
         # Prepare output
-        if hasattr(result, "embeddings"):
-            # EmbeddingResult object
-            embeddings = result.embeddings
-            node_list = result.nodes if hasattr(result, "nodes") else list(embeddings.keys())
-        else:
-            # Direct embeddings dictionary
+        if hasattr(result, "vectors") and hasattr(result, "item_ids"):
+            # EmbeddingResult is keyed by item ids through its vectors property.
+            embeddings = result.vectors
+            node_list = list(result.item_ids)
+        elif isinstance(result, dict):
+            # Keep compatibility with embedding backends returning a mapping.
             embeddings = result
             node_list = list(embeddings.keys())
+        else:
+            raise TypeError(
+                "Embedding backend must return an EmbeddingResult or a node-to-vector mapping"
+            )
 
         # Convert to output format
         output_data = {
@@ -4200,9 +4213,9 @@ def cmd_embed(args: argparse.Namespace) -> int:
                 "seed": args.seed,
             },
             "network": {
-                "nodes": len(net.get_nodes()),
-                "edges": len(net.get_edges()),
-                "layers": net.get_layers(),
+                "nodes": len(network_nodes),
+                "edges": len(network_edges),
+                "layers": network_layers,
             },
             "embeddings": {},
         }
@@ -4229,7 +4242,7 @@ def cmd_embed(args: argparse.Namespace) -> int:
             if args.format == "json":
                 with open(args.output, "w") as f:
                     json.dump(output_data, f, indent=2)
-                if args.verbose:
+                if verbose:
                     print(f"Embeddings saved to: {args.output}")
             elif args.format == "csv":
                 # Write CSV format: node, dim_0, dim_1, ..., dim_n
@@ -4247,7 +4260,7 @@ def cmd_embed(args: argparse.Namespace) -> int:
                             if hasattr(embedding, "tolist"):
                                 embedding = embedding.tolist()
                             writer.writerow([str(node)] + list(embedding))
-                if args.verbose:
+                if verbose:
                     print(f"Embeddings saved to: {args.output}")
         else:
             # Print to stdout (JSON format)
@@ -4257,7 +4270,7 @@ def cmd_embed(args: argparse.Namespace) -> int:
 
     except Exception as e:
         logger.error(f"Error during embedding learning: {e}")
-        if args.verbose:
+        if verbose:
             traceback.print_exc()
         return 1
 
