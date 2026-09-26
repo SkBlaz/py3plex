@@ -1730,11 +1730,16 @@ class QueryResult:
             config.conflict_resolution = other.meta['conflict_resolution']
         
         # Build identity map
-        id_to_item1 = {extract_item_identity(item, config.identity_strategy): item for item in self.items}
-        id_to_item2 = {extract_item_identity(item, config.identity_strategy): item for item in other.items}
+        id_to_item1 = {}
+        id_to_item2 = {}
+        for item in self.items:
+            id_to_item1.setdefault(extract_item_identity(item, config.identity_strategy), item)
+        for item in other.items:
+            id_to_item2.setdefault(extract_item_identity(item, config.identity_strategy), item)
         
         # Union of identities
-        all_ids = set(id_to_item1.keys()) | set(id_to_item2.keys())
+        all_ids = list(id_to_item1)
+        all_ids.extend(item_id for item_id in id_to_item2 if item_id not in id_to_item1)
         shared_ids = set(id_to_item1.keys()) & set(id_to_item2.keys())
         
         # Merge items (prefer full item from first result for shared IDs)
@@ -1862,7 +1867,7 @@ class QueryResult:
         shared_ids = set(id_to_item1.keys()) & set(id_to_item2.keys())
         
         # Keep items from first result
-        result_items = [id_to_item1[item_id] for item_id in shared_ids]
+        result_items = [id_to_item1[item_id] for item_id in id_to_item1 if item_id in shared_ids]
         
         # Merge attributes (only for shared items)
         result_attributes = {}
@@ -1965,8 +1970,10 @@ class QueryResult:
         diff_ids = ids1 - ids2
         
         # Keep items from first result that are in difference
-        id_to_item1 = {extract_item_identity(item, config.identity_strategy): item for item in self.items}
-        result_items = [id_to_item1[item_id] for item_id in diff_ids]
+        id_to_item1 = {}
+        for item in self.items:
+            id_to_item1.setdefault(extract_item_identity(item, config.identity_strategy), item)
+        result_items = [item for item_id, item in id_to_item1.items() if item_id in diff_ids]
         
         # Keep only attributes for result items
         result_attributes = {}
@@ -2034,8 +2041,12 @@ class QueryResult:
             )
         
         # Build identity maps
-        id_to_item1 = {extract_item_identity(item, config.identity_strategy): item for item in self.items}
-        id_to_item2 = {extract_item_identity(item, config.identity_strategy): item for item in other.items}
+        id_to_item1 = {}
+        id_to_item2 = {}
+        for item in self.items:
+            id_to_item1.setdefault(extract_item_identity(item, config.identity_strategy), item)
+        for item in other.items:
+            id_to_item2.setdefault(extract_item_identity(item, config.identity_strategy), item)
         
         # Symmetric difference
         ids1 = set(id_to_item1.keys())
@@ -2046,7 +2057,11 @@ class QueryResult:
         result_items = []
         result_attributes = {}
         
-        for item_id in sym_diff_ids:
+        ordered_sym_diff_ids = [item_id for item_id in id_to_item1 if item_id in sym_diff_ids]
+        ordered_sym_diff_ids.extend(
+            item_id for item_id in id_to_item2 if item_id in sym_diff_ids and item_id not in id_to_item1
+        )
+        for item_id in ordered_sym_diff_ids:
             if item_id in id_to_item1:
                 result_items.append(id_to_item1[item_id])
             else:

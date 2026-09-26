@@ -472,6 +472,64 @@ def execute_ast(
     params = params or {}
     logger = logging.getLogger(__name__)
 
+    # QueryBuilder's pre-execution set operators retain their operands in the
+    # SELECT metadata. Execute each operand independently, then use the same
+    # result algebra as post-execution composition. Treat identities as node
+    # replicas by default: multilayer queries select (node, layer) pairs.
+    select_metadata = getattr(query.select, "metadata", {}) or {}
+    if select_metadata.get("is_algebra_composition"):
+        operands = select_metadata.get("algebra_operands")
+        operation = (select_metadata.get("algebra_op") or {}).get("operation")
+        operations = {
+            "union": "__or__",
+            "intersection": "__and__",
+            "difference": "__sub__",
+            "symmetric_difference": "__xor__",
+        }
+        if not isinstance(operands, (tuple, list)) or len(operands) != 2:
+            raise DslExecutionError(
+                "Query algebra composition must contain exactly two SELECT operands"
+            )
+        if operation not in operations:
+            raise DslExecutionError(
+                f"Unsupported query algebra operation: {operation!r}"
+            )
+
+        left_query, right_query = (
+            Query(explain=False, select=operand, dsl_version=query.dsl_version)
+            for operand in operands
+        )
+        left_result = execute_ast(
+            network,
+            left_query,
+            params=params,
+            progress=progress,
+            explain_plan=False,
+            planner_config=planner_config,
+        )
+        right_result = execute_ast(
+            network,
+            right_query,
+            params=params,
+            progress=progress,
+            explain_plan=False,
+            planner_config=planner_config,
+        )
+        configured_identity = select_metadata.get("identity_strategy")
+        identity = configured_identity or "by_replica"
+        conflicts = select_metadata.get("conflict_resolution")
+        for result in (left_result, right_result):
+            if configured_identity is not None:
+                result.meta["identity_strategy"] = configured_identity
+            else:
+                result.meta.setdefault("identity_strategy", identity)
+            if conflicts is not None:
+                result.meta["conflict_resolution"] = conflicts
+
+        result = getattr(left_result, operations[operation])(right_result)
+        result.meta["query_algebra"] = {"operation": operation}
+        return result
+
     # -----------------------------------------------------------------------
     # Out-of-core routing: delegate to OutOfCoreBackend when network is an
     # OutOfCoreNetwork (detected via the is_out_of_core sentinel attribute).

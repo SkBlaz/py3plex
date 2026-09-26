@@ -15,6 +15,16 @@ Key Features:
 - Identity semantics: Explicit control over node identity (by_id vs by_replica)
 - Provenance tracking: Full audit trail of algebraic operations
 
+Semantics:
+- Builder operators execute each operand, then combine their results as sets.
+- Node queries use replica identity (``(node_id, layer)``) by default. Use
+  ``.resolve(identity="by_id")`` to compare physical node IDs across layers.
+- ``|`` is union, ``&`` is intersection, ``-`` is left-to-right difference,
+  and ``^`` is symmetric difference. Item order follows first occurrence in
+  the left operand, followed by new items from the right operand.
+- Conflicting shared attributes raise ``AttributeConflictError`` by default;
+  choose a policy with ``.resolve(conflicts=...)``.
+
 Example:
     >>> from py3plex.dsl import Q, L
     >>> 
