@@ -36,6 +36,8 @@ Core Workflow Pattern
 
 Interpretation boundary: this is a reproducible computational selection, not automatically a defensible scientific claim.
 
+Runnable DSL examples are collected in ``examples/dsl_zoo/``. For guided query recipes, see ``docfiles/how-to/query_zoo.rst``.
+
 Raw Python vs DSL (When to Use Each)
 ------------------------------------
 
