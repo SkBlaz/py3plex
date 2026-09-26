@@ -59,7 +59,10 @@ class TestPrecomputeAlgebra:
         result = union_query.execute(simple_network)
         
         # Should have nodes from both layers
-        assert len(result.items) == 6  # All nodes
+        assert set(result.items) == {
+            ('A', 'social'), ('B', 'social'), ('C', 'social'),
+            ('A', 'work'), ('B', 'work'), ('D', 'work'),
+        }
     
     def test_intersection_queries_before_execution(self, simple_network):
         """Test intersection of queries before execution."""
@@ -74,7 +77,7 @@ class TestPrecomputeAlgebra:
         result = intersection_query.execute(simple_network)
         
         # Should have only social layer nodes
-        assert len(result.items) == 3
+        assert set(result.items) == {('A', 'social'), ('B', 'social'), ('C', 'social')}
     
     def test_difference_queries_before_execution(self, simple_network):
         """Test difference of queries before execution."""
@@ -88,7 +91,27 @@ class TestPrecomputeAlgebra:
         result = diff_query.execute(simple_network)
         
         # Should have only social layer nodes
-        assert len(result.items) == 3
+        assert set(result.items) == {('A', 'social'), ('B', 'social'), ('C', 'social')}
+
+    def test_symmetric_difference_queries_before_execution(self, simple_network):
+        query = (
+            Q.nodes().from_layers(L["social"])
+            ^ Q.nodes().from_layers(L["work"])
+        )
+        result = query.execute(simple_network)
+        assert set(result.items) == {
+            ('A', 'social'), ('B', 'social'), ('C', 'social'),
+            ('A', 'work'), ('B', 'work'), ('D', 'work'),
+        }
+
+    def test_query_algebra_uses_configured_physical_identity(self, simple_network):
+        query = (
+            Q.nodes().from_layers(L["social"])
+            | Q.nodes().from_layers(L["work"])
+        ).resolve(identity="by_id")
+        result = query.execute(simple_network)
+        assert len(result.items) == 4
+        assert {item[0] for item in result.items} == {"A", "B", "C", "D"}
 
 
 class TestPostcomputeAlgebra:
@@ -160,7 +183,10 @@ class TestPostcomputeAlgebra:
         sym_diff = social ^ work
         
         # Should have nodes that are in exactly one layer
-        assert len(sym_diff.items) == 4  # C (social only), D (work only), + duplicates
+        assert set(sym_diff.items) == {
+            ('A', 'social'), ('B', 'social'), ('C', 'social'),
+            ('A', 'work'), ('B', 'work'), ('D', 'work'),
+        }
         assert sym_diff.meta['algebra_operation'] == 'symmetric_difference'
 
 
@@ -195,7 +221,8 @@ class TestIdentitySemantics:
         union = social | work
         
         # Should merge: A, B (in both), C (social only), D (work only) = 4 unique IDs
-        assert len(union.items) == 6  # Still 6 items, but considered by ID logic
+        assert len(union.items) == 4
+        assert set(item[0] for item in union.items) == {'A', 'B', 'C', 'D'}
     
     def test_ambiguous_identity_error(self, simple_network):
         """Test that ambiguous identity raises error."""
@@ -246,11 +273,14 @@ class TestAttributeConflictResolution:
         result1.meta['identity_strategy'] = IdentityStrategy.BY_REPLICA
         result2.meta['identity_strategy'] = IdentityStrategy.BY_REPLICA
         
-        # Intersection should detect conflict (if conflict resolution not set)
-        # Note: Current implementation may not raise error by default
-        # This tests the mechanism exists
+        # Conflicting attributes are rejected by the safe default.
+        with pytest.raises(AttributeConflictError):
+            result1 & result2
+
+        result1.meta['conflict_resolution'] = ConflictResolution.MEAN
         intersection = result1 & result2
         assert 'test_attr' in intersection.attributes
+        assert set(intersection.attributes['test_attr'].values()) == {1.5}
 
 
 class TestVerificationAssertions:
