@@ -113,6 +113,15 @@ class TestPrecomputeAlgebra:
         assert len(result.items) == 4
         assert {item[0] for item in result.items} == {"A", "B", "C", "D"}
 
+    def test_outer_identity_setting_applies_to_nested_composition(self, simple_network):
+        replicas = (
+            Q.nodes().from_layers(L["social"])
+            | Q.nodes().from_layers(L["work"])
+        )
+        query = (replicas | Q.nodes()).resolve(identity="by_id")
+        result = query.execute(simple_network)
+        assert len(result.items) == 4
+
 
 class TestPostcomputeAlgebra:
     """Tests for post-compute algebra (combining executed results)."""
