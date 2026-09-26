@@ -680,7 +680,9 @@ def requires(requirements: AlgoRequirements, register: bool = True):
                 return func(network, *args, **kwargs)
             
             # Extract relevant kwargs
-            seed = kwargs.get('seed') or kwargs.get('random_state')
+            seed = kwargs.get('seed')
+            if seed is None:
+                seed = kwargs.get('random_state')
             uq_requested = kwargs.get('uq', False) or kwargs.get('uncertainty', False)
             uq_method = kwargs.get('uq_method')
             
