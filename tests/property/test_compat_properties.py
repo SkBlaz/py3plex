@@ -331,7 +331,12 @@ class TestScipySparseProperties:
         # If graph has node or edge attributes, strict mode should fail
         # graph.nodes is a dict, iterate over values to get Node objects
         has_node_attrs = any(node.attributes for node in graph.nodes.values())
-        has_edge_attrs = any(edge.attributes for edge in graph.edges)
+        # Edge weights are represented by sparse-matrix values; only other
+        # edge attributes are lost by this conversion.
+        has_edge_attrs = any(
+            any(attribute != "weight" for attribute in edge.attributes)
+            for edge in graph.edges
+        )
 
         if has_node_attrs or has_edge_attrs:
             with pytest.raises(CompatibilityError):
