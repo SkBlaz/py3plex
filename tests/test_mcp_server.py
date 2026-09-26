@@ -8,6 +8,7 @@ Tests cover:
 - Tool functionality
 """
 
+import ast
 import json
 import tempfile
 from pathlib import Path
@@ -35,6 +36,25 @@ from py3plex_mcp.schemas import (
     serialize_json,
     truncate_list,
 )
+
+
+def test_mcp_v2_query_route_uses_restricted_dsl_parser():
+    """Keep untrusted MCP query text out of Python eval."""
+    server_path = Path(__file__).resolve().parents[1] / "py3plex_mcp" / "server.py"
+    tree = ast.parse(server_path.read_text(encoding="utf-8"))
+    query_route = next(
+        node for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name == "py3plex_run_query"
+    )
+    called_names = {
+        node.func.id
+        for node in ast.walk(query_route)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+    }
+
+    assert "evaluate_dsl_expression" in called_names
+    assert "eval" not in called_names
 
 
 # ============================================================================
