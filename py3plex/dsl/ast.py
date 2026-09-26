@@ -8,6 +8,7 @@ AST nodes, which are then executed by the same engine.
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
+import copy
 import hashlib
 import json
 
@@ -703,6 +704,7 @@ class SelectStmt:
     contract_spec: Optional["ContractSpec"] = None
     auto_community_config: Optional["AutoCommunityConfig"] = None
     embedding_spec: Optional["EmbeddingSpec"] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -1773,6 +1775,7 @@ def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
         sensitivity_spec=select.sensitivity_spec,
         contract_spec=select.contract_spec,
         auto_community_config=select.auto_community_config,
+        metadata=copy.deepcopy(select.metadata),
     )
 
 
@@ -1925,6 +1928,10 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
     
     def _serialize(obj):
         """Convert dataclass to dict recursively."""
+        # Some AST enums inherit from str; handle them before primitive string
+        # values so their type survives a JSON round-trip.
+        if isinstance(obj, Enum):
+            return {'__enum__': obj.__class__.__name__, 'value': obj.value}
         if obj is None:
             return None
         if isinstance(obj, (str, int, float, bool)):
@@ -1940,8 +1947,6 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
                 value = getattr(obj, field_name)
                 result[field_name] = _serialize(value)
             return result
-        if isinstance(obj, Enum):
-            return {'__enum__': obj.__class__.__name__, 'value': obj.value}
         # Fallback
         return str(obj)
     
@@ -2204,6 +2209,7 @@ def _canonicalize_select_stmt_scoped(
         sensitivity_spec=base.sensitivity_spec,
         contract_spec=base.contract_spec,
         auto_community_config=base.auto_community_config,
+        metadata=copy.deepcopy(base.metadata),
     )
 
 

@@ -104,6 +104,18 @@ class TestPrecomputeAlgebra:
             ('A', 'work'), ('B', 'work'), ('D', 'work'),
         }
 
+    def test_composed_query_roundtrips_through_ast_json(self, simple_network):
+        from py3plex.dsl.ast import ast_from_json, ast_to_json
+        from py3plex.dsl.executor import execute_ast
+
+        query = (
+            Q.nodes().from_layers(L["social"])
+            & Q.nodes()
+        )
+        restored = ast_from_json(ast_to_json(query.to_ast()))
+        result = execute_ast(simple_network, restored, progress=False)
+        assert set(result.items) == {('A', 'social'), ('B', 'social'), ('C', 'social')}
+
     def test_query_algebra_uses_configured_physical_identity(self, simple_network):
         query = (
             Q.nodes().from_layers(L["social"])
