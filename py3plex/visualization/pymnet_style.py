@@ -229,11 +229,16 @@ def _from_py3plex_network(network: Any) -> MultilayerGraph:
         labels, graphs, multilinks = network.get_layers("diagonal")
         
         mlg.layers = list(labels)
+
+        def _physical_node(node):
+            return node[0] if isinstance(node, tuple) and len(node) == 2 else node
         
         # Process each layer
         for layer_name, graph in zip(labels, graphs):
-            mlg.nodes[layer_name] = set(graph.nodes())
-            mlg.intra_edges[layer_name] = list(graph.edges())
+            mlg.nodes[layer_name] = {_physical_node(node) for node in graph.nodes()}
+            mlg.intra_edges[layer_name] = [
+                (_physical_node(u), _physical_node(v)) for u, v in graph.edges()
+            ]
         
         # Process inter-layer edges
         for edge_type, edges in multilinks.items():
@@ -323,7 +328,7 @@ def _compute_layout(
             suggestions=["Use 'spring', 'kamada_kawai', 'circular', 'spectral', or provide a callable"]
         )
     
-    return positions
+    return {node: tuple(float(value) for value in position) for node, position in positions.items()}
 
 
 def _get_node_colors(
