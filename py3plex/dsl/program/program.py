@@ -756,10 +756,10 @@ class GraphProgram:
             )
 
         return cls(
-            canonical_ast=copy.deepcopy(ast),
-            type_signature=type_signature,
+            _canonical_ast=copy.deepcopy(ast),
+            _type_signature=type_signature,
             program_hash=program_hash,
-            metadata=metadata,
+            _metadata=metadata,
         )
 
     @classmethod
