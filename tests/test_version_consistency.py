@@ -93,7 +93,7 @@ def test_release_metadata_alignment_in_docs_and_readme():
     assert f"py3plex_version: {version}" in reproducibility_chapter
     assert f"py3plex:{version}" in docker_appendix
 
-    assert "img.shields.io/badge/lines-213.5K-blue" in readme
+    assert "img.shields.io/badge/lines-213.6K-blue" in readme
     assert "img.shields.io/badge/tests-9.7K-blue" in readme
     assert "img.shields.io/pypi/v/py3plex.svg?cacheSeconds=300" in readme
     assert not re.search(r"img\.shields\.io/badge/[^)]*PyPI[^)]*[0-9]+\.[0-9]+\.[0-9]+", readme, re.IGNORECASE)

@@ -74,6 +74,7 @@ def graph_fingerprint(network: Any) -> str:
     data = {
         "directed": getattr(network, "directed", False),
         "layers": sorted(layers_list),
+        "network_version": getattr(network, "network_version", None),
     }
     
     # Get nodes and edges in sorted order
@@ -82,22 +83,32 @@ def graph_fingerprint(network: Any) -> str:
         edges = []
         
         if hasattr(network, "get_nodes"):
-            # Convert all nodes to strings before sorting to handle mixed types
-            nodes = sorted([str(n) for n in network.get_nodes()])
+            # Include attributes because weighted/attributed queries can produce
+            # different results for identical topology.
+            nodes = sorted(
+                [
+                    (str(n), _stable_attributes(network.core_network.nodes[n]))
+                    if hasattr(network, "core_network") and n in network.core_network
+                    else (str(n), {})
+                    for n in network.get_nodes()
+                ]
+            )
         
         if hasattr(network, "get_edges"):
             edge_list = network.get_edges()
-            # Sort edges deterministically
-            edges = sorted([(str(e[0]), str(e[1]), str(e[2]), str(e[3])) for e in edge_list])
+            # Sort edges deterministically and include edge attributes.
+            edges = sorted(
+                [
+                    _stable_edge(network, e)
+                    for e in edge_list
+                ]
+            )
         
         data["num_nodes"] = len(nodes)
         data["num_edges"] = len(edges)
         
-        # Sample first 100 edges for large networks
-        if len(edges) > 100:
-            data["edge_sample"] = edges[:100]
-        else:
-            data["edges"] = edges
+        data["nodes"] = nodes
+        data["edges"] = edges
             
     except Exception:
         # Fallback: just use basic structure
@@ -107,6 +118,48 @@ def graph_fingerprint(network: Any) -> str:
     # Serialize deterministically
     json_str = json.dumps(data, sort_keys=True)
     return hashlib.sha256(json_str.encode()).hexdigest()
+
+
+def _stable_attributes(attributes: Any) -> Dict[str, str]:
+    """Return deterministic, JSON-safe representations of graph attributes."""
+    if not hasattr(attributes, "items"):
+        return {}
+    return {
+        str(key): repr(value)
+        for key, value in sorted(attributes.items(), key=lambda item: str(item[0]))
+    }
+
+
+def _edge_attributes(network: Any, edge: Any) -> Dict[str, str]:
+    """Return attributes for an edge tuple, including multigraph edge keys."""
+    graph = getattr(network, "core_network", None)
+    if graph is None:
+        return {}
+    try:
+        source, target = edge[0], edge[1]
+        edge_data = graph.get_edge_data(source, target, default={})
+        if graph.is_multigraph():
+            key = edge[4] if len(edge) > 4 else None
+            if key in edge_data:
+                edge_data = edge_data[key]
+            elif edge_data:
+                edge_data = next(iter(edge_data.values()))
+        return _stable_attributes(edge_data)
+    except (AttributeError, IndexError, TypeError):
+        return {}
+
+
+def _stable_edge(network: Any, edge: Any) -> Tuple[str, str, str, str, Dict[str, str]]:
+    """Normalize the network's node-pair edge representation."""
+    source, target = edge[0], edge[1]
+    attributes = edge[2] if len(edge) == 3 and hasattr(edge[2], "items") else _edge_attributes(network, edge)
+    return (
+        str(source[0]) if isinstance(source, tuple) else str(source),
+        str(target[0]) if isinstance(target, tuple) else str(target),
+        str(source[1]) if isinstance(source, tuple) and len(source) > 1 else "",
+        str(target[1]) if isinstance(target, tuple) and len(target) > 1 else "",
+        _stable_attributes(attributes),
+    )
 
 
 def program_fingerprint(program_hash: str, optimization_level: int = 0) -> str:

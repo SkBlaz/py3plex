@@ -5278,6 +5278,8 @@ class Q:
             builder._select.counterfactual_spec = select.counterfactual_spec
         if select.contract_spec is not None:
             builder._select.contract_spec = select.contract_spec
+        if select.community_config is not None:
+            builder._select.community_config = dict(select.community_config)
         if select.auto_community_config is not None:
             builder._select.auto_community_config = select.auto_community_config
         

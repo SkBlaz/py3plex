@@ -701,6 +701,7 @@ class SelectStmt:
     counterfactual_spec: Optional["CounterfactualSpec"] = None
     sensitivity_spec: Optional["SensitivitySpec"] = None
     contract_spec: Optional["ContractSpec"] = None
+    community_config: Optional[Dict[str, Any]] = None
     auto_community_config: Optional["AutoCommunityConfig"] = None
     embedding_spec: Optional["EmbeddingSpec"] = None
 
@@ -1772,6 +1773,11 @@ def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
         counterfactual_spec=select.counterfactual_spec,
         sensitivity_spec=select.sensitivity_spec,
         contract_spec=select.contract_spec,
+        community_config=(
+            dict(select.community_config)
+            if getattr(select, "community_config", None) is not None
+            else None
+        ),
         auto_community_config=select.auto_community_config,
     )
 

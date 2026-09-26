@@ -2,8 +2,9 @@
 import pytest
 
 from py3plex.dsl import Param, Q
+from py3plex.dsl.ast import ast_from_json, ast_to_json
 from py3plex.dsl.program import GraphProgram, clear_global_cache, get_global_cache
-from py3plex.dsl.program.cache import execution_fingerprint
+from py3plex.dsl.program.cache import execution_fingerprint, graph_fingerprint
 from py3plex.core import multinet
 
 
@@ -41,6 +42,25 @@ def test_unsupported_or_nonfinite_parameters_are_rejected_for_cache():
         execution_fingerprint(seed=1, params={"x": float("nan")})
 
 
+def test_graph_fingerprint_includes_attributes_and_mutation_version():
+    left = multinet.multi_layer_network(directed=False, verbose=False)
+    right = multinet.multi_layer_network(directed=False, verbose=False)
+    for network, weight in ((left, 1), (right, 2)):
+        network.add_edges(
+            [
+                {
+                    "source": "A",
+                    "target": "B",
+                    "source_type": "L",
+                    "target_type": "L",
+                    "weight": weight,
+                }
+            ]
+        )
+
+    assert graph_fingerprint(left) != graph_fingerprint(right)
+
+
 def test_parameterized_seeded_programs_do_not_reuse_other_bindings():
     clear_global_cache()
     net = multinet.multi_layer_network(directed=False, verbose=False)
@@ -60,3 +80,18 @@ def test_parameterized_seeded_programs_do_not_reuse_other_bindings():
     assert len(low_threshold.items) == 2
     assert len(high_threshold.items) == 1
     assert get_global_cache().size() == 2
+
+
+def test_community_configuration_is_part_of_program_identity_and_round_trip():
+    baseline = GraphProgram.from_ast(
+        Q.nodes().community(method="leiden", gamma=1.0, omega=1.0).to_ast()
+    )
+    configured = GraphProgram.from_ast(
+        Q.nodes().community(method="leiden", gamma=1.5, omega=0.5).to_ast()
+    )
+
+    assert baseline.program_hash != configured.program_hash
+
+    restored_ast = ast_from_json(ast_to_json(configured.canonical_ast))
+    restored = GraphProgram.from_ast(restored_ast)
+    assert restored.program_hash == configured.program_hash
