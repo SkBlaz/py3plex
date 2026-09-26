@@ -3910,9 +3910,12 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
         # Load network
         net = multinet.multi_layer_network(directed=False)
         net.load_network(args.input, input_type="multiedgelist")
+        network_nodes = list(net.get_nodes())
+        network_edges = list(net.get_edges())
+        network_layers = list(net.get_layers())
 
         if args.verbose:
-            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
+            print(f"Network loaded: {len(network_nodes)} nodes, {len(network_edges)} edges")
 
         # Validate model-specific parameters
         if args.model in ["sir", "seir"] and args.gamma is None:
@@ -3929,7 +3932,6 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
 
         # Import dynamics module
         from py3plex.dsl import Q
-        from py3plex.dsl.builder import DynamicsBuilder
 
         # Construct dynamics query
         if args.verbose:
@@ -3965,7 +3967,7 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
         # Seed infections
         if args.seed_nodes:
             # Seed specific nodes
-            seed_nodes_list = [(node, net.get_layers()[0]) for node in args.seed_nodes]
+            seed_nodes_list = [(node, network_layers[0]) for node in args.seed_nodes]
             query_builder = query_builder.seed_infections(nodes=seed_nodes_list)
         else:
             # Seed fraction of nodes
@@ -3973,10 +3975,10 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
 
         # Run simulation
         if args.seed is not None:
+            query_builder = query_builder.random_seed(args.seed)
             query_builder = query_builder.run(
                 steps=args.steps,
-                replicates=args.replicates,
-                seed=args.seed
+                replicates=args.replicates
             )
         else:
             query_builder = query_builder.run(
@@ -4008,9 +4010,9 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
                 "seed": args.seed,
             },
             "network": {
-                "nodes": len(net.get_nodes()),
-                "edges": len(net.get_edges()),
-                "layers": net.get_layers(),
+                "nodes": len(network_nodes),
+                "edges": len(network_edges),
+                "layers": network_layers,
             },
             "trajectories": trajectories.to_dict(orient="records") if hasattr(trajectories, "to_dict") else str(trajectories),
         }

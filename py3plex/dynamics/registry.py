@@ -135,6 +135,7 @@ measure_registry = MeasureRegistry()
 # Register SIS/SIR measures
 @measure_registry.register("SIS", "prevalence", "Fraction of nodes in infected state")
 @measure_registry.register("SIR", "prevalence", "Fraction of nodes in infected state")
+@measure_registry.register("SEIR", "prevalence", "Fraction of nodes in infected state")
 def prevalence(state: np.ndarray, ctx: Dict[str, Any]) -> float:
     """Calculate prevalence (fraction of infected nodes).
 

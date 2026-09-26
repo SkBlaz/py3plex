@@ -405,8 +405,8 @@ def _initialize_state(process_spec: ProcessSpec,
     """
     n = len(nodes)
 
-    if process_spec.name in ("SIS", "SIR"):
-        # Epidemic models: 0=S, 1=I, (2=R for SIR)
+    if process_spec.name in ("SIS", "SIR", "SEIR"):
+        # Epidemic models use 0=S, 1=I, 2=R; SEIR stores E at index 3.
         state = np.zeros(n, dtype=int)
 
         if "infected" in initial:

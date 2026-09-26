@@ -166,6 +166,43 @@ def sir_update_factory(params: Dict[str, Any], coupling: Dict[str, Any]) -> Call
     return update_step
 
 
+def seir_update_factory(params: Dict[str, Any], coupling: Dict[str, Any]) -> Callable:
+    """Factory for discrete-time SEIR updates.
+
+    State values preserve the existing epidemic indices: 0=S, 1=I, 2=R,
+    and 3=E. Keeping infected at index 1 lets the shared prevalence measure
+    continue to count infectious nodes.
+    """
+    beta = params.get("beta", 0.2)
+    sigma = params.get("sigma", 0.2)
+    gamma = params.get("gamma", 0.05)
+
+    def update_step(adj_matrix: np.ndarray, state: np.ndarray,
+                    rng: np.random.Generator,
+                    node_to_idx: Optional[Dict] = None,
+                    layer_info: Optional[Dict] = None) -> np.ndarray:
+        new_state = state.copy()
+
+        infected = np.where(state == 1)[0]
+        new_state[infected[rng.random(len(infected)) < gamma]] = 2
+
+        exposed = np.where(state == 3)[0]
+        new_state[exposed[rng.random(len(exposed)) < sigma]] = 1
+
+        susceptible = np.where(state == 0)[0]
+        for node in susceptible:
+            neighbors = np.where(adj_matrix[node] > 0)[0]
+            infected_neighbors = np.sum(state[neighbors] == 1)
+            if infected_neighbors:
+                infection_probability = 1.0 - (1.0 - beta) ** infected_neighbors
+                if rng.random() < infection_probability:
+                    new_state[node] = 3
+
+        return new_state
+
+    return update_step
+
+
 def random_walk_update_factory(params: Dict[str, Any], coupling: Dict[str, Any]) -> Callable:
     """Factory for random walk update function.
 
@@ -246,6 +283,14 @@ SIR = ProcessSpec(
     required_initial=["infected"],
 )
 
+SEIR = ProcessSpec(
+    name="SEIR",
+    params={"beta": 0.2, "sigma": 0.2, "gamma": 0.05},
+    state_space={"node_state": ["S", "I", "R", "E"]},
+    update_fn=seir_update_factory,
+    required_initial=["infected"],
+)
+
 RandomWalk = ProcessSpec(
     name="RANDOM_WALK",
     params={"teleport": 0.05},
@@ -259,6 +304,7 @@ RandomWalk = ProcessSpec(
 _PROCESS_REGISTRY: Dict[str, ProcessSpec] = {
     "SIS": SIS,
     "SIR": SIR,
+    "SEIR": SEIR,
     "RANDOM_WALK": RandomWalk,
 }
 
