@@ -196,7 +196,8 @@ def test_autocommunity_with_sbm():
     
     assert result is not None
     assert len(result.algorithms_tested) == 2
-    assert "louvain" in result.algorithms_tested or "dc_sbm" in result.algorithms_tested
+    tested_names = {algorithm.split(":", 1)[0] for algorithm in result.algorithms_tested}
+    assert "louvain" in tested_names or "dc_sbm" in tested_names
 
 
 @pytest.mark.slow
