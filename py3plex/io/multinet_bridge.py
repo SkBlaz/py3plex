@@ -127,6 +127,12 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
             directed=net.directed,
             attributes=graph_attrs
         )
+
+        # A freshly constructed network has no core graph yet. It still has a
+        # valid empty representation, so avoid asking get_layers() to inspect
+        # the absent graph.
+        if net.core_network is None:
+            return graph
         
         # Get all layers first
         # get_layers() returns a tuple: (layer_list, graph_list, dict)
