@@ -130,6 +130,7 @@ def test_layer_shuffle_preserves_edge_weights():
 
 def test_generate_null_model_uses_per_sample_seeds_consistently():
     from py3plex.nullmodels.executor import generate_null_model
+    from py3plex._parallel import spawn_seeds
 
     net = multinet.multi_layer_network(directed=False, verbose=False)
     net.add_edges(
@@ -145,8 +146,9 @@ def test_generate_null_model_uses_per_sample_seeds_consistently():
 
     result = generate_null_model(net, model="erdos_renyi", num_samples=3, seed=10)
 
-    for i, sample in enumerate(result.samples):
-        reference = erdos_renyi_model(net, seed=10 + i)
+    sample_seeds = spawn_seeds(10, len(result.samples))
+    for sample, sample_seed in zip(result.samples, sample_seeds):
+        reference = erdos_renyi_model(net, seed=sample_seed)
         assert set(sample.core_network.edges()) == set(reference.core_network.edges())
 
 
