@@ -3969,8 +3969,20 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
         # Seed infections
         if args.seed_nodes:
             # Seed specific nodes
-            seed_layer = args.layers[0] if args.layers else network_layers[0]
-            seed_nodes_list = [(node, seed_layer) for node in args.seed_nodes]
+            selected_layers = set(args.layers or network_layers)
+            selected_nodes = set(args.seed_nodes)
+            seed_nodes_list = [
+                (node_id, layer)
+                for node_id, layer in network_nodes
+                if layer in selected_layers and node_id in selected_nodes
+            ]
+            matched_nodes = {node_id for node_id, _ in seed_nodes_list}
+            missing_nodes = selected_nodes - matched_nodes
+            if missing_nodes:
+                raise ValueError(
+                    "Seed nodes are absent from the selected layers: "
+                    + ", ".join(sorted(missing_nodes))
+                )
             query_builder = query_builder.seed_infections(nodes=seed_nodes_list)
         else:
             # Seed fraction of nodes
