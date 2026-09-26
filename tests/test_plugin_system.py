@@ -254,8 +254,10 @@ class TestPluginRegistry:
         plugins = registry.list_plugins("centrality")
         assert "test_unregister" not in plugins["centrality"]
 
-    def test_plugin_overwrite_warning(self, caplog):
+    def test_plugin_overwrite_warning(self):
         """Test that overwriting a plugin logs a warning."""
+        from unittest.mock import patch
+
         registry = PluginRegistry()
 
         @PluginRegistry.register("centrality", "test_overwrite")
@@ -268,16 +270,19 @@ class TestPluginRegistry:
                 return {}
 
         # Register again with same name
-        @PluginRegistry.register("centrality", "test_overwrite")
-        class TestCentrality2(CentralityPlugin):
-            @property
-            def name(self):
-                return "test_overwrite"
+        with patch("py3plex.plugins.registry.logger.warning") as warning:
+            @PluginRegistry.register("centrality", "test_overwrite")
+            class TestCentrality2(CentralityPlugin):
+                @property
+                def name(self):
+                    return "test_overwrite"
 
-            def compute(self, network, **kwargs):
-                return {"different": True}
+                def compute(self, network, **kwargs):
+                    return {"different": True}
 
-        assert "already registered" in caplog.text.lower()
+        warning.assert_called_once()
+        assert "already registered" in warning.call_args.args[0]
+        assert registry.get("centrality", "test_overwrite").__class__ is TestCentrality2
 
 
 class TestCentralityPlugin:
