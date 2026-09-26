@@ -153,6 +153,7 @@ def prevalence(state: np.ndarray, ctx: Dict[str, Any]) -> float:
 
 @measure_registry.register("SIS", "incidence", "Number of new infections this step")
 @measure_registry.register("SIR", "incidence", "Number of new infections this step")
+@measure_registry.register("SEIR", "incidence", "Number of new infectious nodes this step")
 def incidence(state: np.ndarray, ctx: Dict[str, Any]) -> int:
     """Calculate incidence (new infections this step).
 
@@ -169,13 +170,15 @@ def incidence(state: np.ndarray, ctx: Dict[str, Any]) -> int:
     if prev_state is None:
         return 0
 
-    # New infections: nodes that were S (0) and are now I (1)
-    new_infected = np.sum((prev_state == 0) & (state == 1))
+    # Count transitions into I. For SEIR this includes exposed-to-infectious
+    # progression; for SIS/SIR it is the susceptible-to-infectious transition.
+    new_infected = np.sum((prev_state != 1) & (state == 1))
     return int(new_infected)
 
 
 @measure_registry.register("SIS", "prevalence_by_layer", "Prevalence per layer")
 @measure_registry.register("SIR", "prevalence_by_layer", "Prevalence per layer")
+@measure_registry.register("SEIR", "prevalence_by_layer", "Prevalence per layer")
 def prevalence_by_layer(state: np.ndarray, ctx: Dict[str, Any]) -> Dict[str, float]:
     """Calculate prevalence per layer.
 

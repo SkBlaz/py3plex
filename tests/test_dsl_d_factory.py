@@ -86,6 +86,16 @@ class TestDFactory:
         next_state = update(adjacency, state, np.random.default_rng(3))
 
         assert next_state.tolist() == [3, 2, 1]
+
+    def test_seir_incidence_counts_exposed_progression(self):
+        from py3plex.dynamics.registry import measure_registry
+
+        incidence = measure_registry.get("SEIR", "incidence")
+        value = incidence(
+            np.array([1, 1]),
+            {"prev_state": np.array([3, 1])},
+        )
+        assert value == 1
     
     def test_d_simulate_random_walk(self):
         """Test D.simulate() with RANDOM_WALK model."""
