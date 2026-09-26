@@ -12,9 +12,27 @@ Key Guarantees Tested:
 
 import pytest
 import tempfile
+import numpy as np
 from pathlib import Path
 from py3plex.core import multinet
 from py3plex.dsl import Q
+
+
+def _semantic_value_equal(value_a, value_b):
+    """Compare nested attribute values, including arrays inside containers."""
+    if isinstance(value_a, np.ndarray) or isinstance(value_b, np.ndarray):
+        return np.array_equal(value_a, value_b)
+    if isinstance(value_a, dict) and isinstance(value_b, dict):
+        return value_a.keys() == value_b.keys() and all(
+            _semantic_value_equal(value_a[key], value_b[key]) for key in value_a
+        )
+    if isinstance(value_a, (list, tuple)) and isinstance(value_b, (list, tuple)):
+        return len(value_a) == len(value_b) and all(
+            _semantic_value_equal(left, right)
+            for left, right in zip(value_a, value_b)
+        )
+    equal = value_a == value_b
+    return bool(np.all(equal)) if isinstance(equal, np.ndarray) else bool(equal)
 
 
 def assert_network_semantic_equal(net_a, net_b, *, check_attrs=True, check_order_insensitive=True):
@@ -81,31 +99,25 @@ def assert_network_semantic_equal(net_a, net_b, *, check_attrs=True, check_order
             for key in attrs_a.keys():
                 val_a = attrs_a[key]
                 val_b = attrs_b[key]
-                # Handle numpy arrays
-                if hasattr(val_a, '__array__') and hasattr(val_b, '__array__'):
-                    import numpy as np
-                    assert np.array_equal(val_a, val_b), \
-                        f"Node {node} attribute {key} arrays differ"
-                else:
-                    assert val_a == val_b, \
-                        f"Node {node} attribute {key} differs: {val_a} vs {val_b}"
+                assert _semantic_value_equal(val_a, val_b), \
+                    f"Node {node} attribute {key} differs: {val_a} vs {val_b}"
         
         # Check edge attributes
         for edge in edges_a:
-            attrs_a = net_a.core_network.edges[edge]
-            attrs_b = net_b.core_network.edges[edge]
+            u, v = edge
+            attrs_a = net_a.core_network.get_edge_data(u, v)
+            attrs_b = net_b.core_network.get_edge_data(u, v)
+            if net_a.core_network.is_multigraph():
+                attrs_a = attrs_a.get(0, next(iter(attrs_a.values())))
+            if net_b.core_network.is_multigraph():
+                attrs_b = attrs_b.get(0, next(iter(attrs_b.values())))
             assert set(attrs_a.keys()) == set(attrs_b.keys()), \
                 f"Edge {edge} attribute keys differ"
             for key in attrs_a.keys():
                 val_a = attrs_a[key]
                 val_b = attrs_b[key]
-                if hasattr(val_a, '__array__') and hasattr(val_b, '__array__'):
-                    import numpy as np
-                    assert np.array_equal(val_a, val_b), \
-                        f"Edge {edge} attribute {key} arrays differ"
-                else:
-                    assert val_a == val_b, \
-                        f"Edge {edge} attribute {key} differs: {val_a} vs {val_b}"
+                assert _semantic_value_equal(val_a, val_b), \
+                    f"Edge {edge} attribute {key} differs: {val_a} vs {val_b}"
 
 
 @pytest.fixture
@@ -1049,7 +1061,7 @@ class TestNetworkSemanticEquality:
             {'source': 'X', 'target': 'Y', 'source_type': 'layer1', 'target_type': 'layer1', 'weight': 0.9},
         ]
         net.add_edges(edges)
-        net.core_network.edges[('X', 'layer1'), ('Y', 'layer1')]['importance'] = 'high'
+        net.core_network[('X', 'layer1')][('Y', 'layer1')][0]['importance'] = 'high'
         
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "semantic_dir"
