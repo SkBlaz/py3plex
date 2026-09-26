@@ -95,6 +95,7 @@ def create_showcase_network():
 def create_publication_quality_visualization():
     """Create a publication-quality flow visualization with excellent aesthetics."""
     print("Creating publication-quality flow visualization...")
+    existing_figures = set(plt.get_fignums())
 
     network = create_showcase_network()
     labels, graphs, multilinks = network.get_layers("diagonal")
@@ -166,7 +167,10 @@ def create_publication_quality_visualization():
                dpi=200, bbox_inches='tight',
                facecolor='white', edgecolor='none')
     print(" Saved to: /tmp/multilayer_flow_showcase.png")
-    plt.close()
+    # Layer extraction may create helper figures; close every figure opened by
+    # this function while leaving figures owned by the caller untouched.
+    for figure_number in set(plt.get_fignums()) - existing_figures:
+        plt.close(figure_number)
 
     return '/tmp/multilayer_flow_showcase.png'
 
