@@ -380,7 +380,7 @@ class AttributionEngine:
         n_features = len(layers)
         use_exact = (
             n_features <= self.config.max_exact_features
-            and self.config.method in ["shapley", "shapley_mc"]
+            and self.config.method == "shapley"
         )
 
         if use_exact:
@@ -587,38 +587,70 @@ class AttributionEngine:
                 return self.cache[cache_key]
             self.cache_misses += 1
 
-        # Empty subset -> baseline value (0 for most metrics)
-        if not subset_layers:
-            value = 0.0
-            if self.cache is not None:
-                self.cache[cache_key] = value
-            return value
-
-        # Full network -> return full value
         all_layers = self._get_query_layers()
-        if set(subset_layers) == set(all_layers):
+        if self.config.objective == "rank":
+            value = self._rank_utility_on_subset(
+                item, subset_layers, all_layers, metric_values
+            )
+        elif not subset_layers:
+            value = 0.0
+        elif set(subset_layers) == set(all_layers):
             value = metric_values[self.config.metric].get(item, 0.0)
             if isinstance(value, dict) and "mean" in value:
                 value = value["mean"]
             value = float(value)
-            if self.cache is not None:
-                self.cache[cache_key] = value
-            return value
-
-        # Subset computation - simplified implementation
-        # In a full implementation, this would create a subnetwork and recompute
-        # For now, we estimate based on layer degree proportions
-        try:
-            value = self._estimate_metric_on_subset(item, subset_layers, metric_values)
-        except Exception as e:
-            logger.warning(f"Failed to compute metric on subset {subset_layers}: {e}")
-            warnings.append(f"Subset computation failed for {subset_layers}")
-            value = 0.0
+        else:
+            try:
+                value = self._estimate_metric_on_subset(
+                    item, subset_layers, metric_values
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Failed to compute metric on subset {subset_layers}: {e}"
+                )
+                warnings.append(f"Subset computation failed for {subset_layers}")
+                value = 0.0
 
         if self.cache is not None:
             self.cache[cache_key] = value
 
         return value
+
+    def _rank_utility_on_subset(
+        self,
+        item: Tuple[Any, ...],
+        subset_layers: List[str],
+        all_layers: List[str],
+        metric_values: Dict[str, Dict[Any, Any]],
+    ) -> float:
+        """Compute rank utility for one coalition of layers."""
+        metric_map = metric_values[self.config.metric]
+        ranked_values = []
+        for candidate, value in metric_map.items():
+            if not subset_layers:
+                candidate_value = 0.0
+            elif set(subset_layers) == set(all_layers):
+                if isinstance(value, dict) and "mean" in value:
+                    value = value["mean"]
+                candidate_value = float(value)
+            else:
+                candidate_value = self._estimate_metric_on_subset(
+                    candidate, subset_layers, metric_values
+                )
+            ranked_values.append((candidate, candidate_value))
+
+        target_value = next(
+            (value for candidate, value in ranked_values if candidate == item), 0.0
+        )
+        ranked_values.sort(key=lambda pair: pair[1], reverse=True)
+        limit = self.context.get("limit")
+        if limit and limit < len(ranked_values):
+            cutoff = ranked_values[limit][1]
+        elif ranked_values:
+            cutoff = ranked_values[len(ranked_values) // 2][1]
+        else:
+            cutoff = 0.0
+        return float(target_value - cutoff)
 
     def _estimate_metric_on_subset(
         self,
