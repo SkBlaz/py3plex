@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "py3plex"
-version = "2.0.7"
+dynamic = ["version"]
 description = "A Multilayer network analysis python3 library"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -150,6 +150,9 @@ Repository = "https://github.com/SkBlaz/py3plex"
 [project.scripts]
 py3plex = "py3plex.cli:main"
 py3plex-mcp = "py3plex_mcp.server:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "py3plex._version.__version__"}
 
 [tool.setuptools]
 zip-safe = false

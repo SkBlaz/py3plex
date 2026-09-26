@@ -10,7 +10,7 @@ Usage:
 Version: 2.0.7
 """
 
-__version__ = "2.0.7"
+from py3plex._version import __version__
 
 __all__ = [
     "__version__",

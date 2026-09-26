@@ -37,7 +37,11 @@ jobs:
       - name: Build package
         run: |
           source .venv/bin/activate
+          rm -rf dist
           python -m build
+
+      - name: Verify release tag and distribution versions
+        run: python scripts/check_dist_metadata.py dist
 
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

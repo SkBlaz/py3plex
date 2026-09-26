@@ -1,5 +1,5 @@
 from pathlib import Path
-import tomllib
+import re
 
 
 BOOK_ROOT = Path(__file__).resolve().parents[1] / "book"
@@ -88,8 +88,8 @@ def test_front_matter_uses_canonical_version():
 
 
 def test_book_version_matches_project_version():
-    project_data = tomllib.loads((BOOK_ROOT.parent / "pyproject.toml").read_text(encoding="utf-8"))
-    project_version = project_data["project"]["version"]
+    version_source = (BOOK_ROOT.parent / "py3plex/_version.py").read_text(encoding="utf-8")
+    project_version = re.search(r'^__version__\s*=\s*"([^"]+)"', version_source, re.MULTILINE).group(1)
     assert f"version {project_version} (2026)" in _read("front_matter.rst")
     assert f"Version {project_version}" in _read("bibliography.rst")
 

@@ -9698,8 +9698,8 @@ When the prompt is **"bump version"**, update the canonical project version in `
 These tests are intended to ensure that a single bump request updates library, docs, book, MCP, and citation version surfaces consistently.
 
 **Version History**:
-- **2.0.7** (Current): Version bump by 0.0.1
-- **2.0.1**: Version bump by 0.0.1
+- **2.0.7** (Current): Release metadata alignment and version source consolidation
+- **2.0.1**: Previous documented version baseline
 - **2.0.0**: Major version bump across package, docs, MCP, and book metadata
 - **1.1.4**: Repository statistics refresh and AGENTS.md consistency updates
 - **1.1.3**: Repository state updates and documentation improvements
@@ -10187,7 +10187,7 @@ Check that the server is running and stdio transport is properly configured.
 
 **End of py3plex AI Agent Documentation**
 
-**Last Updated**: 2026-09-26 (for py3plex v2.0.7)
+**Last Updated**: 2026-09-25 (for py3plex v2.0.7)
 
 
 ---

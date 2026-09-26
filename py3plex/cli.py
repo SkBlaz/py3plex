@@ -1779,11 +1779,10 @@ def cmd_query(args: argparse.Namespace) -> int:
         # Execute query. Some lower-level layout/progress utilities print
         # diagnostics directly to stdout; keep command stdout parseable.
         if args.dsl:
-            # Interpret as Python DSL builder syntax
-            from py3plex.dsl.builder_parser import parse_builder_query
+            # Parse builder syntax as a restricted AST expression; never run it as Python.
+            from py3plex.safe_dsl_expression import evaluate_dsl_expression
 
-            query_builder = parse_builder_query(query_str)
-            
+            query_builder = evaluate_dsl_expression(query_str)
             with contextlib.redirect_stdout(sys.stderr):
                 result = query_builder.execute(network)
         else:
@@ -1927,20 +1926,18 @@ def cmd_dsl_lint(args: argparse.Namespace) -> int:
                 logger.error(f"Failed to load network: {e}")
                 return 2
         
-        # Parse query using the restricted builder syntax.
+        # Parse documented builder expressions without evaluating Python code.
         from py3plex.dsl import lint, explain
-        from py3plex.dsl.builder_parser import parse_builder_query
-        
-        # Try to parse as builder syntax first
+        from py3plex.safe_dsl_expression import evaluate_dsl_expression
+
         try:
-            query_builder = parse_builder_query(query_str)
+            query_builder = evaluate_dsl_expression(query_str)
             query_ast = query_builder.to_ast()
-        except Exception:
-            # Fall back to treating it as a note that we need string DSL support
-            logger.error("String DSL syntax not yet supported for linting.")
-            logger.error("Please use builder syntax: Q.nodes().from_layers(L['social']).where(degree__gt=5)")
+        except (ValueError, TypeError) as exc:
+            logger.error("Invalid DSL builder expression: %s", exc)
+            logger.error("Use builder syntax such as Q.nodes().from_layers(L['social']).where(degree__gt=5)")
             return 2
-        
+
         # Run linting
         if args.explain:
             # Get detailed explanation

@@ -49,6 +49,7 @@ def test_create_showcase_network_structure():
 
 
 def test_create_publication_quality_visualization_draws_and_saves(monkeypatch, capsys):
+    existing_figures = set(csf.plt.get_fignums())
     draw_calls = {}
 
     def fake_draw(graphs, multilinks, labels=None, ax=None, **kwargs):
@@ -109,4 +110,4 @@ def test_create_publication_quality_visualization_draws_and_saves(monkeypatch, c
     assert any("Multilayer Flow Visualization" in text for text in saved["texts"])
     assert any("Nodes sized and colored by network activity" in text for text in saved["texts"])
 
-    assert csf.plt.get_fignums() == []
+    assert set(csf.plt.get_fignums()) == existing_figures
