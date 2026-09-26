@@ -81,6 +81,25 @@ class TestGraphProgram:
         
         with pytest.raises((AttributeError, TypeError)):
             program.program_hash = "new_hash"
+
+    def test_program_nested_state_cannot_change_after_hashing(self):
+        ast = Q.nodes().compute("degree").to_ast()
+        hints = {"cost": [1]}
+        provenance = ["created"]
+        program = GraphProgram.from_ast(ast, provenance=provenance, cost_hints=hints)
+        original_hash = program.hash()
+
+        ast.select.limit = 1
+        hints["cost"].append(2)
+        provenance.append("external")
+        program.canonical_ast.select.limit = 2
+        program.metadata.cost_model_hints["cost"].append(3)
+        program.metadata.provenance_chain.append("external")
+
+        assert program.hash() == original_hash
+        assert program.canonical_ast.select.limit is None
+        assert program.metadata.cost_model_hints == {"cost": [1]}
+        assert program.metadata.provenance_chain == ["created"]
     
     def test_program_hash_stability(self):
         """Test that identical programs have identical hashes."""
@@ -111,6 +130,18 @@ class TestGraphProgram:
         program2 = GraphProgram.from_ast(ast2)
         
         assert program1.hash() != program2.hash()
+
+    def test_program_hash_includes_uq_settings(self):
+        first = Q.nodes().compute("degree").uq(method="bootstrap", n_samples=10).to_program()
+        second = Q.nodes().compute("degree").uq(method="bootstrap", n_samples=20).to_program()
+
+        assert first.hash() != second.hash()
+
+    def test_program_hash_includes_group_limit(self):
+        first = Q.nodes().compute("degree").per_layer().top_k(2, "degree").to_program()
+        second = Q.nodes().compute("degree").per_layer().top_k(3, "degree").to_program()
+
+        assert first.hash() != second.hash()
     
     def test_program_type_signature(self):
         """Test that type signature is correctly inferred."""
@@ -303,6 +334,26 @@ class TestProgramComposition:
         assert "degree" in df.columns
         assert "clustering" in df.columns
 
+    @pytest.mark.parametrize("modifier", [
+        lambda q: q.where(degree__gt=1),
+        lambda q: q.limit(2),
+        lambda q: q.order_by("degree"),
+        lambda q: q.from_layers(L["social"]),
+    ])
+    def test_compose_rejects_stages_it_cannot_preserve(self, modifier):
+        first = modifier(Q.nodes().compute("degree")).to_program()
+        second = Q.nodes().compute("clustering").to_program()
+
+        with pytest.raises(TypeCheckError, match="only metric computations"):
+            first.compose(second)
+
+    def test_compose_rejects_conflicting_metric_settings(self):
+        first = Q.nodes().compute("degree", alias="deg").to_program()
+        second = Q.nodes().compute("degree", alias="degree_count").to_program()
+
+        with pytest.raises(TypeCheckError, match="Conflicting configurations"):
+            first.compose(second)
+
 
 class TestProgramOperations:
     """Tests for program operations (optimize, explain, diff)."""
@@ -412,16 +463,38 @@ class TestProgramSerialization:
         json_str = json.dumps(program_dict, default=str)
         assert json_str is not None
     
-    def test_from_dict_not_implemented(self):
-        """Test that from_dict raises NotImplementedError (AST deserialization complex)."""
+    def test_from_dict_roundtrip(self):
+        """Test that serialized programs can be reconstructed."""
         ast = Q.nodes().compute("degree").to_ast()
         program = GraphProgram.from_ast(ast)
-        
-        program_dict = program.to_dict()
-        
-        # Currently not implemented
-        with pytest.raises(NotImplementedError):
-            GraphProgram.from_dict(program_dict)
+        restored = GraphProgram.from_dict(program.to_dict())
+        assert restored.hash() == program.hash()
+        assert restored.canonical_ast == program.canonical_ast
+
+    def test_from_dict_rejects_tampered_hash(self):
+        """Reject altered AST payloads instead of trusting their old identity."""
+        program = GraphProgram.from_ast(Q.nodes().compute("degree").to_ast())
+        payload = program.to_dict()
+        payload["canonical_ast"] = payload["canonical_ast"].replace(
+            '"name": "degree"', '"name": "pagerank"', 1
+        )
+        with pytest.raises(ValueError, match="hash mismatch"):
+            GraphProgram.from_dict(payload)
+
+    @pytest.mark.parametrize(
+        "query",
+        [
+            Q.nodes().where(degree__gt=1).compute("degree"),
+            Q.nodes().uq(method="bootstrap", n_samples=10, seed=7).compute("degree"),
+            Q.nodes().group_by("layer").compute("degree"),
+            Q.nodes().select("node", "degree"),
+        ],
+    )
+    def test_from_dict_roundtrips_ast_features(self, query):
+        program = GraphProgram.from_ast(query.to_ast())
+        restored = GraphProgram.from_dict(program.to_dict())
+        assert restored.hash() == program.hash()
+        assert restored.canonical_ast == program.canonical_ast
 
 
 class TestProgramProvenance:

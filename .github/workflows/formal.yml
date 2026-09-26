@@ -23,11 +23,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Elan (Lean toolchain manager)
-        run: |
-          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --no-modify-path
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
       # Cache the downloaded Lean toolchain so repeat runs are faster.
       # The cache is keyed by the exact toolchain and manifest, so a version
       # bump automatically busts the cache.
@@ -37,6 +32,11 @@ jobs:
           path: ~/.elan/toolchains
           key: lean-toolchain-${{ hashFiles('formal/lean-toolchain', 'formal/lake-manifest.json') }}
           restore-keys: lean-toolchain-
+
+      - name: Install Elan (Lean toolchain manager)
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --no-modify-path
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
       - name: Build and verify Lean proofs
         working-directory: formal
