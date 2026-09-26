@@ -6227,6 +6227,10 @@ def execute_dynamics_stmt(network: Any, stmt: DynamicsStmt) -> Any:
         seed_result = _execute_select(network, stmt.seed_query, params={})
         initial_dict["infected"] = InitialSpec(query=stmt.seed_query)
         initial_condition["infections_nodes"] = seed_result.items
+    elif getattr(stmt, "seed_nodes", None) is not None:
+        seeded_nodes = list(stmt.seed_nodes)
+        initial_dict["infected"] = InitialSpec(constant=seeded_nodes)
+        initial_condition["infections_nodes"] = seeded_nodes
     elif stmt.seed_fraction is not None:
         # Use fraction-based seeding
         initial_dict["infected"] = InitialSpec(constant=stmt.seed_fraction)

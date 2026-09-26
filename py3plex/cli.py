@@ -3912,7 +3912,9 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
         net.load_network(args.input, input_type="multiedgelist")
         network_nodes = list(net.get_nodes())
         network_edges = list(net.get_edges())
-        network_layers = list(net.get_layers())
+        network_layers = sorted(
+            {node[1] for node in network_nodes if isinstance(node, tuple) and len(node) > 1}
+        )
 
         if args.verbose:
             print(f"Network loaded: {len(network_nodes)} nodes, {len(network_edges)} edges")
@@ -3967,7 +3969,8 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
         # Seed infections
         if args.seed_nodes:
             # Seed specific nodes
-            seed_nodes_list = [(node, network_layers[0]) for node in args.seed_nodes]
+            seed_layer = args.layers[0] if args.layers else network_layers[0]
+            seed_nodes_list = [(node, seed_layer) for node in args.seed_nodes]
             query_builder = query_builder.seed_infections(nodes=seed_nodes_list)
         else:
             # Seed fraction of nodes

@@ -413,7 +413,18 @@ def _initialize_state(process_spec: ProcessSpec,
             infected_spec = initial["infected"]
 
             if infected_spec.constant is not None:
-                if isinstance(infected_spec.constant, float) and 0 <= infected_spec.constant <= 1:
+                if isinstance(infected_spec.constant, (list, tuple, set)):
+                    unknown_nodes = [
+                        node for node in infected_spec.constant if node not in node_to_idx
+                    ]
+                    if unknown_nodes:
+                        raise SimulationConfigError(
+                            "infected",
+                            f"Seed nodes are not present in the selected network: {unknown_nodes!r}",
+                        )
+                    for node in infected_spec.constant:
+                        state[node_to_idx[node]] = 1
+                elif isinstance(infected_spec.constant, float) and 0 <= infected_spec.constant <= 1:
                     # Fraction of nodes to infect
                     fraction = infected_spec.constant
                     n_infected = int(fraction * n)
