@@ -121,7 +121,12 @@ def fixed_effect_meta(
     # unnecessarily large intermediate, this preserves correct rounding for
     # subnormal effect values (e.g. equal weights on 0 and 5e-324).
     normalized_weights = weights / sum_w
-    pooled_effect = np.sum(normalized_weights * effects)
+    if np.all(effects == effects[0]):
+        # Multiplying a subnormal effect by normalized weights can underflow
+        # even when the weighted mean is exactly the original value.
+        pooled_effect = effects[0]
+    else:
+        pooled_effect = np.sum(normalized_weights * effects)
     pooled_se = np.sqrt(1.0 / sum_w)
 
     # Confidence interval
