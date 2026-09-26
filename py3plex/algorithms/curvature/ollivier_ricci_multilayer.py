@@ -281,6 +281,18 @@ def compute_ollivier_ricci_flow_single_graph(
     # Get the graph with updated weights and curvature
     G_flow = orc.G
 
+    # Some GraphRicciCurvature versions return only the component used during
+    # optimization. Ricci flow changes edge attributes, not graph membership,
+    # so retain any omitted nodes and edges from the input graph.
+    G_flow.add_nodes_from(
+        (node, attrs)
+        for node, attrs in G_to_process.nodes(data=True)
+        if node not in G_flow
+    )
+    for u, v, attrs in G_to_process.edges(data=True):
+        if not G_flow.has_edge(u, v):
+            G_flow.add_edge(u, v, **attrs)
+
     # Ensure curvature is stored in the requested attribute name
     if curvature_attr != "ricciCurvature":
         for u, v, data in G_flow.edges(data=True):

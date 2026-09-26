@@ -514,11 +514,12 @@ def visualize_multilayer_ricci_layers(
 
         # Get positions for this layer
         if share_layout:
-            # Filter shared positions to nodes in this layer
+            # Shared layouts are computed on the multilayer graph, whose
+            # keys are (node_id, layer_id); layer subgraphs use node_id keys.
             layer_pos = {
-                node: shared_pos[node]
+                node: shared_pos[(node, layer_id)]
                 for node in layer_graph.nodes()
-                if node in shared_pos
+                if (node, layer_id) in shared_pos
             }
         else:
             # Compute independent layout for this layer
@@ -723,8 +724,8 @@ def visualize_multilayer_ricci_supra(
     if node_color_by == "layer":
         node_colors = _compute_supra_node_colors_by_layer(G_supra)
     else:
-        node_colors = _compute_edge_colors(
-            G_supra, edge_color_by, curvature_attr, weight_attr
+        node_colors = _compute_node_colors(
+            net, G_supra, node_color_by, curvature_attr
         )
 
     edge_colors_intra = [G_supra[u][v].get(curvature_attr, 0) for u, v in intra_edges]
