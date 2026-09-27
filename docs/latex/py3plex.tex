@@ -57917,6 +57917,26 @@ pyarrow.Table with items and computed attributes
 
 \pysigstartsignatures
 \pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_csv}}}
+{\sphinxparam{\DUrole{n}{path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Path}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{{ $\rightarrow$ None}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Write result rows to a CSV file.
+
+\sphinxAtStartPar
+Keyword arguments are passed to \sphinxcode{\sphinxupquote{pandas.DataFrame.to\_csv()}}.
+The DataFrame index is omitted by default because result fields
+already identify each row.
+
+\end{fulllineitems}\end{savenotes}
+
+
+
+\begin{savenotes}\begin{fulllineitems}
+
+\pysigstartsignatures
+\pysiglinewithargsret
 {\sphinxbfcode{\sphinxupquote{to\_dict}}}
 {}
 {{ $\rightarrow$ Dict\DUrole{p}{{[}}str\DUrole{p}{,}\DUrole{w}{ }Any\DUrole{p}{{]}}}}
@@ -57929,6 +57949,25 @@ Export results as a dictionary.
 Dictionary with target, items, attributes, and metadata
 
 \end{description}\end{quote}
+
+\end{fulllineitems}\end{savenotes}
+
+
+
+\begin{savenotes}\begin{fulllineitems}
+
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxbfcode{\sphinxupquote{to\_json}}}
+{\sphinxparam{\DUrole{n}{path}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{str\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }Path\DUrole{w}{ }\DUrole{p}{|}\DUrole{w}{ }None}\DUrole{w}{ }\DUrole{o}{=}\DUrole{w}{ }\DUrole{default_value}{None}}\sphinxparamcomma \sphinxparam{\DUrole{o}{**}\DUrole{n}{kwargs}}}
+{{ $\rightarrow$ str}}
+\pysigstopsignatures
+\sphinxAtStartPar
+Serialize the complete result to JSON, optionally writing it to \sphinxstyleemphasis{path}.
+
+\sphinxAtStartPar
+The JSON object contains \sphinxcode{\sphinxupquote{target}}, \sphinxcode{\sphinxupquote{items}}, \sphinxcode{\sphinxupquote{attributes}}, and
+\sphinxcode{\sphinxupquote{meta}} fields. Keyword arguments are passed to \sphinxcode{\sphinxupquote{json.dumps()}}.
 
 \end{fulllineitems}\end{savenotes}
 
