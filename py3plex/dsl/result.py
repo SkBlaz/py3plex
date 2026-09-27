@@ -19,6 +19,28 @@ _EXPLANATION_ATTRS = {
 }
 
 
+def _json_safe(value: Any) -> Any:
+    """Convert common scientific Python values to JSON-compatible values."""
+    if isinstance(value, dict):
+        return {
+            key if isinstance(key, str) else json.dumps(_json_safe(key), separators=(",", ":")): _json_safe(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, set):
+        return [_json_safe(item) for item in sorted(value, key=repr)]
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if hasattr(value, "to_json_dict"):
+        return _json_safe(value.to_json_dict())
+    if hasattr(value, "tolist"):
+        return _json_safe(value.tolist())
+    if hasattr(value, "item"):
+        return _json_safe(value.item())
+    return repr(value)
+
+
 def _expand_embeddings_into_df(
     df: Any,
     embeddings: Dict[str, Any],
@@ -977,6 +999,34 @@ class QueryResult:
                                 subgraph[u][v][attr_name] = val
 
         return subgraph
+
+    def to_csv(self, path: Union[str, "Path"], **kwargs) -> None:
+        """Write result rows to a CSV file.
+
+        Keyword arguments are passed to :meth:`pandas.DataFrame.to_csv`.
+        The DataFrame index is omitted by default because result fields
+        already identify each row.
+        """
+        kwargs.setdefault("index", False)
+        self.to_pandas().to_csv(path, **kwargs)
+
+    def to_json(self, path: Optional[Union[str, Path]] = None, **kwargs) -> str:
+        """Serialize the complete result to JSON, optionally writing it to *path*.
+
+        The JSON object contains ``target``, ``items``, ``attributes``, and
+        ``meta`` fields. Keyword arguments are passed to :func:`json.dumps`.
+        """
+        payload = {
+            "target": self.target,
+            "items": self.items,
+            "attributes": self.attributes,
+            "meta": self.meta,
+        }
+        kwargs.setdefault("indent", 2)
+        output = json.dumps(_json_safe(payload), **kwargs)
+        if path is not None:
+            Path(path).write_text(output, encoding="utf-8")
+        return output
 
     def to_arrow(self):
         """Export results to Apache Arrow table.

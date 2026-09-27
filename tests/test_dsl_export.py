@@ -197,6 +197,7 @@ class TestFileExportJSON:
         assert "id" in data
         assert "degree" in data
 
+
     def test_export_json_orient_split(self, sample_network, tmp_path):
         """Test exporting JSON with 'split' orientation."""
         output_file = tmp_path / "degree_split.json"
@@ -217,6 +218,41 @@ class TestFileExportJSON:
         assert "columns" in data
         assert "index" in data
         assert "data" in data
+
+
+class TestDirectResultExport:
+    def test_result_to_json_preserves_result_structure(self, sample_network, tmp_path):
+        result = (
+            Q.nodes()
+            .from_layers(L["social"])
+            .compute("degree")
+            .execute(sample_network)
+        )
+
+        output_file = tmp_path / "result.json"
+        data = json.loads(result.to_json(output_file))
+
+        assert output_file.exists()
+        assert json.loads(output_file.read_text()) == data
+        assert data["target"] == "nodes"
+        assert len(data["items"]) == 3
+        assert "degree" in data["attributes"]
+        assert "meta" in data
+
+    def test_result_to_csv_writes_rows_without_index(self, sample_network, tmp_path):
+        result = (
+            Q.nodes()
+            .from_layers(L["social"])
+            .compute("degree")
+            .execute(sample_network)
+        )
+        output_file = tmp_path / "result.csv"
+
+        result.to_csv(output_file)
+
+        content = output_file.read_text()
+        assert content.splitlines()[0] == "id,layer,degree"
+        assert len(content.splitlines()) == 4
 
 
 class TestFluentExportAPI:
