@@ -82,13 +82,16 @@ OK Network loaded: <multi_layer_network: type=multilayer, directed=False, nodes=
 >>> Step 2: Finding influential nodes across layers
 ----------------------------------------------------------------------
 Code: Q.nodes().compute('degree', 'betweenness_centrality')
-      .where(degree__gt=2).order_by('betweenness_centrality', desc=True)
-OK Found 0 influential nodes
+      .where(degree__gt=1).order_by('betweenness_centrality', desc=True)
+OK Found 10 influential nodes
 
   Top 5 influential nodes:
-Empty DataFrame
-Columns: [id, layer, degree, betweenness_centrality]
-Index: []
+      id         layer  degree  betweenness_centrality
+Person_4 collaboration       2                0.049261
+Person_5 collaboration       2                0.049261
+Person_3 collaboration       2                0.044335
+Person_6 collaboration       2                0.044335
+Person_2 collaboration       2                0.034483
   Ergonomic win: Complex query expressed clearly in one chain
 
 >>> Step 3: Analyzing each layer independently
@@ -168,7 +171,7 @@ Code: Using threshold parameter for different analyses
 ----------------------------------------------------------------------
 Code: result.to_pandas(), result.to_networkx()
 OK Pandas DataFrame: 45 rows, 4 columns
-OK NetworkX graph: 45 nodes, 0 edges
+OK NetworkX graph: 45 nodes, 71 edges
   Ergonomic win: Multiple export formats for different use cases
 
 >>> Step 5: Advanced DSL features summary

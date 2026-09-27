@@ -208,12 +208,12 @@ def simulate_intermediate_user():
     # Step 2: Complex query with filtering (ergonomic: chainable DSL)
     print_step(2, "Finding influential nodes across layers")
     print("Code: Q.nodes().compute('degree', 'betweenness_centrality')")
-    print("      .where(degree__gt=2).order_by('betweenness_centrality', desc=True)")
+    print("      .where(degree__gt=1).order_by('betweenness_centrality', desc=True)")
     
     result = (
         Q.nodes()
         .compute("degree", "betweenness_centrality")
-        .where(degree__gt=2)
+        .where(degree__gt=1)
         .order_by("betweenness_centrality", desc=True)
         .limit(10)
         .execute(net)
@@ -390,7 +390,7 @@ def simulate_advanced_user():
     
     # Export to NetworkX
     try:
-        nx_graph = result.to_networkx()
+        nx_graph = result.to_networkx(net)
         print(f"OK NetworkX graph: {nx_graph.number_of_nodes()} nodes, "
               f"{nx_graph.number_of_edges()} edges")
     except Exception as e:
