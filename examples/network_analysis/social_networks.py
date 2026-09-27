@@ -39,7 +39,7 @@ def create_social_network():
 
     Layers:
     - facebook: Friend connections
-    - twitter: Follower network
+    - twitter: Social connections (undirected in this example)
     - linkedin: Professional connections
 
     Returns:
@@ -61,7 +61,9 @@ def create_social_network():
         ['Frank', 'facebook', 'Grace', 'facebook', 1],
     ]
 
-    # Twitter layer - More sparse, asymmetric patterns
+    # Twitter layer - Sparse interaction patterns. The example network is
+    # undirected, so these edges represent connections rather than follower
+    # direction.
     twitter_edges = [
         ['Alice', 'twitter', 'Bob', 'twitter', 1],
         ['Alice', 'twitter', 'Eve', 'twitter', 1],
@@ -88,7 +90,7 @@ def create_social_network():
 
     print(f"\nNetwork constructed:")
     print(f"  Facebook: {len(facebook_edges)} friendships")
-    print(f"  Twitter: {len(twitter_edges)} follows")
+    print(f"  Twitter: {len(twitter_edges)} connections")
     print(f"  LinkedIn: {len(linkedin_edges)} professional connections")
     print(f"  Total edges: {len(facebook_edges) + len(twitter_edges) + len(linkedin_edges)}")
 
@@ -316,14 +318,14 @@ def visualize_and_interpret(network, influence_df, partition_dict):
     Key Findings:
 
     1. PLATFORM CHARACTERISTICS:
-       - Facebook: Densest network (strong reciprocal friendships)
-       - Twitter: More asymmetric (follower model allows broadcast)
-       - LinkedIn: Moderate density (professional network effect)
+       - Twitter: Densest layer in this synthetic example (9 edges among 7 users)
+       - Facebook: 8 edges among 7 users
+       - LinkedIn: Sparsest layer (5 edges among 6 users)
 
     2. INFLUENCER PATTERNS:
        - Cross-platform influencers have high PageRank across all layers
        - Platform-specific influencers emerge due to different usage patterns
-       - Grace shows high influence on Twitter (many followers)
+       - Grace has three Twitter connections in this undirected example
 
     3. COMMUNITIES:
        - Communities align with friend groups that span platforms
@@ -334,7 +336,8 @@ def visualize_and_interpret(network, influence_df, partition_dict):
        - Multi-platform users have higher overall influence
        - Different platforms serve different social functions
        - Community structure reveals social cohesion across digital spaces
-       - Twitter's structure facilitates information broadcast vs Facebook's dialogue
+       - All three layers are undirected here, so this example does not model
+         follower direction or compare broadcast with dialogue
     """)
 
 
