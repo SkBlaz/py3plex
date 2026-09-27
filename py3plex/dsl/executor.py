@@ -2614,6 +2614,8 @@ def _execute_select(
     # Step 4: Compute measures
     stage_start = time.monotonic()
     attributes: Dict[str, Dict] = {}
+    if select.select_cols or select.rename_map:
+        _add_intrinsic_node_attributes(attributes, items, select.target)
     
     # Track approximation usage for provenance (initialize before compute block)
     approx_used = []
@@ -3731,6 +3733,8 @@ def _execute_select_with_items(
 
     # Compute measures if needed
     attributes: Dict[str, Dict] = {}
+    if select.select_cols or select.rename_map:
+        _add_intrinsic_node_attributes(attributes, items, select.target)
     if select.compute:
         if progress:
             logger.info(f"Computing {len(select.compute)} measure(s)")
@@ -3779,6 +3783,26 @@ def _execute_select_with_items(
         attributes=attributes,
         meta={"dsl_version": "2.1"},
     )
+
+
+def _add_intrinsic_node_attributes(
+    attributes: Dict[str, Dict], items: List[Any], target: Target
+) -> None:
+    """Expose node identifiers as query columns before post-processing."""
+    if target != Target.NODES:
+        return
+
+    attributes["id"] = {}
+    attributes["node"] = {}
+    attributes["layer"] = {}
+    for item in items:
+        if isinstance(item, tuple) and len(item) >= 2:
+            node, layer = item[0], item[1]
+        else:
+            node, layer = item, None
+        attributes["id"][item] = node
+        attributes["node"][item] = node
+        attributes["layer"][item] = layer
 
 
 def _execute_embedding(

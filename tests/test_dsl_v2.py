@@ -203,6 +203,19 @@ class TestBuilderAPI:
         with pytest.raises(UnknownAttributeError):
             Q.nodes().select("does_not_exist").execute(sample_network)
 
+    def test_select_intrinsic_node_columns(self, sample_network):
+        """Identifier and layer fields are valid columns for node queries."""
+        result = (
+            Q.nodes()
+            .select("node", "id", "layer")
+            .execute(sample_network)
+        )
+
+        assert set(result.attributes) == {"node", "id", "layer"}
+        assert result.attributes["node"][("A", "social")] == "A"
+        assert result.attributes["id"][("D", "work")] == "D"
+        assert result.attributes["layer"][("D", "work")] == "work"
+
     def test_q_predict_links_builder_exists(self):
         """Test Q.predict.links() factory."""
         builder = Q.predict.links()
