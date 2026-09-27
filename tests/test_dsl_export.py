@@ -514,6 +514,19 @@ class TestParquetExport:
         assert "degree" in df.columns
         assert len(df) == 3  # 3 nodes in social layer
 
+    def test_queryresult_to_arrow_preserves_node_layers(self, sample_network):
+        """Arrow export should retain node and layer as separate fields."""
+        pytest.importorskip("pyarrow")
+
+        result = Q.nodes().from_layers(L["social"]).compute("degree").execute(
+            sample_network
+        )
+        table = result.to_arrow()
+
+        assert table.column_names == ["id", "layer", "degree"]
+        assert table.column("id").to_pylist() == ["A", "B", "C"]
+        assert table.column("layer").to_pylist() == ["social"] * 3
+
     def test_save_to_parquet_function(self, sample_network, tmp_path):
         """Test save_to_parquet() function from export module."""
         pyarrow = pytest.importorskip("pyarrow")

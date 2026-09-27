@@ -994,8 +994,18 @@ class QueryResult:
                 "pyarrow is required for to_arrow(). Install with: pip install pyarrow"
             )
 
-        # Convert items to strings for Arrow compatibility
-        data = {"id": [str(item) for item in self.items]}
+        # Keep node replica identity in separate columns, matching to_pandas().
+        # Stringifying the (node, layer) tuple into one id loses the layer as a
+        # usable field in downstream Arrow/Parquet analysis.
+        if self.target == "nodes":
+            data = {
+                "id": [item[0] if isinstance(item, tuple) and len(item) >= 2 else item
+                       for item in self.items],
+                "layer": [item[1] if isinstance(item, tuple) and len(item) >= 2 else None
+                          for item in self.items],
+            }
+        else:
+            data = {"id": [str(item) for item in self.items]}
 
         for attr_name, values in self.attributes.items():
             if isinstance(values, dict):
