@@ -85,6 +85,12 @@ class TestCommunityQueries:
         assert result.target == "communities"
         assert len(result.items) == 3  # Three communities
         assert set(result.items) == {0, 1, 2}
+
+    def test_node_community_detection_materializes_assignment(self, sample_network_with_communities):
+        result = Q.nodes().compute("communities").execute(sample_network_with_communities)
+        assert "communities" in result.attributes
+        assert sample_network_with_communities.get_partition_by_name("default") is not None
+        assert "community" in sample_network_with_communities.core_network.nodes[next(iter(result.items))]
     
     def test_communities_with_size_filter(self, sample_network_with_communities):
         """Test filtering communities by size."""

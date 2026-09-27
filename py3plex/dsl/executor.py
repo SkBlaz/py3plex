@@ -2720,6 +2720,20 @@ def _execute_select(
                                 select=select,
                             )
 
+                        if compute_item.name in {"communities", "community"}:
+                            # Community computation is an analysis operation,
+                            # not merely a derived column: retain the
+                            # partition on the network for subsequent queries.
+                            partition = {
+                                item: (
+                                    value.get("mean", value)
+                                    if isinstance(value, dict)
+                                    else value
+                                )
+                                for item, value in values.items()
+                            }
+                            network.assign_partition(partition)
+
                         attributes[result_name] = values
                 except (UQResolutionError, UQSchemaValidationError):
                     # UQ errors should propagate (fail-fast)
@@ -3018,7 +3032,7 @@ def _execute_auto_community(
         uq_enabled = uq_config is not None
         
         if uq_enabled:
-            uq_method = uq_config.uq_method or "seed"
+            uq_method = uq_config.method or "seed"
             uq_n_samples = uq_config.n_samples or 10
         else:
             uq_method = "seed"
@@ -6130,7 +6144,11 @@ def _apply_select(
     Returns:
         Filtered attributes dict
     """
-    return {col: attributes[col] for col in columns if col in attributes}
+    missing = [col for col in columns if col not in attributes]
+    if missing:
+        available = list(attributes)
+        raise UnknownAttributeError(missing[0], available)
+    return {col: attributes[col] for col in columns}
 
 
 def _apply_drop(
@@ -6757,6 +6775,15 @@ def _execute_nodes_with_community(
         provenance_builder=provenance_builder,
         provenance_record=provenance_record
     )
+
+    # Node attributes are not automatically materialized as query columns.
+    # Expose the partition assignment explicitly for community queries.
+    community_attr = "community" if partition_name == "default" else f"community_{partition_name}"
+    result.attributes[community_attr] = {
+        item: network.core_network.nodes[item].get(community_attr)
+        for item in result.items
+        if item in network.core_network
+    }
     
     # Add community metadata
     result.meta["community_detection"] = {

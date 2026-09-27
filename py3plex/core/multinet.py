@@ -1089,23 +1089,26 @@ class multi_layer_network:
             - :meth:`get_edges` for filtering coupling edges (multiplex_edges param)
         """
         unique_layers = {n[1] for n in self.core_network.nodes()}
-        unique_nodes = {n[0] for n in self.core_network.nodes()}
 
-        #        for potential_node in itertools.product(unique_nodes,unique_layers):
-        #            self.core_network.add_node(potential_node)
-
-        # draw edges between same nodes across layers
-        for node in unique_nodes:
-            for layer_first in unique_layers:
-                for layer_second in unique_layers:
-                    if layer_first != layer_second:
-                        coupled_edge = ((node, layer_first), (node, layer_second))
-                        self.core_network.add_edge(
-                            coupled_edge[0],
-                            coupled_edge[1],
-                            type="coupling",
-                            weight=self.coupling_weight,
-                        )
+        # Add one undirected coupling edge per pair of replicas.  Iterating
+        # over ordered layer pairs creates parallel edges in a MultiGraph and
+        # also creates replicas for layers in which a node is absent.
+        for node in {n[0] for n in self.core_network.nodes()}:
+            node_layers = sorted(
+                layer for layer in unique_layers if (node, layer) in self.core_network
+            )
+            layer_pairs = (
+                itertools.combinations(node_layers, 2)
+                if not self.directed
+                else itertools.permutations(node_layers, 2)
+            )
+            for layer_first, layer_second in layer_pairs:
+                self.core_network.add_edge(
+                    (node, layer_first),
+                    (node, layer_second),
+                    type="coupling",
+                    weight=self.coupling_weight,
+                )
 
     def load_layer_name_mapping(self, mapping_name, header=False):
         """Layer-node mapping loader method
