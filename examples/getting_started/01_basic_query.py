@@ -73,24 +73,9 @@ def main():
     )
     
     df = degree_result.to_pandas()
-    # Reset index to make it easier to access
-    df = df.reset_index()
     for _, row in df.head(10).iterrows():
-        # Handle different possible column names
-        if 'node' in df.columns:
-            node = row['node']
-        elif 'level_0' in df.columns:
-            node = row['level_0']
-        else:
-            node = row.iloc[0]
-            
-        if 'layer' in df.columns:
-            layer = row['layer']
-        elif 'level_1' in df.columns:
-            layer = row['level_1']
-        else:
-            layer = row.iloc[1] if len(row) > 1 else 'N/A'
-            
+        node = row['id']
+        layer = row['layer']
         degree = row['degree']
         print(f"  {str(node):10s} ({str(layer):8s}): {degree}")
 

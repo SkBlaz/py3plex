@@ -9,9 +9,9 @@ Total edges: 5
 
 Node Degrees:
 ========================================
-  0          (social  ): 2
-  1          (social  ): 2
-  2          (social  ): 2
-  3          (work    ): 2
-  4          (work    ): 1
-  5          (work    ): 1
+  Alice      (social  ): 2
+  Bob        (social  ): 2
+  Charlie    (social  ): 2
+  Bob        (work    ): 2
+  Alice      (work    ): 1
+  Diana      (work    ): 1
