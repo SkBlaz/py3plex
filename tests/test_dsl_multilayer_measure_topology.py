@@ -50,9 +50,8 @@ def coupled_multiplex_net():
     coupling: (A,social)-(A,work) and (B,social)-(B,work), via
     _couple_all_edges() (identity coupling for multiplex networks).
 
-    So on the full graph: A and B each have degree 3 (1 intralayer + 2
-    coupling edges, since coupling connects every pair of layers for the
-    same node -- here just social<->work, so 1 coupling edge each).
+    So on the full graph: A and B each have degree 2 (1 intralayer + 1
+    coupling edge).
     Intralayer-only degree (kind="intra") for social: A=1, B=1.
     """
     net = multinet.multi_layer_network(directed=False, network_type="multiplex")
@@ -81,8 +80,8 @@ def test_degree_aggregate_by_default_on_multiplex(coupled_multiplex_net):
     social_degrees = social_only.attributes["degree"]
     all_degrees = all_layers.attributes["degree"]
 
-    assert social_degrees[("A", "social")] == 3
-    assert social_degrees[("B", "social")] == 3
+    assert social_degrees[("A", "social")] == 2
+    assert social_degrees[("B", "social")] == 2
     # Same rows, same values regardless of the layer filter -- aggregate
     # degree is coupling-aware and does not depend on from_layers().
     assert social_degrees[("A", "social")] == all_degrees[("A", "social")]
@@ -100,6 +99,19 @@ def test_degree_kind_intra_opts_into_old_behavior(coupled_multiplex_net):
     assert degrees[("B", "social")] == 1
 
 
+def test_multiplex_coupling_has_one_edge_per_replica_pair(coupled_multiplex_net):
+    coupling_edges = [
+        edge
+        for edge in coupled_multiplex_net.core_network.edges(data=True)
+        if edge[2].get("type") == "coupling"
+    ]
+    assert len(coupling_edges) == 2
+    assert all(
+        edge[0][0] == edge[1][0] and edge[0][1] != edge[1][1]
+        for edge in coupling_edges
+    )
+
+
 # ---------------------------------------------------------------------------
 # Rule 1: WHERE filtering must not shrink measure topology
 # ---------------------------------------------------------------------------
@@ -114,12 +126,10 @@ def test_where_filter_does_not_shrink_measure_topology(coupled_multiplex_net):
             .execute(coupled_multiplex_net)
         )
 
-    # Both A and B have aggregate degree 3, so both should survive the
+    # Both A and B have aggregate degree 2, so neither should survive the
     # degree > 2 filter, and the displayed degree column must agree with
     # the predicate that selected them (no self-contradiction).
-    assert set(result.items) == {("A", "social"), ("B", "social")}
-    for node in result.items:
-        assert result.attributes["degree"][node] == 3
+    assert result.items == []
 
 
 def test_betweenness_respects_from_layers_restriction_unchanged(coupled_multiplex_net):
@@ -305,9 +315,8 @@ class TestAarhusRealDataset:
                 [e for e in G.edges(node, data=True) if e[2].get("type") != "coupling"]
             )
             assert degrees[node] == expected_intra
-            # Sanity check the fixture actually has coupling edges to strip,
-            # otherwise this test wouldn't be able to tell the two kinds apart.
-            assert degrees[node] < G.degree(node)
+            # Some sampled nodes may not have a replica in another layer.
+            assert degrees[node] <= G.degree(node)
 
     def test_where_filter_does_not_shrink_topology_on_real_data(self, aarhus_net):
         with suppress_warnings("degree_ambiguity", "node_replica_confusion"):

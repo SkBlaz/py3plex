@@ -4723,7 +4723,7 @@ class CommunityQueryBuilder(QueryBuilder):
             uq_enabled = uq_config is not None
             
             if uq_enabled:
-                uq_method = uq_config.uq_method or "seed"
+                uq_method = uq_config.method or "seed"
                 uq_n_samples = uq_config.n_samples or 10
             else:
                 uq_method = "seed"

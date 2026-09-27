@@ -2614,6 +2614,8 @@ def _execute_select(
     # Step 4: Compute measures
     stage_start = time.monotonic()
     attributes: Dict[str, Dict] = {}
+    if select.select_cols or select.rename_map:
+        _add_intrinsic_node_attributes(attributes, items, select.target)
     
     # Track approximation usage for provenance (initialize before compute block)
     approx_used = []
@@ -2719,6 +2721,20 @@ def _execute_select(
                                 items=items,
                                 select=select,
                             )
+
+                        if compute_item.name in {"communities", "community"}:
+                            # Community computation is an analysis operation,
+                            # not merely a derived column: retain the
+                            # partition on the network for subsequent queries.
+                            partition = {
+                                item: (
+                                    value.get("mean", value)
+                                    if isinstance(value, dict)
+                                    else value
+                                )
+                                for item, value in values.items()
+                            }
+                            network.assign_partition(partition)
 
                         attributes[result_name] = values
                 except (UQResolutionError, UQSchemaValidationError):
@@ -3018,7 +3034,7 @@ def _execute_auto_community(
         uq_enabled = uq_config is not None
         
         if uq_enabled:
-            uq_method = uq_config.uq_method or "seed"
+            uq_method = uq_config.method or "seed"
             uq_n_samples = uq_config.n_samples or 10
         else:
             uq_method = "seed"
@@ -3717,6 +3733,8 @@ def _execute_select_with_items(
 
     # Compute measures if needed
     attributes: Dict[str, Dict] = {}
+    if select.select_cols or select.rename_map:
+        _add_intrinsic_node_attributes(attributes, items, select.target)
     if select.compute:
         if progress:
             logger.info(f"Computing {len(select.compute)} measure(s)")
@@ -3765,6 +3783,26 @@ def _execute_select_with_items(
         attributes=attributes,
         meta={"dsl_version": "2.1"},
     )
+
+
+def _add_intrinsic_node_attributes(
+    attributes: Dict[str, Dict], items: List[Any], target: Target
+) -> None:
+    """Expose node identifiers as query columns before post-processing."""
+    if target != Target.NODES:
+        return
+
+    attributes["id"] = {}
+    attributes["node"] = {}
+    attributes["layer"] = {}
+    for item in items:
+        if isinstance(item, tuple) and len(item) >= 2:
+            node, layer = item[0], item[1]
+        else:
+            node, layer = item, None
+        attributes["id"][item] = node
+        attributes["node"][item] = node
+        attributes["layer"][item] = layer
 
 
 def _execute_embedding(
@@ -6130,7 +6168,11 @@ def _apply_select(
     Returns:
         Filtered attributes dict
     """
-    return {col: attributes[col] for col in columns if col in attributes}
+    missing = [col for col in columns if col not in attributes]
+    if missing:
+        available = list(attributes)
+        raise UnknownAttributeError(missing[0], available)
+    return {col: attributes[col] for col in columns}
 
 
 def _apply_drop(
@@ -6757,6 +6799,15 @@ def _execute_nodes_with_community(
         provenance_builder=provenance_builder,
         provenance_record=provenance_record
     )
+
+    # Node attributes are not automatically materialized as query columns.
+    # Expose the partition assignment explicitly for community queries.
+    community_attr = "community" if partition_name == "default" else f"community_{partition_name}"
+    result.attributes[community_attr] = {
+        item: network.core_network.nodes[item].get(community_attr)
+        for item in result.items
+        if item in network.core_network
+    }
     
     # Add community metadata
     result.meta["community_detection"] = {

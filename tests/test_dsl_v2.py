@@ -45,6 +45,7 @@ from py3plex.dsl import (
     DslSyntaxError,
     DslExecutionError,
     UnknownMeasureError,
+    UnknownAttributeError,
     ParameterMissingError,
     # Registry
     measure_registry,
@@ -196,6 +197,24 @@ class TestBuilderAPI:
         builder = Q.edges()
         assert isinstance(builder, QueryBuilder)
         assert builder._select.target == Target.EDGES
+
+    def test_select_unknown_column_raises(self, sample_network):
+        """Selecting a missing result column must fail explicitly."""
+        with pytest.raises(UnknownAttributeError):
+            Q.nodes().select("does_not_exist").execute(sample_network)
+
+    def test_select_intrinsic_node_columns(self, sample_network):
+        """Identifier and layer fields are valid columns for node queries."""
+        result = (
+            Q.nodes()
+            .select("node", "id", "layer")
+            .execute(sample_network)
+        )
+
+        assert set(result.attributes) == {"node", "id", "layer"}
+        assert result.attributes["node"][("A", "social")] == "A"
+        assert result.attributes["id"][("D", "work")] == "D"
+        assert result.attributes["layer"][("D", "work")] == "work"
 
     def test_q_predict_links_builder_exists(self):
         """Test Q.predict.links() factory."""
