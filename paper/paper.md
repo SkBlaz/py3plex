@@ -17,7 +17,7 @@ authors:
     orcid: 0000-0002-7330-0579
     equal-contrib: true
     affiliation: 1
-  - name: Yana Melnik
+  - name: Yana Melnyk
     equal-contrib: true
     affiliation: 4
   - name: Benjamin Renoust
@@ -110,6 +110,6 @@ Large language models assisted with parts of this manuscript and codebase. Googl
 
 # Acknowledgements
 
-This work received no dedicated external funding. The authors thank the py3plex user and contributor community for feedback that has helped improve the library.
+This work was supported by ELLIOT, a Horizon Europe-funded project under Grant Agreement No. [XXXXXXX]. Furthermore, the authors thank the py3plex user and contributor community for feedback that has helped improve the library.
 
 # References
