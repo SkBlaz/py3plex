@@ -74,11 +74,11 @@ def create_biological_network():
     # Disease-gene associations
     # Linking genes to diseases
     disease_edges = [
-        ['TP53_gene', 'disease', 'cancer', 'disease', 1],
-        ['BRCA1_gene', 'disease', 'breast_cancer', 'disease', 1],
-        ['BRCA2_gene', 'disease', 'breast_cancer', 'disease', 1],
-        ['EGFR_gene', 'disease', 'lung_cancer', 'disease', 1],
-        ['KRAS_gene', 'disease', 'colorectal_cancer', 'disease', 1],
+        ['TP53_gene', 'gene', 'cancer', 'disease', 1],
+        ['BRCA1_gene', 'gene', 'breast_cancer', 'disease', 1],
+        ['BRCA2_gene', 'gene', 'breast_cancer', 'disease', 1],
+        ['EGFR_gene', 'gene', 'lung_cancer', 'disease', 1],
+        ['KRAS_gene', 'gene', 'colorectal_cancer', 'disease', 1],
         ['cancer', 'disease', 'breast_cancer', 'disease', 1],
         ['cancer', 'disease', 'lung_cancer', 'disease', 1],
     ]
