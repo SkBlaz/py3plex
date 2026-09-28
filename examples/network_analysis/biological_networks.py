@@ -103,7 +103,7 @@ def compute_basic_stats(network):
     # Use DSL to get comprehensive layer-specific statistics
     print("\nLayer-specific statistics (using DSL):")
     print("\n{:<15} {:<10} {:<12} {:<12} {:<12}".format(
-        "Layer", "Nodes", "Edges", "Avg Degree", "Density"))
+        "Layer", "Nodes", "Intra-layer edges", "Avg Degree", "Density"))
     print("-" * 70)
 
     for layer in ['protein', 'gene', 'disease']:
@@ -133,6 +133,25 @@ def compute_basic_stats(network):
             node_df['degree'].mean(),
             density
         ))
+
+    # The per-layer edge query above counts only edges whose two endpoints are
+    # in that layer. Report gene-disease associations separately so they are
+    # not mistaken for missing disease-layer edges.
+    all_edges = Q.edges().execute(network).to_pandas()
+    cross_layer_associations = all_edges[
+        (
+            (all_edges["source_layer"] == "gene")
+            & (all_edges["target_layer"] == "disease")
+        )
+        | (
+            (all_edges["source_layer"] == "disease")
+            & (all_edges["target_layer"] == "gene")
+        )
+    ]
+    print(
+        "\nCross-layer gene-disease associations: "
+        f"{len(cross_layer_associations)}"
+    )
 
     print("\nLayer-specific degree distributions:")
     for layer in ['protein', 'gene', 'disease']:
