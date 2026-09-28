@@ -29,7 +29,7 @@ result = (
 )
 
 # Export to NetworkX graph
-nx_graph = result.to_networkx()
+nx_graph = result.to_networkx(net)
 print(f"NetworkX graph type: {type(nx_graph)}")
 print(f"Nodes: {nx_graph.number_of_nodes()}")
 print(f"Edges: {nx_graph.number_of_edges()}")
