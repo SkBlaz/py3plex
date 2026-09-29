@@ -65,22 +65,25 @@ def pattern_1_basic_filtering():
     result = (
         Q.nodes()
          .from_layers(L["social"])              # Select layer
-         .compute("degree", "betweenness_centrality")  # Compute metrics first
-         .where(degree__gt=2)                    # Then filter by attribute
+         .compute("degree", "betweenness_centrality")  # Compute on full layer
          .execute(net)
     )
+    df = result.to_pandas()
+    df = df[df["degree"] > 2]                   # Filter without changing metrics
     """)
     
     result = (
         Q.nodes()
          .from_layers(L["social"])
          .compute("degree", "betweenness_centrality")
-         .where(degree__gt=2)
          .execute(net)
     )
-    
-    print(f"\nResult: Found {result.count} high-degree nodes in social layer")
+    # Applying WHERE here would recompute metrics on the filtered node set.
+    # Filter the exported full-layer metrics to preserve their original meaning.
     df = result.to_pandas()
+    df = df[df["degree"] > 2]
+
+    print(f"\nResult: Found {len(df)} high-degree nodes in social layer")
     print("\nTop results:")
     print(df[['id', 'degree', 'betweenness_centrality']].head())
 
