@@ -115,7 +115,7 @@ def compute_basic_stats(network):
         node_result = (
             Q.nodes()
              .from_layers(L[platform])
-             .compute("degree")
+             .compute("degree", kind="intra")
              .execute(network)
         )
         node_df = node_result.to_pandas()
@@ -277,7 +277,7 @@ def visualize_and_interpret(network, influence_df, partition_dict):
         result = (
             Q.nodes()
              .from_layers(L[platform])
-             .compute("degree")
+             .compute("degree", kind="intra")
              .execute(network)
         )
         df = result.to_pandas()
