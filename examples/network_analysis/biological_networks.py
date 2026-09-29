@@ -118,7 +118,12 @@ def compute_basic_stats(network):
         node_df['degree'] = node_df['degree'].apply(_as_scalar)
 
         # Edge stats
-        edge_result = Q.edges().from_layers(L[layer]).execute(network)
+        edge_result = (
+            Q.edges()
+             .from_layers(L[layer])
+             .where(intralayer=True)
+             .execute(network)
+        )
         num_edges = len(edge_result)
 
         # Compute density
