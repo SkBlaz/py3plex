@@ -111,7 +111,7 @@ def compute_basic_stats(network):
         node_result = (
             Q.nodes()
              .from_layers(L[layer])
-             .compute("degree")
+             .compute("degree", kind="intra")
              .execute(network)
         )
         node_df = node_result.to_pandas()
@@ -139,7 +139,7 @@ def compute_basic_stats(network):
         result = (
             Q.nodes()
              .from_layers(L[layer])
-             .compute("degree")
+             .compute("degree", kind="intra")
              .execute(network)
         )
         df = result.to_pandas()
