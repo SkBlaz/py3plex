@@ -107,25 +107,18 @@ def compute_basic_stats(network):
     print("-" * 70)
 
     for layer in ['protein', 'gene', 'disease']:
+        layer_network = network.subnetwork([layer], subset_by="layers")
         # Node stats
         node_result = (
             Q.nodes()
-             .from_layers(L[layer])
              .compute("degree")
-             .execute(network)
+             .execute(layer_network)
         )
         node_df = node_result.to_pandas()
         node_df['degree'] = node_df['degree'].apply(_as_scalar)
 
         # Edge stats
-        # Layer density uses only edges whose two endpoints are in this layer.
-        # The layer selector also returns cross-layer edges touching the layer.
-        edge_result = (
-            Q.edges()
-             .from_layers(L[layer])
-             .where(intralayer=True)
-             .execute(network)
-        )
+        edge_result = Q.edges().execute(layer_network)
         num_edges = len(edge_result)
 
         # Compute density
@@ -143,11 +136,11 @@ def compute_basic_stats(network):
 
     print("\nLayer-specific degree distributions:")
     for layer in ['protein', 'gene', 'disease']:
+        layer_network = network.subnetwork([layer], subset_by="layers")
         result = (
             Q.nodes()
-             .from_layers(L[layer])
              .compute("degree")
-             .execute(network)
+             .execute(layer_network)
         )
         df = result.to_pandas()
         df['degree'] = df['degree'].apply(_as_scalar)
@@ -187,13 +180,13 @@ def run_analysis_pipeline(network):
     # Compute layer-specific centralities
     print("\n[3.1b] Layer-specific centrality analysis:")
     for layer in ['protein', 'gene', 'disease']:
+        layer_network = network.subnetwork([layer], subset_by="layers")
         layer_result = (
             Q.nodes()
-             .from_layers(L[layer])
              .compute("degree", "betweenness_centrality")
              .order_by("-betweenness_centrality")
              .limit(3)
-             .execute(network)
+             .execute(layer_network)
         )
         layer_df = layer_result.to_pandas()
         for col in ("degree", "betweenness_centrality"):
