@@ -185,7 +185,7 @@ Code:
     df = result.to_pandas()
     
     # NetworkX graph
-    graph = result.to_networkx()
+    graph = result.to_networkx(net)
     
     # Apache Arrow (high-performance)
     table = result.to_arrow()
@@ -195,7 +195,7 @@ Code:
     
 
 OK Pandas DataFrame: 18 rows x 3 columns
-OK NetworkX graph: 18 nodes, 0 edges
+OK NetworkX graph: 18 nodes, 11 edges
 OK Apache Arrow table: 18 rows x 3 columns
 
 DataFrame preview:

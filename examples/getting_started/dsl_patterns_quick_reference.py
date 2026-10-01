@@ -320,7 +320,7 @@ def pattern_7_export_formats():
     df = result.to_pandas()
     
     # NetworkX graph
-    graph = result.to_networkx()
+    graph = result.to_networkx(net)
     
     # Apache Arrow (high-performance)
     table = result.to_arrow()
@@ -336,7 +336,7 @@ def pattern_7_export_formats():
     print(f"\nOK Pandas DataFrame: {len(df)} rows x {len(df.columns)} columns")
     
     # NetworkX
-    graph = result.to_networkx()
+    graph = result.to_networkx(net)
     print(f"OK NetworkX graph: {graph.number_of_nodes()} nodes, {graph.number_of_edges()} edges")
     
     # Arrow (optional - requires pyarrow)
