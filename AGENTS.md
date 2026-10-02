@@ -5314,6 +5314,13 @@ result = Q.edges().after(100.0).execute(tnet)
 ```
 
 **Sliding Windows**:
+
+`TemporalMultiLayerNetwork.window_iter()` raises `ValueError` if `window_size`
+or `step` cannot advance the current floating-point timestamp. This prevents
+zero-width windows and infinite iteration when positive durations are below
+the precision available at the requested timestamp. Small durations are valid
+when their additions advance the timestamp.
+
 ```python
 result = (
     Q.edges()

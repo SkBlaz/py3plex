@@ -235,6 +235,44 @@ class TestWindowIteration:
         with pytest.raises(ValueError, match="return_type"):
             next(tnet.window_iter(window_size=1, return_type="invalid"))
 
+    @pytest.mark.parametrize("return_type", ["temporal", "snapshot"])
+    @pytest.mark.parametrize("kwargs, parameter", [
+        ({"window_size": 1.0, "step": 1e-8}, "step"),
+        ({"window_size": 1e-8, "step": 1.0}, "window_size"),
+        ({"window_size": 1e-8}, "window_size"),
+    ])
+    def test_window_iter_rejects_durations_below_timestamp_precision(
+        self, sample_temporal_network, return_type, kwargs, parameter
+    ):
+        with pytest.raises(ValueError, match=parameter):
+            next(sample_temporal_network.window_iter(
+                start=1e9, end=1e9 + 2, return_type=return_type, **kwargs
+            ))
+
+    @pytest.mark.parametrize("return_type", ["temporal", "snapshot"])
+    def test_window_iter_checks_progress_after_each_window(
+        self, sample_temporal_network, return_type
+    ):
+        start = 1.0 - 2**-53
+        windows = sample_temporal_network.window_iter(
+            window_size=0.25, step=2**-53, start=start, end=1.5,
+            return_type=return_type
+        )
+        assert next(windows)[0] == start
+        with pytest.raises(ValueError, match="step"):
+            next(windows)
+
+    def test_window_iter_allows_small_representable_durations(
+        self, sample_temporal_network
+    ):
+        duration = 2**-30
+        windows = list(sample_temporal_network.window_iter(
+            window_size=duration, start=0, end=4 * duration
+        ))
+        assert [(start, end) for start, end, _ in windows] == [
+            (i * duration, (i + 1) * duration) for i in range(4)
+        ]
+
 
 class TestFactoryMethods:
     """Test factory methods for creating temporal networks."""
