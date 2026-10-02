@@ -5339,6 +5339,10 @@ result = (
 
 ### Temporal Snapshots
 
+`TemporalMultiLayerNetwork.window_iter(..., layers=...)` accepts layer iterables,
+including generators. The same layer selection applies to every window in both
+temporal and cumulative snapshot modes; an empty iterable selects no edges.
+
 ```python
 # Get snapshot as static network
 snapshot = tnet.get_snapshot(time_range=(100.0, 150.0))

@@ -157,6 +157,47 @@ class TestTemporalQueries:
 
 class TestWindowIteration:
     """Test sliding window iteration."""
+
+    @pytest.mark.parametrize("return_type", ["temporal", "snapshot"])
+    @pytest.mark.parametrize("selected_layers", [
+        ("layer1",), ("layer2",), ("layer1", "layer2"), (),
+    ])
+    @pytest.mark.parametrize("container", ["list", "tuple", "iterator", "generator"])
+    def test_window_iter_reuses_layer_filter(
+        self, return_type, selected_layers, container
+    ):
+        """Every window must apply the same filter, even with one-shot iterables."""
+        tnet = TemporalMultiLayerNetwork()
+        for t in (5, 15, 25):
+            for source_layer, target_layer in (
+                ("layer1", "layer1"), ("layer2", "layer2"), ("layer1", "layer2")
+            ):
+                event = f"{t}-{source_layer}-{target_layer}"
+                tnet.add_edge(event, source_layer, f"{event}-target", target_layer,
+                              t=t, event=event)
+
+        factories = {
+            "list": list, "tuple": tuple, "iterator": iter,
+            "generator": lambda values: (value for value in values),
+        }
+        windows = list(tnet.window_iter(
+            window_size=10, start=0, end=30, return_type=return_type,
+            layers=factories[container](selected_layers),
+        ))
+        assert [(start, end) for start, end, _ in windows] == [(0, 10), (10, 20), (20, 30)]
+        for start, end, window in windows:
+            expected = {
+                edge['event'] for edge in tnet.edges_between(
+                    start if return_type == "temporal" else None, end, selected_layers
+                )
+            }
+            base = window.base_network if return_type == "temporal" else window
+            actual = {
+                data['event'] for _, _, data in base.get_edges(
+                    data=True, multiplex_edges=True
+                )
+            } if base.core_network is not None else set()
+            assert actual == expected
     
     @pytest.fixture
     def sample_temporal_network(self):
