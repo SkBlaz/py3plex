@@ -5271,6 +5271,13 @@ py3plex supports time-stamped edges and temporal queries.
 
 ### TemporalMultiLayerNetwork
 
+`TemporalMultiLayerNetwork.from_multilayer_network(net, time_attribute="t")`
+extracts timestamped edges directly from the base network, preserving physical
+node IDs, endpoint layers, parallel edges, direction, weights, and other edge
+attributes. Interlayer edges with timestamps are included; edges without the
+selected timestamp attribute or the fallback `t` attribute are skipped.
+Conversion does not compute visualization layouts or modify the input network.
+
 ```python
 from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
 

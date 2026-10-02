@@ -238,6 +238,52 @@ class TestWindowIteration:
 
 class TestFactoryMethods:
     """Test factory methods for creating temporal networks."""
+
+    @pytest.mark.parametrize("directed", [False, True])
+    @pytest.mark.parametrize("time_attribute", ["t", "timestamp"])
+    def test_conversion_preserves_replica_edges(self, directed, time_attribute, monkeypatch):
+        base = multinet.multi_layer_network(directed=directed)
+        base.add_edges([
+            {'source': 'A', 'target': 'B', 'source_type': 'layer1',
+             'target_type': 'layer1', time_attribute: 100.0, 'weight': 2.0,
+             'label': 'first'},
+            {'source': 'A', 'target': 'B', 'source_type': 'layer1',
+             'target_type': 'layer1', time_attribute: 150.0, 'weight': 3.0,
+             'label': 'parallel'},
+            {'source': 'A', 'target': 'A', 'source_type': 'layer1',
+             'target_type': 'layer2', 't': 200.0, 'weight': 4.0,
+             'label': 'interlayer'},
+            {'source': 'C', 'target': 'D', 'source_type': 'layer2',
+             'target_type': 'layer2'},
+        ])
+        original_edges = list(base.core_network.edges(data=True))
+
+        def forbid_layout(*args, **kwargs):
+            pytest.fail("Temporal conversion must not compute visualization layouts")
+
+        monkeypatch.setattr(base, 'get_layers', forbid_layout)
+        tnet = TemporalMultiLayerNetwork.from_multilayer_network(base, time_attribute)
+
+        assert tnet.base_network.directed is directed
+        assert tnet.number_of_edges() == 3
+        assert set(tnet.base_network.core_network.nodes) == {
+            ('A', 'layer1'), ('B', 'layer1'), ('A', 'layer2')
+        }
+        assert [(e['source'], e['source_type'], e['target'], e['target_type'],
+                 e[time_attribute], e['weight'], e['label'])
+                for e in tnet.edges_between()] == [
+            ('A', 'layer1', 'B', 'layer1', 100.0, 2.0, 'first'),
+            ('A', 'layer1', 'B', 'layer1', 150.0, 3.0, 'parallel'),
+            ('A', 'layer1', 'A', 'layer2', 200.0, 4.0, 'interlayer'),
+        ]
+        assert tnet.time_range() == (100.0, 200.0)
+        assert list(base.core_network.edges(data=True)) == original_edges
+
+    def test_conversion_of_empty_network(self):
+        base = multinet.multi_layer_network(directed=False)
+        tnet = TemporalMultiLayerNetwork.from_multilayer_network(base)
+        assert tnet.number_of_edges() == 0
+        assert tnet.time_range() == (None, None)
     
     def test_from_multilayer_network(self):
         """Test creating temporal network from existing network."""
