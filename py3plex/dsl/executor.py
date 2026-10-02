@@ -1080,9 +1080,11 @@ def _bind_parameters(query: Query, params: Dict[str, Any]) -> Query:
     # Create a deep copy of the query to avoid mutating the original
     bound_query = copy.deepcopy(query)
 
-    # Bind limit parameter if it's a ParamRef
+    # Resolve global limits and enforce the empty-result semantics for n <= 0.
     if bound_query.select and bound_query.select.limit is not None:
-        bound_query.select.limit = _resolve_param(bound_query.select.limit, params)
+        bound_query.select.limit = max(
+            0, _resolve_param(bound_query.select.limit, params)
+        )
 
     # Note: WHERE conditions are resolved dynamically during evaluation
     # This allows for more flexible parameter handling

@@ -881,6 +881,9 @@ Limit results to top n items.
 - MUST apply AFTER ordering (if `.order_by()` was called)
 - MUST apply AFTER filtering (if `.where()` was called)
 - If n <= 0, MUST return empty result
+- Non-positive limits are normalized after parameter binding, including
+  `.limit(Param.int("n"))`, for node, edge, and community queries. The original
+  builder and submitted AST are not modified by this normalization.
 
 **Example**:
 ```python
