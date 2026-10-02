@@ -288,17 +288,14 @@ def test_order_by_nonexistent_field():
 @pytest.mark.verification
 @pytest.mark.fast
 def test_negative_limit():
-    """
-    Test that negative limit is handled appropriately.
-    """
-    # Negative limit should either raise error or be treated as 0/no limit
-    try:
-        query = Q.nodes().limit(-1).to_ast()
-        # If it doesn't raise, the implementation accepts it
-        assert query is not None
-    except (ValueError, AssertionError):
-        # Raising an error is acceptable
-        pass
+    """Negative limits select nothing without modifying the submitted AST."""
+    network = create_test_network()
+    network.add_nodes([{'source': 'B', 'type': 'layer1'}])
+    query = Q.nodes().limit(-1).to_ast()
+    result = execute_ast(network, query)
+    assert result.items == []
+    assert result.count == 0
+    assert query.select.limit == -1
 
 
 @pytest.mark.verification

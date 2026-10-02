@@ -1045,20 +1045,17 @@ def test_where_with_conflicting_conditions_returns_empty():
 @pytest.mark.property
 @settings(deadline=None, max_examples=20)
 @given(
-    limit_val=st.integers(min_value=0, max_value=2)
+    limit_val=st.integers(min_value=-5, max_value=2)
 )
 def test_limit_zero_or_negative_returns_empty(limit_val):
     """
-    Property: LIMIT(0) returns empty result.
-    
-    Tests that limit=0 or negative is handled.
+    Property: Non-positive limits return empty results.
     """
     network = create_test_network(num_nodes=5, num_layers=1, seed=42)
     
     if limit_val <= 0:
-        result = Q.nodes().limit(max(0, limit_val)).execute(network)
+        result = Q.nodes().limit(limit_val).execute(network)
         assert len(result) == 0
     else:
         result = Q.nodes().limit(limit_val).execute(network)
         assert len(result) <= limit_val
-
