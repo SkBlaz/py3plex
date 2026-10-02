@@ -123,7 +123,12 @@ def _parse_time(value: TimeLike) -> float:
     if isinstance(value, str):
         # Try to parse as ISO format
         try:
-            dt = _dt.datetime.fromisoformat(value)
+            # Python <3.11 requires an explicit offset instead of the UTC Z suffix.
+            has_utc_suffix = value.endswith("Z") and not value.endswith("ZZ")
+            iso_value = value[:-1] + "+00:00" if has_utc_suffix else value
+            dt = _dt.datetime.fromisoformat(iso_value)
+            if has_utc_suffix and dt.tzinfo is None:
+                raise ValueError("UTC suffix requires a datetime with a time component")
             return dt.timestamp()
         except (ValueError, AttributeError):
             pass
