@@ -5269,6 +5269,11 @@ print(f"Ranking correlation: {sensitivity.kendall_tau_mean}")
 
 py3plex supports time-stamped edges and temporal queries.
 
+ISO 8601 timestamps ending in `Z` are parsed as UTC across supported Python
+versions. Explicit offsets such as `+01:00` are applied; numeric timestamps
+and naive datetime values retain their existing semantics. Tests comparing
+UTC strings with datetime objects MUST use timezone-aware UTC expectations.
+
 ### TemporalMultiLayerNetwork
 
 `TemporalMultiLayerNetwork.from_multilayer_network(net, time_attribute="t")`

@@ -79,12 +79,23 @@ class TestParseTime:
         """Test parsing float timestamp."""
         assert _parse_time(1234567890.5) == 1234567890.5
 
-    def test_parse_iso_string(self):
+    @pytest.mark.parametrize("value", [
+        "2009-02-13T23:31:30Z",
+        "2009-02-13T23:31:30+00:00",
+        "2009-02-14T00:31:30+01:00",
+    ])
+    def test_parse_iso_string(self, value):
         """Test parsing ISO format string."""
-        # ISO format string
-        timestamp = _parse_time("2009-02-13T23:31:30Z")
-        expected = datetime.datetime(2009, 2, 13, 23, 31, 30).timestamp()
+        timestamp = _parse_time(value)
+        expected = datetime.datetime(
+            2009, 2, 13, 23, 31, 30, tzinfo=datetime.timezone.utc
+        ).timestamp()
         assert timestamp == expected
+
+    @pytest.mark.parametrize("value", ["2009-02-13Z", "2009-02-13T23:31:30ZZ"])
+    def test_parse_invalid_utc_suffix(self, value):
+        with pytest.raises(ParsingError):
+            _parse_time(value)
 
     def test_parse_datetime_object(self):
         """Test parsing datetime object."""
@@ -139,9 +150,19 @@ class TestExtractEdgeTime:
         """Test extraction with ISO string timestamp."""
         edge = {'source': 'A', 'target': 'B', 't': "2009-02-13T23:31:30Z"}
         interval = extract_edge_time(edge)
-        expected = datetime.datetime(2009, 2, 13, 23, 31, 30).timestamp()
+        expected = datetime.datetime(
+            2009, 2, 13, 23, 31, 30, tzinfo=datetime.timezone.utc
+        ).timestamp()
         assert interval.start == expected
         assert interval.end == expected
+
+    def test_extract_interval_with_utc_strings(self):
+        interval = extract_edge_time({
+            't_start': "2009-02-13T23:31:30Z",
+            't_end': "2009-02-14T00:31:30Z",
+        })
+        assert interval.start == 1234567890.0
+        assert interval.end == 1234571490.0
 
 
 
