@@ -301,6 +301,10 @@ class TemporalMultiLayerNetwork:
             
         Yields:
             Tuples of (t_start, t_end, window_network)
+
+        Raises:
+            ValueError: If a duration is invalid or too small to advance the
+                current floating-point timestamp.
         """
         if return_type not in ("temporal", "snapshot"):
             raise ValueError(
@@ -332,6 +336,15 @@ class TemporalMultiLayerNetwork:
         current_start = t_start
         while current_start < t_end:
             current_end = min(current_start + window_size, t_end)
+            if current_end <= current_start:
+                raise ValueError(
+                    "window_size is too small to advance the current timestamp"
+                )
+            next_start = current_start + step
+            if next_start <= current_start:
+                raise ValueError(
+                    "step is too small to advance the current timestamp"
+                )
             
             # Create window network
             if return_type == "temporal":
@@ -340,7 +353,7 @@ class TemporalMultiLayerNetwork:
                 window_net = self.snapshot_at(current_end, mode="up_to", layers=layers)
             yield (current_start, current_end, window_net)
             
-            current_start += step
+            current_start = next_start
     
     def get_base_network(self) -> multi_layer_network:
         """Return the underlying multi_layer_network.
