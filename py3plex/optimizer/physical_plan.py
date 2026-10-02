@@ -11,7 +11,8 @@ DSL executor so we never duplicate logic.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields, is_dataclass
+from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from .plan_nodes import PhysicalOp
@@ -255,6 +256,33 @@ class PhysicalPlan:
     def to_dict(self) -> dict:
         """Return a JSON-serialisable representation of this plan."""
 
+        def _json_value(value: Any) -> Any:
+            if value is None or isinstance(value, (bool, int, float, str)):
+                return value
+            if isinstance(value, Enum):
+                return value.value
+            if is_dataclass(value):
+                return {
+                    "__type__": type(value).__qualname__,
+                    **{
+                        item.name: _json_value(getattr(value, item.name))
+                        for item in fields(value)
+                    },
+                }
+            if isinstance(value, dict):
+                return {
+                    str(key): _json_value(item)
+                    for key, item in sorted(value.items(), key=lambda pair: str(pair[0]))
+                }
+            if isinstance(value, (list, tuple)):
+                return [_json_value(item) for item in value]
+            if isinstance(value, (set, frozenset)):
+                values = [_json_value(item) for item in value]
+                return sorted(values, key=lambda item: str(item))
+            raise TypeError(
+                f"Unsupported physical-plan value: {type(value).__qualname__}"
+            )
+
         def _node_dict(op: PhysicalOp) -> dict:
             d: dict = {
                 "type": type(op).__name__,
@@ -266,7 +294,7 @@ class PhysicalPlan:
                         "group_by", "mode", "k", "n", "key", "desc",
                         "uq_spec", "null_model_spec"):
                 if hasattr(op, key):
-                    d[key] = getattr(op, key)
+                    d[key] = _json_value(getattr(op, key))
             return d
 
         return {

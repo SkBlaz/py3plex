@@ -371,7 +371,9 @@ def test_merge_compute_rule_and_rule_engine_rewrite():
 
     # RuleEngine should walk and rewrite children too.
     root = LogicalGroupByLayer(children=[nested])
-    rewritten, applied = RuleEngine(max_iter=2).rewrite(root)
+    rewritten, applied = RuleEngine(
+        rules=[MergeMultipleComputesIntoSinglePass()], max_iter=2
+    ).rewrite(root)
     assert isinstance(rewritten, LogicalGroupByLayer)
     assert isinstance(rewritten.children[0], LogicalCompute)
     assert "MergeMultipleComputesIntoSinglePass" in applied

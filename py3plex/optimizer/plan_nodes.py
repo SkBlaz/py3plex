@@ -74,6 +74,7 @@ class LogicalCompute(LogicalOp):
     """Compute one or more metrics on items."""
 
     measures: List[str] = field(default_factory=list)
+    computation_signatures: List[str] = field(default_factory=list)
 
 
 @dataclass

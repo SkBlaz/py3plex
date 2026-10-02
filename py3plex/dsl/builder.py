@@ -3736,7 +3736,15 @@ class QueryBuilder:
         
         return self
 
-    def execute(self, network: Any, progress: bool = True, explain_plan: bool = False, planner: Optional[Dict[str, Any]] = None, **params) -> QueryResult:
+    def execute(
+        self,
+        network: Any,
+        progress: bool = True,
+        explain_plan: bool = False,
+        planner: Optional[Dict[str, Any]] = None,
+        optimize: Optional[bool] = None,
+        **params,
+    ) -> QueryResult:
         """Execute the query.
 
         Args:
@@ -3744,6 +3752,7 @@ class QueryBuilder:
             progress: If True, log progress messages during query execution (default: True)
             explain_plan: If True, populate result.meta["plan"] with execution plan (default: False)
             planner: Optional planner configuration dict (compute_policy, enable_cache, etc.)
+            optimize: Override the configured DSL optimizer setting for this execution.
             **params: Parameter bindings
 
         Returns:
@@ -3799,6 +3808,7 @@ class QueryBuilder:
             progress=progress,
             explain_plan=explain_plan,
             planner_config=effective_planner,
+            optimize=optimize,
         )
 
     def explain_plan(self) -> "QueryBuilder":
