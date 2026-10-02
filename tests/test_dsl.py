@@ -686,6 +686,35 @@ class TestEdgeCases:
 class TestQueryValidation:
     """Test query validation and syntax checking."""
 
+    @pytest.mark.parametrize("target", ["nodes", "edges"])
+    @pytest.mark.parametrize("clause", [
+        "WHERE",
+        "WHERE COMPUTE degree",
+        "WHERE layer='layer1' AND",
+        "WHERE layer='layer1' OR",
+        "WHERE layer='layer1' AND COMPUTE degree",
+        "WHERE layer='layer1' OR COMPUTE degree",
+    ])
+    def test_incomplete_where_rejected(self, sample_network, target, clause):
+        """An omitted predicate must not silently broaden a SELECT query."""
+        with pytest.raises(DSLSyntaxError, match="Expected condition"):
+            execute_query(sample_network, f"SELECT {target} {clause}")
+
+    @pytest.mark.parametrize("target", ["nodes", "edges"])
+    @pytest.mark.parametrize("clause, expected_nodes, expected_edges", [
+        ("", 7, 6),
+        ("WHERE layer='layer1'", 4, 4),
+        ("WHERE layer='layer1' COMPUTE degree", 4, 4),
+        ("WHERE layer='layer1' AND layer='layer1'", 4, 4),
+        ("WHERE layer='layer1' OR layer='layer2'", 7, 6),
+    ])
+    def test_complete_where_and_optional_where(
+        self, sample_network, target, clause, expected_nodes, expected_edges
+    ):
+        """Optional WHERE and complete predicates retain their selections."""
+        result = execute_query(sample_network, f"SELECT {target} {clause}")
+        assert result['count'] == (expected_nodes if target == 'nodes' else expected_edges)
+
     def test_validate_layer_string(self, sample_network):
         """Test that layer values are treated as strings."""
         result = execute_query(sample_network, 'SELECT nodes WHERE layer="layer1"')

@@ -3222,6 +3222,9 @@ For backward compatibility, py3plex supports SQL-like string queries.
 SELECT target WHERE conditions COMPUTE measures
 ```
 
+`WHERE` is optional, but when present it requires a condition. Empty `WHERE`
+clauses and trailing `AND`/`OR` raise `DSLSyntaxError`, including before `COMPUTE`.
+
 ### Core Function
 
 ```python
