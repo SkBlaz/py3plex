@@ -67,6 +67,7 @@ def test_no_new_markdown_files():
         "gui/README.md",
         "gui/ci/api-tests/README.md",
         "notebooks/README.md",
+        "paper/paper.md",
         "py3plex/stats/README.md",
         "py3plex/uncertainty/README.md",
         "scripts/README.md",
