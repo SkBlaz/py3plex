@@ -745,6 +745,13 @@ def _parse_where_clause(tokens: List[str], where_idx: int) -> List[Dict[str, Any
         conditions.append(condition)
         idx = next_idx
     
+    if not conditions:
+        raise DSLSyntaxError("Expected condition after WHERE")
+    if conditions[-1].get('logical_op'):
+        raise DSLSyntaxError(
+            f"Expected condition after {conditions[-1]['logical_op']} in WHERE clause"
+        )
+
     return conditions
 
 
