@@ -395,20 +395,22 @@ class TemporalMultiLayerNetwork:
             directed=base_network.directed,
         )
         
-        # Extract edges from base network with temporal info
-        for layer in base_network.get_layers()[0]:
-            layer_graph = base_network.get_layers()[1][base_network.get_layers()[0].index(layer)]
-            
-            for u, v, data in layer_graph.edges(data=True):
-                if time_attribute in data or 't' in data:
-                    t = data.get(time_attribute, data.get('t'))
-                    weight = data.get('weight', 1.0)
-                    
-                    # Get additional attributes
-                    extra = {k: v for k, v in data.items() 
-                            if k not in [time_attribute, 't', 'weight']}
-                    
-                    tnet.add_edge(u, layer, v, layer, t, weight, **extra)
+        if base_network.core_network is None:
+            return tnet
+
+        # Traverse all replica edges, including edges between different layers.
+        # get_layers() creates visualization layouts and excludes interlayer edges.
+        for u, v, data in base_network.get_edges(data=True, multiplex_edges=True):
+            if time_attribute in data or 't' in data:
+                t = data.get(time_attribute, data.get('t'))
+                weight = data.get('weight', 1.0)
+                extra = {
+                    key: value for key, value in data.items()
+                    if key not in [time_attribute, 't', 'weight']
+                }
+                node_u, layer_u = u
+                node_v, layer_v = v
+                tnet.add_edge(node_u, layer_u, node_v, layer_v, t, weight, **extra)
         
         return tnet
     
