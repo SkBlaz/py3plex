@@ -5,6 +5,7 @@ read-only temporal filtering over multilayer networks.
 """
 
 import pytest
+import networkx as nx
 from py3plex.core import multinet
 from py3plex.temporal_view import TemporalMultinetView, TemporalSlice
 
@@ -288,6 +289,57 @@ class TestTemporalMultinetView:
 
 class TestTemporalViewIntegration:
     """Integration tests for temporal view."""
+
+    @pytest.mark.parametrize("directed", [False, True])
+    @pytest.mark.parametrize("network_type", ["multilayer", "multiplex"])
+    @pytest.mark.parametrize("first_key", [0, 7])
+    @pytest.mark.parametrize("multiplex_edges", [False, True])
+    @pytest.mark.parametrize("call_style", ["default", "kw_false", "kw_true", "pos_false", "pos_true"])
+    def test_parallel_edges_use_their_own_timestamps(
+        self, directed, network_type, first_key, multiplex_edges, call_style
+    ):
+        """Filter each parallel edge while preserving the requested tuple format."""
+        net = multinet.multi_layer_network(
+            directed=directed, network_type=network_type, verbose=False
+        )
+        net.core_network = nx.MultiDiGraph() if directed else nx.MultiGraph()
+        u, v = ("A", "layer1"), ("B", "layer1")
+        net.core_network.add_edge(u, v, key=first_key, t=100, event="early")
+        net.core_network.add_edge(u, v, key=first_key + 1, t=200, event="late")
+        net.core_network.add_edge(u, v, key=first_key + 2, event="atemporal")
+        net.core_network.add_edge(
+            u, ("A", "layer2"), key=first_key, t=100, type="coupling", event="coupling"
+        )
+        original = list(net.get_edges(data=True, multiplex_edges=True))
+        requested_data = call_style.endswith("true")
+        if call_style.startswith("pos"):
+            args, kwargs = (requested_data, multiplex_edges), {}
+        else:
+            args, kwargs = (), {"multiplex_edges": multiplex_edges}
+            if call_style != "default":
+                kwargs['data'] = requested_data
+
+        view = TemporalMultinetView(net)
+        for timestamp in (100, 200):
+            expected = [
+                edge if requested_data else edge[:-1]
+                for edge in net.get_edges(data=True, multiplex_edges=multiplex_edges)
+                if edge[-1].get('t', timestamp) == timestamp
+            ]
+            assert view.snapshot_at(timestamp).get_edges(*args, **kwargs) == expected
+            assert list(view.with_slice(timestamp, timestamp).iter_edges(*args, **kwargs)) == expected
+        assert list(net.get_edges(data=True, multiplex_edges=True)) == original
+
+    @pytest.mark.parametrize("directed", [False, True])
+    @pytest.mark.parametrize("data", [False, True])
+    def test_simple_graph_edges_use_attribute_dict(self, directed, data):
+        """A simple graph stores attributes directly rather than under edge keys."""
+        net = multinet.multi_layer_network(directed=directed, verbose=False)
+        net.core_network = nx.DiGraph() if directed else nx.Graph()
+        net.core_network.add_edge(("A", "layer1"), ("B", "layer1"), t=100)
+        view = TemporalMultinetView(net)
+        assert view.snapshot_at(100).get_edges(data=data) == list(net.get_edges(data=data))
+        assert view.snapshot_at(200).get_edges(data=data) == []
 
     def test_view_preserves_base_network(self, temporal_network):
         """Test that view doesn't modify base network."""
