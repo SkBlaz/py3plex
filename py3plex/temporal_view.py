@@ -173,7 +173,16 @@ class TemporalMultinetView:
         Returns:
             True if edge should be included, False otherwise
         """
-        interval = extract_edge_time(edge_attrs)
+        temporal_attrs = {
+            canonical: edge_attrs[configured]
+            for canonical, configured in (
+                ("t", self._time_attr),
+                ("t_start", self._t_start_attr),
+                ("t_end", self._t_end_attr),
+            )
+            if configured in edge_attrs
+        }
+        interval = extract_edge_time(temporal_attrs)
         return interval.overlaps(self._slice.t0, self._slice.t1)
     
     def iter_edges(self, *args, **kwargs) -> Iterator[Any]:

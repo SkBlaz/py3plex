@@ -5303,6 +5303,11 @@ tnet.add_edge('C', 'D', layer='work', t_start=120.0, t_end=180.0)
 
 ### Temporal Queries
 
+`TemporalMultinetView` (from `py3plex.temporal_view`) accepts `time_attr`,
+`t_start_attr`, and `t_end_attr` to select custom timestamp fields. Slices and
+snapshots use those configured fields, with intervals taking precedence over
+points, and preserve the original edge attributes.
+
 **Snapshot at time t**:
 ```python
 result = Q.edges().at(150.0).execute(tnet)

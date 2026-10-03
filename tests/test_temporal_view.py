@@ -88,6 +88,56 @@ class TestTemporalSlice:
 class TestTemporalMultinetView:
     """Test TemporalMultinetView class."""
 
+    @pytest.mark.parametrize("names", [
+        ("t", "t_start", "t_end"),
+        ("timestamp", "start", "end"),
+        ("timestamp", "t_start", "t_end"),
+        ("t", "start", "end"),
+    ])
+    @pytest.mark.parametrize("attrs, included", [
+        ({"t": 50}, False),
+        ({"t": 150}, True),
+        ({"t": 250}, False),
+        ({"t_start": 50, "t_end": 150}, True),
+        ({"t_start": 250, "t_end": 300}, False),
+        ({"t_start": 250}, False),
+        ({"t_end": 50}, False),
+        ({"t": 150, "t_start": 250, "t_end": 300}, False),
+        ({}, True),
+        ({"t": "invalid"}, True),
+    ])
+    def test_filter_uses_configured_time_attributes(self, names, attrs, included):
+        """Custom names preserve point, interval, and atemporal semantics."""
+        renamed = dict(zip(("t", "t_start", "t_end"), names))
+        edge_attrs = {renamed[key]: value for key, value in attrs.items()}
+        net = multinet.multi_layer_network(directed=False, verbose=False)
+        net.add_edges([{
+            "source": "A", "target": "B", "source_type": "layer1",
+            "target_type": "layer1", **edge_attrs,
+        }])
+        original_data = dict(net.core_network[("A", "layer1")][("B", "layer1")][0])
+        view = TemporalMultinetView(
+            net, time_attr=names[0], t_start_attr=names[1], t_end_attr=names[2]
+        )
+
+        assert len(view.with_slice(100, 200).get_edges()) == int(included)
+        assert len(view.with_slice(None, None).snapshot_at(150).get_edges()) == int(included)
+        assert len(view.get_edges()) == 1
+        assert dict(net.core_network[("A", "layer1")][("B", "layer1")][0]) == original_data
+
+    @pytest.mark.parametrize("attrs, included", [
+        ({"timestamp": 300, "t": 150}, False),
+        ({"timestamp": 150, "t": 300}, True),
+        ({"start": 300, "end": 400, "t_start": 100, "t_end": 200}, False),
+        ({"start": 100, "end": 200, "t_start": 300, "t_end": 400}, True),
+    ])
+    def test_custom_time_attributes_override_default_names(self, attrs, included):
+        """Only the configured fields define time when both schemas coexist."""
+        view = TemporalMultinetView(
+            None, time_attr="timestamp", t_start_attr="start", t_end_attr="end"
+        ).with_slice(100, 200)
+        assert view._matches_temporal_filter(attrs) is included
+
     def test_create_view(self, temporal_network):
         """Test creating a temporal view."""
         view = TemporalMultinetView(temporal_network)
