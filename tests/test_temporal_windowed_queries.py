@@ -3,10 +3,37 @@
 import pytest
 from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
 from py3plex.dsl import Q
+from py3plex.dsl.errors import DslExecutionError
 
 
 class TestWindowedQueryExecution:
     """Test executing windowed queries."""
+
+    @pytest.mark.parametrize("target", ["nodes", "edges"])
+    @pytest.mark.parametrize("step", [0, 0.0, "0s", "", -1])
+    def test_explicit_invalid_step_is_not_defaulted(self, temporal_network, target, step):
+        """Explicit zero and empty steps must not be mistaken for an omitted step."""
+        q = getattr(Q, target)().window(100, step=step)
+        with pytest.raises((ValueError, DslExecutionError), match="step|duration|window"):
+            q.execute(temporal_network)
+        assert q.to_ast().select.window_spec.step == step
+
+    @pytest.mark.parametrize("target", ["nodes", "edges"])
+    @pytest.mark.parametrize("step, expected_starts", [
+        (None, [50, 150]),
+        (100, [50, 150]),
+        ("100s", [50, 150]),
+        (50, [50, 100, 150, 200]),
+        ("50s", [50, 100, 150, 200]),
+    ])
+    def test_default_and_positive_steps_keep_window_boundaries(
+        self, temporal_network, target, step, expected_starts
+    ):
+        q = getattr(Q, target)().window(100, step=step)
+        result = q.execute(temporal_network)
+        assert result.meta['window_count'] == len(expected_starts)
+        assert [window.meta['window_start'] for window in result.items] == expected_starts
+        assert q.to_ast().select.window_spec.step == step
     
     @pytest.fixture
     def temporal_network(self):

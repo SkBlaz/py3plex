@@ -5330,6 +5330,10 @@ result = Q.edges().after(100.0).execute(tnet)
 
 **Sliding Windows**:
 
+For `.window(window_size, step=...)`, only an omitted step (`None`) uses the
+window size as the default. An explicit zero step or empty duration string is
+invalid and raises an error at execution.
+
 `TemporalMultiLayerNetwork.window_iter()` raises `ValueError` if `window_size`
 or `step` cannot advance the current floating-point timestamp. This prevents
 zero-width windows and infinite iteration when positive durations are below

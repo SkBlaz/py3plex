@@ -938,7 +938,10 @@ def _execute_windowed_query(
     # Parse window size and step (convert duration strings to numeric)
     try:
         window_size = parse_duration_string(window_spec.window_size)
-        step = parse_duration_string(window_spec.step) if window_spec.step else None
+        step = (
+            parse_duration_string(window_spec.step)
+            if window_spec.step is not None else None
+        )
     except ValueError as e:
         raise DslExecutionError(f"Invalid window specification: {e}")
 
