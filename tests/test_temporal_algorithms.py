@@ -85,6 +85,40 @@ class TestStreamingPageRank:
         # Should handle empty windows gracefully
         assert windows is not None
 
+    @pytest.mark.parametrize("directed", [False, True])
+    @pytest.mark.parametrize("multiplicity", [1, 2, 4])
+    @pytest.mark.parametrize("alpha", [0.2, 0.85])
+    @pytest.mark.parametrize("normalize", [False, True])
+    @pytest.mark.parametrize("seeded", [False, True])
+    def test_parallel_edges_preserve_rank_contributions(
+        self, directed, multiplicity, alpha, normalize, seeded
+    ):
+        """A predecessor contributes once per edge, matching its degree divisor."""
+        tnet = TemporalMultiLayerNetwork(directed=directed)
+        edges = [("A", "B")] * multiplicity + [("A", "C")]
+        edges += [("B", "A"), ("C", "A")] if directed else [("B", "C")]
+        for u, v in edges:
+            tnet.add_edge(u, "layer1", v, "layer1", t=100)
+        tnet.add_edge("A", "layer1", "B", "layer1", t=200)
+        graph = tnet.snapshot_at(150).core_network
+        initial = dict(zip(graph.nodes(), (0.6, 0.3, 0.1))) if seeded else None
+        initial_copy = initial.copy() if initial else None
+        seed = initial if initial else dict.fromkeys(graph.nodes(), 1 / 3)
+        expected = dict.fromkeys(graph.nodes(), (1 - alpha) / 3)
+        for source in graph:
+            outgoing = list(graph.out_edges(source) if directed else graph.edges(source))
+            for _, target in outgoing:
+                expected[target] += alpha * seed[source] / len(outgoing)
+
+        start, end, scores = next(streaming_pagerank(
+            tnet, window_size=50, alpha=alpha, normalize=normalize,
+            initial_scores=initial, max_iter_per_window=1, tolerance=0,
+        ))
+        assert (start, end) == (100, 150)
+        assert scores == pytest.approx(expected)
+        assert sum(scores.values()) == pytest.approx(1)
+        assert initial == initial_copy
+
 
 class TestStreamingCommunityChange:
     """Test streaming community change detection."""

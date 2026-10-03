@@ -5362,6 +5362,10 @@ result = Q.nodes().compute("degree").execute(snapshot)
 
 ### Temporal Aggregation
 
+`streaming_pagerank` (from `py3plex.algorithms.temporal`) counts each parallel
+edge as a separate connection when propagating rank, matching the edge-counting
+degree used to divide a source node's contribution.
+
 ```python
 # Count edges per time window per layer
 result = (
