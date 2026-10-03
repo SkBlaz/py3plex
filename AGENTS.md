@@ -7699,6 +7699,10 @@ entry point is `canonicalize_ast_scoped(query_ast, scope)`, which returns a
 
 ### Determinism Guarantees
 
+`AutoCommunityRunner` uses an explicit UQ seed when supplied; otherwise UQ
+inherits the run seed, including zero, or defaults to 42 when the run seed is
+`None`. The runner leaves the supplied UQ configuration unchanged.
+
 py3plex guarantees deterministic results when:
 1. **Seed is set**: All randomized operations accept `seed` parameter
 2. **Same network**: Identical input network structure
