@@ -6227,6 +6227,12 @@ with open("provenance.json", "w") as f:
 
 **Purpose**: Multi-objective, uncertainty-aware, null-model-calibrated meta-algorithm for principled community detection in multilayer networks.
 
+**Benchmark adapter**: `AutoCommunityRunner` uses Pareto selection. Its unsupported
+`mode="wins"` raises `AlgorithmError`, which the benchmark executor records as a
+failed run while continuing other algorithms. For legacy wins selection, call
+`auto_select_community(network, mode="wins")` directly. Benchmark-level
+`.select("wins")` is a separate option and does not change this adapter's `mode`.
+
 **Key Design Principles**:
 1. **No single scalar objective** - Uses multi-objective evaluation with Pareto dominance
 2. **Uncertainty is first-class** - Node-level confidence, entropy, and stability
