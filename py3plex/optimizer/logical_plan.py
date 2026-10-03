@@ -55,10 +55,21 @@ def _get_layer_list(select: Any) -> List[str]:
         return []
     # LayerExprBuilder stores layer names in .names
     if hasattr(layer_expr, "names"):
-        return list(layer_expr.names)
+        names = list(layer_expr.names)
+        return names if "*" not in names else []
     # LayerSet stores layer names in ._names
     if hasattr(layer_expr, "_names"):
-        return list(layer_expr._names)
+        names = list(layer_expr._names)
+        return names if "*" not in names else []
+    # The DSL v2 AST stores simple layer expressions as LayerExpr terms.
+    terms = getattr(layer_expr, "terms", None)
+    ops = getattr(layer_expr, "ops", None)
+    if terms is not None and ops is not None:
+        if len(ops) != max(0, len(terms) - 1) or any(op != "+" for op in ops):
+            return []
+        names = [getattr(term, "name", None) for term in terms]
+        if all(isinstance(name, str) and name != "*" for name in names):
+            return names
     return []
 
 
