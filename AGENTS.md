@@ -7290,6 +7290,52 @@ The DSL v2 query planner is an internal optimization layer that sits between AST
 4. **Provides execution plans** via `explain_plan()` for debugging and optimization
 5. **Ensures determinism** - same network + AST + params + seed -> same plan and results
 
+#### Explicit logical rewrite system
+
+The optimizer builds a logical operator tree from a query AST, applies a
+deterministically ordered and bounded set of semantics-preserving rules, then
+produces physical-plan metadata. The DSL's existing executor remains responsible
+for query results; optimizer rewrites do not change the serialized query AST.
+
+The rule contract is: a rule has a stable ID, matches explicitly, returns a new
+plan rather than mutating its input, and preserves the result of the represented
+logical operators. Rule IDs are included in provenance and are suitable for
+diagnostics; plan fingerprints are stable structural SHA-256 values, not Python
+hashes or object identities. Rewrites stop at a fixed point or fail with a
+`DslExecutionError` if they cycle or exceed the configured pass bound.
+
+The current default rules are deliberately conservative:
+
+| ID | Rule | Transformation and safety condition |
+|----|------|-------------------------------------|
+| `R001` | Filter fusion | Fuses adjacent filters, retaining inner-before-outer predicate order. |
+| `R002` | Constant folding | Removes literal `True` terms from conjunctive filter lists. |
+| `R004` | Layer pruning | Intersects adjacent filters containing concrete layer names only. |
+| `R006` | Compute deduplication | Removes exact duplicate signatures only for registry metrics marked deterministic; uncertainty, approximation, and parameterized variants are not merged. |
+| `R007` | Limit collapse | Replaces adjacent non-negative limits with their minimum; never crosses sort, aggregation, grouping, coverage, or UQ. |
+
+Other experimental rule classes remain available for targeted development, but
+are not enabled by default unless their semantics are made explicit and tested.
+The existing Lean theorem `Py3plex.Optimizer.filterFusion` proves the abstract
+filter-composition law; runtime rule behavior is separately covered by Python
+equivalence tests.
+
+Disable rewriting for comparison or debugging with:
+
+```python
+baseline = Q.nodes().compute("degree").execute(net, optimize=False)
+optimized = Q.nodes().compute("degree").execute(net, optimize=True)
+```
+
+Request stable before/after plans and the structured trace with
+`execute(explain_plan=True)` and inspect `result.explain_plan()` or
+`result.meta["optimizer"]`. Compact optimizer provenance includes the enabled
+state, applied stable IDs, pass count, and original/optimized fingerprints;
+plan renderings and per-rewrite events are included only for explain requests.
+No optimizer performance improvement is claimed: the current executor still
+executes through its established query path while the physical plan is exposed
+for planning and diagnostics.
+
 **Key Property**: The planner is **semantically transparent** - planned and unplanned execution produce identical results.
 
 ### Usage

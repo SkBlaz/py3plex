@@ -455,6 +455,7 @@ def execute_ast(
     progress: bool = True,
     explain_plan: bool = False,
     planner_config: Optional[Dict[str, Any]] = None,
+    optimize: Optional[bool] = None,
 ) -> Union[QueryResult, ExecutionPlan]:
     """Execute an AST query on a multilayer network.
 
@@ -465,6 +466,7 @@ def execute_ast(
         progress: If True, log progress messages during query execution (default: True)
         explain_plan: If True, populate result.meta["plan"] with execution plan
         planner_config: Optional planner configuration dict
+        optimize: Override the configured DSL optimizer setting for this execution
 
     Returns:
         QueryResult or ExecutionPlan (if explain=True)
@@ -484,25 +486,30 @@ def execute_ast(
             raise  # propagate UnsupportedOutOfCoreOperation etc. unchanged
 
     # -----------------------------------------------------------------------
-    # Cost-based optimizer integration (failsafe: never breaks execution)
+    # Cost-based optimizer integration. Optimizer failures are surfaced rather
+    # than hidden by a legacy-executor fallback.
     # -----------------------------------------------------------------------
     optimizer_meta: Dict[str, Any] = {}
-    try:
-        from py3plex import config as _cfg
-        if getattr(_cfg, "OPTIMIZER_ENABLED", False):
-            from py3plex.optimizer import optimize_query as _optimize_query
-            _physical_plan, optimizer_meta = _optimize_query(
-                ast=query.select,
-                network=network,
-                params=params,
-                backend="networkx",
-                enable_rule_based=getattr(_cfg, "OPTIMIZER_ENABLE_RULE_BASED", True),
-                enable_cost_based=getattr(_cfg, "OPTIMIZER_ENABLE_COST_BASED", True),
-                max_iter=getattr(_cfg, "OPTIMIZER_MAX_ITER", 10),
-            )
-    except Exception as _opt_err:
-        logger.warning("Optimizer raised an error (%s); falling back to legacy execution.", _opt_err)
-        optimizer_meta = {}
+    from py3plex import config as _cfg
+    optimizer_enabled = (
+        bool(getattr(_cfg, "OPTIMIZER_ENABLED", False))
+        if optimize is None
+        else bool(optimize)
+    )
+    if optimizer_enabled:
+        from py3plex.optimizer import optimize_query as _optimize_query
+        _physical_plan, optimizer_meta = _optimize_query(
+            ast=query.select,
+            network=network,
+            params=params,
+            backend="networkx",
+            enable_rule_based=getattr(_cfg, "OPTIMIZER_ENABLE_RULE_BASED", True),
+            enable_cost_based=getattr(_cfg, "OPTIMIZER_ENABLE_COST_BASED", True),
+            max_iter=getattr(_cfg, "OPTIMIZER_MAX_ITER", 10),
+            include_trace=explain_plan,
+        )
+    else:
+        optimizer_meta = {"enabled": False, "rules_applied": [], "rule_ids_applied": []}
 
     # Create plan if planner is enabled
     planned_query = None
@@ -687,6 +694,14 @@ def execute_ast(
         prov_record.performance["total_ms"] = (time.monotonic() - start_time) * 1000
         if optimizer_meta:
             result.meta["optimizer"] = optimizer_meta
+            if explain_plan and "physical_plan" in optimizer_meta:
+                result.meta["physical_plan"] = optimizer_meta["physical_plan"]
+                result.meta["logical_plan_summary"] = optimizer_meta.get(
+                    "optimized_logical_plan", "N/A"
+                )
+                result.meta["optimizer_trace"] = optimizer_meta.get(
+                    "optimization_trace", {}
+                )
         result.meta["provenance"] = prov_record.to_dict()
     else:
         result = _execute_select(
@@ -722,6 +737,14 @@ def execute_ast(
         # Attach optimizer metadata to provenance
         if optimizer_meta:
             prov_dict["optimizer"] = optimizer_meta
+            if explain_plan and "physical_plan" in optimizer_meta:
+                result.meta["physical_plan"] = optimizer_meta["physical_plan"]
+                result.meta["logical_plan_summary"] = optimizer_meta.get(
+                    "optimized_logical_plan", "N/A"
+                )
+                result.meta["optimizer_trace"] = optimizer_meta.get(
+                    "optimization_trace", {}
+                )
 
         result.meta["provenance"] = prov_dict
 
@@ -7288,6 +7311,7 @@ def execute_join(
     progress: bool = True,
     explain_plan: bool = False,
     planner_config: Optional[Dict[str, Any]] = None,
+    optimize: Optional[bool] = None,
 ) -> QueryResult:
     """Execute a join operation between two queries.
 
