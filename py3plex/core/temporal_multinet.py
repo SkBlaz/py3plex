@@ -294,7 +294,7 @@ class TemporalMultiLayerNetwork:
             step: Step size between windows (defaults to window_size for non-overlapping)
             start: Start time for windowing (defaults to first timestamp)
             end: End time for windowing (defaults to last timestamp)
-            layers: Optional layer filter
+            layers: Optional layer filter, consumed once and reused for all windows
             return_type: Type of window to return:
                         - "temporal": TemporalMultiLayerNetwork
                         - "snapshot": multi_layer_network (cumulative snapshot)
@@ -331,6 +331,9 @@ class TemporalMultiLayerNetwork:
         t_end = _parse_time(end) if end is not None else self.time_index[-1]
         if not math.isfinite(t_start) or not math.isfinite(t_end):
             raise ValueError("start and end must be finite timestamps")
+
+        # Preserve one-shot layer iterables across all windows.
+        layers = frozenset(layers) if layers is not None else None
         
         # Iterate over windows
         current_start = t_start
