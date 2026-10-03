@@ -10,6 +10,40 @@ from py3plex.algorithms.temporal import (
 
 class TestStreamingPageRank:
     """Test streaming PageRank algorithm."""
+
+    @pytest.mark.parametrize("directed", [False, True])
+    @pytest.mark.parametrize("alpha", [0.2, 0.8, 0.85])
+    @pytest.mark.parametrize("normalize", [False, True])
+    @pytest.mark.parametrize("seeded", [False, True])
+    def test_converged_iteration_keeps_updated_scores(
+        self, directed, alpha, normalize, seeded
+    ):
+        """An accepted iteration must supply both the result and next warm start."""
+        tnet = TemporalMultiLayerNetwork(directed=directed)
+        for u, v, t in (("A", "B", 100), ("B", "C", 100), ("C", "D", 200)):
+            tnet.add_edge(u, "layer1", v, "layer1", t=t)
+            if directed:
+                tnet.add_edge(v, "layer1", u, "layer1", t=t)
+        nodes = [(name, "layer1") for name in ("A", "B", "C")]
+        initial = dict(zip(nodes, (0.6, 0.3, 0.1))) if seeded else None
+        initial_copy = initial.copy() if initial else None
+        params = dict(window_size=50, alpha=alpha, normalize=normalize,
+                      initial_scores=initial, max_iter_per_window=1)
+        forced = list(streaming_pagerank(tnet, tolerance=0, **params))
+        converged = list(streaming_pagerank(tnet, tolerance=2, **params))
+
+        seed = initial if initial else dict.fromkeys(nodes, 1 / 3)
+        expected = {
+            nodes[0]: (1 - alpha) / 3 + alpha * seed[nodes[1]] / 2,
+            nodes[1]: (1 - alpha) / 3 + alpha * (seed[nodes[0]] + seed[nodes[2]]),
+            nodes[2]: (1 - alpha) / 3 + alpha * seed[nodes[1]] / 2,
+        }
+        assert forced[0][2] == pytest.approx(expected)
+        assert len(converged) == len(forced) == 2
+        for actual, reference in zip(converged, forced):
+            assert actual[:2] == reference[:2]
+            assert actual[2] == pytest.approx(reference[2])
+        assert initial == initial_copy
     
     @pytest.fixture
     def simple_temporal_network(self):
