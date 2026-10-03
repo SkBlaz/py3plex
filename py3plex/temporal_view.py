@@ -39,6 +39,7 @@ Examples:
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, Iterator, Optional
 
@@ -210,42 +211,23 @@ class TemporalMultinetView:
         if hasattr(self._base, "core_network") and self._base.core_network is None:
             return
 
-        # Get edges from base network
-        for edge in self._base.get_edges(*args, **kwargs):
-            # Extract edge data/attributes from core_network
-            # Edge format from multinet.get_edges() is typically just (source, target) tuples
-            # The attributes are stored in core_network
-            if len(edge) >= 2:
-                source_node = edge[0]
-                target_node = edge[1]
-                
-                # Get edge data from core_network
-                if hasattr(self._base, 'core_network') and self._base.core_network:
-                    if self._base.core_network.has_edge(source_node, target_node):
-                        # NetworkX stores edge data as a dict-like object (AtlasView) for multigraphs
-                        # {edge_index: {attr: value}}
-                        edge_data_dict = self._base.core_network[source_node][target_node]
-                        
-                        # Try to get edge attributes
-                        # For multigraphs, edges are indexed by integers starting from 0
-                        edge_attrs = {}
-                        if 0 in edge_data_dict:
-                            edge_attrs = edge_data_dict[0]
-                        elif len(edge_data_dict) > 0:
-                            # Get first available edge data
-                            edge_attrs = next(iter(edge_data_dict.values()), {})
-                    else:
-                        edge_attrs = {}
-                else:
-                    edge_attrs = {}
-                
-                # Check if edge matches temporal filter
-                if self._matches_temporal_filter(edge_attrs):
-                    yield edge
+        # Always fetch attributes with each edge so parallel edges retain identity.
+        requested_data = args[0] if args else kwargs.get("data", False)
+        if args:
+            data_args = (True,) + args[1:]
+            data_kwargs = kwargs
+        else:
+            data_args = args
+            data_kwargs = {**kwargs, "data": True}
+
+        for edge in self._base.get_edges(*data_args, **data_kwargs):
+            if len(edge) >= 3 and isinstance(edge[-1], Mapping):
+                if self._matches_temporal_filter(edge[-1]):
+                    yield edge if requested_data else edge[:-1]
             else:
-                # If edge format is unexpected, include it
+                # Preserve the fallback for unexpected edge formats.
                 yield edge
-    
+
     def get_edges(self, *args, **kwargs) -> list[Any]:
         """Get a list of edges that respect the current temporal slice.
         

@@ -5308,6 +5308,10 @@ tnet.add_edge('C', 'D', layer='work', t_start=120.0, t_end=180.0)
 snapshots use those configured fields, with intervals taking precedence over
 points, and preserve the original edge attributes.
 
+Each parallel edge is filtered using its own timestamps. `get_edges()` and
+`iter_edges()` preserve the base iterator's edge keys, coupling selection, and
+requested `data` format.
+
 **Snapshot at time t**:
 ```python
 result = Q.edges().at(150.0).execute(tnet)
