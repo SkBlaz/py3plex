@@ -1036,6 +1036,8 @@ Set query-level uncertainty quantification configuration.
 - MUST apply UQ defaults to all `.compute()` calls in this query
 - Per-metric parameters in `.compute()` MUST override query-level UQ
 - If `method=None`, MUST disable query-level UQ
+- Community UQ MUST preserve explicit seeds, including `seed=0`; only `None`
+  selects its default seed of 42.
 
 **Priority** (highest to lowest):
 1. Per-metric parameters in `.compute(uncertainty=True, n_samples=200)`
