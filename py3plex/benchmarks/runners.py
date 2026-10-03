@@ -399,7 +399,7 @@ class AutoCommunityRunner(CommunityAlgorithmRunner):
         if uq_spec and uq_spec.get("n_samples", 0) > 1:
             uq_method = uq_spec.get("method", "seed")
             n_samples = uq_spec.get("n_samples", 10)
-            uq_seed = uq_spec.get("seed", seed or 42)
+            uq_seed = uq_spec.get("seed", seed if seed is not None else 42)
             ac = ac.uq(method=uq_method, n_samples=n_samples, seed=uq_seed)
 
         # Set selection mode
