@@ -11,12 +11,17 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from .cost_model import CostEstimate, CostModel, NetworkStats
 from .physical_plan import PhysicalPlan, PhysicalPlanBuilder
 from .plan_nodes import LogicalOp
-from .rules import RuleEngine
+from .rules import (
+    OptimizationRule,
+    RuleEngine,
+    plan_fingerprint,
+    render_logical_plan,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -48,13 +53,14 @@ class Optimizer:
         enable_cost_based: bool = True,
         max_iter: int = 10,
         backend: str = "networkx",
+        rules: Optional[Sequence[OptimizationRule]] = None,
     ) -> None:
         self.cost_model = cost_model or CostModel()
         self.enable_rule_based = enable_rule_based
         self.enable_cost_based = enable_cost_based
         self.max_iter = max_iter
         self.backend = backend
-        self._rule_engine = RuleEngine(max_iter=max_iter)
+        self._rule_engine = RuleEngine(rules=rules, max_iter=max_iter)
 
     # ------------------------------------------------------------------
     # Public API
@@ -64,6 +70,7 @@ class Optimizer:
         self,
         logical_plan: LogicalOp,
         stats: Optional[NetworkStats] = None,
+        include_trace: bool = False,
     ) -> Tuple[PhysicalPlan, Dict[str, Any]]:
         """Optimize *logical_plan* and return a :class:`PhysicalPlan` plus
         optimizer metadata suitable for provenance.
@@ -94,9 +101,13 @@ class Optimizer:
         initial_cost = initial_estimate.total_cost
 
         # --- 2. rule-based rewrites -------------------------------------------
-        applied_rules: List[str] = []
+        original_plan = logical_plan
+        rewrite_result = None
         if self.enable_rule_based:
-            logical_plan, applied_rules = self._rule_engine.rewrite(logical_plan)
+            rewrite_result = self._rule_engine.optimize(logical_plan)
+            logical_plan = rewrite_result.optimized_plan
+        else:
+            original_fingerprint = plan_fingerprint(logical_plan)
 
         # --- 3. estimate final cost after rewrites ----------------------------
         final_estimate: CostEstimate = self.cost_model.estimate(logical_plan, stats)
@@ -110,19 +121,48 @@ class Optimizer:
 
         metadata: Dict[str, Any] = {
             "enabled": True,
-            "rules_applied": applied_rules,
+            "rewrites_enabled": self.enable_rule_based,
+            "rules_applied": (
+                [event.rule_name for event in rewrite_result.trace.events]
+                if rewrite_result is not None
+                else []
+            ),
+            "rule_ids_applied": (
+                rewrite_result.trace.rules_applied
+                if rewrite_result is not None
+                else []
+            ),
             "cost_before": round(initial_cost, 4),
             "cost_after": round(final_cost, 4),
             "plan_hash": physical_plan.plan_hash,
+            "original_plan_hash": (
+                rewrite_result.trace.original_fingerprint
+                if rewrite_result is not None
+                else original_fingerprint
+            ),
+            "optimized_plan_hash": (
+                rewrite_result.trace.optimized_fingerprint
+                if rewrite_result is not None
+                else original_fingerprint
+            ),
+            "passes": rewrite_result.trace.passes if rewrite_result is not None else 0,
             "estimated_rows": final_estimate.estimated_rows,
             "backend": self.backend,
             "optimizer_time_ms": round((t_end - t_start) * 1000, 3),
         }
+        if rewrite_result is not None and include_trace:
+            metadata["optimization_trace"] = rewrite_result.trace.to_dict()
+        if include_trace:
+            metadata["original_logical_plan"] = render_logical_plan(
+                rewrite_result.original_plan if rewrite_result is not None else original_plan
+            )
+            metadata["optimized_logical_plan"] = render_logical_plan(logical_plan)
+            metadata["physical_plan"] = physical_plan.to_dict()
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug(
                 "Optimizer: %d rule(s) applied, cost %.2f → %.2f, plan_hash=%s",
-                len(applied_rules),
+                len(metadata["rule_ids_applied"]),
                 initial_cost,
                 final_cost,
                 physical_plan.plan_hash,
@@ -144,6 +184,8 @@ def optimize_query(
     enable_rule_based: bool = True,
     enable_cost_based: bool = True,
     max_iter: int = 10,
+    include_trace: bool = False,
+    rules: Optional[Sequence[OptimizationRule]] = None,
 ) -> Tuple[PhysicalPlan, Dict[str, Any]]:
     """One-shot helper: build logical plan → optimise → return physical plan.
 
@@ -169,7 +211,7 @@ def optimize_query(
     # Build logical plan from AST.
     # LogicalPlanBuilder takes the AST query as its constructor argument and
     # .build() takes no additional arguments.
-    builder = LogicalPlanBuilder(ast)
+    builder = LogicalPlanBuilder(ast, params=params)
     logical_plan = builder.build()
 
     # Extract network stats if a network was provided
@@ -182,5 +224,6 @@ def optimize_query(
         enable_cost_based=enable_cost_based,
         max_iter=max_iter,
         backend=backend,
+        rules=rules,
     )
-    return optimizer.optimize(logical_plan, stats)
+    return optimizer.optimize(logical_plan, stats, include_trace=include_trace)

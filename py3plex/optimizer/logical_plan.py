@@ -8,7 +8,9 @@ the optimizer rules can reason about it without re-inspecting the raw AST.
 
 from __future__ import annotations
 
-from typing import Any, List
+import json
+from dataclasses import asdict, is_dataclass
+from typing import Any, Dict, List, Optional
 
 from .plan_nodes import (
     LogicalAggregate,
@@ -27,12 +29,16 @@ from .plan_nodes import (
     LogicalScanNodes,
     LogicalUQ,
 )
+from py3plex.dsl.ast import ParamRef
+from py3plex.dsl.errors import DslExecutionError, ParameterMissingError
 
 
 def _get_condition_list(select: Any) -> List[Any]:
     """Return a flat list of where-clause conditions from a SelectStmt."""
     conditions = []
     where = getattr(select, "where_clause", None)
+    if where is None:
+        where = getattr(select, "where", None)
     if where is None:
         return conditions
     if isinstance(where, list):
@@ -49,10 +55,21 @@ def _get_layer_list(select: Any) -> List[str]:
         return []
     # LayerExprBuilder stores layer names in .names
     if hasattr(layer_expr, "names"):
-        return list(layer_expr.names)
+        names = list(layer_expr.names)
+        return names if "*" not in names else []
     # LayerSet stores layer names in ._names
     if hasattr(layer_expr, "_names"):
-        return list(layer_expr._names)
+        names = list(layer_expr._names)
+        return names if "*" not in names else []
+    # The DSL v2 AST stores simple layer expressions as LayerExpr terms.
+    terms = getattr(layer_expr, "terms", None)
+    ops = getattr(layer_expr, "ops", None)
+    if terms is not None and ops is not None:
+        if len(ops) != max(0, len(terms) - 1) or any(op != "+" for op in ops):
+            return []
+        names = [getattr(term, "name", None) for term in terms]
+        if all(isinstance(name, str) and name != "*" for name in names):
+            return names
     return []
 
 
@@ -65,8 +82,11 @@ class LogicalPlanBuilder:
         The top-level ``Query`` dataclass (from ``py3plex.dsl.ast``).
     """
 
-    def __init__(self, ast_query: Any) -> None:
+    def __init__(
+        self, ast_query: Any, params: Optional[Dict[str, Any]] = None
+    ) -> None:
         self._query = ast_query
+        self._params = params or {}
 
     # ------------------------------------------------------------------
     # Public API
@@ -75,6 +95,8 @@ class LogicalPlanBuilder:
     def build(self) -> LogicalOp:
         """Build and return the root of the logical plan tree."""
         select = getattr(self._query, "select", None)
+        if select is None and hasattr(self._query, "target"):
+            select = self._query
         if select is None:
             # Fallback: return an empty node-scan so the optimizer never crashes
             return LogicalScanNodes()
@@ -108,15 +130,32 @@ class LogicalPlanBuilder:
         # -- 4. Compute ------------------------------------------------
         compute_spec = getattr(select, "compute_spec", None) or getattr(select, "compute", None)
         measures: List[str] = []
+        computation_signatures: List[str] = []
         if compute_spec:
             if isinstance(compute_spec, list):
                 for item in compute_spec:
-                    name = item if isinstance(item, str) else getattr(item, "measure", str(item))
+                    if isinstance(item, str):
+                        name = item
+                        signature_data = {"name": item}
+                    else:
+                        name = getattr(item, "name", getattr(item, "measure", str(item)))
+                        signature_data = asdict(item) if is_dataclass(item) else vars(item)
                     measures.append(name)
+                    computation_signatures.append(
+                        json.dumps(signature_data, sort_keys=True, default=str)
+                    )
             elif isinstance(compute_spec, dict):
                 measures = list(compute_spec.keys())
+                computation_signatures = [
+                    json.dumps({"name": name, "spec": spec}, sort_keys=True, default=str)
+                    for name, spec in compute_spec.items()
+                ]
         if measures:
-            comp = LogicalCompute(children=[node], measures=measures)
+            comp = LogicalCompute(
+                children=[node],
+                measures=measures,
+                computation_signatures=computation_signatures,
+            )
             node = comp
 
         # -- 5. Grouping -----------------------------------------------
@@ -154,7 +193,19 @@ class LogicalPlanBuilder:
         # -- 9. LIMIT --------------------------------------------------
         limit = getattr(select, "limit", None)
         if limit is not None:
-            lim = LogicalLimit(children=[node], n=int(limit))
+            if isinstance(limit, ParamRef):
+                if limit.name not in self._params:
+                    raise ParameterMissingError(
+                        limit.name, provided_params=list(self._params)
+                    )
+                limit = self._params[limit.name]
+            try:
+                limit_value = int(limit)
+            except (TypeError, ValueError) as exc:
+                raise DslExecutionError(
+                    f"Query limit must be an integer, got {limit!r}."
+                ) from exc
+            lim = LogicalLimit(children=[node], n=limit_value)
             node = lim
 
         # -- 10. UQ ----------------------------------------------------

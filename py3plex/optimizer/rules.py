@@ -9,10 +9,21 @@ fixpoint (up to ``OPTIMIZER_MAX_ITER`` rounds).
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 import logging
-from typing import List, Optional
+from dataclasses import dataclass, fields, is_dataclass
+from enum import Enum
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
-from .plan_nodes import LogicalOp
+from .plan_nodes import (
+    LogicalCompute,
+    LogicalFilter,
+    LogicalLayerFilter,
+    LogicalLimit,
+    LogicalOp,
+)
+from py3plex.dsl.errors import DslExecutionError
 
 logger = logging.getLogger(__name__)
 
@@ -23,17 +34,27 @@ logger = logging.getLogger(__name__)
 
 
 class OptimizationRule:
-    """Base class for all rewrite rules."""
+    """Base class for deterministic, semantics-preserving plan rewrites."""
 
+    id: str = ""
     name: str = "BaseRule"
+    description: str = ""
 
     def match(self, plan: LogicalOp) -> bool:  # noqa: ARG002
         """Return ``True`` if this rule can be applied to *plan*."""
         return False
 
+    def matches(self, plan: LogicalOp, context: Any = None) -> bool:  # noqa: ARG002
+        """Return whether this rule applies to *plan* in *context*."""
+        return self.match(plan)
+
     def apply(self, plan: LogicalOp) -> LogicalOp:
         """Return a rewritten logical plan (or the same node if unchanged)."""
         return plan
+
+    def rewrite(self, plan: LogicalOp, context: Any = None) -> LogicalOp:  # noqa: ARG002
+        """Return a rewritten plan without modifying the input plan."""
+        return self.apply(plan)
 
 
 # ---------------------------------------------------------------------------
@@ -45,6 +66,185 @@ def _type_name(op: LogicalOp) -> str:
     return type(op).__name__
 
 
+def _stable_value(value: Any) -> Any:
+    """Convert plan attributes to a deterministic JSON-compatible value."""
+    if value is None or isinstance(value, (bool, int, float, str)):
+        return value
+    if isinstance(value, Enum):
+        return value.value
+    if is_dataclass(value):
+        return {
+            item.name: _stable_value(getattr(value, item.name))
+            for item in fields(value)
+        }
+    if isinstance(value, dict):
+        entries = [
+            (_stable_value(key), _stable_value(item))
+            for key, item in value.items()
+        ]
+        return sorted(entries, key=lambda pair: json.dumps(pair[0], sort_keys=True))
+    if isinstance(value, (list, tuple)):
+        return [_stable_value(item) for item in value]
+    if isinstance(value, (set, frozenset)):
+        items = [_stable_value(item) for item in value]
+        return sorted(items, key=lambda item: json.dumps(item, sort_keys=True))
+    if callable(value):
+        raise TypeError("callables cannot be included in optimizer plan fingerprints")
+    if hasattr(value, "__dict__"):
+        return {
+            "__type__": type(value).__qualname__,
+            "attributes": {
+                key: _stable_value(item)
+                for key, item in sorted(vars(value).items())
+                if not key.startswith("_")
+            },
+        }
+    raise TypeError(
+        f"unsupported optimizer plan value: {type(value).__qualname__}"
+    )
+
+
+def plan_fingerprint(plan: LogicalOp) -> str:
+    """Return a stable SHA-256 fingerprint of a logical plan tree."""
+    def _node_payload(node: LogicalOp) -> Dict[str, Any]:
+        payload: Dict[str, Any] = {"type": type(node).__qualname__}
+        for item in fields(node):
+            value = getattr(node, item.name)
+            if item.name == "children":
+                payload[item.name] = [_node_payload(child) for child in value]
+            else:
+                payload[item.name] = _stable_value(value)
+        return payload
+
+    try:
+        serialized = json.dumps(
+            _node_payload(plan), sort_keys=True, separators=(",", ":"), allow_nan=False
+        )
+    except (TypeError, ValueError) as exc:
+        raise DslExecutionError(f"Unable to fingerprint optimizer plan: {exc}") from exc
+    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+
+
+def render_logical_plan(plan: LogicalOp) -> str:
+    """Render a logical plan as a stable, indented tree."""
+    labels = {
+        "LogicalScanNodes": "Scan[nodes]",
+        "LogicalScanEdges": "Scan[edges]",
+        "LogicalFilter": "Filter",
+        "LogicalLayerFilter": "LayerFilter",
+        "LogicalCompute": "Compute",
+        "LogicalAggregate": "Aggregate",
+        "LogicalGroupByLayer": "GroupByLayer",
+        "LogicalGroupByLayerPair": "GroupByLayerPair",
+        "LogicalCoverage": "Coverage",
+        "LogicalOrderBy": "Sort",
+        "LogicalLimit": "Limit",
+        "LogicalUQ": "UQ",
+        "LogicalNullModel": "NullModel",
+        "LogicalProject": "Project",
+        "LogicalEmptyScan": "EmptyScan",
+    }
+    lines: List[str] = []
+    stack: List[Tuple[LogicalOp, str, bool]] = [(plan, "", True)]
+    while stack:
+        node, prefix, is_last = stack.pop()
+        name = type(node).__name__
+        details: List[str] = []
+        for attr in ("conditions", "layers", "measures", "keys", "n", "columns"):
+            value = getattr(node, attr, None)
+            if value not in (None, [], ""):
+                details.append(f"{attr}={_stable_value(value)}")
+        label = labels.get(name, name)
+        if details:
+            label += "[" + ", ".join(details) + "]"
+        if lines:
+            lines.append(prefix + ("└── " if is_last else "├── ") + label)
+            child_prefix = prefix + ("    " if is_last else "│   ")
+        else:
+            lines.append(label)
+            child_prefix = ""
+        children = list(getattr(node, "children", []))
+        for index in range(len(children) - 1, -1, -1):
+            stack.append((children[index], child_prefix, index == len(children) - 1))
+    return "\n".join(lines)
+
+
+@dataclass(frozen=True)
+class RewriteEvent:
+    """One deterministic rewrite application."""
+
+    rule_id: str
+    rule_name: str
+    pass_number: int
+    before_fingerprint: str
+    after_fingerprint: str
+    details: Dict[str, Any]
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Return a JSON-compatible event."""
+        return {
+            "rule_id": self.rule_id,
+            "rule_name": self.rule_name,
+            "pass_number": self.pass_number,
+            "before_fingerprint": self.before_fingerprint,
+            "after_fingerprint": self.after_fingerprint,
+            "details": _stable_value(self.details),
+        }
+
+
+@dataclass(frozen=True)
+class OptimizationTrace:
+    """Structured summary of a bounded optimizer run."""
+
+    rules_considered: Tuple[str, ...]
+    events: Tuple[RewriteEvent, ...]
+    passes: int
+    original_fingerprint: str
+    optimized_fingerprint: str
+
+    @property
+    def rules_applied(self) -> List[str]:
+        """Return unique applied rule IDs in first-application order."""
+        return list(dict.fromkeys(event.rule_id for event in self.events))
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Return a JSON-compatible trace."""
+        return {
+            "rules_considered": list(self.rules_considered),
+            "rules_applied": self.rules_applied,
+            "passes": self.passes,
+            "original_fingerprint": self.original_fingerprint,
+            "optimized_fingerprint": self.optimized_fingerprint,
+            "events": [event.to_dict() for event in self.events],
+        }
+
+
+@dataclass(frozen=True)
+class RewriteResult:
+    """Original and optimized plans together with their rewrite trace."""
+
+    original_plan: LogicalOp
+    optimized_plan: LogicalOp
+    trace: OptimizationTrace
+
+
+def _rule_details(before: LogicalOp, after: LogicalOp) -> Dict[str, Any]:
+    details: Dict[str, Any] = {"node_type": type(before).__name__}
+    if isinstance(before, LogicalFilter) and isinstance(after, LogicalFilter):
+        details.update(
+            filters_before=len(before.conditions),
+            filters_after=len(after.conditions),
+        )
+    elif isinstance(before, LogicalLayerFilter) and isinstance(after, LogicalLayerFilter):
+        details.update(layers_before=list(before.layers), layers_after=list(after.layers))
+    elif isinstance(before, LogicalCompute) and isinstance(after, LogicalCompute):
+        details.update(
+            computations_before=list(before.measures),
+            computations_after=list(after.measures),
+        )
+    return details
+
+
 # ---------------------------------------------------------------------------
 # Rule 1: Push layer filter below compute
 # ---------------------------------------------------------------------------
@@ -53,7 +253,9 @@ def _type_name(op: LogicalOp) -> str:
 class PushLayerFilterBelowCompute(OptimizationRule):
     """Move ``LogicalLayerFilter`` before ``LogicalCompute``."""
 
+    id = "X001"
     name = "PushLayerFilterBelowCompute"
+    description = "Experimental output-layer filter movement across computation."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalCompute":
@@ -81,7 +283,9 @@ class PushLayerFilterBelowCompute(OptimizationRule):
 class PushFilterBelowCompute(OptimizationRule):
     """Move ``LogicalFilter`` before ``LogicalCompute`` when safe."""
 
+    id = "R003"
     name = "PushFilterBelowCompute"
+    description = "Push intrinsic-field filters beneath computation."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalCompute":
@@ -118,7 +322,9 @@ class PushFilterBelowCompute(OptimizationRule):
 class PushFilterBelowAggregate(OptimizationRule):
     """Move ``LogicalFilter`` before ``LogicalAggregate`` when safe."""
 
+    id = "X002"
     name = "PushFilterBelowAggregate"
+    description = "Experimental filter movement across aggregation."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalAggregate":
@@ -145,7 +351,9 @@ class PushFilterBelowAggregate(OptimizationRule):
 class CombineAdjacentFilters(OptimizationRule):
     """Merge two consecutive ``LogicalFilter`` nodes into one."""
 
+    id = "R001"
     name = "CombineAdjacentFilters"
+    description = "Fuse adjacent filters while preserving predicate order."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalFilter":
@@ -165,6 +373,150 @@ class CombineAdjacentFilters(OptimizationRule):
         return merged
 
 
+class ConstantPredicateSimplification(OptimizationRule):
+    """Remove identity ``True`` predicates from an AND condition list."""
+
+    id = "R002"
+    name = "ConstantPredicateSimplification"
+    description = "Remove literal True conditions from conjunctive filter lists."
+
+    def match(self, plan: LogicalOp) -> bool:
+        return isinstance(plan, LogicalFilter) and any(
+            condition is True for condition in plan.conditions
+        )
+
+    def apply(self, plan: LogicalOp) -> LogicalOp:
+        simplified = copy.copy(plan)
+        simplified.conditions = [
+            condition for condition in plan.conditions if condition is not True
+        ]
+        return simplified
+
+
+class PruneNestedLayerFilters(OptimizationRule):
+    """Intersect adjacent concrete layer filters without changing results."""
+
+    id = "R004"
+    name = "PruneNestedLayerFilters"
+    description = "Intersect adjacent concrete layer filters."
+
+    def match(self, plan: LogicalOp) -> bool:
+        return (
+            isinstance(plan, LogicalLayerFilter)
+            and len(plan.children) == 1
+            and isinstance(plan.children[0], LogicalLayerFilter)
+            and all(isinstance(layer, str) for layer in plan.layers)
+            and all(isinstance(layer, str) for layer in plan.children[0].layers)
+        )
+
+    def apply(self, plan: LogicalOp) -> LogicalOp:
+        inner = plan.children[0]
+        allowed = set(plan.layers)
+        merged = copy.copy(plan)
+        merged.layers = list(dict.fromkeys(
+            layer for layer in inner.layers if layer in allowed
+        ))
+        merged.children = list(inner.children)
+        return merged
+
+
+class DeduplicateComputations(OptimizationRule):
+    """Remove exact duplicate deterministic computations in one compute stage."""
+
+    id = "R006"
+    name = "DeduplicateComputations"
+    description = "Deduplicate identical deterministic computations in a stage."
+
+    @staticmethod
+    def _is_deterministic(measure: str) -> bool:
+        try:
+            from py3plex.dsl.metrics import find_metric
+            spec = find_metric(measure)
+            return bool(spec and spec.deterministic)
+        except (ImportError, AttributeError):
+            return False
+
+    @staticmethod
+    def _is_plain_signature(signature: str) -> bool:
+        try:
+            details = json.loads(signature)
+        except (TypeError, ValueError):
+            return False
+        return not any(
+            details.get(key)
+            for key in ("uncertainty", "approx")
+        ) and not any(
+            details.get(key) is not None
+            for key in (
+                "method", "n_samples", "ci", "bootstrap_unit",
+                "bootstrap_mode", "n_null", "null_model", "random_state", "kind",
+            )
+        )
+
+    def match(self, plan: LogicalOp) -> bool:
+        if not isinstance(plan, LogicalCompute):
+            return False
+        signatures = plan.computation_signatures
+        if len(signatures) != len(plan.measures):
+            signatures = [json.dumps({"name": name}, sort_keys=True) for name in plan.measures]
+        seen = set()
+        for name, signature in zip(plan.measures, signatures):
+            if (
+                self._is_deterministic(name)
+                and self._is_plain_signature(signature)
+                and signature in seen
+            ):
+                return True
+            seen.add(signature)
+        return False
+
+    def apply(self, plan: LogicalOp) -> LogicalOp:
+        signatures = plan.computation_signatures
+        if len(signatures) != len(plan.measures):
+            signatures = [json.dumps({"name": name}, sort_keys=True) for name in plan.measures]
+        seen = set()
+        measures: List[str] = []
+        retained_signatures: List[str] = []
+        for name, signature in zip(plan.measures, signatures):
+            duplicate_is_safe = (
+                self._is_deterministic(name)
+                and self._is_plain_signature(signature)
+            )
+            if duplicate_is_safe and signature in seen:
+                continue
+            seen.add(signature)
+            measures.append(name)
+            retained_signatures.append(signature)
+        rewritten = copy.copy(plan)
+        rewritten.measures = measures
+        rewritten.computation_signatures = retained_signatures
+        return rewritten
+
+
+class CollapseNestedLimits(OptimizationRule):
+    """Collapse adjacent non-negative limits to their minimum."""
+
+    id = "R007"
+    name = "CollapseNestedLimits"
+    description = "Collapse adjacent non-negative limits to the stricter bound."
+
+    def match(self, plan: LogicalOp) -> bool:
+        return (
+            isinstance(plan, LogicalLimit)
+            and plan.n >= 0
+            and len(plan.children) == 1
+            and isinstance(plan.children[0], LogicalLimit)
+            and plan.children[0].n >= 0
+        )
+
+    def apply(self, plan: LogicalOp) -> LogicalOp:
+        inner = plan.children[0]
+        collapsed = copy.copy(plan)
+        collapsed.n = min(plan.n, inner.n)
+        collapsed.children = list(inner.children)
+        return collapsed
+
+
 # ---------------------------------------------------------------------------
 # Rule 5: Reorder filters by selectivity
 # ---------------------------------------------------------------------------
@@ -173,7 +525,9 @@ class CombineAdjacentFilters(OptimizationRule):
 class ReorderFiltersBySelectivity(OptimizationRule):
     """Put cheaper / more-selective predicates first."""
 
+    id = "X003"
     name = "ReorderFiltersBySelectivity"
+    description = "Experimental predicate reordering heuristic."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalFilter":
@@ -206,7 +560,9 @@ class ReorderFiltersBySelectivity(OptimizationRule):
 class ConvertOrderByLimitToTopK(OptimizationRule):
     """Replace ``LogicalOrderBy`` + ``LogicalLimit`` with ``LogicalTopK``."""
 
+    id = "X004"
     name = "ConvertOrderByLimitToTopK"
+    description = "Experimental sort-and-limit physical strategy rewrite."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalOrderBy":
@@ -236,7 +592,9 @@ class ConvertOrderByLimitToTopK(OptimizationRule):
 class RemoveRedundantProject(OptimizationRule):
     """Remove a ``LogicalProject`` that selects all columns."""
 
+    id = "R005"
     name = "RemoveRedundantProject"
+    description = "Remove an empty project that denotes selection of all columns."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalProject":
@@ -256,7 +614,9 @@ class RemoveRedundantProject(OptimizationRule):
 class EarlyLimitPushdown(OptimizationRule):
     """Push ``LogicalLimit`` below ``LogicalOrderBy`` when safe."""
 
+    id = "X005"
     name = "EarlyLimitPushdown"
+    description = "Experimental early-limit movement."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalLimit":
@@ -287,7 +647,9 @@ class EarlyLimitPushdown(OptimizationRule):
 class ConvertAggregateToHashIfSmallGroups(OptimizationRule):
     """Tag ``LogicalAggregate`` with ``use_hash=True`` for small group counts."""
 
+    id = "X006"
     name = "ConvertAggregateToHashIfSmallGroups"
+    description = "Experimental aggregate strategy selection."
 
     SMALL_THRESHOLD = 128
 
@@ -313,7 +675,9 @@ class ConvertAggregateToHashIfSmallGroups(OptimizationRule):
 class UseCachedCentralityIfAvailable(OptimizationRule):
     """Replace ``LogicalCompute`` with a cache-read node when available."""
 
+    id = "X007"
     name = "UseCachedCentralityIfAvailable"
+    description = "Experimental cache lookup rewrite."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalCompute":
@@ -346,7 +710,9 @@ class UseCachedCentralityIfAvailable(OptimizationRule):
 class CollapsePerLayerIntoScanPartition(OptimizationRule):
     """Fold ``LogicalGroupByLayer`` directly into the scan operator."""
 
+    id = "X008"
     name = "CollapsePerLayerIntoScanPartition"
+    description = "Experimental grouping/scan fusion."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalGroupByLayer":
@@ -372,7 +738,9 @@ class CollapsePerLayerIntoScanPartition(OptimizationRule):
 class ConvertCoverageToBitmaskAggregation(OptimizationRule):
     """Tag ``LogicalCoverage`` to use a bitmask-based aggregation."""
 
+    id = "X009"
     name = "ConvertCoverageToBitmaskAggregation"
+    description = "Experimental coverage implementation selection."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalCoverage":
@@ -393,7 +761,9 @@ class ConvertCoverageToBitmaskAggregation(OptimizationRule):
 class ShortCircuitEmptyLayer(OptimizationRule):
     """Replace a scan on a known-empty layer with an empty-scan node."""
 
+    id = "X010"
     name = "ShortCircuitEmptyLayer"
+    description = "Experimental empty-layer scan short-circuit."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalLayerFilter":
@@ -415,7 +785,9 @@ class ShortCircuitEmptyLayer(OptimizationRule):
 class ConvertUQComputeToSharedBaseCompute(OptimizationRule):
     """Share the base-network compute result across UQ replicates."""
 
+    id = "X011"
     name = "ConvertUQComputeToSharedBaseCompute"
+    description = "Experimental shared base computation for UQ."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalUQ":
@@ -441,7 +813,9 @@ class ConvertUQComputeToSharedBaseCompute(OptimizationRule):
 class MergeMultipleComputesIntoSinglePass(OptimizationRule):
     """Merge two adjacent ``LogicalCompute`` nodes into one multi-measure pass."""
 
+    id = "X012"
     name = "MergeMultipleComputesIntoSinglePass"
+    description = "Experimental adjacent compute-stage fusion."
 
     def match(self, plan: LogicalOp) -> bool:
         if _type_name(plan) != "LogicalCompute":
@@ -463,11 +837,22 @@ class MergeMultipleComputesIntoSinglePass(OptimizationRule):
 # Rule engine
 # ---------------------------------------------------------------------------
 
-ALL_RULES: List[OptimizationRule] = [
+DEFAULT_REWRITE_RULES: Tuple[OptimizationRule, ...] = (
+    CombineAdjacentFilters(),
+    ConstantPredicateSimplification(),
+    PruneNestedLayerFilters(),
+    DeduplicateComputations(),
+    CollapseNestedLimits(),
+)
+
+# Kept as a compatibility alias; unsafe experimental rules remain available
+# by explicit construction, but are not part of the default rule set.
+ALL_RULES: List[OptimizationRule] = list(DEFAULT_REWRITE_RULES)
+
+LEGACY_EXPERIMENTAL_RULES: Tuple[OptimizationRule, ...] = (
     PushLayerFilterBelowCompute(),
     PushFilterBelowCompute(),
     PushFilterBelowAggregate(),
-    CombineAdjacentFilters(),
     ReorderFiltersBySelectivity(),
     ConvertOrderByLimitToTopK(),
     RemoveRedundantProject(),
@@ -479,58 +864,161 @@ ALL_RULES: List[OptimizationRule] = [
     ShortCircuitEmptyLayer(),
     ConvertUQComputeToSharedBaseCompute(),
     MergeMultipleComputesIntoSinglePass(),
-]
+)
+
+
+def validate_plan(plan: LogicalOp) -> None:
+    """Validate the structural invariants required by logical rewrites."""
+    stack = [plan]
+    while stack:
+        node = stack.pop()
+        if not isinstance(node, LogicalOp):
+            raise DslExecutionError(
+                f"Invalid optimizer plan child: expected LogicalOp, got {type(node).__name__}."
+            )
+        if not isinstance(node.children, list) or any(
+            not isinstance(child, LogicalOp) for child in node.children
+        ):
+            raise DslExecutionError(
+                f"Invalid children on optimizer node {type(node).__name__}."
+            )
+        if isinstance(node, LogicalLimit) and not isinstance(node.n, int):
+            raise DslExecutionError("LogicalLimit requires an integer limit.")
+        stack.extend(node.children)
 
 
 class RuleEngine:
-    """Iteratively applies all registered rules until fixpoint."""
+    """Apply an explicit, ordered set of rules with bounded convergence."""
 
     def __init__(
         self,
-        rules: Optional[List[OptimizationRule]] = None,
+        rules: Optional[Sequence[OptimizationRule]] = None,
         max_iter: int = 10,
     ) -> None:
-        self.rules = rules if rules is not None else list(ALL_RULES)
+        if max_iter < 1:
+            raise DslExecutionError("Optimizer max_iter must be at least 1.")
+        self.rules = tuple(rules if rules is not None else DEFAULT_REWRITE_RULES)
         self.max_iter = max_iter
+        identifiers = [rule.id for rule in self.rules]
+        if any(not identifier for identifier in identifiers):
+            raise DslExecutionError("Every optimizer rule must define a stable rule ID.")
+        if len(set(identifiers)) != len(identifiers):
+            duplicate = next(
+                identifier for identifier in identifiers if identifiers.count(identifier) > 1
+            )
+            raise DslExecutionError(f"Duplicate optimizer rule ID: {duplicate}.")
 
-    def _apply_once(self, plan: LogicalOp) -> tuple[LogicalOp, List[str]]:
-        """Apply each rule once to *plan* tree (top-down DFS).
+    def describe_rules(self) -> List[Dict[str, str]]:
+        """Return deterministic metadata for the configured rule order."""
+        return [
+            {"id": rule.id, "name": rule.name, "description": rule.description}
+            for rule in self.rules
+        ]
 
-        Returns the rewritten plan and the list of rule names that fired.
-        """
-        applied: List[str] = []
-        for rule in self.rules:
-            try:
-                if rule.match(plan):
-                    plan = rule.apply(plan)
-                    applied.append(rule.name)
-            except Exception as exc:  # noqa: BLE001
-                logger.warning("Rule %s failed: %s", rule.name, exc)
+    def _apply_once(
+        self, plan: LogicalOp, pass_number: int, context: Any
+    ) -> Tuple[LogicalOp, List[RewriteEvent]]:
+        """Apply one bottom-up pass without mutating the source plan."""
+        events: List[RewriteEvent] = []
+        rewritten: Dict[int, LogicalOp] = {}
+        stack: List[Tuple[LogicalOp, bool]] = [(plan, False)]
+        while stack:
+            node, visited = stack.pop()
+            if not visited:
+                stack.append((node, True))
+                for child in reversed(node.children):
+                    stack.append((child, False))
+                continue
 
-        # Recurse into children
-        new_children: List[LogicalOp] = []
-        for child in plan.children:
-            new_child, child_applied = self._apply_once(child)
-            new_children.append(new_child)
-            applied.extend(child_applied)
-
-        if new_children != list(plan.children):
-            plan = copy.copy(plan)
-            plan.children = new_children
-
-        return plan, applied
+            current = copy.copy(node)
+            current.children = [rewritten[id(child)] for child in node.children]
+            for rule in self.rules:
+                try:
+                    if not rule.matches(current, context):
+                        continue
+                    before_fingerprint = plan_fingerprint(current)
+                    candidate = rule.rewrite(copy.deepcopy(current), context)
+                    if not isinstance(candidate, LogicalOp):
+                        raise DslExecutionError(
+                            f"Optimizer rule {rule.id} returned {type(candidate).__name__}, "
+                            "expected LogicalOp."
+                        )
+                    after_fingerprint = plan_fingerprint(candidate)
+                    if before_fingerprint != after_fingerprint:
+                        events.append(
+                            RewriteEvent(
+                                rule_id=rule.id,
+                                rule_name=rule.name,
+                                pass_number=pass_number,
+                                before_fingerprint=before_fingerprint,
+                                after_fingerprint=after_fingerprint,
+                                details=_rule_details(current, candidate),
+                            )
+                        )
+                        current = candidate
+                except DslExecutionError:
+                    raise
+                except Exception as exc:
+                    raise DslExecutionError(
+                        f"Optimizer rule {rule.id} ({rule.name}) failed: {exc}"
+                    ) from exc
+            rewritten[id(node)] = current
+        result = rewritten[id(plan)]
+        validate_plan(result)
+        return result, events
 
     def rewrite(self, plan: LogicalOp) -> tuple[LogicalOp, List[str]]:
-        """Iteratively rewrite *plan* until fixpoint or *max_iter* rounds."""
-        all_applied: List[str] = []
-        for _ in range(self.max_iter):
-            new_plan, applied = self._apply_once(plan)
-            all_applied.extend(applied)
-            if not applied:
+        """Compatibility wrapper returning the plan and applied rule names."""
+        result = self.optimize(plan)
+        return result.optimized_plan, [event.rule_name for event in result.trace.events]
+
+    def optimize(self, plan: LogicalOp, context: Any = None) -> RewriteResult:
+        """Optimize *plan*, returning immutable trace and original/optimized trees."""
+        validate_plan(plan)
+        original = copy.deepcopy(plan)
+        original_fingerprint = plan_fingerprint(original)
+        current = copy.deepcopy(plan)
+        seen = {original_fingerprint}
+        events: List[RewriteEvent] = []
+        passes = 0
+
+        for pass_number in range(1, self.max_iter + 1):
+            rewritten, pass_events = self._apply_once(current, pass_number, context)
+            passes = pass_number
+            after_fingerprint = plan_fingerprint(rewritten)
+            logger.debug("Optimizer pass %d considered %d rule(s).", pass_number, len(self.rules))
+            for event in pass_events:
+                logger.debug(
+                    "%s %s: applied",
+                    event.rule_id,
+                    event.rule_name,
+                )
+            if after_fingerprint == plan_fingerprint(current):
+                current = rewritten
                 break
-            plan = new_plan
-        return plan, all_applied
+            if after_fingerprint in seen:
+                raise DslExecutionError(
+                    f"Optimizer rewrite cycle detected after pass {pass_number}."
+                )
+            seen.add(after_fingerprint)
+            events.extend(pass_events)
+            current = rewritten
+            if pass_number == self.max_iter:
+                probe, _ = self._apply_once(current, pass_number + 1, context)
+                if plan_fingerprint(probe) != after_fingerprint:
+                    raise DslExecutionError(
+                        f"Optimizer failed to converge after {self.max_iter} passes."
+                    )
+
+        optimized_fingerprint = plan_fingerprint(current)
+        trace = OptimizationTrace(
+            rules_considered=tuple(rule.id for rule in self.rules),
+            events=tuple(events),
+            passes=passes,
+            original_fingerprint=original_fingerprint,
+            optimized_fingerprint=optimized_fingerprint,
+        )
+        return RewriteResult(original, current, trace)
 
 
-# Public alias for ALL_RULES expected by the package __init__
-BUILTIN_RULES: List[OptimizationRule] = ALL_RULES
+BUILTIN_RULES: List[OptimizationRule] = list(DEFAULT_REWRITE_RULES)

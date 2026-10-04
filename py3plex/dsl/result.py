@@ -1688,6 +1688,10 @@ class QueryResult:
         * ``actual_cost``   – post-execution actual cost (if *analyze* and
           available)
         * ``applied_rules`` – list of rule names applied by the optimizer
+        * ``rule_ids_applied`` – stable rewrite-rule identifiers
+        * ``original_logical_plan`` / ``optimized_logical_plan`` – stable
+          rendered plans when explanation was requested during execution
+        * ``optimization_trace`` – structured rewrite events
 
         Example
         -------
@@ -1708,6 +1712,13 @@ class QueryResult:
                               optimizer_meta.get("cost_before", None)),
             "actual_cost": optimizer_meta.get("actual_cost", None) if analyze else None,
             "applied_rules": optimizer_meta.get("rules_applied", []),
+            "rule_ids_applied": optimizer_meta.get("rule_ids_applied", []),
+            "original_logical_plan": optimizer_meta.get("original_logical_plan"),
+            "optimized_logical_plan": optimizer_meta.get("optimized_logical_plan"),
+            "optimization_trace": optimizer_meta.get(
+                "optimization_trace", self.meta.get("optimizer_trace", {})
+            ),
+            "optimizer_enabled": optimizer_meta.get("enabled", False),
             "estimated_rows": optimizer_meta.get("estimated_rows", len(self.items)),
             "actual_rows": len(self.items),
             "plan_hash": optimizer_meta.get("plan_hash", None),

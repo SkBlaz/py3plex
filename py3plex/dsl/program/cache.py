@@ -130,6 +130,7 @@ def execution_fingerprint(
     params: Optional[Dict[str, Any]] = None,
     planner_config: Optional[Dict[str, Any]] = None,
     explain_plan: bool = False,
+    optimize: Optional[bool] = None,
 ) -> str:
     """Compute fingerprint of execution context.
     
@@ -151,6 +152,7 @@ def execution_fingerprint(
         "params": _cache_value(params or {}),
         "planner_config": _cache_value(planner_config or {}),
         "explain_plan": explain_plan,
+        "optimize": optimize,
     }
     json_str = json.dumps(context, sort_keys=True, allow_nan=False)
     return hashlib.sha256(json_str.encode()).hexdigest()

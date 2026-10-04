@@ -256,6 +256,7 @@ class GraphProgram:
         n_jobs: int = 1,
         cache_policy: str = "auto",
         planner_config: Optional[Dict[str, Any]] = None,
+        optimize: Optional[bool] = None,
         **kwargs: Any,
     ) -> QueryResult:
         """Execute the program on a network.
@@ -268,6 +269,7 @@ class GraphProgram:
             seed: Random seed for reproducibility
             n_jobs: Number of parallel jobs for execution
             cache_policy: Cache policy ("auto", "enabled", "disabled")
+            optimize: Override the configured DSL optimizer setting
             **kwargs: Additional execution parameters
         
         Returns:
@@ -284,6 +286,10 @@ class GraphProgram:
             random.seed(seed)
             np.random.seed(seed)
         
+        if optimize is None:
+            from py3plex import config
+            optimize = bool(getattr(config, "OPTIMIZER_ENABLED", False))
+
         # Cache only seeded executions. Unsupported values execute normally
         # without caching rather than receiving an incomplete cache identity.
         cache_key = None
@@ -304,6 +310,7 @@ class GraphProgram:
                     params=params,
                     planner_config=planner_config,
                     explain_plan=explain_plan,
+                    optimize=optimize,
                 )
             except (TypeError, ValueError):
                 execution_context = None
@@ -330,6 +337,7 @@ class GraphProgram:
             progress=progress,
             explain_plan=explain_plan,
             planner_config=planner_config,
+            optimize=optimize,
         )
         
         # Store in cache if enabled
