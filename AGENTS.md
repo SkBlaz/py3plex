@@ -5342,6 +5342,11 @@ zero-width windows and infinite iteration when positive durations are below
 the precision available at the requested timestamp. Small durations are valid
 when their additions advance the timestamp.
 
+When the inferred end equals the start (for example, all events share a single
+timestamp), `TemporalMultiLayerNetwork.window_iter()` emits one full window of
+the requested size, regardless of stride. Explicit equal or reversed bounds
+still produce no windows. Empty networks also produce no windows.
+
 ```python
 result = (
     Q.edges()
