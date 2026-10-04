@@ -115,6 +115,7 @@ def streaming_pagerank(
             if scores:
                 max_change = max(abs(new_scores.get(n, 0) - scores.get(n, 0)) for n in nodes)
                 if max_change < tolerance:
+                    scores = new_scores
                     break
             
             scores = new_scores

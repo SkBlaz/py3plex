@@ -5378,6 +5378,12 @@ result = (
 )
 ```
 
+### Streaming PageRank
+
+`streaming_pagerank` (from `py3plex.algorithms.temporal`) retains the newly
+computed scores when an iteration meets `tolerance`. Those scores are returned
+for the window and used to initialize the next window.
+
 ---
 
 ## Null Models and Statistical Testing
