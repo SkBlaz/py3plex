@@ -567,6 +567,11 @@ DSL v2 MUST satisfy the following design requirements:
 
 **Immutability**: QueryResult objects are IMMUTABLE after construction. All export methods MUST NOT modify the result.
 
+**Result Union**: `left | right` preserves dictionary-backed metrics for valid
+identifiers such as `0`, `False`, and `""`. Item presence is independent of its
+truth value. Shared identities retain the left operand's representative, and
+metric conflicts follow the configured resolution strategy.
+
 #### 2.4 Layer Set (`LayerSet`)
 
 **Location**: `py3plex.dsl.layers.LayerSet`
