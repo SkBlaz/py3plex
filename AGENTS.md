@@ -565,6 +565,12 @@ DSL v2 MUST satisfy the following design requirements:
 **Grouping Methods**:
 - `group_summary()` -> `pd.DataFrame` - Summary of groups (when grouping is active)
 
+**Result Symmetric Difference**: `left ^ right` keeps items present in exactly
+one operand under the chosen identity strategy. Each surviving item's metrics
+come from that operand, whether stored as item-keyed dictionaries or positional
+lists aligned with its `items`. The result stores these metrics as dictionaries;
+missing list entries remain unavailable. Neither operand is modified.
+
 **Immutability**: QueryResult objects are IMMUTABLE after construction. All export methods MUST NOT modify the result.
 
 #### 2.4 Layer Set (`LayerSet`)
