@@ -5354,6 +5354,10 @@ result = (
 
 ### Temporal Snapshots
 
+Streaming PageRank distributes scores held by nodes with no outgoing edges
+uniformly across the current snapshot at each iteration. This redistribution
+also applies when `normalize=False`; `normalize` controls the final rescaling.
+
 `TemporalMultiLayerNetwork.window_iter(..., layers=...)` accepts layer iterables,
 including generators. The same layer selection applies to every window in both
 temporal and cumulative snapshot modes; an empty iterable selects no edges.

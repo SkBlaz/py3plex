@@ -28,6 +28,9 @@ def streaming_pagerank(
     incrementally, using the previous window's scores as the starting point
     for the next window. This is much faster than recomputing from scratch
     for each window.
+
+    Scores held by nodes without outgoing edges are redistributed uniformly
+    among the current window's nodes at each power iteration.
     
     Args:
         temporal_network: TemporalMultiLayerNetwork instance
@@ -97,6 +100,11 @@ def streaming_pagerank(
         # Run limited power iteration
         for _ in range(max_iter_per_window):
             new_scores = {}
+            dangling_mass = sum(
+                scores[node]
+                for node in nodes
+                if (graph.out_degree(node) if graph.is_directed() else graph.degree(node)) == 0
+            ) / len(nodes)
             
             for node in nodes:
                 # Compute incoming contribution
@@ -110,7 +118,10 @@ def streaming_pagerank(
                             incoming_score += scores[pred] * edge_count / out_degree
                 
                 # Apply damping
-                new_scores[node] = (1 - damping_factor) / len(nodes) + damping_factor * incoming_score
+                new_scores[node] = (
+                    (1 - damping_factor) / len(nodes)
+                    + damping_factor * (incoming_score + dangling_mass)
+                )
             
             # Check convergence
             if scores:
