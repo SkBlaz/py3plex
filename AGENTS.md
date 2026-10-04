@@ -557,6 +557,11 @@ DSL v2 MUST satisfy the following design requirements:
 - `to_json()` -> `str` (JSON string)
 - `to_csv(path, **kwargs)` -> `None` (writes to file)
 
+**Edge DataFrames**: `to_pandas()` preserves the layers in four-field edge IDs
+`(source, target, source_layer, target_layer)`. Dictionary attributes use the
+full edge ID first, then replica-pair and legacy endpoint-pair keys. Existing
+replica edge formats and positional attribute lists are also supported.
+
 **Provenance Methods**:
 - `provenance` -> `Optional[Dict[str, Any]]` - Get provenance dictionary
 - `is_replayable` -> `bool` - Check if result has replayable provenance
