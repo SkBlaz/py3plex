@@ -106,7 +106,8 @@ def streaming_pagerank(
                         # Get out-degree of predecessor
                         out_degree = graph.out_degree(pred) if graph.is_directed() else graph.degree(pred)
                         if out_degree > 0:
-                            incoming_score += scores[pred] / out_degree
+                            edge_count = graph.number_of_edges(pred, node)
+                            incoming_score += scores[pred] * edge_count / out_degree
                 
                 # Apply damping
                 new_scores[node] = (1 - damping_factor) / len(nodes) + damping_factor * incoming_score
