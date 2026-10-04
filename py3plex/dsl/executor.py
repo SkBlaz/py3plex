@@ -6850,7 +6850,7 @@ def _execute_nodes_with_community_uq(
     partition_name = comm_config.get("partition_name", "default")
     uq_method = uq_config.method or "seed"
     n_samples = uq_config.n_samples or 50
-    seed = uq_config.seed or 42
+    seed = uq_config.seed if uq_config.seed is not None else 42
     
     if progress:
         logger.info(

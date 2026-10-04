@@ -33,6 +33,24 @@ def create_test_network():
 
 class TestCommunityUQIntegration:
     """Integration tests for community UQ via DSL."""
+
+    @pytest.mark.parametrize("seed", [0, 7, 42, None])
+    @pytest.mark.parametrize("uq_method", ["seed", "perturbation"])
+    @pytest.mark.parametrize("store", ["none", "sketch", "samples"])
+    def test_community_uq_preserves_explicit_seed(self, seed, uq_method, store):
+        """The requested seed must reach the ensemble RNG, including seed zero."""
+        noise = {"noise_model": EdgeDrop(p=0.1)} if uq_method == "perturbation" else {}
+        query = (
+            Q.nodes().community(method="leiden")
+            .uq(method=uq_method, n_samples=3, seed=seed, store=store, **noise)
+        )
+        result = query.execute(create_test_network())
+        expected_seed = 42 if seed is None else seed
+        partition_uq = result.meta['partition_uq']
+        assert partition_uq.meta['seed'] == expected_seed
+        assert partition_uq.meta['provenance']['randomness']['seed'] == expected_seed
+        assert partition_uq.n_samples == 3
+        assert query.to_ast().select.uq_config.seed == seed
     
     def test_community_without_uq(self):
         """Test basic community detection without UQ."""
