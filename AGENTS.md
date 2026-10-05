@@ -577,6 +577,11 @@ replica edge formats and positional attribute lists are also supported.
 **Grouping Methods**:
 - `group_summary()` -> `pd.DataFrame` - Summary of groups (when grouping is active)
 
+**NetworkX Edge Metrics**: `to_networkx(network)` attaches dictionary-backed
+endpoint-pair metrics to each selected edge, including parallel edges in a
+multigraph. It writes to edge attribute dictionaries and does not modify the
+source graph or query result.
+
 **Result Symmetric Difference**: `left ^ right` keeps items present in exactly
 one operand under the chosen identity strategy. Each surviving item's metrics
 come from that operand, whether stored as item-keyed dictionaries or positional

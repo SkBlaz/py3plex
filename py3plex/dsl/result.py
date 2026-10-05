@@ -1009,7 +1009,11 @@ class QueryResult:
                         if isinstance(edge, tuple) and len(edge) >= 2:
                             u, v = edge[0], edge[1]
                             if subgraph.has_edge(u, v):
-                                subgraph[u][v][attr_name] = val
+                                if subgraph.is_multigraph():
+                                    for edge_data in subgraph[u][v].values():
+                                        edge_data[attr_name] = val
+                                else:
+                                    subgraph[u][v][attr_name] = val
 
         return subgraph
 
