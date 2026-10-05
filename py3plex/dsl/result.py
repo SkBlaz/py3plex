@@ -908,7 +908,8 @@ class QueryResult:
             network: Optional source network to extract subgraph from
 
         Returns:
-            networkx.Graph subgraph containing result items
+            NetworkX subgraph containing result items, preserving the supplied
+            network's graph type (including directed multigraphs).
 
         Raises:
             ImportError: If networkx is not available
@@ -981,7 +982,9 @@ class QueryResult:
                     edge_list.append((u, v, edge_data))
 
             # Create new graph with selected edges
-            if isinstance(G, nx.MultiGraph):
+            if isinstance(G, nx.MultiDiGraph):
+                subgraph = nx.MultiDiGraph()
+            elif isinstance(G, nx.MultiGraph):
                 subgraph = nx.MultiGraph()
             elif isinstance(G, nx.DiGraph):
                 subgraph = nx.DiGraph()
