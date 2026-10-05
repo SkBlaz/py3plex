@@ -945,7 +945,7 @@ class QueryResult:
                     for node, val in values.items():
                         if node in subgraph:
                             subgraph.nodes[node][attr_name] = val
-                elif len(values) == len(self.items):
+                elif isinstance(values, list) or len(values) == len(self.items):
                     for item, val in zip(self.items, values):
                         if item in subgraph:
                             subgraph.nodes[item][attr_name] = val

@@ -546,6 +546,8 @@ DSL v2 MUST satisfy the following design requirements:
 - `target`: `str` - "nodes" or "edges"
 - `items`: `List[Any]` - List of node/edge identifiers
 - `attributes`: `Dict[str, Union[List[Any], Dict[Any, Any]]]` - Computed attributes (column -> values)
+  For node exports to NetworkX, positional lists attach their available prefix
+  to corresponding `items`; extra values are ignored and unavailable values do not overwrite source attributes.
 - `meta`: `Dict[str, Any]` - Execution metadata (provenance, grouping, etc.)
 - `computed_metrics`: `Set[str]` - Set of metrics computed during execution
 - `sensitivity_result`: `Optional[SensitivityResult]` - Sensitivity analysis results if requested
