@@ -570,6 +570,12 @@ replica edge formats and positional attribute lists are also supported.
 **Grouping Methods**:
 - `group_summary()` -> `pd.DataFrame` - Summary of groups (when grouping is active)
 
+**Result Symmetric Difference**: `left ^ right` keeps items present in exactly
+one operand under the chosen identity strategy. Each surviving item's metrics
+come from that operand, whether stored as item-keyed dictionaries or positional
+lists aligned with its `items`. The result stores these metrics as dictionaries;
+missing list entries remain unavailable. Neither operand is modified.
+
 **Immutability**: QueryResult objects are IMMUTABLE after construction. All export methods MUST NOT modify the result.
 
 **Result Union**: `left | right` preserves dictionary-backed metrics for valid

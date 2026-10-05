@@ -2123,6 +2123,10 @@ class QueryResult:
         for attr in set(self.attributes.keys()) | set(other.attributes.keys()):
             values1 = self.attributes.get(attr, {})
             values2 = other.attributes.get(attr, {})
+            if isinstance(values1, list):
+                values1 = dict(zip(self.items, values1))
+            if isinstance(values2, list):
+                values2 = dict(zip(other.items, values2))
             
             merged_values = {}
             for item in result_items:
