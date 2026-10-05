@@ -2044,6 +2044,9 @@ class QueryResult:
                     for item in result_items 
                     if item in values
                 }
+            elif isinstance(values, list):
+                values_by_item = dict(zip(self.items, values))
+                result_attributes[attr] = [values_by_item.get(item) for item in result_items]
             else:
                 result_attributes[attr] = values
         

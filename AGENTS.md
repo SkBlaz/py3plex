@@ -550,6 +550,11 @@ DSL v2 MUST satisfy the following design requirements:
 - `computed_metrics`: `Set[str]` - Set of metrics computed during execution
 - `sensitivity_result`: `Optional[SensitivityResult]` - Sensitivity analysis results if requested
 
+**Result difference** (`left - right`): Attribute values remain associated with
+their retained items. List-backed attributes are reindexed to match the returned
+item order, including uncertainty dictionaries. Missing entries in short lists
+remain missing (`None`). Subtraction does not modify either input result.
+
 **Export Methods**:
 - `to_pandas(expand_uncertainty=False, expand_explanations=False)` -> `pd.DataFrame`
 - `to_networkx()` -> `nx.Graph` or `nx.MultiGraph`
