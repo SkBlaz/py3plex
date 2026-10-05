@@ -960,6 +960,13 @@ class QueryResult:
                     u, v = edge[0], edge[1]
                     nodes_in_edges.add(u)
                     nodes_in_edges.add(v)
+                    edge_key = None
+                    if (
+                        G.is_multigraph()
+                        and (len(edge) == 3 or (len(edge) == 4 and isinstance(edge[3], dict)))
+                        and not isinstance(edge[2], dict)
+                    ):
+                        edge_key = edge[2]
 
                     # Get edge data from original graph or from edge tuple
                     edge_data = {}
@@ -969,9 +976,12 @@ class QueryResult:
                             # Get first edge data (multigraphs have multiple edges)
                             all_edge_data = G.get_edge_data(u, v)
                             if all_edge_data:
-                                # Get first edge's data
-                                first_key = list(all_edge_data.keys())[0]
-                                edge_data = all_edge_data[first_key].copy()
+                                if edge_key is not None:
+                                    edge_data = all_edge_data.get(edge_key, {}).copy()
+                                else:
+                                    # Unkeyed selections retain the first-edge fallback.
+                                    first_key = list(all_edge_data.keys())[0]
+                                    edge_data = all_edge_data[first_key].copy()
                         else:
                             edge_data = G.get_edge_data(u, v, {})
                             if isinstance(edge_data, dict):
@@ -979,7 +989,7 @@ class QueryResult:
                     elif len(edge) >= 3 and isinstance(edge[2], dict):
                         edge_data = edge[2].copy()
 
-                    edge_list.append((u, v, edge_data))
+                    edge_list.append((u, v, edge_key, edge_data))
 
             # Create new graph with selected edges
             if isinstance(G, nx.MultiDiGraph):
@@ -999,8 +1009,11 @@ class QueryResult:
                     subgraph.add_node(node)
 
             # Add edges with their attributes
-            for u, v, data in edge_list:
-                subgraph.add_edge(u, v, **data)
+            for u, v, key, data in edge_list:
+                if subgraph.is_multigraph():
+                    subgraph.add_edges_from([(u, v, key, data)])
+                else:
+                    subgraph.add_edge(u, v, **data)
 
             # Attach computed edge attributes
             for attr_name, values in self.attributes.items():
