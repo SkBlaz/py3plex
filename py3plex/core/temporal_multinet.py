@@ -293,7 +293,8 @@ class TemporalMultiLayerNetwork:
             window_size: Size of each window (numeric or timedelta)
             step: Step size between windows (defaults to window_size for non-overlapping)
             start: Start time for windowing (defaults to first timestamp)
-            end: End time for windowing (defaults to last timestamp)
+            end: End time for windowing (defaults to last timestamp; an inferred
+                point range emits one full window)
             layers: Optional layer filter, consumed once and reused for all windows
             return_type: Type of window to return:
                         - "temporal": TemporalMultiLayerNetwork
@@ -332,6 +333,14 @@ class TemporalMultiLayerNetwork:
         if not math.isfinite(t_start) or not math.isfinite(t_end):
             raise ValueError("start and end must be finite timestamps")
 
+        single_window = end is None and t_start == t_end
+        if single_window:
+            t_end = t_start + window_size
+            if not math.isfinite(t_end):
+                raise ValueError("inferred window end must be a finite timestamp")
+            if t_end <= t_start:
+                raise ValueError("window_size is too small to advance the current timestamp")
+
         # Preserve one-shot layer iterables across all windows.
         layers = frozenset(layers) if layers is not None else None
         
@@ -355,6 +364,9 @@ class TemporalMultiLayerNetwork:
             elif return_type == "snapshot":
                 window_net = self.snapshot_at(current_end, mode="up_to", layers=layers)
             yield (current_start, current_end, window_net)
+
+            if single_window:
+                return
             
             current_start = next_start
     
