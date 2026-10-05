@@ -5396,6 +5396,10 @@ snapshot = tnet.get_snapshot(time_range=(100.0, 150.0))
 result = Q.nodes().compute("degree").execute(snapshot)
 ```
 
+Streaming PageRank counts an undirected self-loop as one outgoing transition,
+matching NetworkX PageRank. Its transition denominator therefore counts each
+self-loop once, although the graph's undirected degree counts it twice.
+
 ### Temporal Aggregation
 
 `streaming_pagerank` (from `py3plex.algorithms.temporal`) counts each parallel

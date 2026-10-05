@@ -113,6 +113,9 @@ def streaming_pagerank(
                     if pred in scores:
                         # Get out-degree of predecessor
                         out_degree = graph.out_degree(pred) if graph.is_directed() else graph.degree(pred)
+                        if not graph.is_directed():
+                            # Degree counts self-loops twice; PageRank traverses them once.
+                            out_degree -= graph.number_of_edges(pred, pred)
                         if out_degree > 0:
                             edge_count = graph.number_of_edges(pred, node)
                             incoming_score += scores[pred] * edge_count / out_degree
