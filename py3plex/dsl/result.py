@@ -1810,8 +1810,14 @@ class QueryResult:
                 item1 = id_to_item1.get(item_id)
                 item2 = id_to_item2.get(item_id)
                 
-                val1 = values1.get(item1) if isinstance(values1, dict) and item1 else None
-                val2 = values2.get(item2) if isinstance(values2, dict) and item2 else None
+                val1 = (
+                    values1.get(item1)
+                    if isinstance(values1, dict) and item_id in id_to_item1 else None
+                )
+                val2 = (
+                    values2.get(item2)
+                    if isinstance(values2, dict) and item_id in id_to_item2 else None
+                )
                 
                 if val1 is not None and val2 is not None:
                     # Both have value - resolve conflict
@@ -1827,7 +1833,9 @@ class QueryResult:
                     continue
                 
                 # Use the actual item from result_items
-                actual_item = id_to_item1.get(item_id) or id_to_item2.get(item_id)
+                actual_item = (
+                    id_to_item1[item_id] if item_id in id_to_item1 else id_to_item2[item_id]
+                )
                 merged_values[actual_item] = merged_val
             
             result_attributes[attr] = merged_values
