@@ -406,7 +406,12 @@ class AutoCommunityRunner(CommunityAlgorithmRunner):
         if mode == "pareto":
             ac = ac.pareto()
         elif mode == "wins":
-            ac = ac.select_by_wins()
+            raise AlgorithmError(
+                "AutoCommunityRunner does not support mode='wins'. "
+                "Use mode='pareto' for benchmarks, or call "
+                "auto_select_community(..., mode='wins') directly.",
+                algorithm_name="autocommunity",
+            )
         else:
             ac = ac.pareto()
 
