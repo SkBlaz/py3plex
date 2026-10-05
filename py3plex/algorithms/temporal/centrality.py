@@ -161,7 +161,8 @@ def streaming_degree_centrality(
         temporal_network: TemporalMultiLayerNetwork instance
         window_size: Size of each time window (required)
         step: Step size between windows (defaults to window_size)
-        normalize: Whether to normalize by max possible degree (default: True)
+        normalize: Whether to divide total degree by n - 1 (default: True).
+                   Directed, parallel, or self-loop degrees may yield values above 1.
         
     Yields:
         Tuples of (t_start, t_end, centrality_dict)
@@ -197,7 +198,7 @@ def streaming_degree_centrality(
         # Normalize if requested
         if normalize and degrees:
             n = graph.number_of_nodes()
-            max_degree = 2 * (n - 1) if not graph.is_directed() else (n - 1)
+            max_degree = n - 1
             if max_degree > 0:
                 degrees = {node: deg / max_degree for node, deg in degrees.items()}
         
