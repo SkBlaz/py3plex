@@ -661,7 +661,16 @@ class QueryResult:
             rows = []
             for edge in self.items:
                 if isinstance(edge, tuple) and len(edge) >= 2:
-                    source, target = edge[0], edge[1]
+                    if (
+                        len(edge) == 4
+                        and not isinstance(edge[2], dict)
+                        and not isinstance(edge[3], dict)
+                    ):
+                        source, target = (edge[0], edge[2]), (edge[1], edge[3])
+                        edge_keys = (edge, (source, target), (edge[0], edge[1]))
+                    else:
+                        source, target = edge[0], edge[1]
+                        edge_keys = ((source, target),)
                     row = {}
 
                     # Extract source and target info
@@ -686,12 +695,13 @@ class QueryResult:
                         row["weight"] = 1.0
 
                     # Add computed attributes
-                    # Use hashable edge key (u, v) for lookup
-                    edge_key = (source, target)
                     for attr_name, values in self.attributes.items():
                         if isinstance(values, dict):
-                            # Use simplified key for lookup
-                            if edge_key in values:
+                            # Prefer the full identity before compatible endpoint keys.
+                            edge_key = next(
+                                (key for key in edge_keys if key in values), None
+                            )
+                            if edge_key is not None:
                                 value = values[edge_key]
 
                                 if expand_uncertainty:
