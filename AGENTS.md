@@ -558,6 +558,8 @@ remain missing (`None`). Subtraction does not modify either input result.
 **Export Methods**:
 - `to_pandas(expand_uncertainty=False, expand_explanations=False)` -> `pd.DataFrame`
 - `to_networkx()` -> `nx.Graph` or `nx.MultiGraph`
+  Supplying the source network preserves its graph type, including `nx.DiGraph`
+  and `nx.MultiDiGraph`; selected directed edges retain their orientation.
 - `to_arrow()` -> `pa.Table`
 - `to_json()` -> `str` (JSON string)
 - `to_csv(path, **kwargs)` -> `None` (writes to file)
