@@ -5451,6 +5451,12 @@ null_nets = [configuration_model(net, seed=i) for i in range(100)]
 
 ### Erdős-Rényi Model
 
+`erdos_renyi_model(network, seed=...)` preserves the input graph's directionality.
+For simple directed graphs it samples ordered node pairs with probability
+`m / (n * (n - 1))`; for undirected graphs the denominator is `n * (n - 1) / 2`.
+Reciprocal directed edges are sampled independently. Edge density is preserved
+in expectation, rather than requiring an exact edge count in every sample.
+
 ```python
 from py3plex.nullmodels import erdos_renyi_multilayer
 
