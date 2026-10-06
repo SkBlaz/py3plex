@@ -8847,6 +8847,10 @@ Q.nodes().compute("pagerank").uq(method="bootstrap", n_samples=100, seed=42).exe
 - `coverage_full.json` - Complete coverage data (appears to be from partial test run)
 - `coverage_broader.json` - Alternative coverage report
 
+**Cached method identity**: `CacheManager.cached_method()` scopes each result to the
+receiver object and decorated function as well as the arguments. Receivers are held
+while their entries remain cached, then released on eviction or cache clearing.
+
 ### Test Organization
 
 **Test Suite Statistics**:
