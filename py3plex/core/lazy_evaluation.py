@@ -57,6 +57,19 @@ class LazyProperty:
         setattr(obj, cache_attr, value)
 
 
+class _IdentityKey:
+    """Hash a receiver by identity, keeping it alive while its entry is cached."""
+
+    def __init__(self, obj: Any) -> None:
+        self.obj = obj
+
+    def __hash__(self) -> int:
+        return id(self.obj)
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, _IdentityKey) and self.obj is other.obj
+
+
 class CacheManager:
     """Manages caching for expensive network computations.
     
@@ -127,8 +140,13 @@ class CacheManager:
         def decorator(func: Callable) -> Callable:
             @functools.wraps(func)
             def wrapper(obj_self, *args, **kwargs):
-                # Generate cache key from function name and arguments
-                cache_key = cache_manager._generate_cache_key(func.__name__, args, kwargs)
+                # Scope results to the method and receiver as well as its arguments.
+                # Retaining the receiver prevents reuse of its identity after GC.
+                cache_key = (
+                    func,
+                    _IdentityKey(obj_self),
+                    cache_manager._generate_cache_key(func.__name__, args, kwargs),
+                )
                 cache = cache_manager.get_cache(cache_name)
                 
                 # Check if result is cached
