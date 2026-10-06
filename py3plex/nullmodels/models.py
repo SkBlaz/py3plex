@@ -222,12 +222,13 @@ def erdos_renyi_model(
     n = len(G.nodes())
     m = len(G.edges())
     
-    # Calculate edge probability
-    max_edges = n * (n - 1) / 2
+    # Directed graphs sample ordered pairs, including reciprocal arcs.
+    directed = G.is_directed()
+    max_edges = n * (n - 1) if directed else n * (n - 1) / 2
     p = m / max_edges if max_edges > 0 else 0
     
     # Create ER graph
-    random_G = nx.gnp_random_graph(n, p, seed=seed)
+    random_G = nx.gnp_random_graph(n, p, seed=seed, directed=directed)
     
     # Map to original node labels
     nodes = list(G.nodes())
@@ -235,9 +236,7 @@ def erdos_renyi_model(
     random_G = nx.relabel_nodes(random_G, mapping)
     
     # Create new py3plex network
-    new_network = multinet.multi_layer_network(
-        directed=network.directed if hasattr(network, 'directed') else False
-    )
+    new_network = multinet.multi_layer_network(directed=directed)
     
     # Add nodes
     for node in nodes:
