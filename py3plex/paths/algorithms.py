@@ -398,7 +398,8 @@ def multilayer_flow(
     for u, v, data in G.edges(data=True):
         capacity = data.get(capacity_attr, 1.0)
         DG.add_edge(u, v, capacity=capacity)
-        DG.add_edge(v, u, capacity=capacity)  # Undirected -> bidirectional
+        if not G.is_directed():
+            DG.add_edge(v, u, capacity=capacity)  # Undirected -> bidirectional
     
     # Find max flow from first source to first target
     src = source_nodes[0]
