@@ -240,21 +240,22 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
         # Nodes are stored with composite IDs (node_id, layer) and __layer__ attribute
         # We need to extract both the node ID and layer from each node
         nodes_to_add = []
+        node_ids = {}
+        stored_layers = {}
         
         for node in graph.nodes.values():
-            # Extract node_id and layer from composite ID
+            # Metadata contains the original scalar identity. Do not JSON-decode
+            # strings such as "null" or "[1,2]", which are valid node names.
             if isinstance(node.id, str) and '@@@' in node.id:
-                # Parse composite ID
-                parts = node.id.split('@@@', 1)
-                node_id, layer = parts[0], parts[1]
-                # Try to decode node_id if it was encoded
-                if '__node_id__' in node.attributes:
-                    node_id = _decode_attribute(node.attributes['__node_id__'])
+                fallback_id, fallback_layer = node.id.split('@@@', 1)
             else:
-                # Fallback: check for stored attributes
-                node_id = _decode_attribute(node.attributes.get('__node_id__', node.id))
-                layer = node.attributes.get('__layer__', 'default')
-            
+                fallback_id, fallback_layer = node.id, 'default'
+            node_id = node.attributes.get('__node_id__', fallback_id)
+            layer = node.attributes.get('__layer__', fallback_layer)
+            node_ids[node.id] = node_id
+            if '__layer__' in node.attributes:
+                stored_layers[node.id] = layer
+
             node_dict = {
                 'source': node_id,
                 'type': layer
@@ -273,22 +274,14 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
         # Add edges
         edges_to_add = []
         for edge in graph.edges:
-            # Extract actual node IDs from composite IDs
-            if isinstance(edge.src, str) and '@@@' in edge.src:
-                src_id = edge.src.split('@@@', 1)[0]
-            else:
-                src_id = edge.src
-            
-            if isinstance(edge.dst, str) and '@@@' in edge.dst:
-                dst_id = edge.dst.split('@@@', 1)[0]
-            else:
-                dst_id = edge.dst
-            
+            # Resolve endpoints through the same identities used for nodes.
+            # Splitting composite strings creates extra string-valued replicas
+            # for numeric IDs and truncates IDs containing the delimiter.
             edge_dict = {
-                'source': src_id,
-                'target': dst_id,
-                'source_type': edge.src_layer,
-                'target_type': edge.dst_layer
+                'source': node_ids[edge.src],
+                'target': node_ids[edge.dst],
+                'source_type': stored_layers.get(edge.src, edge.src_layer),
+                'target_type': stored_layers.get(edge.dst, edge.dst_layer)
             }
             # Add edge attributes
             edge_dict.update(
