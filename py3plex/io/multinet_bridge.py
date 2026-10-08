@@ -280,8 +280,7 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
                 'source': src_id,
                 'target': dst_id,
                 'source_type': edge.src_layer,
-                'target_type': edge.dst_layer,
-                'key': edge.key
+                'target_type': edge.dst_layer
             }
             # Add edge attributes
             edge_dict.update(
@@ -290,6 +289,8 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
                     for key, value in edge.attributes.items()
                 }
             )
+            # Preserve the schema's edge identity independently of attributes.
+            edge_dict['key'] = edge.key
             edges_to_add.append(edge_dict)
         
         if edges_to_add:
