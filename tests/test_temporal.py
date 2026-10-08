@@ -11,6 +11,7 @@ Tests cover:
 import datetime
 import pytest
 from py3plex.core import multinet
+from py3plex.exceptions import ParsingError
 from py3plex.temporal_utils import (
     _parse_time,
     extract_edge_time,
@@ -63,11 +64,11 @@ class TestTemporalUtils:
         assert isinstance(result, float)
     
     def test_parse_time_invalid(self):
-        """Test that invalid values raise ValueError."""
-        with pytest.raises(ValueError):
+        """Test that invalid values raise the documented parsing error."""
+        with pytest.raises(ParsingError):
             _parse_time("invalid")
         
-        with pytest.raises(ValueError):
+        with pytest.raises(ParsingError):
             _parse_time(None)
     
     def test_extract_edge_time_point(self):

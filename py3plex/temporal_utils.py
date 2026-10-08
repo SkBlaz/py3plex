@@ -94,7 +94,7 @@ def _parse_time(value: TimeLike) -> float:
         Float timestamp in seconds since epoch
         
     Raises:
-        ValueError: If the value cannot be parsed as a time
+        ParsingError: If the value cannot be parsed as a time
         
     Examples:
         >>> _parse_time(1234567890)
@@ -121,6 +121,14 @@ def _parse_time(value: TimeLike) -> float:
     
     # Handle string types
     if isinstance(value, str):
+        # Numeric strings can also be accepted as compact ISO dates by
+        # datetime.fromisoformat. Prefer numeric semantics for timestamps.
+        # Try to parse as float string
+        try:
+            return float(value)
+        except ValueError:
+            pass
+
         # Try to parse as ISO format
         try:
             # Python <3.11 requires an explicit offset instead of the UTC Z suffix.
@@ -132,13 +140,7 @@ def _parse_time(value: TimeLike) -> float:
             return dt.timestamp()
         except (ValueError, AttributeError):
             pass
-        
-        # Try to parse as float string
-        try:
-            return float(value)
-        except ValueError:
-            pass
-        
+
         # If all else fails, raise error with helpful suggestions
         raise ParsingError(
             f"Cannot parse time value '{value}'",
