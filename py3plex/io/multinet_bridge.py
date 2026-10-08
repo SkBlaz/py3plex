@@ -7,7 +7,7 @@ This module provides conversion functions between py3plex's main network class
 
 import json
 import numpy as np
-from typing import Any, Dict
+from typing import Any, Dict, Iterator, Tuple
 
 import py3plex
 from py3plex.core.multinet import multi_layer_network
@@ -85,6 +85,18 @@ def _decode_attribute(value: Any) -> Any:
     return value
 
 
+def _iter_replica_edges(
+    net: multi_layer_network,
+) -> Iterator[Tuple[Any, Any, Any, Dict[str, Any]]]:
+    """Yield each stored edge with its own key and data, including coupling."""
+    graph = net.core_network
+    if graph.is_multigraph():
+        yield from graph.edges(keys=True, data=True)
+    else:
+        for source, target, data in graph.edges(data=True):
+            yield source, target, 0, data
+
+
 def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
     """
     Convert multi_layer_network to MultiLayerGraph schema.
@@ -157,28 +169,11 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
             composite_id = f"{node_id}@@@{layer}"
             graph.add_node(Node(id=composite_id, attributes=node_attrs))
         
-        # Get all edges with attributes
-        # get_edges() returns generator of tuples: ((src, src_layer), (dst, dst_layer))
-        for edge_tuple in net.get_edges():
-            (src, src_layer), (dst, dst_layer) = edge_tuple
-            
-            # Get edge attributes
-            edge_attrs = {}
-            if net.core_network.has_edge((src, src_layer), (dst, dst_layer)):
-                # Get all edge data (there might be multiple edges with different keys)
-                edge_data_dict = net.core_network.get_edge_data((src, src_layer), (dst, dst_layer))
-                # For multigraphs, get_edge_data returns dict of {key: data}
-                if isinstance(edge_data_dict, dict):
-                    # Take the first edge's data (key 0)
-                    if 0 in edge_data_dict:
-                        edge_attrs = dict(edge_data_dict[0])
-                    else:
-                        # Get first available key
-                        first_key = next(iter(edge_data_dict.keys()))
-                        edge_attrs = dict(edge_data_dict[first_key])
-                else:
-                    edge_attrs = dict(edge_data_dict) if edge_data_dict else {}
-            
+        # Read each individual edge rather than looking up the first edge
+        # between two endpoints, which loses parallel-edge keys and attributes.
+        for (src, src_layer), (dst, dst_layer), key, data in _iter_replica_edges(net):
+            edge_attrs = dict(data)
+
             # Remove internal NetworkX attributes
             edge_attrs.pop('_edge_id', None)
             
@@ -194,7 +189,7 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
                 dst=dst_composite,
                 src_layer=src_layer,
                 dst_layer=dst_layer,
-                key=0,
+                key=key,
                 attributes=edge_attrs
             ))
         
@@ -285,7 +280,8 @@ def multilayergraph_to_multinet(graph: MultiLayerGraph) -> multi_layer_network:
                 'source': src_id,
                 'target': dst_id,
                 'source_type': edge.src_layer,
-                'target_type': edge.dst_layer
+                'target_type': edge.dst_layer,
+                'key': edge.key
             }
             # Add edge attributes
             edge_dict.update(
@@ -363,20 +359,8 @@ def multinet_to_multilayergraph_with_metadata(net: multi_layer_network) -> tuple
                     manifest_key, type(value).__name__
                 )
 
-        for (src, src_layer), (dst, dst_layer) in net.get_edges():
-            if not net.core_network.has_edge((src, src_layer), (dst, dst_layer)):
-                continue
-            edge_data_dict = net.core_network.get_edge_data(
-                (src, src_layer), (dst, dst_layer)
-            )
-            if isinstance(edge_data_dict, dict):
-                if 0 in edge_data_dict:
-                    raw_attrs = dict(edge_data_dict[0])
-                else:
-                    first_key = next(iter(edge_data_dict.keys()))
-                    raw_attrs = dict(edge_data_dict[first_key])
-            else:
-                raw_attrs = dict(edge_data_dict) if edge_data_dict else {}
+        for _, _, _, data in _iter_replica_edges(net):
+            raw_attrs = dict(data)
             raw_attrs.pop("_edge_id", None)
             for key, value in raw_attrs.items():
                 _, needs_json = _encode_attribute(value, track_type=True)
