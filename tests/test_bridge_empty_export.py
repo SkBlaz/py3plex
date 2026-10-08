@@ -32,8 +32,17 @@ def test_empty_export_preserves_metadata(directed, initialized, monkeypatch):
 def test_export_discovers_isolated_and_interlayer_replicas(monkeypatch):
     net = multi_layer_network(directed=True)
     net.add_nodes([{"source": "isolated", "type": "isolates", "score": 7}])
-    net.add_edges([{"source": "A", "target": "B", "source_type": "left",
-                    "target_type": "right", "weight": 3}])
+    net.add_edges(
+        [
+            {
+                "source": "A",
+                "target": "B",
+                "source_type": "left",
+                "target_type": "right",
+                "weight": 3,
+            }
+        ]
+    )
 
     def forbidden(*args, **kwargs):
         raise AssertionError("Export must not compute visualization layouts")
