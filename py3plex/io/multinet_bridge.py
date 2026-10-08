@@ -128,18 +128,15 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
             attributes=graph_attrs
         )
         
-        # Get all layers first
-        # get_layers() returns a tuple: (layer_list, graph_list, dict)
-        layers_info = net.get_layers()
-        if isinstance(layers_info, tuple) and len(layers_info) > 0:
-            layers = layers_info[0]  # Extract layer list
-        else:
-            layers = layers_info
-        
+        # An uninitialized network is a valid empty export. Discover layers
+        # directly from replicas: get_layers() also computes visualization layouts.
+        if net.core_network is None:
+            return graph
+
+        layers = dict.fromkeys(layer for _, layer in net.get_nodes())
         for layer_id in layers:
-            # Layer attributes (currently none by default, but structure supports it)
             graph.add_layer(Layer(id=layer_id, attributes={}))
-        
+
         # Get all node replicas (node_id, layer) with attributes
         # Store each (node, layer) pair as a separate node with layer in attributes
         for node, layer in net.get_nodes():
