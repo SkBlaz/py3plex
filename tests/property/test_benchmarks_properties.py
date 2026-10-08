@@ -31,6 +31,17 @@ except ImportError:
     pytest.skip("Benchmarks module not available", allow_module_level=True)
 
 
+@pytest.fixture(autouse=True)
+def restore_metric_registry():
+    """Keep registry property tests from removing other tests' built-in metrics."""
+    original = metric_registry.copy()
+    try:
+        yield
+    finally:
+        metric_registry.clear()
+        metric_registry.update(original)
+
+
 # ============================================================================
 # Helper Strategies
 # ============================================================================
