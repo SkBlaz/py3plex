@@ -42,8 +42,14 @@ def assert_network_semantic_equal(net_a, net_b, *, check_attrs=True, check_order
     assert nodes_a == nodes_b, f"Node replica sets differ: {nodes_a ^ nodes_b}"
     
     # Check edge replicas (as multisets for undirected, sets for directed)
-    edges_a = list(net_a.get_edges(data=False))
-    edges_b = list(net_b.get_edges(data=False))
+    def _keyed_edges(net):
+        graph = net.core_network
+        if graph.is_multigraph():
+            return list(graph.edges(keys=True))
+        return [(source, target, 0) for source, target in graph.edges()]
+
+    edges_a = _keyed_edges(net_a)
+    edges_b = _keyed_edges(net_b)
     
     if check_order_insensitive:
         edges_a = sorted(edges_a)
@@ -82,7 +88,7 @@ def assert_network_semantic_equal(net_a, net_b, *, check_attrs=True, check_order
                 val_a = attrs_a[key]
                 val_b = attrs_b[key]
                 # Handle numpy arrays
-                if hasattr(val_a, '__array__') and hasattr(val_b, '__array__'):
+                if hasattr(val_a, '__array__') or hasattr(val_b, '__array__'):
                     import numpy as np
                     assert np.array_equal(val_a, val_b), \
                         f"Node {node} attribute {key} arrays differ"
@@ -92,14 +98,19 @@ def assert_network_semantic_equal(net_a, net_b, *, check_attrs=True, check_order
         
         # Check edge attributes
         for edge in edges_a:
-            attrs_a = net_a.core_network.edges[edge]
-            attrs_b = net_b.core_network.edges[edge]
+            source, target, key = edge
+            attrs_a = (net_a.core_network.get_edge_data(source, target, key)
+                       if net_a.core_network.is_multigraph()
+                       else net_a.core_network.get_edge_data(source, target))
+            attrs_b = (net_b.core_network.get_edge_data(source, target, key)
+                       if net_b.core_network.is_multigraph()
+                       else net_b.core_network.get_edge_data(source, target))
             assert set(attrs_a.keys()) == set(attrs_b.keys()), \
                 f"Edge {edge} attribute keys differ"
             for key in attrs_a.keys():
                 val_a = attrs_a[key]
                 val_b = attrs_b[key]
-                if hasattr(val_a, '__array__') and hasattr(val_b, '__array__'):
+                if hasattr(val_a, '__array__') or hasattr(val_b, '__array__'):
                     import numpy as np
                     assert np.array_equal(val_a, val_b), \
                         f"Edge {edge} attribute {key} arrays differ"
@@ -1049,7 +1060,7 @@ class TestNetworkSemanticEquality:
             {'source': 'X', 'target': 'Y', 'source_type': 'layer1', 'target_type': 'layer1', 'weight': 0.9},
         ]
         net.add_edges(edges)
-        net.core_network.edges[('X', 'layer1'), ('Y', 'layer1')]['importance'] = 'high'
+        net.core_network.edges[('X', 'layer1'), ('Y', 'layer1'), 0]['importance'] = 'high'
         
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "semantic_dir"
