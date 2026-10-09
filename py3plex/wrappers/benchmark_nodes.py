@@ -7,7 +7,6 @@ from collections import defaultdict
 from typing import Any, Dict, List
 
 import numpy
-from gensim.models import KeyedVectors
 from scipy import sparse
 from scipy.io import loadmat
 from six import iteritems
@@ -76,6 +75,8 @@ def benchmark_node_classification(
     Returns:
         Dictionary of classification results
     """
+
+    from gensim.models import KeyedVectors
 
     model = KeyedVectors.load_word2vec_format(path, binary=False)
     nodelen = core_network.shape[0]
@@ -168,6 +169,8 @@ def benchmark_node_classification(
 
 
 def main():
+    from gensim.models import KeyedVectors
+
     parser = ArgumentParser(
         "scoring",
         formatter_class=ArgumentDefaultsHelpFormatter,
