@@ -60,10 +60,12 @@ def jaccard_layer_similarity(
                 if isinstance(node, tuple) and len(node) >= 2 and node[1] == layer2}
     
     elif element == "edges":
-        set1 = {(u[0], v[0]) for u, v in G.edges() 
+        # Undirected edges are unordered, regardless of node insertion order.
+        edge_identity = tuple if G.is_directed() else frozenset
+        set1 = {edge_identity((u[0], v[0])) for u, v in G.edges()
                 if isinstance(u, tuple) and isinstance(v, tuple) and 
                 len(u) >= 2 and len(v) >= 2 and u[1] == layer1 and v[1] == layer1}
-        set2 = {(u[0], v[0]) for u, v in G.edges() 
+        set2 = {edge_identity((u[0], v[0])) for u, v in G.edges()
                 if isinstance(u, tuple) and isinstance(v, tuple) and 
                 len(u) >= 2 and len(v) >= 2 and u[1] == layer2 and v[1] == layer2}
     else:
