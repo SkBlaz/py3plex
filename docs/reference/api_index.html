@@ -15171,7 +15171,8 @@ For edge queries: Returns subgraph containing the selected edges and their endpo
 <dd class="field-odd"><p><strong>network</strong> – Optional source network to extract subgraph from</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>networkx.Graph subgraph containing result items</p>
+<dd class="field-even"><p>NetworkX subgraph containing result items, preserving the supplied
+network’s graph type (including directed multigraphs).</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ImportError</strong> – If networkx is not available</p>

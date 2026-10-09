@@ -76,7 +76,7 @@
 
 
 \title{Py3plex: Multilayer Network Analysis in Python}
-\date{Oct 05, 2026}
+\date{Oct 09, 2026}
 \release{2.0.8}
 \author{Blaž Škrlj}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{logo.png}\par}
@@ -58010,7 +58010,8 @@ For edge queries: Returns subgraph containing the selected edges and their endpo
 
 \sphinxlineitem{Returns}
 \sphinxAtStartPar
-networkx.Graph subgraph containing result items
+NetworkX subgraph containing result items, preserving the supplied
+network’s graph type (including directed multigraphs).
 
 \sphinxlineitem{Raises}
 \sphinxAtStartPar
