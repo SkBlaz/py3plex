@@ -39,7 +39,7 @@ class TopKRanker(OneVsRestClassifier):
         all_labels = []
         for i, k in enumerate(top_k_list):
             probs_ = probs[i, :]
-            labels = self.classes_[probs_.argsort()[-k:]].tolist()
+            labels = self.classes_[probs_.argsort()[-k:]].tolist() if k else []
             all_labels.append(labels)
         return all_labels
 
