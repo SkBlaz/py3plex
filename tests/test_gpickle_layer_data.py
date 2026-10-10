@@ -7,7 +7,9 @@ from py3plex.core.nx_compat import nx_read_gpickle, nx_write_gpickle
 from py3plex.core.parsers import parse_gpickle
 
 
-@pytest.mark.parametrize("graph_type", [nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph])
+@pytest.mark.parametrize(
+    "graph_type", [nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph]
+)
 def test_layer_separator_preserves_nodes_attributes_and_edge_keys(tmp_path, graph_type):
     graph = graph_type(project="study", settings={"seed": 42})
     graph.add_node("social_A", role="source", labels="Alice")
@@ -35,7 +37,10 @@ def test_layer_separator_preserves_nodes_attributes_and_edge_keys(tmp_path, grap
     assert result.number_of_edges() == graph.number_of_edges()
     if graph.is_multigraph():
         for key in ("first", "second"):
-            assert result[("A", "social")][("B", "work")][key] == graph["social_A"]["work_B"][key]
+            assert (
+                result[("A", "social")][("B", "work")][key]
+                == graph["social_A"]["work_B"][key]
+            )
         assert result[("B", "work")][("B", "work")]["loop"] == {"weight": 3.0}
     else:
         assert list(result[("A", "social")][("B", "work")].values()) == [
