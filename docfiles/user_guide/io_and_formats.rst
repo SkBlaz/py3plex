@@ -140,6 +140,12 @@ Using Arrow Format
     write(graph, 'network.parquet', format='parquet')
     graph = read('network.parquet', format='parquet')
 
+Arrow and Parquet exports preserve JSON scalar node and layer IDs, distinguishing
+integer ``1`` from string ``"1"``. Identifier columns contain JSON-encoded values,
+declared by ``identifier_encoding="json"`` in the metadata table. Read these
+exports with a reader supporting this marker. Files without the marker retain
+their legacy literal-string identifiers.
+
 Benefits of Arrow Format
 ~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -11,7 +11,7 @@ Supports:
 
 import json
 from pathlib import Path
-from typing import Dict, Union
+from typing import Any, Dict, Union
 
 from py3plex.exceptions import Py3plexFormatError
 
@@ -37,6 +37,13 @@ def _check_pyarrow() -> None:
         )
 
 
+def _encode_identifier(identifier: Any) -> str:
+    """Preserve JSON scalar IDs; retain legacy string forms for other types."""
+    if identifier is None or isinstance(identifier, (str, int, float, bool)):
+        return json.dumps(identifier)
+    return json.dumps(str(identifier))
+
+
 def _graph_to_arrow_tables(
     graph: MultiLayerGraph,
 ) -> Dict[str, "pa.Table"]:
@@ -60,6 +67,7 @@ def _graph_to_arrow_tables(
         {
             "directed": [metadata["directed"]],
             "attributes": [metadata["attributes"]],
+            "identifier_encoding": ["json"],
         }
     )
 
@@ -70,7 +78,7 @@ def _graph_to_arrow_tables(
             "attributes": [],
         }
         for node in graph.nodes.values():
-            nodes_data["id"].append(str(node.id))
+            nodes_data["id"].append(_encode_identifier(node.id))
             nodes_data["attributes"].append(json.dumps(node.attributes))
         nodes_table = pa.table(nodes_data)
     else:
@@ -86,7 +94,7 @@ def _graph_to_arrow_tables(
             "attributes": [],
         }
         for layer in graph.layers.values():
-            layers_data["id"].append(str(layer.id))
+            layers_data["id"].append(_encode_identifier(layer.id))
             layers_data["attributes"].append(json.dumps(layer.attributes))
         layers_table = pa.table(layers_data)
     else:
@@ -106,10 +114,10 @@ def _graph_to_arrow_tables(
             "attributes": [],
         }
         for edge in graph.edges:
-            edges_data["src"].append(str(edge.src))
-            edges_data["dst"].append(str(edge.dst))
-            edges_data["src_layer"].append(str(edge.src_layer))
-            edges_data["dst_layer"].append(str(edge.dst_layer))
+            edges_data["src"].append(_encode_identifier(edge.src))
+            edges_data["dst"].append(_encode_identifier(edge.dst))
+            edges_data["src_layer"].append(_encode_identifier(edge.src_layer))
+            edges_data["dst_layer"].append(_encode_identifier(edge.dst_layer))
             edges_data["key"].append(edge.key)
             edges_data["attributes"].append(json.dumps(edge.attributes))
         edges_table = pa.table(edges_data)
@@ -150,6 +158,11 @@ def _arrow_tables_to_graph(tables: Dict[str, "pa.Table"]) -> MultiLayerGraph:
     metadata_dict = tables["metadata"].to_pydict()
     directed = metadata_dict["directed"][0]
     attributes = json.loads(metadata_dict["attributes"][0])
+    # Older tables stored literal strings and must not be JSON-decoded.
+    json_identifiers = metadata_dict.get("identifier_encoding", [None])[0] == "json"
+
+    def decode_identifier(value):
+        return json.loads(value) if json_identifiers else value
 
     graph = MultiLayerGraph(directed=directed, attributes=attributes)
 
@@ -157,7 +170,7 @@ def _arrow_tables_to_graph(tables: Dict[str, "pa.Table"]) -> MultiLayerGraph:
     if tables["layers"].num_rows > 0:
         layers_dict = tables["layers"].to_pydict()
         for i in range(len(layers_dict["id"])):
-            layer_id = layers_dict["id"][i]
+            layer_id = decode_identifier(layers_dict["id"][i])
             layer_attrs = json.loads(layers_dict["attributes"][i])
             graph.add_layer(Layer(id=layer_id, attributes=layer_attrs))
 
@@ -165,7 +178,7 @@ def _arrow_tables_to_graph(tables: Dict[str, "pa.Table"]) -> MultiLayerGraph:
     if tables["nodes"].num_rows > 0:
         nodes_dict = tables["nodes"].to_pydict()
         for i in range(len(nodes_dict["id"])):
-            node_id = nodes_dict["id"][i]
+            node_id = decode_identifier(nodes_dict["id"][i])
             node_attrs = json.loads(nodes_dict["attributes"][i])
             graph.add_node(Node(id=node_id, attributes=node_attrs))
 
@@ -173,10 +186,10 @@ def _arrow_tables_to_graph(tables: Dict[str, "pa.Table"]) -> MultiLayerGraph:
     if tables["edges"].num_rows > 0:
         edges_dict = tables["edges"].to_pydict()
         for i in range(len(edges_dict["src"])):
-            src = edges_dict["src"][i]
-            dst = edges_dict["dst"][i]
-            src_layer = edges_dict["src_layer"][i]
-            dst_layer = edges_dict["dst_layer"][i]
+            src = decode_identifier(edges_dict["src"][i])
+            dst = decode_identifier(edges_dict["dst"][i])
+            src_layer = decode_identifier(edges_dict["src_layer"][i])
+            dst_layer = decode_identifier(edges_dict["dst_layer"][i])
             key = edges_dict["key"][i]
             edge_attrs = json.loads(edges_dict["attributes"][i])
             graph.add_edge(
