@@ -151,6 +151,7 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
 
         # Get all node replicas (node_id, layer) with attributes
         # Store each (node, layer) pair as a separate node with layer in attributes
+        replica_ids = {}
         for node, layer in net.get_nodes():
             node_id = node
             # Get node attributes if available
@@ -164,9 +165,15 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
             node_attrs['__node_id__'] = _encode_attribute(node_id)
             node_attrs['__layer__'] = layer
             
-            # Create unique string ID for this replica: "node_id@@@layer"
-            # Use @@@ as delimiter (unlikely to appear in real node IDs)
-            composite_id = f"{node_id}@@@{layer}"
+            # Keep familiar display IDs when unique, but disambiguate scalar
+            # types and delimiter combinations with identical string forms.
+            base_id = f"{node_id}@@@{layer}"
+            composite_id = base_id
+            suffix = len(graph.nodes)
+            while composite_id in graph.nodes:
+                composite_id = f"{base_id}@@@{suffix}"
+                suffix += 1
+            replica_ids[(node, layer)] = composite_id
             graph.add_node(Node(id=composite_id, attributes=node_attrs))
         
         # Read each individual edge rather than looking up the first edge
@@ -181,8 +188,8 @@ def multinet_to_multilayergraph(net: multi_layer_network) -> MultiLayerGraph:
             edge_attrs = _encode_attributes(edge_attrs)
             
             # Create composite IDs that match how we created nodes
-            src_composite = f"{src}@@@{src_layer}"
-            dst_composite = f"{dst}@@@{dst_layer}"
+            src_composite = replica_ids[(src, src_layer)]
+            dst_composite = replica_ids[(dst, dst_layer)]
             
             graph.add_edge(Edge(
                 src=src_composite,
