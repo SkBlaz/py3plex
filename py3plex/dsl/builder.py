@@ -728,7 +728,8 @@ class QueryBuilder:
             uncertainty: Whether to compute uncertainty for these measures. If None,
                 uses Q.uncertainty defaults or the global uncertainty context.
             method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
-            n_samples: Number of samples for uncertainty estimation (default: from Q.uncertainty.defaults)
+            n_samples: Approximation budget when approx=True; otherwise UQ samples.
+                With uncertainty=True and approx=True, used for both budgets.
             ci: Confidence interval level (default: from Q.uncertainty.defaults)
             bootstrap_unit: What to resample - "edges", "nodes", or "layers" (default: from Q.uncertainty.defaults)
             bootstrap_mode: Resampling mode - "resample" or "permute" (default: from Q.uncertainty.defaults)
@@ -778,6 +779,12 @@ class QueryBuilder:
             ...     seed=42
             ... ).uq(method="bootstrap", n_samples=50, seed=42).execute(net)
         """
+        # With approximation, n_samples controls the approximation budget.
+        # Only explicit metric UQ shares this budget; query UQ keeps its own.
+        approx_n_samples = n_samples if approx else None
+        if approx and uncertainty is not True:
+            n_samples = None
+
         # Determine whether to compute uncertainty:
         # Priority order:
         # 1) explicit uncertainty argument wins
@@ -874,6 +881,8 @@ class QueryBuilder:
         if approx:
             # Extract approximation-specific params from kwargs
             approx_params = {}
+            if approx_n_samples is not None:
+                approx_params["n_samples"] = approx_n_samples
             
             # Collect known approximation parameters
             for param_name in ["n_samples", "n_landmarks", "tol", "max_iter", "alpha", 
