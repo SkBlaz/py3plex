@@ -423,9 +423,9 @@ def test_invalid_approx_method_fallback(small_network):
 
 def test_invalid_parameters_raise_error(small_network):
     """Test that invalid parameters raise errors."""
-    from py3plex.dsl.uq_resolution import UQResolutionError
+    from py3plex.dsl.errors import DslExecutionError
     
-    with pytest.raises(UQResolutionError, match="n_samples must be positive"):
+    with pytest.raises(DslExecutionError, match="n_samples.*positive integer"):
         Q.nodes().compute(
             "betweenness_centrality",
             approx=True,
