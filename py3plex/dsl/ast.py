@@ -1692,6 +1692,9 @@ def _canonicalize_compute_item(item: ComputeItem) -> ComputeItem:
         n_null=item.n_null,
         null_model=item.null_model,
         random_state=item.random_state,
+        approx=item.approx,
+        kind=item.kind,
+        uncertainty_explicit=item.uncertainty_explicit,
     )
 
 
@@ -1712,6 +1715,9 @@ def _canonicalize_uq_config(uq: Optional[UQConfig]) -> Optional[UQConfig]:
         n_samples=uq.n_samples,
         ci=_normalize_float(uq.ci) if uq.ci is not None else None,
         seed=uq.seed,
+        mode=uq.mode,
+        keep_samples=uq.keep_samples,
+        reduce=uq.reduce,
         kwargs=dict(uq.kwargs),
     )
 
@@ -1773,6 +1779,7 @@ def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
         sensitivity_spec=select.sensitivity_spec,
         contract_spec=select.contract_spec,
         auto_community_config=select.auto_community_config,
+        embedding_spec=select.embedding_spec,
     )
 
 
