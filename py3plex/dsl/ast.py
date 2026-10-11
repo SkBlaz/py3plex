@@ -2015,6 +2015,8 @@ def ast_from_json(json_str: str) -> Query:
                     'FunctionCall': FunctionCall,
                     'SpecialPredicate': SpecialPredicate,
                     'ComputeItem': ComputeItem,
+                    'ApproximationSpec': ApproximationSpec,
+                    'EmbeddingSpec': EmbeddingSpec,
                     'OrderItem': OrderItem,
                     'ParamRef': ParamRef,
                     'UQConfig': UQConfig,
