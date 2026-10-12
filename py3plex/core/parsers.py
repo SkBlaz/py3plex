@@ -216,14 +216,17 @@ def parse_gpickle(
     G = nx_read_gpickle(file_name)
 
     if layer_separator is not None:
-        for edge in G.edges():
-            e1, e2 = edge
+        node_mapping = {}
+        for node in G.nodes():
             try:
-                layer1, n1 = e1.split(layer_separator)
-                layer2, n2 = e2.split(layer_separator)
-                A.add_edge((n1, layer1), (n2, layer2))
+                layer, node_id = node.split(layer_separator)
+                node_mapping[node] = (node_id, layer)
             except (ValueError, AttributeError):
                 pass
+        # Relabel the serialized graph instead of rebuilding bare edges: this
+        # retains isolated nodes, graph/node/edge attributes and parallel keys.
+        relabeled = nx.relabel_nodes(G.subgraph(node_mapping), node_mapping, copy=True)
+        A = nx.MultiDiGraph(relabeled) if directed else nx.MultiGraph(relabeled)
     else:
         if not isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
             A = nx.MultiDiGraph(G) if directed else nx.MultiGraph(G)
