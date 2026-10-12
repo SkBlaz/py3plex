@@ -966,6 +966,7 @@ def save_multiedgelist(
                             type_encodings[l1],
                             node_encodings[n2],
                             type_encodings[l2],
+                            str(edge[2].get("weight", 1)),
                         ]
                     )
                     + "\n"
@@ -978,7 +979,7 @@ def save_multiedgelist(
             for edge in input_network.edges(data=True):
                 n1, l1 = edge[0]
                 n2, l2 = edge[1]
-                fh.write("\t".join([n1, l1, n2, l2]) + "\n")
+                fh.write("\t".join(map(str, [n1, l1, n2, l2, edge[2].get("weight", 1)])) + "\n")
         return None
 
 
