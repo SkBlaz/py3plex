@@ -8,6 +8,7 @@ import copy
 import logging
 import random
 import time
+from functools import partial
 from typing import Any, Dict, List, Optional, Set, Tuple, Union, Callable
 
 try:
@@ -1584,6 +1585,10 @@ def _get_measure_function(compute_item: ComputeItem, target: str = "nodes") -> T
     
     approx_fn = measure_registry.get_approx(compute_item.name, method)
     
+    approx_fn = partial(
+        approx_fn, **{**approx_spec.params, "diagnostics": approx_spec.diagnostics}
+    )
+
     # Build approx metadata for provenance
     approx_metadata = {
         "measure": compute_item.name,
