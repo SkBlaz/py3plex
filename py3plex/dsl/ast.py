@@ -5,6 +5,7 @@ All query frontends (string DSL, builder API, dplyr-style) compile to these
 AST nodes, which are then executed by the same engine.
 """
 
+from copy import deepcopy
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -1808,7 +1809,7 @@ def canonicalize_ast(query: Query) -> Query:
     """
     return Query(
         explain=query.explain,
-        select=_canonicalize_select_stmt(query.select),
+        select=_canonicalize_select_stmt(deepcopy(query.select)),
         dsl_version=query.dsl_version,
     )
 
@@ -2248,7 +2249,7 @@ def canonicalize_ast_scoped(
         raise ValueError(f"Unknown scope {scope!r}. Use 'relational' or 'strict'.")
 
     proof: List[str] = []
-    ast = query
+    ast = deepcopy(query)
 
     prev_serial = _serialize_node(ast)
 
