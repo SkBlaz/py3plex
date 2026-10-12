@@ -2213,6 +2213,7 @@ def _canonicalize_select_stmt_scoped(
         sensitivity_spec=base.sensitivity_spec,
         contract_spec=base.contract_spec,
         auto_community_config=base.auto_community_config,
+        embedding_spec=base.embedding_spec,
     )
 
 
