@@ -1763,7 +1763,7 @@ def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
         coverage_p=_normalize_float(select.coverage_p) if select.coverage_p is not None else None,
         coverage_group=select.coverage_group,
         coverage_id_field=select.coverage_id_field,
-        select_cols=sorted(select.select_cols) if select.select_cols else None,
+        select_cols=list(select.select_cols) if select.select_cols else None,
         drop_cols=sorted(select.drop_cols) if select.drop_cols else None,
         rename_map=dict(select.rename_map) if select.rename_map else None,
         summarize_aggs=dict(select.summarize_aggs) if select.summarize_aggs else None,
