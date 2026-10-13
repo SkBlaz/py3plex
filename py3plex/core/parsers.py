@@ -373,7 +373,12 @@ def parse_simple_edgelist(
     input_name: str, directed: bool
 ) -> Tuple[Union[nx.Graph, nx.DiGraph], None]:
     """
-    Simple edgelist n n w
+    Read simple or multilayer edge-list rows.
+
+    Accepts ``node1 node2 [weight]`` (using the ``null`` layer) and
+    ``node1 layer1 node2 layer2 [weight]``, as written by save_edgelist.
+    Missing weights default to 1.0.
+
     Args:
         input_name: Path to text file
         directed: Whether to create directed graph
@@ -398,20 +403,21 @@ def parse_simple_edgelist(
                 continue
 
             parts = stripped.split()
-            if len(parts) == 3:
-                node_first_str, node_second_str, weight_str = parts
-                weight = float(weight_str)
-            elif len(parts) == 2:
-                node_first_str, node_second_str = parts
-                weight = 1.0
+            if len(parts) in (2, 3):
+                node_first_str, node_second_str = parts[:2]
+                layer_first = layer_second = "null"
+                weight = float(parts[2]) if len(parts) == 3 else 1.0
+            elif len(parts) in (4, 5):
+                node_first_str, layer_first, node_second_str, layer_second = parts[:4]
+                weight = float(parts[4]) if len(parts) == 5 else 1.0
             else:
                 continue
 
-            node_first = (node_first_str, "null")
-            node_second = (node_second_str, "null")
+            node_first = (node_first_str, layer_first)
+            node_second = (node_second_str, layer_second)
 
-            G.add_node(node_first, type="null")
-            G.add_node(node_second, type="null")
+            G.add_node(node_first, type=layer_first)
+            G.add_node(node_second, type=layer_second)
 
             G.add_edge(node_first, node_second, weight=weight)
 
