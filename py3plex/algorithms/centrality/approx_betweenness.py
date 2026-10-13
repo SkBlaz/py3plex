@@ -95,8 +95,13 @@ def _brandes_sssp_weighted(
         S.append(v)
         
         for w in G.neighbors(v):
-            # Get edge weight
-            vw_dist = dist[v] + G[v][w].get(weight, 1.0)
+            # NetworkX shortest paths use the minimum parallel-edge weight.
+            edge_data = G[v][w]
+            if G.is_multigraph():
+                edge_weight = min(data.get(weight, 1.0) for data in edge_data.values())
+            else:
+                edge_weight = edge_data.get(weight, 1.0)
+            vw_dist = dist[v] + edge_weight
             if vw_dist < dist[w]:
                 dist[w] = vw_dist
                 seen[w] = vw_dist
