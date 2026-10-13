@@ -5288,6 +5288,13 @@ class Q:
         if select.distinct_cols is not None:
             builder._select.distinct_cols = list(select.distinct_cols)
         
+        # Preserve result transformations and embeddings during replay.
+        builder._select.summarize_aggs = copy.deepcopy(select.summarize_aggs)
+        builder._select.rank_specs = copy.deepcopy(select.rank_specs)
+        builder._select.zscore_attrs = copy.deepcopy(select.zscore_attrs)
+        builder._select.post_filters = copy.deepcopy(select.post_filters)
+        builder._select.embedding_spec = copy.deepcopy(select.embedding_spec)
+
         # Reconstruct advanced features
         if select.explain_spec is not None:
             builder._select.explain_spec = select.explain_spec
