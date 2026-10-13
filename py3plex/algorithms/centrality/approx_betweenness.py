@@ -77,7 +77,8 @@ def _brandes_sssp_weighted(
         - dist: Dict mapping each node to distance from source (inf if unreachable)
     """
     import heapq
-    
+    from itertools import count
+
     S = []
     P = {v: [] for v in G}
     sigma = dict.fromkeys(G, 0.0)
@@ -85,11 +86,12 @@ def _brandes_sssp_weighted(
     dist = {v: float('inf') for v in G}
     dist[source] = 0.0
     seen = {source: 0.0}
-    # Priority queue: (distance, node)
-    Q = [(0.0, source)]
+    # A unique tie-breaker avoids comparing arbitrary node identifiers.
+    counter = count()
+    Q = [(0.0, next(counter), source)]
     
     while Q:
-        (dist_v, v) = heapq.heappop(Q)
+        (dist_v, _, v) = heapq.heappop(Q)
         if dist_v > seen.get(v, float('inf')):
             continue  # Already processed with shorter distance
         S.append(v)
@@ -100,7 +102,7 @@ def _brandes_sssp_weighted(
             if vw_dist < dist[w]:
                 dist[w] = vw_dist
                 seen[w] = vw_dist
-                heapq.heappush(Q, (vw_dist, w))
+                heapq.heappush(Q, (vw_dist, next(counter), w))
                 sigma[w] = 0.0
                 P[w] = []
             if vw_dist == dist[w]:
