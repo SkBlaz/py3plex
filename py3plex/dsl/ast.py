@@ -1935,6 +1935,8 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
         """Convert dataclass to dict recursively."""
         if obj is None:
             return None
+        if isinstance(obj, Enum):
+            return {'__enum__': obj.__class__.__name__, 'value': obj.value}
         if isinstance(obj, (str, int, float, bool)):
             return obj
         if isinstance(obj, (list, tuple)):
@@ -1948,8 +1950,6 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
                 value = getattr(obj, field_name)
                 result[field_name] = _serialize(value)
             return result
-        if isinstance(obj, Enum):
-            return {'__enum__': obj.__class__.__name__, 'value': obj.value}
         # Fallback
         return str(obj)
     
@@ -2047,6 +2047,11 @@ def ast_from_json(json_str: str) -> Query:
                 for field_name, field_value in obj_data.items():
                     deserialized_data[field_name] = _deserialize(field_value)
                 
+                if target_class is SelectStmt and 'target' in deserialized_data:
+                    # Schema 2.0 exports previously wrote str-backed Target enums
+                    # as bare strings. Continue to accept those stored queries.
+                    deserialized_data['target'] = Target(deserialized_data['target'])
+
                 return target_class(**deserialized_data)
             # Regular dict
             return {k: _deserialize(v) for k, v in obj.items()}
