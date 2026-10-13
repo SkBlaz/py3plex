@@ -211,9 +211,9 @@ def approximate_betweenness_sampling(
                 sumsq_c[v] += x * x
     
     # Scale to estimate sum over all sources
-    # Estimator: (N-1) / n_samples * sum_over_samples
-    # This is unbiased when sampling with replacement
-    scale = (N - 1) / float(n_samples)
+    # Sources are sampled uniformly from all N nodes, including each target.
+    # The estimated population total is N times the sample mean.
+    scale = N / float(n_samples)
     betw = {v: scale * sum_c[v] for v in nodes}
     
     # Compute standard error if requested
@@ -224,8 +224,9 @@ def approximate_betweenness_sampling(
             mean = sum_c[v] / n_samples
             # Sample variance: E[X^2] - E[X]^2
             var = max(0.0, (sumsq_c[v] / n_samples) - mean * mean)
-            # Standard error of scaled mean: scale * sqrt(var / n_samples)
-            stderr[v] = scale * math.sqrt(var / n_samples) if var > 0 else 0.0
+            # The estimate is N times the sample mean, so its standard error
+            # scales by N (not the N / n_samples factor applied to the sum).
+            stderr[v] = N * math.sqrt(var / n_samples) if var > 0 else 0.0
     
     # Apply normalization and undirected correction
     # For undirected graphs, betweenness counts each path twice
