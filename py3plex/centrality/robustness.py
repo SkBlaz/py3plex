@@ -300,6 +300,15 @@ def _compute_avg_shortest_path(graph: multinet.multi_layer_network) -> float:
             continue
         
         subgraph = G.subgraph(comp)
+        if G.is_directed():
+            # Weak connectivity does not imply that every ordered pair is
+            # reachable. Count only reachable pairs, preserving direction.
+            for source, distances in nx.all_pairs_shortest_path_length(subgraph):
+                for target, distance in distances.items():
+                    if source != target:
+                        total_length += distance
+                        total_pairs += 1
+            continue
         try:
             # Use average_shortest_path_length for each component
             avg_len = nx.average_shortest_path_length(subgraph)

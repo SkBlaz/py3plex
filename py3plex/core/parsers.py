@@ -216,14 +216,17 @@ def parse_gpickle(
     G = nx_read_gpickle(file_name)
 
     if layer_separator is not None:
-        for edge in G.edges():
-            e1, e2 = edge
+        node_mapping = {}
+        for node in G.nodes():
             try:
-                layer1, n1 = e1.split(layer_separator)
-                layer2, n2 = e2.split(layer_separator)
-                A.add_edge((n1, layer1), (n2, layer2))
+                layer, node_id = node.split(layer_separator)
+                node_mapping[node] = (node_id, layer)
             except (ValueError, AttributeError):
                 pass
+        # Relabel the serialized graph instead of rebuilding bare edges: this
+        # retains isolated nodes, graph/node/edge attributes and parallel keys.
+        relabeled = nx.relabel_nodes(G.subgraph(node_mapping), node_mapping, copy=True)
+        A = nx.MultiDiGraph(relabeled) if directed else nx.MultiGraph(relabeled)
     else:
         if not isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
             A = nx.MultiDiGraph(G) if directed else nx.MultiGraph(G)
@@ -370,7 +373,12 @@ def parse_simple_edgelist(
     input_name: str, directed: bool
 ) -> Tuple[Union[nx.Graph, nx.DiGraph], None]:
     """
-    Simple edgelist n n w
+    Read simple or multilayer edge-list rows.
+
+    Accepts ``node1 node2 [weight]`` (using the ``null`` layer) and
+    ``node1 layer1 node2 layer2 [weight]``, as written by save_edgelist.
+    Missing weights default to 1.0.
+
     Args:
         input_name: Path to text file
         directed: Whether to create directed graph
@@ -395,20 +403,21 @@ def parse_simple_edgelist(
                 continue
 
             parts = stripped.split()
-            if len(parts) == 3:
-                node_first_str, node_second_str, weight_str = parts
-                weight = float(weight_str)
-            elif len(parts) == 2:
-                node_first_str, node_second_str = parts
-                weight = 1.0
+            if len(parts) in (2, 3):
+                node_first_str, node_second_str = parts[:2]
+                layer_first = layer_second = "null"
+                weight = float(parts[2]) if len(parts) == 3 else 1.0
+            elif len(parts) in (4, 5):
+                node_first_str, layer_first, node_second_str, layer_second = parts[:4]
+                weight = float(parts[4]) if len(parts) == 5 else 1.0
             else:
                 continue
 
-            node_first = (node_first_str, "null")
-            node_second = (node_second_str, "null")
+            node_first = (node_first_str, layer_first)
+            node_second = (node_second_str, layer_second)
 
-            G.add_node(node_first, type="null")
-            G.add_node(node_second, type="null")
+            G.add_node(node_first, type=layer_first)
+            G.add_node(node_second, type=layer_second)
 
             G.add_edge(node_first, node_second, weight=weight)
 
@@ -966,6 +975,7 @@ def save_multiedgelist(
                             type_encodings[l1],
                             node_encodings[n2],
                             type_encodings[l2],
+                            str(edge[2].get("weight", 1)),
                         ]
                     )
                     + "\n"
@@ -978,7 +988,7 @@ def save_multiedgelist(
             for edge in input_network.edges(data=True):
                 n1, l1 = edge[0]
                 n2, l2 = edge[1]
-                fh.write("\t".join([n1, l1, n2, l2]) + "\n")
+                fh.write("\t".join(map(str, [n1, l1, n2, l2, edge[2].get("weight", 1)])) + "\n")
         return None
 
 

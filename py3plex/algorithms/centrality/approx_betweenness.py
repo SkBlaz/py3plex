@@ -77,7 +77,8 @@ def _brandes_sssp_weighted(
         - dist: Dict mapping each node to distance from source (inf if unreachable)
     """
     import heapq
-    
+    from itertools import count
+
     S = []
     P = {v: [] for v in G}
     sigma = dict.fromkeys(G, 0.0)
@@ -85,22 +86,28 @@ def _brandes_sssp_weighted(
     dist = {v: float('inf') for v in G}
     dist[source] = 0.0
     seen = {source: 0.0}
-    # Priority queue: (distance, node)
-    Q = [(0.0, source)]
+    # A unique tie-breaker avoids comparing arbitrary node identifiers.
+    counter = count()
+    Q = [(0.0, next(counter), source)]
     
     while Q:
-        (dist_v, v) = heapq.heappop(Q)
+        (dist_v, _, v) = heapq.heappop(Q)
         if dist_v > seen.get(v, float('inf')):
             continue  # Already processed with shorter distance
         S.append(v)
         
         for w in G.neighbors(v):
-            # Get edge weight
-            vw_dist = dist[v] + G[v][w].get(weight, 1.0)
+            # NetworkX shortest paths use the minimum parallel-edge weight.
+            edge_data = G[v][w]
+            if G.is_multigraph():
+                edge_weight = min(data.get(weight, 1.0) for data in edge_data.values())
+            else:
+                edge_weight = edge_data.get(weight, 1.0)
+            vw_dist = dist[v] + edge_weight
             if vw_dist < dist[w]:
                 dist[w] = vw_dist
                 seen[w] = vw_dist
-                heapq.heappush(Q, (vw_dist, w))
+                heapq.heappush(Q, (vw_dist, next(counter), w))
                 sigma[w] = 0.0
                 P[w] = []
             if vw_dist == dist[w]:
@@ -204,9 +211,9 @@ def approximate_betweenness_sampling(
                 sumsq_c[v] += x * x
     
     # Scale to estimate sum over all sources
-    # Estimator: (N-1) / n_samples * sum_over_samples
-    # This is unbiased when sampling with replacement
-    scale = (N - 1) / float(n_samples)
+    # Sources are sampled uniformly from all N nodes, including each target.
+    # The estimated population total is N times the sample mean.
+    scale = N / float(n_samples)
     betw = {v: scale * sum_c[v] for v in nodes}
     
     # Compute standard error if requested
@@ -217,8 +224,9 @@ def approximate_betweenness_sampling(
             mean = sum_c[v] / n_samples
             # Sample variance: E[X^2] - E[X]^2
             var = max(0.0, (sumsq_c[v] / n_samples) - mean * mean)
-            # Standard error of scaled mean: scale * sqrt(var / n_samples)
-            stderr[v] = scale * math.sqrt(var / n_samples) if var > 0 else 0.0
+            # The estimate is N times the sample mean, so its standard error
+            # scales by N (not the N / n_samples factor applied to the sum).
+            stderr[v] = N * math.sqrt(var / n_samples) if var > 0 else 0.0
     
     # Apply normalization and undirected correction
     # For undirected graphs, betweenness counts each path twice

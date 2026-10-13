@@ -5,6 +5,7 @@ All query frontends (string DSL, builder API, dplyr-style) compile to these
 AST nodes, which are then executed by the same engine.
 """
 
+from copy import deepcopy
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -1762,7 +1763,7 @@ def _canonicalize_select_stmt(select: SelectStmt) -> SelectStmt:
         coverage_p=_normalize_float(select.coverage_p) if select.coverage_p is not None else None,
         coverage_group=select.coverage_group,
         coverage_id_field=select.coverage_id_field,
-        select_cols=sorted(select.select_cols) if select.select_cols else None,
+        select_cols=list(select.select_cols) if select.select_cols else None,
         drop_cols=sorted(select.drop_cols) if select.drop_cols else None,
         rename_map=dict(select.rename_map) if select.rename_map else None,
         summarize_aggs=dict(select.summarize_aggs) if select.summarize_aggs else None,
@@ -1808,7 +1809,7 @@ def canonicalize_ast(query: Query) -> Query:
     """
     return Query(
         explain=query.explain,
-        select=_canonicalize_select_stmt(query.select),
+        select=_canonicalize_select_stmt(deepcopy(query.select)),
         dsl_version=query.dsl_version,
     )
 
@@ -1936,6 +1937,8 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
         """Convert dataclass to dict recursively."""
         if obj is None:
             return None
+        if isinstance(obj, Enum):
+            return {'__enum__': obj.__class__.__name__, 'value': obj.value}
         if isinstance(obj, (str, int, float, bool)):
             return obj
         if isinstance(obj, (list, tuple)):
@@ -1952,8 +1955,6 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
                 value = getattr(obj, field_name)
                 result[field_name] = _serialize(value)
             return result
-        if isinstance(obj, Enum):
-            return {'__enum__': obj.__class__.__name__, 'value': obj.value}
         # Fallback
         return str(obj)
     
@@ -2057,6 +2058,12 @@ def ast_from_json(json_str: str) -> Query:
                 
                 if target_class is LayerSet:
                     return LayerSet(deserialized_data['expr'])
+
+                if target_class is SelectStmt and 'target' in deserialized_data:
+                    # Schema 2.0 exports previously wrote str-backed Target enums
+                    # as bare strings. Continue to accept those stored queries.
+                    deserialized_data['target'] = Target(deserialized_data['target'])
+
                 return target_class(**deserialized_data)
             # Regular dict
             return {k: _deserialize(v) for k, v in obj.items()}
@@ -2224,6 +2231,7 @@ def _canonicalize_select_stmt_scoped(
         sensitivity_spec=base.sensitivity_spec,
         contract_spec=base.contract_spec,
         auto_community_config=base.auto_community_config,
+        embedding_spec=base.embedding_spec,
     )
 
 
@@ -2259,7 +2267,7 @@ def canonicalize_ast_scoped(
         raise ValueError(f"Unknown scope {scope!r}. Use 'relational' or 'strict'.")
 
     proof: List[str] = []
-    ast = query
+    ast = deepcopy(query)
 
     prev_serial = _serialize_node(ast)
 
