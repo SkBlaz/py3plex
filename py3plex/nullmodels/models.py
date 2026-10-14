@@ -284,13 +284,14 @@ def layer_shuffle_model(
     if G is None or len(G.nodes()) == 0:
         return _copy_network(network)
     
-    # Get all unique layers
-    layers = set()
-    for node in G.nodes():
-        if isinstance(node, tuple) and len(node) >= 2:
-            layers.add(node[1])
-    
-    layers = list(layers)
+    # Preserve first occurrence so hash randomization cannot change seeded draws.
+    layers = list(
+        dict.fromkeys(
+            node[1]
+            for node in G.nodes()
+            if isinstance(node, tuple) and len(node) >= 2
+        )
+    )
     
     # Create shuffled layer mapping
     shuffled_layers = layers.copy()

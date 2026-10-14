@@ -5434,6 +5434,11 @@ for the window and used to initialize the next window.
 
 py3plex provides null model generators for hypothesis testing.
 
+`layer_shuffle_model(network, seed=...)` collects layers in first-occurrence
+order from the graph's nodes before shuffling. The same node insertion order
+and seed give identical assignments across Python hash seeds, including mixed
+layer ID types. `N.layer_shuffle().seed(...)` uses the same ordering for its samples.
+
 ### Configuration Model
 
 ```python
