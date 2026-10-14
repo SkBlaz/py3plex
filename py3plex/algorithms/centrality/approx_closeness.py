@@ -120,7 +120,8 @@ def approximate_closeness_landmarks(
     Note:
         - For undirected graphs, landmarks are sampled per component
         - For directed graphs, landmarks are sampled globally
-        - Closeness is defined as 1 / (average distance to reachable nodes)
+        - Self-landmarks are excluded from the average and reachable fraction
+        - Uses NetworkX default Wasserman-Faust scaling for disconnected graphs
         - Time complexity: O(n_landmarks * (m + n log n)) for weighted graphs
     """
     rng = random.Random(seed)
@@ -177,11 +178,12 @@ def approximate_closeness_landmarks(
             for i, dist in enumerate(dist_maps):
                 landmark = landmarks[i]
                 l_comp = node_to_comp[landmark]
-                if l_comp == v_comp and v in dist:
+                if l_comp == v_comp and landmark != v and v in dist:
                     dists.append(dist[v])
         else:
             # Directed: use all landmarks
-            dists = [dist[v] for dist in dist_maps if v in dist]
+            dists = [dist[v] for landmark, dist in zip(landmarks, dist_maps)
+                     if landmark != v and v in dist]
         
         if not dists:
             # No reachable landmarks
@@ -199,12 +201,14 @@ def approximate_closeness_landmarks(
         else:
             base_closeness = 1.0 / mean_d
         
-        # For directed graphs, adjust by reachable fraction
+        # NetworkX excludes the node itself and applies the Wasserman-Faust
+        # reachable fraction. Self-landmarks are not draws from other nodes.
         if G.is_directed():
-            reachable_frac = len(dists) / float(len(landmarks)) if landmarks else 0.0
-            closeness[v] = base_closeness * reachable_frac
+            other_landmarks = sum(landmark != v for landmark in landmarks)
+            reachable_frac = len(dists) / float(other_landmarks)
         else:
-            closeness[v] = base_closeness
+            reachable_frac = (len(comps[v_comp]) - 1) / float(N - 1)
+        closeness[v] = base_closeness * reachable_frac
         
         # Compute standard error using delta method
         if diagnostics:
@@ -214,13 +218,9 @@ def approximate_closeness_landmarks(
                 # Standard error of mean
                 se_mean = math.sqrt(var_d / len(dists))
                 # Delta method: var(1/X) ≈ (se/mean^2)^2 for small se
-                stderr[v] = se_mean / (mean_d * mean_d)
+                stderr[v] = reachable_frac * se_mean / (mean_d * mean_d)
             else:
                 stderr[v] = 0.0
-    
-    # Optional normalization (consistent with NetworkX)
-    # NetworkX closeness_centrality normalizes by (N-1) for simple graphs
-    # We keep raw estimates for now, but could add normalization flag if needed
     
     return closeness, stderr
 
