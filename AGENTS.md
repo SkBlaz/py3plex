@@ -1551,10 +1551,15 @@ N.configuration().samples(100).seed(42).execute(net)
 **Factory Methods**:
 - `P.shortest(source, target)` -> PathBuilder (shortest paths)
 - `P.random_walk(start, steps)` -> PathBuilder (random walks)
+- `P.flow(source, target)` -> PathBuilder (maximum flow)
 
 **Semantics**:
 - MUST find paths in multilayer networks
 - MUST support `.crossing_layers()` for interlayer paths
+
+Flow queries preserve directed arcs without adding reverse capacity; reciprocal
+arcs retain their individual capacities. Undirected edges allow flow in either
+direction. Set the capacity attribute with `.with_params(capacity_attr="capacity")`.
 
 **Example**:
 ```python
