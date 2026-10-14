@@ -5433,6 +5433,14 @@ result = (
 computed scores when an iteration meets `tolerance`. Those scores are returned
 for the window and used to initialize the next window.
 
+### Streaming Degree Centrality
+
+`streaming_degree_centrality` divides each node's total degree by `n - 1`
+when `normalize=True`, where `n` is the current snapshot's node count. This
+matches standard NetworkX degree normalization for snapshots with multiple nodes.
+Directed, parallel, or self-loop edges can produce values above 1. With
+`normalize=False`, it returns raw degree counts.
+
 ---
 
 ## Null Models and Statistical Testing
