@@ -102,7 +102,8 @@ def approximate_closeness_landmarks(
     """Compute approximate closeness centrality using landmark sampling.
     
     For each node, this estimates closeness by computing average distance
-    to randomly sampled landmark nodes. For undirected graphs, components
+    from randomly sampled landmark nodes, matching NetworkX inward
+    closeness for directed graphs. For undirected graphs, components
     are handled separately to avoid biasing estimates.
     
     Args:
@@ -120,7 +121,7 @@ def approximate_closeness_landmarks(
     Note:
         - For undirected graphs, landmarks are sampled per component
         - For directed graphs, landmarks are sampled globally
-        - Closeness is defined as 1 / (average distance to reachable nodes)
+        - Closeness uses incoming distances from reachable nodes
         - Time complexity: O(n_landmarks * (m + n log n)) for weighted graphs
     """
     rng = random.Random(seed)
@@ -156,11 +157,11 @@ def approximate_closeness_landmarks(
         node_to_comp = None
     
     # Compute distances from each landmark
-    # For directed graphs, we want distances TO landmarks, so we reverse
+    # Distances FROM landmarks estimate inward closeness for directed graphs.
     dist_maps = []
     for l in landmarks:
         dist = _single_source_shortest_path_lengths(
-            G, l, weight=weight, reverse_for_directed=G.is_directed()
+            G, l, weight=weight
         )
         dist_maps.append(dist)
     
@@ -169,7 +170,7 @@ def approximate_closeness_landmarks(
     stderr = {} if diagnostics else None
     
     for v in nodes:
-        # Collect distances from v to landmarks
+        # Collect distances from landmarks to v
         if node_to_comp is not None:
             # Undirected: use only landmarks from same component
             v_comp = node_to_comp[v]
