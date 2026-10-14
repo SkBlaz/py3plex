@@ -139,9 +139,11 @@ def approximate_closeness_landmarks(
         comp_landmarks = _allocate_landmarks(comps, n_landmarks)
         
         # Sample landmarks from each component
+        # Preserve graph insertion order; component sets vary with PYTHONHASHSEED.
+        node_order = {node: i for i, node in enumerate(nodes)}
         landmarks = []
         for comp, k in zip(comps, comp_landmarks):
-            comp_nodes = list(comp)
+            comp_nodes = sorted(comp, key=node_order.__getitem__)
             for _ in range(k):
                 landmarks.append(comp_nodes[rng.randrange(len(comp_nodes))])
         
