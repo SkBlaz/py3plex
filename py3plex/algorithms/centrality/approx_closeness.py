@@ -56,7 +56,8 @@ def _allocate_landmarks(
     
     Args:
         components: List of connected components (sets of nodes)
-        n_landmarks: Total number of landmarks to allocate
+        n_landmarks: Requested total, expanded if needed to cover each
+            non-trivial component
         
     Returns:
         List of landmark counts for each component (at least 1 for each non-trivial component)
@@ -64,31 +65,24 @@ def _allocate_landmarks(
     if not components:
         return []
     
-    # Compute component sizes
-    sizes = [len(c) for c in components]
-    total_size = sum(sizes)
-    
-    if total_size == 0:
-        return [0] * len(components)
-    
-    # Allocate proportionally, with at least 1 for non-trivial components
-    allocation = []
-    remaining = n_landmarks
-    
-    for i, size in enumerate(sizes):
-        if size == 1:
-            # Singleton component - no landmarks needed
-            allocation.append(0)
-        elif i == len(sizes) - 1:
-            # Last component gets remaining landmarks
-            allocation.append(max(1, remaining))
-        else:
-            # Allocate proportionally, at least 1
-            count = max(1, int(round(n_landmarks * size / total_size)))
-            count = min(count, remaining - (len(sizes) - i - 1))  # Save at least 1 for each remaining
-            allocation.append(count)
-            remaining -= count
-    
+    allocation = [0] * len(components)
+    active = [i for i, comp in enumerate(components) if len(comp) > 1]
+    if not active:
+        return allocation
+
+    # Cover every non-trivial component, then apportion the remaining budget.
+    # A budget below the component count is expanded to retain that guarantee.
+    remaining = max(n_landmarks, len(active)) - len(active)
+    total_size = sum(len(components[i]) for i in active)
+    remainders = {}
+    for i in active:
+        extra, remainder = divmod(remaining * len(components[i]), total_size)
+        allocation[i] = 1 + extra
+        remainders[i] = remainder
+
+    leftover = max(n_landmarks, len(active)) - sum(allocation)
+    for i in sorted(active, key=lambda i: (-remainders[i], i))[:leftover]:
+        allocation[i] += 1
     return allocation
 
 
@@ -118,7 +112,8 @@ def approximate_closeness_landmarks(
         - stderr_dict: Per-node standard error (None if diagnostics=False)
         
     Note:
-        - For undirected graphs, landmarks are sampled per component
+        - For undirected graphs, landmarks are sampled per component, with at
+          least one per non-trivial component even if this exceeds n_landmarks
         - For directed graphs, landmarks are sampled globally
         - Self-landmarks are excluded from the average and reachable fraction
         - Uses NetworkX default Wasserman-Faust scaling for disconnected graphs
