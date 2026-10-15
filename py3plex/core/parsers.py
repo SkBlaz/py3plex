@@ -228,7 +228,7 @@ def parse_gpickle(
         relabeled = nx.relabel_nodes(G.subgraph(node_mapping), node_mapping, copy=True)
         A = nx.MultiDiGraph(relabeled) if directed else nx.MultiGraph(relabeled)
     else:
-        if not isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
+        if not G.is_multigraph() or G.is_directed() != directed:
             A = nx.MultiDiGraph(G) if directed else nx.MultiGraph(G)
         else:
             A = G
