@@ -397,6 +397,9 @@ def multilayer_flow(
     DG = nx.DiGraph()
     for u, v, data in G.edges(data=True):
         capacity = data.get(capacity_attr, 1.0)
+        # The flow solver uses a simple graph; combine parallel channels.
+        if DG.has_edge(u, v):
+            capacity += DG[u][v]["capacity"]
         DG.add_edge(u, v, capacity=capacity)
         if not G.is_directed():
             DG.add_edge(v, u, capacity=capacity)  # Undirected -> bidirectional
