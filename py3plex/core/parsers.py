@@ -176,17 +176,9 @@ def parse_matrix_to_nx(file_name: str, directed: bool) -> Union[nx.Graph, nx.DiG
 
     G = nx_from_scipy_sparse_matrix(mat["network"], create_using=create_using)
 
-    if directed:
-        G_final = nx.DiGraph()
-
-    else:
-        G_final = nx.Graph()
-
-    for n in G.nodes():
-        G_final.add_node((n, "generic"))
-
-    for e in G.edges():
-        G_final.add_edge((e[0], "generic"), (e[1], "generic"))
+    # Relabel the weighted graph instead of reconstructing bare edges, which
+    # would discard the adjacency values stored in the weight attribute.
+    G_final = nx.relabel_nodes(G, {n: (n, "generic") for n in G}, copy=True)
 
     return (G_final, None)
 
