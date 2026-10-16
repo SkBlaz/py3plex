@@ -569,6 +569,11 @@ remain missing (`None`). Subtraction does not modify either input result.
 full edge ID first, then replica-pair and legacy endpoint-pair keys. Existing
 replica edge formats and positional attribute lists are also supported.
 
+**NetworkX Edge Keys**: For multigraph sources, `to_networkx(network)` preserves
+explicit `(source, target, key)` and `(source, target, key, data)` selections,
+including each key's source attributes. Unkeyed selections retain the existing
+first-edge fallback.
+
 **Provenance Methods**:
 - `provenance` -> `Optional[Dict[str, Any]]` - Get provenance dictionary
 - `is_replayable` -> `bool` - Check if result has replayable provenance
