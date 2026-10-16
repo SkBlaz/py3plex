@@ -112,7 +112,9 @@ def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
 
     Args:
         nx_object: A networkx graph
-        directed: Whether the graph is directed
+        directed: Requested graph direction. If it differs from the input,
+            convert using NetworkX semantics while preserving multigraph keys
+            and attributes. Matching inputs are returned unchanged.
 
     Returns:
         Tuple of (graph, None)
@@ -123,6 +125,8 @@ def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
         - Postcondition: result graph is not None
     """
 
+    if nx_object.is_directed() != directed:
+        nx_object = nx_object.to_directed() if directed else nx_object.to_undirected()
     return (nx_object, None)
 
 
