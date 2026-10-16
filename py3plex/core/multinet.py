@@ -993,7 +993,8 @@ class multi_layer_network:
                 retain the current setting (initially set by the constructor).
             input_type: Format of the input file. Supported values:
                 - 'gml': Graph Modeling Language format
-                - 'graphml': GraphML XML format
+                - 'graphml': GraphML XML format (node 'type' selects layer;
+                  missing types use the GraphML default or 'generic')
                 - 'edgelist': Simple edge list (source target [weight])
                 - 'multiedgelist': Multilayer edge list (node1 layer1 node2 layer2 weight)
                 - 'multiplex_edges': Multiplex format (layer node1 node2 weight)

@@ -79,6 +79,27 @@ def parse_gml(
     return (A, None)
 
 
+def parse_graphml(
+    file_name: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
+    """Read GraphML, using node ``type`` attributes as replica layers.
+
+    Nodes without a type use the GraphML node default, or ``generic`` if no
+    default is declared. Preserve isolated nodes, graph/node/edge attributes
+    and serialized edge IDs as multigraph keys. Direction conversion follows
+    NetworkX semantics, as with gpickle loading.
+    """
+    graph = nx.read_graphml(file_name, force_multigraph=True)
+    default_layer = graph.graph.get("node_default", {}).get("type", "generic")
+    mapping = {
+        node: (node, data.get("type", default_layer))
+        for node, data in graph.nodes(data=True)
+    }
+    graph = nx.relabel_nodes(graph, mapping, copy=True)
+    graph = nx.MultiDiGraph(graph) if directed else nx.MultiGraph(graph)
+    return graph, None
+
+
 @require(lambda nx_object: nx_object is not None, "nx_object must not be None")
 @require(
     lambda nx_object: isinstance(nx_object, nx.Graph),
@@ -801,6 +822,9 @@ def parse_network(
     time_series = None
     if f_type == "gml":
         parsed_network, labels = parse_gml(input_name, directed)
+
+    elif f_type == "graphml":
+        parsed_network, labels = parse_graphml(input_name, directed)
 
     elif f_type == "nx":
         parsed_network, labels = parse_nx(input_name, directed)
