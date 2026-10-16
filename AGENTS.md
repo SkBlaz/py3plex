@@ -5455,6 +5455,11 @@ Directed, parallel, or self-loop edges can produce values above 1. With
 
 py3plex provides null model generators for hypothesis testing.
 
+`layer_shuffle_model(network, seed=...)` collects layers in first-occurrence
+order from the graph's nodes before shuffling. The same node insertion order
+and seed give identical assignments across Python hash seeds, including mixed
+layer ID types. `N.layer_shuffle().seed(...)` uses the same ordering for its samples.
+
 ### Configuration Model
 
 ```python
