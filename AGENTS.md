@@ -1565,6 +1565,9 @@ N.configuration().samples(100).seed(42).execute(net)
 Flow queries preserve directed arcs without adding reverse capacity; reciprocal
 arcs retain their individual capacities. Undirected edges allow flow in either
 direction. Set the capacity attribute with `.with_params(capacity_attr="capacity")`.
+Parallel channels between the same ordered endpoints contribute the sum of their
+capacities; returned flow values are aggregated by endpoint pair. Each missing
+capacity attribute contributes the default capacity of `1.0`.
 
 **Example**:
 ```python
