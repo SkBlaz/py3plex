@@ -53,7 +53,7 @@ def parse_gml(
     file_name: str, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
-    Parse a gml network.
+    Parse a GML network, preserving isolated nodes, attributes and edge keys.
 
     Args:
         file_name: Path to GML file
@@ -70,27 +70,12 @@ def parse_gml(
 
     H = nx.read_gml(file_name)
 
-    if directed:
-        A = nx.MultiDiGraph()
-    else:
-        A = nx.MultiGraph()
+    # Relabel the whole graph so isolated replicas, metadata and parallel-edge
+    # keys survive the conversion to py3plex's (node, layer) representation.
+    node_mapping = {node: (node, data["type"]) for node, data in H.nodes(data=True)}
+    relabeled = nx.relabel_nodes(H, node_mapping, copy=True)
+    A = nx.MultiDiGraph(relabeled) if directed else nx.MultiGraph(relabeled)
 
-    node_type_map = {}
-    # initial type maps
-    for node in H.nodes(data=True):
-        node_type_map[node[0]] = node[1]
-
-        # read into structure
-    for edge in H.edges(data=True):
-        node_first = (edge[0], node_type_map[edge[0]]["type"])
-        node_second = (edge[1], node_type_map[edge[1]]["type"])
-        edge_props = edge[2]
-
-        A.add_node(node_first, **node_type_map[edge[0]])
-        A.add_node(node_second, **node_type_map[edge[1]])
-        A.add_edge(node_first, node_second, **edge_props)
-
-    # add labels
     return (A, None)
 
 
