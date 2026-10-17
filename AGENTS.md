@@ -569,6 +569,11 @@ remain missing (`None`). Subtraction does not modify either input result.
 full edge ID first, then replica-pair and legacy endpoint-pair keys. Existing
 replica edge formats and positional attribute lists are also supported.
 
+**NetworkX Edge Keys**: For multigraph sources, `to_networkx(network)` preserves
+explicit `(source, target, key)` and `(source, target, key, data)` selections,
+including each key's source attributes. Unkeyed selections retain the existing
+first-edge fallback.
+
 **Provenance Methods**:
 - `provenance` -> `Optional[Dict[str, Any]]` - Get provenance dictionary
 - `is_replayable` -> `bool` - Check if result has replayable provenance
@@ -576,6 +581,11 @@ replica edge formats and positional attribute lists are also supported.
 
 **Grouping Methods**:
 - `group_summary()` -> `pd.DataFrame` - Summary of groups (when grouping is active)
+
+**NetworkX Edge Metrics**: `to_networkx(network)` attaches dictionary-backed
+endpoint-pair metrics to each selected edge, including parallel edges in a
+multigraph. It writes to edge attribute dictionaries and does not modify the
+source graph or query result.
 
 **Result Symmetric Difference**: `left ^ right` keeps items present in exactly
 one operand under the chosen identity strategy. Each surviving item's metrics
@@ -1551,10 +1561,18 @@ N.configuration().samples(100).seed(42).execute(net)
 **Factory Methods**:
 - `P.shortest(source, target)` -> PathBuilder (shortest paths)
 - `P.random_walk(start, steps)` -> PathBuilder (random walks)
+- `P.flow(source, target)` -> PathBuilder (maximum flow)
 
 **Semantics**:
 - MUST find paths in multilayer networks
 - MUST support `.crossing_layers()` for interlayer paths
+
+Flow queries preserve directed arcs without adding reverse capacity; reciprocal
+arcs retain their individual capacities. Undirected edges allow flow in either
+direction. Set the capacity attribute with `.with_params(capacity_attr="capacity")`.
+Parallel channels between the same ordered endpoints contribute the sum of their
+capacities; returned flow values are aggregated by endpoint pair. Each missing
+capacity attribute contributes the default capacity of `1.0`.
 
 **Example**:
 ```python
@@ -5428,11 +5446,24 @@ result = (
 computed scores when an iteration meets `tolerance`. Those scores are returned
 for the window and used to initialize the next window.
 
+### Streaming Degree Centrality
+
+`streaming_degree_centrality` divides each node's total degree by `n - 1`
+when `normalize=True`, where `n` is the current snapshot's node count. This
+matches standard NetworkX degree normalization for snapshots with multiple nodes.
+Directed, parallel, or self-loop edges can produce values above 1. With
+`normalize=False`, it returns raw degree counts.
+
 ---
 
 ## Null Models and Statistical Testing
 
 py3plex provides null model generators for hypothesis testing.
+
+`layer_shuffle_model(network, seed=...)` collects layers in first-occurrence
+order from the graph's nodes before shuffling. The same node insertion order
+and seed give identical assignments across Python hash seeds, including mixed
+layer ID types. `N.layer_shuffle().seed(...)` uses the same ordering for its samples.
 
 ### Configuration Model
 

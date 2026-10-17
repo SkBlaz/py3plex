@@ -53,7 +53,7 @@ def parse_gml(
     file_name: str, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
     """
-    Parse a gml network.
+    Parse a GML network, preserving isolated nodes, attributes and edge keys.
 
     Args:
         file_name: Path to GML file
@@ -70,28 +70,34 @@ def parse_gml(
 
     H = nx.read_gml(file_name)
 
-    if directed:
-        A = nx.MultiDiGraph()
-    else:
-        A = nx.MultiGraph()
+    # Relabel the whole graph so isolated replicas, metadata and parallel-edge
+    # keys survive the conversion to py3plex's (node, layer) representation.
+    node_mapping = {node: (node, data["type"]) for node, data in H.nodes(data=True)}
+    relabeled = nx.relabel_nodes(H, node_mapping, copy=True)
+    A = nx.MultiDiGraph(relabeled) if directed else nx.MultiGraph(relabeled)
 
-    node_type_map = {}
-    # initial type maps
-    for node in H.nodes(data=True):
-        node_type_map[node[0]] = node[1]
-
-        # read into structure
-    for edge in H.edges(data=True):
-        node_first = (edge[0], node_type_map[edge[0]]["type"])
-        node_second = (edge[1], node_type_map[edge[1]]["type"])
-        edge_props = edge[2]
-
-        A.add_node(node_first, **node_type_map[edge[0]])
-        A.add_node(node_second, **node_type_map[edge[1]])
-        A.add_edge(node_first, node_second, **edge_props)
-
-    # add labels
     return (A, None)
+
+
+def parse_graphml(
+    file_name: str, directed: bool
+) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
+    """Read GraphML, using node ``type`` attributes as replica layers.
+
+    Nodes without a type use the GraphML node default, or ``generic`` if no
+    default is declared. Preserve isolated nodes, graph/node/edge attributes
+    and serialized edge IDs as multigraph keys. Direction conversion follows
+    NetworkX semantics, as with gpickle loading.
+    """
+    graph = nx.read_graphml(file_name, force_multigraph=True)
+    default_layer = graph.graph.get("node_default", {}).get("type", "generic")
+    mapping = {
+        node: (node, data.get("type", default_layer))
+        for node, data in graph.nodes(data=True)
+    }
+    graph = nx.relabel_nodes(graph, mapping, copy=True)
+    graph = nx.MultiDiGraph(graph) if directed else nx.MultiGraph(graph)
+    return graph, None
 
 
 @require(lambda nx_object: nx_object is not None, "nx_object must not be None")
@@ -106,7 +112,9 @@ def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
 
     Args:
         nx_object: A networkx graph
-        directed: Whether the graph is directed
+        directed: Requested graph direction. If it differs from the input,
+            convert using NetworkX semantics while preserving multigraph keys
+            and attributes. Matching inputs are returned unchanged.
 
     Returns:
         Tuple of (graph, None)
@@ -117,6 +125,8 @@ def parse_nx(nx_object: nx.Graph, directed: bool) -> Tuple[nx.Graph, None]:
         - Postcondition: result graph is not None
     """
 
+    if nx_object.is_directed() != directed:
+        nx_object = nx_object.to_directed() if directed else nx_object.to_undirected()
     return (nx_object, None)
 
 
@@ -166,17 +176,9 @@ def parse_matrix_to_nx(file_name: str, directed: bool) -> Union[nx.Graph, nx.DiG
 
     G = nx_from_scipy_sparse_matrix(mat["network"], create_using=create_using)
 
-    if directed:
-        G_final = nx.DiGraph()
-
-    else:
-        G_final = nx.Graph()
-
-    for n in G.nodes():
-        G_final.add_node((n, "generic"))
-
-    for e in G.edges():
-        G_final.add_edge((e[0], "generic"), (e[1], "generic"))
+    # Relabel the weighted graph instead of reconstructing bare edges, which
+    # would discard the adjacency values stored in the weight attribute.
+    G_final = nx.relabel_nodes(G, {n: (n, "generic") for n in G}, copy=True)
 
     return (G_final, None)
 
@@ -228,7 +230,7 @@ def parse_gpickle(
         relabeled = nx.relabel_nodes(G.subgraph(node_mapping), node_mapping, copy=True)
         A = nx.MultiDiGraph(relabeled) if directed else nx.MultiGraph(relabeled)
     else:
-        if not isinstance(G, (nx.MultiGraph, nx.MultiDiGraph)):
+        if not G.is_multigraph() or G.is_directed() != directed:
             A = nx.MultiDiGraph(G) if directed else nx.MultiGraph(G)
         else:
             A = G
@@ -816,6 +818,9 @@ def parse_network(
     time_series = None
     if f_type == "gml":
         parsed_network, labels = parse_gml(input_name, directed)
+
+    elif f_type == "graphml":
+        parsed_network, labels = parse_graphml(input_name, directed)
 
     elif f_type == "nx":
         parsed_network, labels = parse_nx(input_name, directed)

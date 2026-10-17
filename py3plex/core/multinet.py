@@ -973,7 +973,7 @@ class multi_layer_network:
     def load_network(
         self,
         input_file: Optional[str] = None,
-        directed: bool = False,
+        directed: Optional[bool] = None,
         input_type: str = "gml",
         label_delimiter: str = "---",
     ) -> "multi_layer_network":
@@ -989,10 +989,12 @@ class multi_layer_network:
 
         Args:
             input_file: Path to the network file to load
-            directed: Whether the network is directed
+            directed: Whether the network is directed. If omitted or None,
+                retain the current setting (initially set by the constructor).
             input_type: Format of the input file. Supported values:
                 - 'gml': Graph Modeling Language format
-                - 'graphml': GraphML XML format
+                - 'graphml': GraphML XML format (node 'type' selects layer;
+                  missing types use the GraphML default or 'generic')
                 - 'edgelist': Simple edge list (source target [weight])
                 - 'multiedgelist': Multilayer edge list (node1 layer1 node2 layer2 weight)
                 - 'multiplex_edges': Multiplex format (layer node1 node2 weight)
@@ -1029,6 +1031,9 @@ class multi_layer_network:
         # Precondition: if not nx type, input_file should be provided
         if input_type != "nx":
             assert input_file is not None, "input_file must be provided for non-nx input types"
+
+        if directed is None:
+            directed = self.directed
 
         self.input_file = input_file
         self.input_type = input_type

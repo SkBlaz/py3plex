@@ -56,12 +56,6 @@ def test_gml_roundtrip_preserves_structure(num_nodes, directed, seed):
     
     assume(G.number_of_edges() > 0)
     
-    # Remove isolated nodes (parse_gml only preserves nodes with edges)
-    isolated = list(nx.isolates(G))
-    G.remove_nodes_from(isolated)
-    
-    assume(G.number_of_nodes() > 0)
-    
     # Add type attribute to nodes (required for parse_gml)
     for node in G.nodes():
         G.nodes[node]['type'] = 'default'
@@ -80,7 +74,7 @@ def test_gml_roundtrip_preserves_structure(num_nodes, directed, seed):
         # Parse back
         H, _ = parse_gml(temp_file, directed)
         
-        # Should preserve structure (all nodes should be preserved since no isolated nodes)
+        # Should preserve structure (including isolated nodes)
         assert H.number_of_nodes() == original_nodes, \
             f"Node count should be preserved, expected {original_nodes}, got {H.number_of_nodes()}"
         assert H.number_of_edges() == original_edges, \
