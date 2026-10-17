@@ -1928,6 +1928,8 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
         >>> json_str = ast_to_json(ast)
         >>> # Can be deserialized with ast_from_json()
     """
+    from .layers import LayerExpr as LayerSetExpr, LayerSet
+
     if canonical:
         query = canonicalize_ast(query)
     
@@ -1943,9 +1945,12 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
             return [_serialize(item) for item in obj]
         if isinstance(obj, dict):
             return {k: _serialize(v) for k, v in obj.items()}
+        if isinstance(obj, LayerSet):
+            return {'__type__': 'LayerSet', 'expr': _serialize(obj.expr)}
         if hasattr(obj, '__dataclass_fields__'):
             # Dataclass
-            result = {'__type__': obj.__class__.__name__}
+            type_name = 'LayerSetExpr' if isinstance(obj, LayerSetExpr) else obj.__class__.__name__
+            result = {'__type__': type_name}
             for field_name in obj.__dataclass_fields__:
                 value = getattr(obj, field_name)
                 result[field_name] = _serialize(value)
@@ -1976,6 +1981,8 @@ def ast_from_json(json_str: str) -> Query:
         >>> reconstructed = ast_from_json(json_str)
         >>> ast_equals(ast, reconstructed)  # True
     """
+    from .layers import LayerExpr as LayerSetExpr, LayerSet
+
     data = json.loads(json_str)
     
     # Check schema version
@@ -2016,6 +2023,8 @@ def ast_from_json(json_str: str) -> Query:
                     'Query': Query,
                     'SelectStmt': SelectStmt,
                     'LayerExpr': LayerExpr,
+                    'LayerSet': LayerSet,
+                    'LayerSetExpr': LayerSetExpr,
                     'LayerTerm': LayerTerm,
                     'ConditionExpr': ConditionExpr,
                     'ConditionAtom': ConditionAtom,
@@ -2047,6 +2056,9 @@ def ast_from_json(json_str: str) -> Query:
                 for field_name, field_value in obj_data.items():
                     deserialized_data[field_name] = _deserialize(field_value)
                 
+                if target_class is LayerSet:
+                    return LayerSet(deserialized_data['expr'])
+
                 if target_class is SelectStmt and 'target' in deserialized_data:
                     # Schema 2.0 exports previously wrote str-backed Target enums
                     # as bare strings. Continue to accept those stored queries.
