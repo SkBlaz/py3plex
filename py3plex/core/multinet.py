@@ -1290,23 +1290,13 @@ class multi_layer_network:
             parsers.save_gpickle(self.core_network, output_file=output_file)
 
     def add_dummy_layers(self):
-        """
-        Internal function, for conversion between objects
-        """
-
-        self.tmp_core_network = self.core_network
-        self.core_network = self._create_graph()
-
-        for edge in self.tmp_core_network.edges():
-            self.add_edges(
-                {
-                    "source": edge[0],
-                    "target": edge[1],
-                    "source_type": self.dummy_layer,
-                    "target_type": self.dummy_layer,
-                }
-            )
-        del self.tmp_core_network
+        """Wrap monoplex nodes in the dummy layer, preserving graph data."""
+        graph_type = nx.MultiDiGraph if self.directed else nx.MultiGraph
+        # Copy the complete graph so isolates, attributes and multiedge keys
+        # survive. Rebuilding from bare edges loses all of that information.
+        self.core_network = nx.relabel_nodes(
+            graph_type(self.core_network), lambda node: (node, self.dummy_layer)
+        )
         return self
 
     def sparse_to_px(self, directed=None):
@@ -1322,6 +1312,7 @@ class multi_layer_network:
         self.core_network = nx_from_scipy_sparse_matrix(
             self.core_network, create_using=(nx.DiGraph() if directed else nx.Graph())
         )
+        self.directed = directed
         self.add_dummy_layers()
         self.sparse_enabled = False
 
