@@ -9355,6 +9355,10 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `py3plex/algorithms/centrality/explain.py` - Centrality explanation utilities
 - `py3plex/algorithms/attribute_correlation.py` - Attribute-centrality correlation analysis
 
+`correlate_attributes_across_layers()` pairs observed values by shared physical
+node ID, including mixed ID types. Nodes missing the attribute in either layer
+are excluded; a layer pair needs at least two shared observations.
+
 #### Statistical Analysis (11 modules)
 
 **Basic Statistics**:

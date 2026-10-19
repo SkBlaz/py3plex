@@ -200,11 +200,11 @@ def correlate_attributes_across_layers(
     for i, l1 in enumerate(layers):
         for l2 in layers[i+1:]:
             # Find common nodes
-            common_nodes = set(layer_attrs[l1].keys()) & set(layer_attrs[l2].keys())
+            common_nodes = [node for node in layer_attrs[l1] if node in layer_attrs[l2]]
             
             if len(common_nodes) > 1:
-                vals1 = np.array([layer_attrs[l1][node] for node in sorted(common_nodes)])
-                vals2 = np.array([layer_attrs[l2][node] for node in sorted(common_nodes)])
+                vals1 = np.array([layer_attrs[l1][node] for node in common_nodes])
+                vals2 = np.array([layer_attrs[l2][node] for node in common_nodes])
                 
                 corr, pval = _compute_correlation(vals1, vals2, correlation_method)
                 results[(l1, l2)] = (corr, pval)
