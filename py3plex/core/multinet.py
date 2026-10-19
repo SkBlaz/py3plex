@@ -360,7 +360,10 @@ def _encode_multilayer_network(core_network, directed):
         except (KeyError, IndexError, ValueError, TypeError):
             weight = 1
 
-        simple_graph.add_edge(nmap[node_first], nmap[node_second], weight=weight)
+        # A numeric adjacency entry is the sum of parallel edge weights.
+        u, v = nmap[node_first], nmap[node_second]
+        previous_weight = simple_graph.get_edge_data(u, v, {}).get("weight", 0.0)
+        simple_graph.add_edge(u, v, weight=previous_weight + weight)
 
     vectors = nx_to_scipy_sparse_matrix(simple_graph)
     return vectors, simple_graph.nodes()
