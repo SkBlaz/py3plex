@@ -824,8 +824,11 @@ class multi_layer_network:
     def layers(self) -> List[Any]:
         """List of unique layer identifiers in the network.
 
+        Comparable identifiers are sorted. Otherwise, layers retain their
+        first-occurrence order in the network.
+
         Returns:
-            list: Sorted list of layer identifiers
+            list: Layer identifiers in sorted or first-occurrence order
 
         Examples:
             >>> net = multi_layer_network()
@@ -839,9 +842,14 @@ class multi_layer_network:
         if self.core_network is None:
             return []
         try:
-            unique_layers = {n[1] for n in self.core_network.nodes()
-                            if isinstance(n, tuple) and len(n) >= 2}
-            return sorted(unique_layers)
+            unique_layers = dict.fromkeys(
+                n[1] for n in self.core_network.nodes()
+                if isinstance(n, tuple) and len(n) >= 2
+            )
+            try:
+                return sorted(unique_layers)
+            except TypeError:
+                return list(unique_layers)
         except (TypeError, IndexError):
             return []
 
@@ -871,7 +879,7 @@ class multi_layer_network:
         `split_to_layers()`) or defaults to the `layers` property.
 
         Returns:
-            list: Sorted list of layer identifiers
+            list: Layer identifiers using the ordering of the layers property
 
         Examples:
             >>> net = multi_layer_network()
