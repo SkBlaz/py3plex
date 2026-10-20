@@ -3542,6 +3542,9 @@ for step in prov['steps']:
 
 ## I/O and Data Loading
 
+Sidecar bundles retain required node and edge identity/order columns for empty
+CSV and Parquet tables, including graphs containing only isolated nodes.
+
 ### Multi_layer_network Construction
 
 ```python

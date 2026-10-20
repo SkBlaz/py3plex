@@ -182,7 +182,9 @@ def _dict_to_dataframe(data: Dict[str, Any]) -> pd.DataFrame:
                 result[f"attrs_{col}"] = [
                     _encode_attr_value(item) for item in attrs_df[col].tolist()
                 ]
-        elif isinstance(value, list) and all(isinstance(item, dict) for item in value):
+        elif key == "attrs" and isinstance(value, list) and all(
+            isinstance(item, dict) for item in value
+        ):
             # List of dicts (attrs as records)
             attrs_df = pd.DataFrame(value)
             if row_count is not None:
