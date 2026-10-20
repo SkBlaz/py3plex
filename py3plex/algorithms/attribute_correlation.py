@@ -329,11 +329,11 @@ def _compute_correlation(x: np.ndarray, y: np.ndarray, method: str) -> Tuple[flo
     """
     valid_methods = ["pearson", "spearman", "kendall"]
     if method == "pearson":
-        return pearsonr(x, y)
+        corr, pval = pearsonr(x, y)
     elif method == "spearman":
-        return spearmanr(x, y)
+        corr, pval = spearmanr(x, y)
     elif method == "kendall":
-        return kendalltau(x, y)
+        corr, pval = kendalltau(x, y)
     else:
         from py3plex.errors import find_similar
         did_you_mean = find_similar(method, valid_methods)
@@ -348,6 +348,10 @@ def _compute_correlation(x: np.ndarray, y: np.ndarray, method: str) -> Tuple[flo
             ],
             did_you_mean=did_you_mean
         )
+
+    # Floating-point tail calculations can round probabilities above one.
+    # np.clip preserves NaN for undefined correlations (e.g. constant inputs).
+    return corr, float(np.clip(pval, 0.0, 1.0))
 
 
 def multilayer_assortativity(

@@ -7863,6 +7863,9 @@ entry point is `canonicalize_ast_scoped(query_ast, scope)`, which returns a
 
 ## Reproducibility Policy
 
+Attribute-correlation p-values are bounded to [0, 1] to correct floating-point
+roundoff from statistical backends. Undefined correlations retain NaN values.
+
 ### Determinism Guarantees
 
 `AutoCommunityRunner` uses an explicit UQ seed when supplied; otherwise UQ
