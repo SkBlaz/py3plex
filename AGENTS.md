@@ -3639,6 +3639,14 @@ py3plex supports conversions between different network types: multilayer, multip
 - Automatic coupling edges between same node across layers
 - Best for same entities with multiple relationship types (e.g., social networks with friend/colleague/family layers)
 
+#### Numeric Adjacency Exports
+
+For multilayer networks, `get_tensor()` and `get_supra_adjacency_matrix()` sum
+parallel edge weights for each ordered endpoint pair (unordered for undirected
+networks). This includes parallel self-loops and interlayer edges. Individual
+weights are converted to floats; missing or invalid weights retain the existing
+fallback of 1 per edge.
+
 #### Convert Multilayer → Multiplex
 
 Use `to_multiplex()` to convert a multilayer network to multiplex by aligning node sets across layers.
