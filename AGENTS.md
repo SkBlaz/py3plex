@@ -5480,6 +5480,11 @@ layer ID types. `N.layer_shuffle().seed(...)` uses the same ordering for its sam
 
 ### Configuration Model
 
+For directed input, `configuration_model()` preserves each replica's in-degree
+and out-degree separately using a directed configuration multigraph. Samples
+may contain self-loops and parallel arcs; retain these to preserve both degree
+sequences. Undirected input continues to use a simple degree-preserving realization.
+
 ```python
 from py3plex.nullmodels import configuration_model
 

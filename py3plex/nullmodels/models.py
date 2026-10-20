@@ -148,28 +148,32 @@ def configuration_model(
     if G is None or len(G.nodes()) == 0:
         return _copy_network(network)
     
-    # Get degree sequence
-    degree_sequence = [d for n, d in G.degree()]
+    nodes = list(G.nodes())
+    directed = G.is_directed()
     
     # Create configuration model graph
     try:
-        # Generate a simple graph that preserves the *exact* degree sequence.
-        # nx.configuration_model can generate self-loops / parallel edges; converting
-        # to a simple Graph would silently change degrees, violating the contract.
-        random_G = nx.random_degree_sequence_graph(degree_sequence, seed=seed)
+        if directed:
+            # Keep both sequences; retain parallel arcs/loops to preserve degrees.
+            random_G = nx.directed_configuration_model(
+                [G.in_degree(node) for node in nodes],
+                [G.out_degree(node) for node in nodes],
+                seed=seed,
+            )
+        else:
+            # A simple undirected realization preserves the exact degree sequence.
+            degree_sequence = [G.degree(node) for node in nodes]
+            random_G = nx.random_degree_sequence_graph(degree_sequence, seed=seed)
     except Exception:
         # Fallback: return copy of original
         return _copy_network(network)
     
     # Map back to original node labels
-    nodes = list(G.nodes())
     mapping = {i: nodes[i] for i in range(len(nodes))}
     random_G = nx.relabel_nodes(random_G, mapping)
     
     # Create new py3plex network
-    new_network = multinet.multi_layer_network(
-        directed=network.directed if hasattr(network, 'directed') else False
-    )
+    new_network = multinet.multi_layer_network(directed=directed)
     
     # Add nodes
     for node in nodes:
