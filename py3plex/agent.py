@@ -46,7 +46,7 @@ def load_network_from_path(
     """Load a network from path and return stable machine-facing payload."""
     net = multinet.multi_layer_network(directed=directed)
     net.load_network(path, input_type=input_type)
-    layers = list(net.get_layers())
+    layers = net.layers
     return {
         "status": "ok",
         "assumptions": ["Network path is trusted and readable."],

@@ -9214,6 +9214,10 @@ pytest tests/test_dsl_v2.py::test_query_builder_basic
 - `py3plex/agent.py` - Stable machine-facing agent API (structured dict responses for AI agents and automation)
 - `py3plex_mcp/` - MCP server for AI agent integration
 
+`load_network_from_path()` reports actual layer IDs and counts in
+`result.network_stats`, including zero layers for an empty graph. Loading these
+statistics does not compute visualization layouts.
+
 ### MCP Server
 
 - `py3plex_mcp/server.py` - FastMCP server implementation
