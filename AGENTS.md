@@ -265,6 +265,9 @@ with suppress_warnings("degree_ambiguity", "node_replica_confusion"):
 - Most operations return **replicas**, not physical nodes
 - To get physical nodes: `set(n[0] for n in result.items)`
 
+`net.layers` and its default `net.layer_names` alias preserve layer identifiers.
+Comparable IDs are sorted; mutually unorderable IDs retain first-occurrence order.
+
 **2. Degree Meanings**:
 - Intra-layer degree: Edges within same layer
 - Inter-layer degree: Edges to other layers
