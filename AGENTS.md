@@ -3631,6 +3631,13 @@ net = make_random_multilayer(
 
 py3plex supports conversions between different network types: multilayer, multiplex, and single-layer (monoplex).
 
+`sparse_to_px(directed=None)` converts the current sparse adjacency matrix into
+node replicas `(row_index, dummy_layer)`, preserving edge weights and isolated
+rows. It inherits `self.directed` unless explicitly overridden; an override
+updates both the graph direction and `self.directed`. `add_dummy_layers()` wraps
+monoplex node IDs while retaining isolates, graph/node/edge attributes, and
+multiedge keys. Both conversions produce a MultiGraph or MultiDiGraph.
+
 #### Multilayer vs Multiplex Networks
 
 **Multilayer Networks**:
