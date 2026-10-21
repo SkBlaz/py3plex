@@ -623,6 +623,9 @@ class multi_layer_network:
         """Increment the mutation counter by 1 (no-op when suspended)."""
         if not self._suspend_version_bump:
             self._network_version += 1
+            # Matrix exports must be rebuilt from the new graph structure.
+            self.numeric_core_network = None
+            self.node_order_in_matrix = None
 
     # ═════════════════════════════════════════════════════════════════════════
     # Core Data Access Methods

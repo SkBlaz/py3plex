@@ -2822,6 +2822,12 @@ assert prov["network_version"] == 2
 ```
 
 **Cache invalidation**:
+Public mutations listed above also invalidate the cached numeric adjacency and
+its node ordering. Subsequent `get_tensor()` or `get_supra_adjacency_matrix()`
+calls rebuild from the current topology and weights. Repeated exports without
+a mutation reuse the cached encoding. Direct edits to `core_network` bypass
+these public mutation hooks.
+
 Downstream caches (e.g., centrality fast-path) MAY use the tuple
 `(network_version, ast_hash, params)` as a cache key.  Because `network_version`
 changes on every structural mutation, stale cache entries are never silently reused.
