@@ -1851,7 +1851,7 @@ class QueryResult:
                 
                 if val1 is not None and val2 is not None:
                     # Both have value - resolve conflict
-                    if attr in conflicts:
+                    if attr in conflicts or val1 != val2:
                         merged_val = resolve_attribute_conflict(attr, val1, val2, config.conflict_resolution)
                     else:
                         merged_val = val1  # No conflict, use first
@@ -1967,7 +1967,7 @@ class QueryResult:
                 val2 = values2.get(id_to_item2[item_id]) if isinstance(values2, dict) else None
                 
                 if val1 is not None and val2 is not None:
-                    if attr in conflicts:
+                    if attr in conflicts or val1 != val2:
                         merged_val = resolve_attribute_conflict(attr, val1, val2, config.conflict_resolution)
                     else:
                         merged_val = val1

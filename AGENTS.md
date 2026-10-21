@@ -584,6 +584,11 @@ first-edge fallback.
 - `is_replayable` -> `bool` - Check if result has replayable provenance
 - `replay(strict=True)` -> `QueryResult` - Replay query from provenance
 
+**Metric Conflicts**: Result union and intersection apply the configured conflict
+strategy to values matched by the selected identity. With `BY_ID`, metrics keyed
+by different replicas of the same physical node or edge still conflict when their
+values differ. The default strategy raises `AttributeConflictError`.
+
 **Grouping Methods**:
 - `group_summary()` -> `pd.DataFrame` - Summary of groups (when grouping is active)
 
