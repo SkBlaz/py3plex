@@ -81,7 +81,7 @@ Py3plex is released under the MIT licence [@mitlicense]. The repository also con
 
 # AI usage disclosure
 
-The initial code was written by hand. OpenAI Codex was used for larger code refactors and to revise this manuscript (GPT-6 for the latter). GitHub Copilot and Anthropic Claude Code assisted with code review, candidate snippets, and tests. Google Gemini, OpenAI ChatGPT, and Anthropic Claude assisted with documentation drafting and editing and with grammar and spelling checks for the manuscript. Human authors made the core design decisions and reviewed earlier drafts of the manuscript. The authors are responsible for reviewing and validating AI-assisted code and text. [Author confirmation needed before submission: tool and model versions for earlier work, and review of this revision.]
+The authors made the software design decisions and wrote the initial code and paper. OpenAI Codex assisted with coding and larger refactors. The authors used large language models to refine the paper and align its description with the codebase; Codex using GPT-6 assisted with the revisions in this submission. Earlier drafting and editing also used Google Gemini, OpenAI ChatGPT, and Anthropic Claude, and GitHub Copilot and Claude Code assisted with code and tests. The authors are responsible for reviewing and validating all AI-assisted material. [Before submission, confirm the tool and model versions used for earlier work and complete the authors' review of this revision.]
 
 # Acknowledgements
 
