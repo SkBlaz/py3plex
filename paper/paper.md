@@ -55,6 +55,8 @@ General graph libraries such as NetworkX [@networkx] and igraph [@igraph] can st
 
 Py3plex represents each occurrence of a node in a layer separately and supports edges within and between layers. It offers a query language for selecting and analyzing parts of a network, along with tools for uncertainty analysis and provenance. Its methods include community detection, centrality measures, diffusion simulations, embeddings, and multilayer visualization.
 
+For example, a researcher can use one query to select the work and friendship layers, calculate each node-layer pair’s degree, and return the highest-degree nodes in each layer. Comparing the two lists can reveal people whose connections differ between settings. By default, degree counts all edges attached to a node-layer pair, including inter-layer edges; the researcher must account for those edges when interpreting the rankings.
+
 # State of the Field
 
 General graph libraries such as NetworkX [@networkx] and igraph [@igraph] provide data structures and algorithms that can be used with layer labels. Dedicated multilayer packages include pymnet [@pymnet] and MultiNetX [@multinex], both of which provide multilayer representations and operations. Pymnet also supports models with multiple aspects. MuxViz [@muxviz] provides multilayer analysis and visualization in R; Tulip [@Tulip] offers general graph visualization and analysis with Python support.
