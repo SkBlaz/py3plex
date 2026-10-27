@@ -21,6 +21,7 @@ authors:
     equal-contrib: false
     affiliation: 4
   - name: Benjamin Renoust
+    orcid: 0000-0003-2692-9056
     equal-contrib: true
     affiliation: 3
   - name: Blaž Škrlj
@@ -79,7 +80,7 @@ Earlier versions of Py3plex have been used to visualize gene communities in a te
 
 # Availability
 
-Py3plex is released under the MIT licence [@mitlicense]. The repository also contains third-party Infomap code distributed under the GNU Affero General Public License version 3 or later. The source code, documentation and examples are available on GitHub [@py3plexgithub], and the package is available on PyPI [@py3plexpypi].
+Py3plex is released under the MIT licence. The repository also contains third-party Infomap code distributed under the GNU Affero General Public License version 3 or later. The source code, documentation and examples are available on [GitHub](https://github.com/SkBlaz/py3plex), and the package is available on [PyPI](https://pypi.org/project/py3plex/).
 
 # AI usage disclosure
 
