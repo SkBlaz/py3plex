@@ -31,6 +31,8 @@ jobs:
 
   test:
     runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || matrix.os }}
+    permissions:
+      contents: read
     timeout-minutes: 30  # Set overall job timeout
     strategy:
       fail-fast: false  # Don't cancel other jobs if one fails
@@ -149,6 +151,8 @@ jobs:
 
   test-minimal:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     timeout-minutes: 20  # Shorter timeout for minimal test
     name: "Test with minimal dependencies (Python 3.9)"
 
