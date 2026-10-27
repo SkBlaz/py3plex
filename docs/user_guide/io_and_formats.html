@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>I/O and Serialization &mdash; py3plex 2.0.8 documentation</title>
+  <title>I/O and Serialization &mdash; py3plex 2.0.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=722443bc"></script>
+      <script src="../_static/documentation_options.js?v=d65cc7a5"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -272,6 +272,11 @@ pip<span class="w"> </span>install<span class="w"> </span>pyarrow
 <span class="n">graph</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">'network.parquet'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'parquet'</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Arrow and Parquet exports preserve JSON scalar node and layer IDs, distinguishing
+integer <code class="docutils literal notranslate"><span class="pre">1</span></code> from string <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code>. Identifier columns contain JSON-encoded values,
+declared by <code class="docutils literal notranslate"><span class="pre">identifier_encoding=&quot;json&quot;</span></code> in the metadata table. Read these
+exports with a reader supporting this marker. Files without the marker retain
+their legacy literal-string identifiers.</p>
 </section>
 <section id="benefits-of-arrow-format">
 <h3>Benefits of Arrow Format<a class="headerlink" href="#benefits-of-arrow-format" title="Link to this heading"></a></h3>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Documentation &mdash; py3plex 2.0.8 documentation</title>
+  <title>API Documentation &mdash; py3plex 2.0.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c94df887" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=722443bc"></script>
+      <script src="_static/documentation_options.js?v=d65cc7a5"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -291,7 +291,7 @@ more than two nodes). For hypergraph-like structures, consider:
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.add_dummy_layers">
 <span class="sig-name descname"><span class="pre">add_dummy_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.add_dummy_layers" title="Link to this definition"></a></dt>
-<dd><p>Internal function, for conversion between objects</p>
+<dd><p>Wrap monoplex nodes in the dummy layer, preserving graph data.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1429,7 +1429,7 @@ but with control over the specific sparse format used.</p>
 <cite>split_to_layers()</cite>) or defaults to the <cite>layers</cite> property.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Sorted list of layer identifiers</p>
+<dd class="field-odd"><p>Layer identifiers using the ordering of the layers property</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>list</p>
@@ -1453,9 +1453,11 @@ but with control over the specific sparse format used.</p>
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.layers">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">layers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.layers" title="Link to this definition"></a></dt>
 <dd><p>List of unique layer identifiers in the network.</p>
+<p>Comparable identifiers are sorted. Otherwise, layers retain their
+first-occurrence order in the network.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Sorted list of layer identifiers</p>
+<dd class="field-odd"><p>Layer identifiers in sorted or first-occurrence order</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>list</p>
@@ -1520,7 +1522,7 @@ but with control over the specific sparse format used.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="py3plex.core.multinet.multi_layer_network.load_network">
-<span class="sig-name descname"><span class="pre">load_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'---'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_network" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'---'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#py3plex.core.multinet.multi_layer_network" title="py3plex.core.multinet.multi_layer_network"><span class="pre">multi_layer_network</span></a></span></span><a class="headerlink" href="#py3plex.core.multinet.multi_layer_network.load_network" title="Link to this definition"></a></dt>
 <dd><p>Load a network from file.</p>
 <p>This method loads and prepares a given network. The behavior depends on
 the <code class="docutils literal notranslate"><span class="pre">network_type</span></code> set during initialization:</p>
@@ -1534,17 +1536,24 @@ have type=’coupling’ and can be filtered via get_edges().</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_file</strong> – Path to the network file to load</p></li>
-<li><p><strong>directed</strong> – Whether the network is directed</p></li>
-<li><p><strong>input_type</strong> – Format of the input file. Supported values:
+<li><p><strong>directed</strong> – Whether the network is directed. If omitted or None,
+retain the current setting (initially set by the constructor).</p></li>
+<li><p><strong>input_type</strong> – <p>Format of the input file. Supported values:
 - ‘gml’: Graph Modeling Language format
-- ‘graphml’: GraphML XML format
-- ‘edgelist’: Simple edge list (source target [weight])
-- ‘multiedgelist’: Multilayer edge list (node1 layer1 node2 layer2 weight)
-- ‘multiplex_edges’: Multiplex format (layer node1 node2 weight)
-- ‘multiplex_folder’: Folder with layer files
-- ‘gpickle’: Python pickle format
-- ‘nx’: NetworkX graph object
-- ‘sparse’: Sparse matrix format</p></li>
+- ‘graphml’: GraphML XML format (node ‘type’ selects layer;</p>
+<blockquote>
+<div><p>missing types use the GraphML default or ‘generic’)</p>
+</div></blockquote>
+<ul>
+<li><p>’edgelist’: Simple edge list (source target [weight])</p></li>
+<li><p>’multiedgelist’: Multilayer edge list (node1 layer1 node2 layer2 weight)</p></li>
+<li><p>’multiplex_edges’: Multiplex format (layer node1 node2 weight)</p></li>
+<li><p>’multiplex_folder’: Folder with layer files</p></li>
+<li><p>’gpickle’: Python pickle format</p></li>
+<li><p>’nx’: NetworkX graph object</p></li>
+<li><p>’sparse’: Sparse matrix format</p></li>
+</ul>
+</p></li>
 <li><p><strong>label_delimiter</strong> – Delimiter used to separate layer names in node labels</p></li>
 </ul>
 </dd>
@@ -2394,7 +2403,7 @@ and edge types. Lines starting with ‘#’ are treated as comments.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.core.parsers.parse_gml">
 <span class="sig-prename descclassname"><span class="pre">py3plex.core.parsers.</span></span><span class="sig-name descname"><span class="pre">parse_gml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">MultiGraph</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">MultiDiGraph</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.core.parsers.parse_gml" title="Link to this definition"></a></dt>
-<dd><p>Parse a gml network.</p>
+<dd><p>Parse a GML network, preserving isolated nodes, attributes and edge keys.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -2445,6 +2454,16 @@ and edge types. Lines starting with ‘#’ are treated as comments.</p>
 <dd><p>Gpickle parser for biomine graphs
 :param file_name: Path to gpickle containing BioMine data
 :param directed: Whether to create directed graph</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="py3plex.core.parsers.parse_graphml">
+<span class="sig-prename descclassname"><span class="pre">py3plex.core.parsers.</span></span><span class="sig-name descname"><span class="pre">parse_graphml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">MultiGraph</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">MultiDiGraph</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.core.parsers.parse_graphml" title="Link to this definition"></a></dt>
+<dd><p>Read GraphML, using node <code class="docutils literal notranslate"><span class="pre">type</span></code> attributes as replica layers.</p>
+<p>Nodes without a type use the GraphML node default, or <code class="docutils literal notranslate"><span class="pre">generic</span></code> if no
+default is declared. Preserve isolated nodes, graph/node/edge attributes
+and serialized edge IDs as multigraph keys. Direction conversion follows
+NetworkX semantics, as with gpickle loading.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -2631,7 +2650,9 @@ n l n l w
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>nx_object</strong> – A networkx graph</p></li>
-<li><p><strong>directed</strong> – Whether the graph is directed</p></li>
+<li><p><strong>directed</strong> – Requested graph direction. If it differs from the input,
+convert using NetworkX semantics while preserving multigraph keys
+and attributes. Matching inputs are returned unchanged.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2651,9 +2672,18 @@ n l n l w
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.core.parsers.parse_simple_edgelist">
 <span class="sig-prename descclassname"><span class="pre">py3plex.core.parsers.</span></span><span class="sig-name descname"><span class="pre">parse_simple_edgelist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Graph</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DiGraph</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#py3plex.core.parsers.parse_simple_edgelist" title="Link to this definition"></a></dt>
-<dd><p>Simple edgelist n n w
-:param input_name: Path to text file
-:param directed: Whether to create directed graph</p>
+<dd><p>Read simple or multilayer edge-list rows.</p>
+<p>Accepts <code class="docutils literal notranslate"><span class="pre">node1</span> <span class="pre">node2</span> <span class="pre">[weight]</span></code> (using the <code class="docutils literal notranslate"><span class="pre">null</span></code> layer) and
+<code class="docutils literal notranslate"><span class="pre">node1</span> <span class="pre">layer1</span> <span class="pre">node2</span> <span class="pre">layer2</span> <span class="pre">[weight]</span></code>, as written by save_edgelist.
+Missing weights default to 1.0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_name</strong> – Path to text file</p></li>
+<li><p><strong>directed</strong> – Whether to create directed graph</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
