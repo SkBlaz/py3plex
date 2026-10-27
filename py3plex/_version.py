@@ -1,3 +1,3 @@
 """Single source for py3plex release version metadata."""
 
-__version__ = "2.0.9"
+__version__ = "2.0.92"
