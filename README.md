@@ -197,6 +197,8 @@ Safety notes for contributors:
 - Prefer running targeted tests first, then broader checks before opening a PR.
 - For docs-only updates, run `make docs-check` before opening a PR.
 
+To report a bug, request a feature, or ask for help using py3plex, open an issue in the [issue tracker](https://github.com/SkBlaz/py3plex/issues). Include a minimal example and the py3plex and Python versions where relevant.
+
 ### MCP Integration (AI Agents)
 
 py3plex provides a Model Context Protocol (MCP) server for integration with AI coding assistants:
