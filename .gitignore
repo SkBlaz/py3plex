@@ -1,6 +1,7 @@
 ./py3plex/visualization/fa2/fa2util.c
 ./py3plex.egg-info
-./dist
+/dist/
+/docs/latex/
 
 # Python cache files
 __pycache__/
