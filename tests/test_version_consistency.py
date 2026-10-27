@@ -120,7 +120,7 @@ def test_release_metadata_alignment_in_docs_and_readme():
 
     assert re.search(r"img\.shields\.io/badge/lines-[0-9.]+K-blue", readme)
     assert re.search(r"img\.shields\.io/badge/tests-[0-9.]+K-blue", readme)
-    assert "img.shields.io/pypi/v/py3plex.svg?cacheSeconds=300" in readme
+    assert "img.shields.io/pypi/v/py3plex)" in readme
     assert not re.search(r"img\.shields\.io/badge/[^)]*PyPI[^)]*[0-9]+\.[0-9]+\.[0-9]+", readme, re.IGNORECASE)
     assert f"VERSION: '{version}'" in rendered_docs_options
     assert f"py3plex {version} documentation" in rendered_index
