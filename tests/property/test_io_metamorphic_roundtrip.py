@@ -59,7 +59,7 @@ def test_nx_import_preserves_edges(n):
     
     # Import into py3plex
     mlnet = multi_layer_network(verbose=False, network_type="multilayer")
-    mlnet.load_network(G, input_type="nx")
+    mlnet.load_network(G, input_type="nx", directed=G.is_directed())
     
     # Check edge counts match
     original_edge_count = G.number_of_edges()
