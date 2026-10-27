@@ -11,7 +11,7 @@ on:
 
 jobs:
   property-tests:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || matrix.os }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -140,7 +140,7 @@ jobs:
         retention-days: 14
   
   property-tests-minimal:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     name: "Property tests with minimal dependencies"
     

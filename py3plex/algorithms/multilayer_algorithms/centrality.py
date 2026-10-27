@@ -1011,7 +1011,7 @@ class MultilayerCentrality:
         # Map back to node-layer pairs
         results = {}
         for node_layer, idx in node_layer_mapping.items():
-            results[node_layer] = nx_current_flow.get(idx, 0.0)
+            results[node_layer] = max(0.0, nx_current_flow.get(idx, 0.0))
 
         return results
 
