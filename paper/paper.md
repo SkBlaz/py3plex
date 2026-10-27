@@ -43,7 +43,7 @@ bibliography: paper.bib
 
 # Summary
 
-Multilayer networks describe systems with several kinds of relationships, such as people connected through different social platforms. Keeping those relationships in separate layers lets researchers study both the individual layers and the connections between them [@kivela2014; @boccaletti2014]. Py3plex is a Python library for analyzing and visualizing these networks.
+Multilayer networks represent systems with several kinds of relationships. Keeping those relationships in separate layers allows researchers to study each layer and the connections between them [@kivela2014; @boccaletti2014]. Py3plex is a Python library for analyzing and visualizing these networks.
 
 The original Py3plex publications focused on multilayer network representation, analysis, and visualization [@skrlj2019toolkit; @skrlj2019conference]. Version 2.0 adds a query language, expands the available algorithms, and provides tools for uncertainty analysis and recording how results were produced. It also includes a Model Context Protocol (MCP) server through which compatible assistants can access network analysis tools.
 
@@ -53,13 +53,13 @@ Researchers in fields such as social science, biology, and physics often need to
 
 General graph libraries such as NetworkX [@networkx] and igraph [@igraph] can store layer labels, but users must manage their interpretation. Dedicated multilayer packages offer data structures and analysis methods, while a researcher may still need to assemble separate tools for selecting layers, assessing uncertainty, and recording an analysis.
 
-Py3plex represents each occurrence of a node in a layer separately and supports edges both within and between layers. Its query language lets researchers select parts of a network and request measures in a single expression. For supported analyses, users can estimate uncertainty, inspect the query plan, and record provenance. The library also includes community detection, centrality measures, diffusion simulations, embeddings, and multilayer visualization.
+Py3plex represents each occurrence of a node in a layer separately and supports edges within and between layers. It offers a query language for selecting and analyzing parts of a network, along with tools for uncertainty analysis and provenance. Its methods include community detection, centrality measures, diffusion simulations, embeddings, and multilayer visualization.
 
 # State of the Field
 
-Several packages address related needs. NetworkX [@networkx] and igraph [@igraph] provide general graph data structures and algorithms. Pymnet [@pymnet] and MultiNetX [@multinex] provide multilayer representations and operations; pymnet also supports multilayer models with multiple aspects. MuxViz [@muxviz] provides multilayer analysis and visualization in R, while Tulip [@Tulip] offers general graph visualization and analysis with Python support.
+General graph libraries such as NetworkX [@networkx] and igraph [@igraph] provide data structures and algorithms that can be used with layer labels. Dedicated multilayer packages include pymnet [@pymnet] and MultiNetX [@multinex], both of which provide multilayer representations and operations. Pymnet also supports models with multiple aspects. MuxViz [@muxviz] provides multilayer analysis and visualization in R; Tulip [@Tulip] offers general graph visualization and analysis with Python support.
 
-Py3plex builds on NetworkX and extends an existing multilayer library rather than introducing another independent graph backend. Its query language, uncertainty tools, and provenance features work with the same node-layer representation as its analysis methods. Contributing the whole interface to NetworkX would require adding multilayer concepts to a general graph library; adopting another dedicated package would require adapting the established Py3plex API and data model. The packages remain complementary: a researcher may prefer pymnet's model support or muxViz's visualization tools for a particular study.
+Py3plex 2.0 extends the existing Py3plex library, retaining its NetworkX-based representation and API. This allows its new query and uncertainty features to work with networks built using the earlier library. Researchers can choose among these tools according to their needs, such as pymnet's support for multiple aspects or muxViz's visualization tools.
 
 # Software Design
 
@@ -67,9 +67,9 @@ Py3plex represents a node in a layer as a pair `(node_id, layer_id)`. Its core n
 
 The library supports multilayer networks whose node sets differ across layers and multiplex networks in which nodes have counterparts across layers. Inter-layer edges in a general multilayer network are specified by the user. For multiplex networks loaded through the network loader, Py3plex can create coupling edges between replicas of the same node; these generated edges have a distinct type tag.
 
-NetworkX interoperability has a trade-off. Some analyses operate directly on the multilayer representation, whereas others restrict the network to a layer or project it to a single graph before applying a delegated algorithm. These choices can produce results with different meanings, so users need to consider the execution path when interpreting a measure. For matrix-based analysis, Py3plex can also construct a supra-adjacency matrix, with within-layer connections on diagonal blocks and inter-layer connections on off-diagonal blocks. Version 2.0 also includes vectorized layer aggregation and query planning for supported operations.
+NetworkX interoperability has a trade-off. Some analyses operate directly on the multilayer representation, whereas others restrict the network to a layer or project it to a single graph before applying a delegated algorithm. For example, a degree calculated on a single layer counts connections within that layer, while a degree calculated on the full network can also count inter-layer connections. The execution path therefore matters when interpreting a result. For matrix-based analysis, Py3plex can also construct a supra-adjacency matrix, with within-layer connections on diagonal blocks and inter-layer connections on off-diagonal blocks. For performance, the library includes vectorized layer aggregation and a query planner that can reorder stages of a query.
 
-The query language provides a common way to select layers, filter nodes or edges, and compute measures. Supported queries can include uncertainty estimates and provenance, making it possible to retain information about the choices behind a result. The library also provides temporal network operations, network embeddings, and layouts that display layers and their inter-layer edges. These capabilities extend the analysis and visualization tools described in the original publications.
+Queries are represented internally as an abstract syntax tree, which can be inspected before execution. In supported workflows, the result can retain the query and its provenance alongside uncertainty estimates. The library also provides temporal network operations, network embeddings, and layouts that display layers and their inter-layer edges.
 
 # Research impact statement
 
@@ -77,11 +77,11 @@ Earlier versions of Py3plex have been used to visualize gene communities in a te
 
 # Availability
 
-Py3plex is distributed under the MIT licence [@mitlicense]. The source code, documentation and examples are available on GitHub [@py3plexgithub], and the package is available on PyPI [@py3plexpypi].
+Py3plex is released under the MIT licence [@mitlicense]. The repository also contains third-party Infomap code distributed under the GNU Affero General Public License version 3 or later. The source code, documentation and examples are available on GitHub [@py3plexgithub], and the package is available on PyPI [@py3plexpypi].
 
 # AI usage disclosure
 
-The initial code was written by hand. OpenAI Codex was used for larger code refactors and to revise this manuscript (GPT-6 for the latter). GitHub Copilot and Anthropic Claude Code assisted with code review, candidate snippets, and tests. Google Gemini, OpenAI ChatGPT, and Anthropic Claude assisted with documentation drafting and editing and with grammar and spelling checks for the manuscript. The authors need to confirm the model and tool versions used for earlier work before submission. Human authors made the core design decisions and reviewed earlier drafts of the manuscript. They reviewed and validated AI-assisted code and text before inclusion and take responsibility for the submitted work; this revision also requires their review before submission.
+The initial code was written by hand. OpenAI Codex was used for larger code refactors and to revise this manuscript (GPT-6 for the latter). GitHub Copilot and Anthropic Claude Code assisted with code review, candidate snippets, and tests. Google Gemini, OpenAI ChatGPT, and Anthropic Claude assisted with documentation drafting and editing and with grammar and spelling checks for the manuscript. Human authors made the core design decisions and reviewed earlier drafts of the manuscript. The authors are responsible for reviewing and validating AI-assisted code and text. [Author confirmation needed before submission: tool and model versions for earlier work, and review of this revision.]
 
 # Acknowledgements
 
