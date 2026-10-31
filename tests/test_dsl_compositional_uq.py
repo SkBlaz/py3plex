@@ -271,15 +271,18 @@ class TestCompositionalResampling:
         assert simple_network.core_network.number_of_edges() == 6
 
     def test_seed_method_updates_random_states_on_query(self):
+        from py3plex.dsl.ast import AutoCommunityConfig
         from py3plex.dsl.compositional_uq import apply_resample_seed
 
         select = Q.nodes().compute("degree")._select
         select.community_config = {"method": "leiden"}
+        select.auto_community_config = AutoCommunityConfig(enabled=True, seed=1)
 
         apply_resample_seed(select, 1234)
 
         assert select.compute[0].random_state == 1234
         assert select.community_config["random_state"] == 1234
+        assert select.auto_community_config.seed == 1234
 
     def test_unsupported_resampling_method_fails_clearly(self, simple_network):
         from py3plex.dsl.compositional_uq import ResampleSpec, create_resampled_network
