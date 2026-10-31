@@ -561,11 +561,21 @@ def parse_embedding(input_name: str) -> Tuple[np.ndarray, np.ndarray]:
     with open(input_name) as IN:
         for line in IN:
             parts = line.strip().split()
-            if len(parts) == 2:
-                pass
-            else:
-                embedding_matrix.append(parts[1:])
-                embedding_indices.append(parts[0])
+            if not parts:
+                continue
+            if not embedding_matrix and len(parts) == 2:
+                # Word2vec text files may start with a (count, dimensions)
+                # header. Do not treat every two-column row as a header: that
+                # is also the valid representation of 1D embeddings.
+                try:
+                    int(parts[0])
+                    int(parts[1])
+                except ValueError:
+                    pass
+                else:
+                    continue
+            embedding_matrix.append(parts[1:])
+            embedding_indices.append(parts[0])
     embedding_matrix_np = np.asarray(embedding_matrix)
     embedding_indices_np = np.array(embedding_indices)
     return (embedding_matrix_np, embedding_indices_np)

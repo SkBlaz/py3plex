@@ -152,3 +152,16 @@ def test_multiplex_and_spin_parsers_skip_blank_lines(tmp_path):
     assert spin_graph.number_of_nodes() == 2
     assert spin_graph.number_of_edges() == 1
     assert spin_graph.get_edge_data("u", "v")["type"] == "tag"
+
+
+def test_parse_embedding_keeps_one_dimensional_vectors(tmp_path):
+    from py3plex.core.parsers import parse_embedding
+
+    path = tmp_path / "embedding.txt"
+    path.write_text("3 1\na 0.1\nb 0.2\nc 0.3\n")
+
+    matrix, node_ids = parse_embedding(str(path))
+
+    assert matrix.shape == (3, 1)
+    assert node_ids.tolist() == ["a", "b", "c"]
+    assert matrix[:, 0].tolist() == ["0.1", "0.2", "0.3"]
