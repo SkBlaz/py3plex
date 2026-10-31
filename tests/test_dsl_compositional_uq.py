@@ -221,3 +221,70 @@ class TestBackwardCompatibility:
         # Value should be a scalar, not a dict
         val = result.attributes["mean_degree"][result.items[0]]
         assert isinstance(val, (int, float)) or (isinstance(val, dict) and "mean" not in val)
+
+
+class TestCompositionalResampling:
+    def test_bootstrap_resamples_edges_reproducibly_without_mutating_source(
+        self, simple_network
+    ):
+        from py3plex.dsl.compositional_uq import ResampleSpec, create_resampled_network
+
+        spec = ResampleSpec(method="bootstrap", n_samples=20, seed=19)
+        sample1 = create_resampled_network(simple_network, spec, 4)
+        sample2 = create_resampled_network(simple_network, spec, 4)
+
+        assert sample1 is not simple_network
+        assert sample1.core_network.number_of_edges() == simple_network.core_network.number_of_edges()
+        assert simple_network.core_network.number_of_edges() == 6
+        assert list(sample1.core_network.edges(data=True)) == list(
+            sample2.core_network.edges(data=True)
+        )
+        assert {
+            frozenset((u, v)) for u, v in sample1.core_network.edges()
+        } != {frozenset((u, v)) for u, v in simple_network.core_network.edges()}
+
+    def test_perturbation_drops_edges_and_preserves_nodes(self, simple_network):
+        from py3plex.dsl.compositional_uq import ResampleSpec, create_resampled_network
+
+        spec = ResampleSpec(
+            method="perturbation", n_samples=1, seed=7, kwargs={"edge_drop_p": 1.0}
+        )
+        sample = create_resampled_network(simple_network, spec, 0)
+
+        assert sample.core_network.number_of_edges() == 0
+        assert set(sample.core_network.nodes()) == set(simple_network.core_network.nodes())
+        assert simple_network.core_network.number_of_edges() == 6
+
+    def test_compositional_perturbation_summary_uses_perturbed_graphs(
+        self, simple_network
+    ):
+        result = (
+            Q.nodes()
+            .compute("degree")
+            .summarize(mean_degree="mean(degree)")
+            .uq(method="perturbation", n_samples=3, seed=7, edge_drop_p=1.0)
+            .execute(simple_network)
+        )
+
+        summary = result.attributes["mean_degree"][result.items[0]]
+        assert summary["mean"] == 0.0
+        assert simple_network.core_network.number_of_edges() == 6
+
+    def test_seed_method_updates_random_states_on_query(self):
+        from py3plex.dsl.compositional_uq import apply_resample_seed
+
+        select = Q.nodes().compute("degree")._select
+        select.community_config = {"method": "leiden"}
+
+        apply_resample_seed(select, 1234)
+
+        assert select.compute[0].random_state == 1234
+        assert select.community_config["random_state"] == 1234
+
+    def test_unsupported_resampling_method_fails_clearly(self, simple_network):
+        from py3plex.dsl.compositional_uq import ResampleSpec, create_resampled_network
+
+        with pytest.raises(ValueError, match="Unknown resampling method"):
+            create_resampled_network(
+                simple_network, ResampleSpec(method="mystery", n_samples=1), 0
+            )

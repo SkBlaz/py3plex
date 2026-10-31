@@ -13,6 +13,7 @@ Key concepts:
 from __future__ import annotations
 
 import logging
+import copy
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 
@@ -280,39 +281,92 @@ def create_resampled_network(
     Returns:
         Resampled network instance
     """
-    # Derive a deterministic seed for this resample
-    if spec.seed is not None:
-        # Use SeedSequence for reproducible child seeds
-        from numpy.random import SeedSequence
-        ss = SeedSequence(spec.seed)
-        child_seeds = ss.spawn(spec.n_samples)
-        resample_seed = int(child_seeds[resample_idx].generate_state(1)[0])
-    else:
-        resample_seed = None
-    
-    np.random.default_rng(resample_seed)
-    
+    resample_seed = derive_resample_seed(spec.seed, resample_idx)
+    rng = np.random.default_rng(resample_seed)
+
+    if spec.method == "seed":
+        return network
+    edge_rows = _network_edge_rows(network)
     if spec.method == "perturbation":
-        # For perturbation, we don't actually modify the network
-        # but use the seed to introduce variation in subsequent computations
-        # For now, just return original network
-        # TODO: Implement actual perturbation when uncertainty module is available
-        return network
-        
-    elif spec.method == "bootstrap":
-        # For bootstrap, we'd resample edges/nodes
-        # For now, just return original network
-        # TODO: Implement actual bootstrap when uncertainty module is available
-        return network
-            
-    elif spec.method == "seed":
-        # No structural change, just seed variation for stochastic algorithms
-        # Return original network but algorithms will use resample_seed
-        return network
-        
+        drop_probability = float(
+            spec.kwargs.get("edge_drop_p", spec.kwargs.get("perturbation_rate", 0.05))
+        )
+        if not 0.0 <= drop_probability <= 1.0:
+            raise ValueError("perturbation edge_drop_p must be in [0, 1]")
+        sampled_edges = [
+            edge for edge in edge_rows if rng.random() >= drop_probability
+        ]
+        return _network_copy_with_edges(network, sampled_edges)
+    if spec.method == "bootstrap":
+        unit = spec.kwargs.get("bootstrap_unit", "edges")
+        mode = spec.kwargs.get("bootstrap_mode", "resample")
+        if unit != "edges":
+            raise ValueError(
+                "Compositional bootstrap currently supports bootstrap_unit='edges'"
+            )
+        if mode != "resample":
+            raise ValueError(
+                "Compositional edge bootstrap currently supports bootstrap_mode='resample'"
+            )
+        if not edge_rows:
+            return _network_copy_with_edges(network, [])
+        indices = rng.choice(len(edge_rows), size=len(edge_rows), replace=True)
+        return _network_copy_with_edges(network, [edge_rows[int(i)] for i in indices])
+    raise ValueError(f"Unknown resampling method {spec.method!r}")
+
+
+def derive_resample_seed(seed: Optional[int], resample_idx: int) -> Optional[int]:
+    """Derive a stable, independent child seed for one replicate."""
+    if seed is None:
+        return None
+    from numpy.random import SeedSequence
+
+    return int(SeedSequence(seed, spawn_key=(resample_idx,)).generate_state(1)[0])
+
+
+def apply_resample_seed(select: SelectStmt, seed: int) -> None:
+    """Set a replicate's random state on stochastic query components."""
+    for compute_item in select.compute:
+        compute_item.random_state = seed
+    community_config = getattr(select, "community_config", None)
+    if isinstance(community_config, dict):
+        community_config["random_state"] = seed
+    auto_community_config = getattr(select, "auto_community_config", None)
+    if auto_community_config is not None and hasattr(auto_community_config, "seed"):
+        auto_community_config.seed = seed
+
+
+def _network_edge_rows(network: Any) -> List[Any]:
+    """Return edge endpoint/attribute rows for supported graph inputs."""
+    graph = getattr(network, "core_network", network)
+    if graph is None:
+        return []
+    if graph.is_multigraph():
+        return [(u, v, copy.deepcopy(data)) for u, v, _key, data in graph.edges(keys=True, data=True)]
+    return [(u, v, copy.deepcopy(data)) for u, v, data in graph.edges(data=True)]
+
+
+def _network_copy_with_edges(network: Any, edge_rows: List[Any]) -> Any:
+    """Copy a graph/network and replace its edges without mutating the source."""
+    cloned = copy.deepcopy(network)
+    if hasattr(cloned, "core_network"):
+        if cloned.core_network is None:
+            cloned._initiate_network()
+        if hasattr(cloned, "_unfreeze"):
+            cloned._unfreeze()
+        graph = cloned.core_network
     else:
-        logger.warning(f"Unknown resampling method '{spec.method}', returning original network")
-        return network
+        graph = cloned
+
+    if graph.is_multigraph():
+        graph.remove_edges_from(list(graph.edges(keys=True)))
+    else:
+        graph.remove_edges_from(list(graph.edges()))
+    for source, target, attributes in edge_rows:
+        graph.add_edge(source, target, **copy.deepcopy(attributes))
+    if hasattr(cloned, "_bump_version"):
+        cloned._bump_version()
+    return cloned
 
 
 def should_apply_compositional_uq(select: SelectStmt) -> bool:
