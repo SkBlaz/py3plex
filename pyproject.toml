@@ -46,7 +46,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.0",
+    "pytest>=7.0,<9",
     "tomli>=1.1.0; python_version < '3.11'",  # TOML metadata checks on Python 3.8-3.10
     "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
@@ -64,7 +64,7 @@ dev = [
 ]
 # Testing dependencies (for property-based and integration tests)
 tests = [
-    "pytest>=7.0",
+    "pytest>=7.0,<9",
     "tomli>=1.1.0; python_version < '3.11'",  # TOML metadata checks on Python 3.8-3.10
     "pytest-timeout>=2.1",
     "pytest-cov>=4.0",
