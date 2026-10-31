@@ -162,14 +162,25 @@ class TestEdgelistFormatRegular:
 
     def test_save_edgelist_attributes_round_trip(self, tmp_path):
         graph = nx.Graph()
-        graph.add_edge("A", "B", weight=2.5, label="friend")
+        graph.add_edge("A", "B", weight=2.5, label="close friend")
         path = tmp_path / "with_attrs.edgelist"
 
         parsers.save_edgelist(graph, str(path), attributes=True)
         loaded, _ = parsers.parse_simple_edgelist(str(path), directed=False)
 
         edge = next(iter(loaded.edges(data=True)))
-        assert edge[2] == {"label": "friend", "weight": 2.5}
+        assert edge[2] == {"label": "close friend", "weight": 2.5}
+
+    def test_save_multilayer_edgelist_attributes_round_trip(self, tmp_path):
+        graph = nx.MultiGraph()
+        graph.add_edge(("A", "social"), ("B", "social"), weight=2.5, label="close friend")
+        path = tmp_path / "multilayer_with_attrs.edgelist"
+
+        parsers.save_edgelist(graph, str(path), attributes=True)
+        loaded, _ = parsers.parse_simple_edgelist(str(path), directed=False)
+
+        edge = next(iter(loaded.edges(data=True)))
+        assert edge[2] == {"label": "close friend", "weight": 2.5}
 
     def test_empty_multilayer_network(self):
         """Test that empty multilayer networks are handled gracefully."""

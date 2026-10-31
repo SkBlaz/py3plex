@@ -1,6 +1,7 @@
 # set of parsers used in Py3plex.
 
 import glob
+import base64
 import gzip
 import itertools
 import json
@@ -408,16 +409,20 @@ def parse_simple_edgelist(
             if len(parts) in (2, 3):
                 node_first_str, node_second_str = parts[:2]
                 layer_first = layer_second = "null"
-                if len(parts) == 3 and parts[2].startswith("{"):
-                    edge_attributes = json.loads(parts[2])
+                if len(parts) == 3 and parts[2].startswith("@json:"):
+                    edge_attributes = json.loads(
+                        base64.urlsafe_b64decode(parts[2][6:].encode("ascii"))
+                    )
                 else:
                     edge_attributes = {"weight": 1.0}
                     if len(parts) == 3:
                         edge_attributes["weight"] = float(parts[2])
             elif len(parts) in (4, 5):
                 node_first_str, layer_first, node_second_str, layer_second = parts[:4]
-                if len(parts) == 5 and parts[4].startswith("{"):
-                    edge_attributes = json.loads(parts[4])
+                if len(parts) == 5 and parts[4].startswith("@json:"):
+                    edge_attributes = json.loads(
+                        base64.urlsafe_b64decode(parts[4][6:].encode("ascii"))
+                    )
                 else:
                     edge_attributes = {"weight": 1.0}
                     if len(parts) == 5:
@@ -1039,7 +1044,12 @@ def save_edgelist(
                 n2, l2 = edge[1]
                 suffix = (
                     " "
-                    + json.dumps(edge[2], separators=(",", ":"), sort_keys=True)
+                    + "@json:"
+                    + base64.urlsafe_b64encode(
+                        json.dumps(
+                            edge[2], separators=(",", ":"), sort_keys=True
+                        ).encode("utf-8")
+                    ).decode("ascii")
                     if attributes
                     else ""
                 )
@@ -1053,7 +1063,12 @@ def save_edgelist(
             for edge in input_network.edges(data=attributes):
                 suffix = (
                     " "
-                    + json.dumps(edge[2], separators=(",", ":"), sort_keys=True)
+                    + "@json:"
+                    + base64.urlsafe_b64encode(
+                        json.dumps(
+                            edge[2], separators=(",", ":"), sort_keys=True
+                        ).encode("utf-8")
+                    ).decode("ascii")
                     if attributes
                     else ""
                 )
