@@ -486,7 +486,12 @@ def parse_edgelist_multi_types(
 
             G.add_node((node_first, "null"), type="null")
             G.add_node((node_second, "null"), type="null")
-            G.add_edge(node_first, node_second, weight=weight, type=edge_type)
+            G.add_edge(
+                (node_first, "null"),
+                (node_second, "null"),
+                weight=weight,
+                type=edge_type,
+            )
     return (G, None)
 
 
