@@ -6,6 +6,7 @@ import scipy.sparse as sp
 from py3plex.core.multinet import multi_layer_network
 from py3plex.core.parsers import (
     parse_edgelist_multi_types,
+    parse_multi_edgelist,
     parse_multiplex_edges,
     parse_simple_edgelist,
     parse_spin_edgelist,
@@ -130,6 +131,19 @@ def test_multiedgelist_parser_skips_blank_and_comment_lines(tmp_path):
 
     assert net.core_network.number_of_nodes() == 2
     assert net.core_network.number_of_edges() == 1
+
+
+def test_multiedgelist_weights_are_numeric_for_weighted_algorithms(tmp_path):
+    import networkx as nx
+
+    path = tmp_path / "weighted_multi.txt"
+    path.write_text("a L b L 2.5\n")
+    graph, _ = parse_multi_edgelist(str(path), directed=False)
+
+    edge = next(iter(graph.edges(data=True)))
+    assert edge[2]["weight"] == 2.5
+    assert isinstance(edge[2]["weight"], float)
+    assert nx.shortest_path_length(graph, edge[0], edge[1], weight="weight") == 2.5
 
 
 def test_multiplex_and_spin_parsers_skip_blank_lines(tmp_path):
