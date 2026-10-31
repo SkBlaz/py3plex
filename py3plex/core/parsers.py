@@ -341,6 +341,8 @@ def parse_multi_edgelist(
             else:
                 continue
 
+            weight = float(weight)
+
             if layer_first == layer_second and node_first == node_second:
 
                 # first case
