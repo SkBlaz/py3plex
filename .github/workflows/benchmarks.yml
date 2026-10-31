@@ -55,7 +55,7 @@ jobs:
         source .venv/bin/activate
         # Install core dependencies needed for benchmarks
         uv pip install numpy scipy networkx matplotlib tqdm pandas
-        uv pip install pytest pytest-benchmark
+        uv pip install "pytest>=7" "pytest-benchmark>=4.0,<5.0"
       timeout-minutes: 10
 
     - name: Run core performance benchmarks
