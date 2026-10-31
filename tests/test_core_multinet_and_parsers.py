@@ -132,6 +132,19 @@ def test_multiedgelist_parser_skips_blank_and_comment_lines(tmp_path):
     assert net.core_network.number_of_edges() == 1
 
 
+def test_multiplex_folder_preserves_activity_source_node(tmp_path):
+    from py3plex.core.parsers import parse_multiplex_folder
+
+    (tmp_path / "layers.txt").write_text("1 social\n")
+    (tmp_path / "network.edges").write_text("1 alpha beta 1\n")
+    (tmp_path / "activity.txt").write_text("alpha beta 123 social\n")
+
+    _, _, activity = parse_multiplex_folder(str(tmp_path), directed=False)
+
+    assert activity.loc[0, "node_first"] == "alpha"
+    assert activity.loc[0, "node_second"] == "beta"
+
+
 def test_multiplex_and_spin_parsers_skip_blank_lines(tmp_path):
     multiplex_path = tmp_path / "multiplex.edges"
     multiplex_path.write_text("\n# comment\nlayer1 u v\n")

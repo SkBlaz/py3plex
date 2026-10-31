@@ -749,7 +749,7 @@ def parse_multiplex_folder(
                     n1, n2, timestamp, layer_name = parts[:4]
                     time_series_tuples.append(
                         {
-                            "node_first": 1,
+                            "node_first": n1,
                             "node_second": n2,
                             "layer": layer_dict[layer_name],
                             "timestamp": timestamp,
