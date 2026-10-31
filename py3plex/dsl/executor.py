@@ -7056,9 +7056,8 @@ def _execute_select_with_compositional_uq(
 
         # Seed-based UQ keeps the graph fixed but supplies independent,
         # reproducible child seeds to stochastic query components.
-        resample_select = select_no_uq
+        resample_select = copy.deepcopy(select_no_uq)
         if resample_spec.method == "seed":
-            resample_select = copy.deepcopy(select_no_uq)
             replicate_seed = derive_resample_seed(resample_spec.seed, i)
             if replicate_seed is not None:
                 apply_resample_seed(resample_select, replicate_seed)
