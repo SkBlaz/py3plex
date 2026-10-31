@@ -502,13 +502,12 @@ def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None
 
     Args:
         input_name: Path to SPIN edgelist file
-        directed: Whether to create directed graph (currently creates undirected)
+        directed: Whether to create a directed graph
 
     Returns:
         Tuple[nx.Graph, None]: (parsed_graph, None for labels)
 
     Notes:
-        - Currently always returns nx.Graph (undirected) regardless of directed parameter
         - Edge tag is stored in edge 'type' attribute
         - Default weight is 1 if not specified (4th column)
 
@@ -519,7 +518,7 @@ def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None
         >>> graph, _ = parse_spin_edgelist('spin_edges.txt', directed=False)  # doctest: +SKIP
     """
 
-    G = nx.Graph()
+    G = nx.DiGraph() if directed else nx.Graph()
     with open(input_name) as IN:
         for line in IN:
             stripped = line.strip()
