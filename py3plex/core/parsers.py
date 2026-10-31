@@ -815,6 +815,29 @@ def parse_network(
         Tuple of (parsed_network, labels, time_series)
     """
 
+    supported_types = {
+        "gml",
+        "graphml",
+        "nx",
+        "multiplex_folder",
+        "sparse",
+        "sparse_network",
+        "gpickle_biomine",
+        "gpickle",
+        "multiedgelist",
+        "detangler_json",
+        "edgelist",
+        "edgelist_spin",
+        "edgelist_with_edge_types",
+        "multiedge_tuple_list",
+        "multiplex_edges",
+    }
+    if f_type not in supported_types:
+        raise ValueError(
+            f"Unsupported network format {f_type!r}. "
+            f"Supported formats: {', '.join(sorted(supported_types))}"
+        )
+
     time_series = None
     if f_type == "gml":
         parsed_network, labels = parse_gml(input_name, directed)
