@@ -187,6 +187,13 @@ def test_multiplex_and_spin_parsers_skip_blank_lines(tmp_path):
     assert spin_graph.get_edge_data("u", "v")["type"] == "tag"
 
 
+def test_parse_network_rejects_unsupported_format_clearly(tmp_path):
+    from py3plex.core.parsers import parse_network
+
+    with pytest.raises(ValueError, match="Unsupported network format 'nonsense'"):
+        parse_network(str(tmp_path / "unused"), f_type="nonsense")
+
+
 def test_spin_edgelist_honors_directed_flag(tmp_path):
     path = tmp_path / "spin.txt"
     path.write_text("a b interaction\n")
