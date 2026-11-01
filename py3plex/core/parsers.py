@@ -1,6 +1,7 @@
 # set of parsers used in Py3plex.
 
 import glob
+import base64
 import gzip
 import itertools
 import json
@@ -408,10 +409,24 @@ def parse_simple_edgelist(
             if len(parts) in (2, 3):
                 node_first_str, node_second_str = parts[:2]
                 layer_first = layer_second = "null"
-                weight = float(parts[2]) if len(parts) == 3 else 1.0
+                if len(parts) == 3 and parts[2].startswith("@json:"):
+                    edge_attributes = json.loads(
+                        base64.urlsafe_b64decode(parts[2][6:].encode("ascii"))
+                    )
+                else:
+                    edge_attributes = {"weight": 1.0}
+                    if len(parts) == 3:
+                        edge_attributes["weight"] = float(parts[2])
             elif len(parts) in (4, 5):
                 node_first_str, layer_first, node_second_str, layer_second = parts[:4]
-                weight = float(parts[4]) if len(parts) == 5 else 1.0
+                if len(parts) == 5 and parts[4].startswith("@json:"):
+                    edge_attributes = json.loads(
+                        base64.urlsafe_b64decode(parts[4][6:].encode("ascii"))
+                    )
+                else:
+                    edge_attributes = {"weight": 1.0}
+                    if len(parts) == 5:
+                        edge_attributes["weight"] = float(parts[4])
             else:
                 continue
 
@@ -421,7 +436,7 @@ def parse_simple_edgelist(
             G.add_node(node_first, type=layer_first)
             G.add_node(node_second, type=layer_second)
 
-            G.add_edge(node_first, node_second, weight=weight)
+            G.add_edge(node_first, node_second, **edge_attributes)
 
     return (G, None)
 
@@ -486,7 +501,12 @@ def parse_edgelist_multi_types(
 
             G.add_node((node_first, "null"), type="null")
             G.add_node((node_second, "null"), type="null")
-            G.add_edge(node_first, node_second, weight=weight, type=edge_type)
+            G.add_edge(
+                (node_first, "null"),
+                (node_second, "null"),
+                weight=weight,
+                type=edge_type,
+            )
     return (G, None)
 
 
@@ -502,13 +522,12 @@ def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None
 
     Args:
         input_name: Path to SPIN edgelist file
-        directed: Whether to create directed graph (currently creates undirected)
+        directed: Whether to create a directed graph
 
     Returns:
         Tuple[nx.Graph, None]: (parsed_graph, None for labels)
 
     Notes:
-        - Currently always returns nx.Graph (undirected) regardless of directed parameter
         - Edge tag is stored in edge 'type' attribute
         - Default weight is 1 if not specified (4th column)
 
@@ -519,7 +538,7 @@ def parse_spin_edgelist(input_name: str, directed: bool) -> Tuple[nx.Graph, None
         >>> graph, _ = parse_spin_edgelist('spin_edges.txt', directed=False)  # doctest: +SKIP
     """
 
-    G = nx.Graph()
+    G = nx.DiGraph() if directed else nx.Graph()
     with open(input_name) as IN:
         for line in IN:
             stripped = line.strip()
@@ -759,7 +778,7 @@ def parse_multiplex_folder(
                     n1, n2, timestamp, layer_name = parts[:4]
                     time_series_tuples.append(
                         {
-                            "node_first": 1,
+                            "node_first": n1,
                             "node_second": n2,
                             "layer": layer_dict[layer_name],
                             "timestamp": timestamp,
@@ -1037,15 +1056,37 @@ def save_edgelist(
             for edge in input_network.edges(data=attributes):
                 n1, l1 = edge[0]
                 n2, l2 = edge[1]
-                fh.write(f"{n1} {l1} {n2} {l2}\n")
+                suffix = (
+                    " "
+                    + "@json:"
+                    + base64.urlsafe_b64encode(
+                        json.dumps(
+                            edge[2], separators=(",", ":"), sort_keys=True
+                        ).encode("utf-8")
+                    ).decode("ascii")
+                    if attributes
+                    else ""
+                )
+                fh.write(f"{n1} {l1} {n2} {l2}{suffix}\n")
         else:
             # For regular networks, convert to integers as before
             input_network = nx.convert_node_labels_to_integers(
                 input_network, first_label=0, ordering="default", label_attribute=None
             )
             # Save in simple format: node1 node2
-            for edge in input_network.edges():
-                fh.write(f"{edge[0]} {edge[1]}\n")
+            for edge in input_network.edges(data=attributes):
+                suffix = (
+                    " "
+                    + "@json:"
+                    + base64.urlsafe_b64encode(
+                        json.dumps(
+                            edge[2], separators=(",", ":"), sort_keys=True
+                        ).encode("utf-8")
+                    ).decode("ascii")
+                    if attributes
+                    else ""
+                )
+                fh.write(f"{edge[0]} {edge[1]}{suffix}\n")
 
     logger.info("Finished writing the network..")
 
