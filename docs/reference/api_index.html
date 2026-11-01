@@ -2736,7 +2736,7 @@ Missing weights default to 1.0.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_name</strong> – Path to SPIN edgelist file</p></li>
-<li><p><strong>directed</strong> – Whether to create directed graph (currently creates undirected)</p></li>
+<li><p><strong>directed</strong> – Whether to create a directed graph</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2748,7 +2748,6 @@ Missing weights default to 1.0.</p>
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>Currently always returns nx.Graph (undirected) regardless of directed parameter</p></li>
 <li><p>Edge tag is stored in edge ‘type’ attribute</p></li>
 <li><p>Default weight is 1 if not specified (4th column)</p></li>
 </ul>
