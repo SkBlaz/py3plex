@@ -282,11 +282,12 @@ def create_resampled_network(
     """
     # Derive a deterministic seed for this resample
     if spec.seed is not None:
-        # Use SeedSequence for reproducible child seeds
+        # Use the replicate index as a spawn key so each child is stable and
+        # can be derived in O(1), without constructing all N children for
+        # each of N replicates.
         from numpy.random import SeedSequence
-        ss = SeedSequence(spec.seed)
-        child_seeds = ss.spawn(spec.n_samples)
-        resample_seed = int(child_seeds[resample_idx].generate_state(1)[0])
+        child_seed = SeedSequence(spec.seed, spawn_key=(resample_idx,))
+        resample_seed = int(child_seed.generate_state(1)[0])
     else:
         resample_seed = None
     

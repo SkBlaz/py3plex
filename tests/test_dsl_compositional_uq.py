@@ -202,6 +202,27 @@ class TestDeterminism:
         assert abs(val1["mean"] - val2["mean"]) < 1e-10
         assert abs(val1["std"] - val2["std"]) < 1e-10
 
+    def test_resample_seed_is_derived_without_spawning_all_children(
+        self, simple_network, monkeypatch
+    ):
+        from numpy.random import SeedSequence
+        from py3plex.dsl.compositional_uq import ResampleSpec, create_resampled_network
+
+        class SeedSequenceWithoutSpawn:
+            def __init__(self, entropy, spawn_key):
+                self.seed_sequence = SeedSequence(entropy, spawn_key=spawn_key)
+
+            def generate_state(self, *args, **kwargs):
+                return self.seed_sequence.generate_state(*args, **kwargs)
+
+            def spawn(self, *_args, **_kwargs):
+                raise AssertionError("per-replicate code must not spawn all children")
+
+        monkeypatch.setattr(np.random, "SeedSequence", SeedSequenceWithoutSpawn)
+        spec = ResampleSpec(method="bootstrap", n_samples=100, seed=42)
+
+        assert create_resampled_network(simple_network, spec, 17) is simple_network
+
 
 class TestBackwardCompatibility:
     """Test that non-UQ queries still work as before."""
