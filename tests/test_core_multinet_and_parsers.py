@@ -152,3 +152,14 @@ def test_multiplex_and_spin_parsers_skip_blank_lines(tmp_path):
     assert spin_graph.number_of_nodes() == 2
     assert spin_graph.number_of_edges() == 1
     assert spin_graph.get_edge_data("u", "v")["type"] == "tag"
+
+
+def test_spin_edgelist_honors_directed_flag(tmp_path):
+    path = tmp_path / "spin.txt"
+    path.write_text("a b interaction\n")
+
+    graph, _ = parse_spin_edgelist(str(path), directed=True)
+
+    assert graph.is_directed()
+    assert graph.has_edge("a", "b")
+    assert not graph.has_edge("b", "a")
