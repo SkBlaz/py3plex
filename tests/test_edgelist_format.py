@@ -48,7 +48,7 @@ class TestEdgelistFormatMultilayer:
             with open(output_file, 'r') as f:
                 lines = f.readlines()
             
-            # Each line should have 4 space-separated columns
+            # Each line contains endpoints, layers, and the edge weight.
             assert len(lines) == 2, f"Expected 2 edges, got {len(lines)}"
             
             for line in lines:
@@ -126,7 +126,7 @@ class TestEdgelistFormatMultilayer:
             if len(lines) > 0:
                 # Check at least one line has 4 columns (space-separated)
                 first_line = lines[0].strip().split()
-                assert len(first_line) == 4, f"Expected 4 columns, got {len(first_line)}: {lines[0]}"
+                assert len(first_line) == 5, f"Expected 5 columns, got {len(first_line)}: {lines[0]}"
         finally:
             Path(output_file).unlink(missing_ok=True)
 
@@ -159,6 +159,28 @@ class TestEdgelistFormatRegular:
                 assert len(parts) == 2, f"Expected 2 columns for regular network, got {len(parts)}: {line}"
         finally:
             Path(output_file).unlink(missing_ok=True)
+
+    def test_save_edgelist_attributes_round_trip(self, tmp_path):
+        graph = nx.Graph()
+        graph.add_edge("A", "B", weight=2.5, label="close friend")
+        path = tmp_path / "with_attrs.edgelist"
+
+        parsers.save_edgelist(graph, str(path), attributes=True)
+        loaded, _ = parsers.parse_simple_edgelist(str(path), directed=False)
+
+        edge = next(iter(loaded.edges(data=True)))
+        assert edge[2] == {"label": "close friend", "weight": 2.5}
+
+    def test_save_multilayer_edgelist_attributes_round_trip(self, tmp_path):
+        graph = nx.MultiGraph()
+        graph.add_edge(("A", "social"), ("B", "social"), weight=2.5, label="close friend")
+        path = tmp_path / "multilayer_with_attrs.edgelist"
+
+        parsers.save_edgelist(graph, str(path), attributes=True)
+        loaded, _ = parsers.parse_simple_edgelist(str(path), directed=False)
+
+        edge = next(iter(loaded.edges(data=True)))
+        assert edge[2] == {"label": "close friend", "weight": 2.5}
 
     def test_empty_multilayer_network(self):
         """Test that empty multilayer networks are handled gracefully."""

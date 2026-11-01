@@ -102,8 +102,14 @@ def test_parsers_read_weights_and_edge_types(tmp_path):
     multi_type_path.write_text("a b\nc d\n")
 
     multi_graph, _ = parse_edgelist_multi_types(str(multi_type_path), directed=False)
-    first_edge = multi_graph.get_edge_data("a", "b")[0]
-    second_edge = multi_graph.get_edge_data("c", "d")[0]
+    first_edge = multi_graph.get_edge_data(("a", "null"), ("b", "null"))[0]
+    second_edge = multi_graph.get_edge_data(("c", "null"), ("d", "null"))[0]
+    assert set(multi_graph.nodes()) == {
+        ("a", "null"),
+        ("b", "null"),
+        ("c", "null"),
+        ("d", "null"),
+    }
 
     assert first_edge["type"] is None
     assert first_edge["weight"] == "1"
@@ -116,7 +122,7 @@ def test_parsers_read_weights_and_edge_types(tmp_path):
     weighted_graph, _ = parse_edgelist_multi_types(
         str(multi_type_weight_only), directed=False
     )
-    weighted_edge = weighted_graph.get_edge_data("p", "q")[0]
+    weighted_edge = weighted_graph.get_edge_data(("p", "null"), ("q", "null"))[0]
 
     assert weighted_edge["type"] is None
     assert weighted_edge["weight"] == "3.0"
@@ -146,6 +152,19 @@ def test_multiedgelist_weights_are_numeric_for_weighted_algorithms(tmp_path):
     assert nx.shortest_path_length(graph, edge[0], edge[1], weight="weight") == 2.5
 
 
+def test_multiplex_folder_preserves_activity_source_node(tmp_path):
+    from py3plex.core.parsers import parse_multiplex_folder
+
+    (tmp_path / "layers.txt").write_text("1 social\n")
+    (tmp_path / "network.edges").write_text("1 alpha beta 1\n")
+    (tmp_path / "activity.txt").write_text("alpha beta 123 social\n")
+
+    _, _, activity = parse_multiplex_folder(str(tmp_path), directed=False)
+    assert activity.loc[0, "node_first"] == "alpha"
+    assert activity.loc[0, "node_second"] == "beta"
+    assert activity.loc[0, "node_second"] == "beta"
+
+
 def test_multiplex_and_spin_parsers_skip_blank_lines(tmp_path):
     multiplex_path = tmp_path / "multiplex.edges"
     multiplex_path.write_text("\n# comment\nlayer1 u v\n")
@@ -166,3 +185,14 @@ def test_multiplex_and_spin_parsers_skip_blank_lines(tmp_path):
     assert spin_graph.number_of_nodes() == 2
     assert spin_graph.number_of_edges() == 1
     assert spin_graph.get_edge_data("u", "v")["type"] == "tag"
+
+
+def test_spin_edgelist_honors_directed_flag(tmp_path):
+    path = tmp_path / "spin.txt"
+    path.write_text("a b interaction\n")
+
+    graph, _ = parse_spin_edgelist(str(path), directed=True)
+
+    assert graph.is_directed()
+    assert graph.has_edge("a", "b")
+    assert not graph.has_edge("b", "a")
