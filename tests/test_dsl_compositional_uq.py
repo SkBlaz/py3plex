@@ -224,6 +224,37 @@ class TestBackwardCompatibility:
 
 
 class TestCompositionalResampling:
+    def test_compositional_median_uses_deterministic_replicate_metrics(
+        self, simple_network
+    ):
+        deterministic = (
+            Q.nodes()
+            .compute("degree")
+            .summarize(median_degree="median(degree)")
+            .execute(simple_network)
+        )
+        result = (
+            Q.nodes()
+            .compute(
+                "degree",
+                uncertainty=True,
+                method="seed",
+                n_samples=3,
+                random_state=19,
+            )
+            .summarize(median_degree="median(degree)")
+            .uq(method="seed", n_samples=3, seed=42)
+            .execute(simple_network)
+        )
+
+        item = result.items[0]
+        uq_median = result.attributes["median_degree"][item]
+        expected_median = deterministic.attributes["median_degree"][
+            deterministic.items[0]
+        ]
+        assert uq_median["mean"] == pytest.approx(expected_median)
+        assert uq_median["std"] == pytest.approx(0.0)
+
     def test_bootstrap_resamples_edges_reproducibly_without_mutating_source(
         self, simple_network
     ):
@@ -274,13 +305,15 @@ class TestCompositionalResampling:
         from py3plex.dsl.ast import AutoCommunityConfig
         from py3plex.dsl.compositional_uq import apply_resample_seed
 
-        select = Q.nodes().compute("degree")._select
+        select = Q.nodes().compute(
+            "degree", uncertainty=True, method="seed", random_state=8
+        )._select
         select.community_config = {"method": "leiden"}
         select.auto_community_config = AutoCommunityConfig(enabled=True, seed=1)
 
         apply_resample_seed(select, 1234)
 
-        assert select.compute[0].random_state == 1234
+        assert select.compute[0].random_state == 8
         assert select.community_config["random_state"] == 1234
         assert select.auto_community_config.seed == 1234
 

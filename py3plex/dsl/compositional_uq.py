@@ -326,8 +326,6 @@ def derive_resample_seed(seed: Optional[int], resample_idx: int) -> Optional[int
 
 def apply_resample_seed(select: SelectStmt, seed: int) -> None:
     """Set a replicate's random state on stochastic query components."""
-    for compute_item in select.compute:
-        compute_item.random_state = seed
     community_config = getattr(select, "community_config", None)
     if isinstance(community_config, dict):
         community_config["random_state"] = seed

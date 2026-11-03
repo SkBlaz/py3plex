@@ -7042,6 +7042,16 @@ def _execute_select_with_compositional_uq(
     # Create a modified select without UQ for individual resample execution
     select_no_uq = copy.deepcopy(select)
     select_no_uq.uq_config = None
+    for compute_item in select_no_uq.compute or []:
+        compute_item.uncertainty = False
+        compute_item.method = None
+        compute_item.n_samples = None
+        compute_item.ci = None
+        compute_item.random_state = None
+        compute_item.bootstrap_unit = None
+        compute_item.bootstrap_mode = None
+        compute_item.n_null = None
+        compute_item.null_model = None
     
     # Storage for resample results
     resample_results = []
