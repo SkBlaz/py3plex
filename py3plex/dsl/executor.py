@@ -84,6 +84,8 @@ from .compositional_uq import (
     compute_rank_stability,
     compute_coverage_stability,
     create_resampled_network,
+    derive_resample_seed,
+    apply_resample_seed,
 )
 
 
@@ -7040,6 +7042,16 @@ def _execute_select_with_compositional_uq(
     # Create a modified select without UQ for individual resample execution
     select_no_uq = copy.deepcopy(select)
     select_no_uq.uq_config = None
+    for compute_item in select_no_uq.compute or []:
+        compute_item.uncertainty = False
+        compute_item.method = None
+        compute_item.n_samples = None
+        compute_item.ci = None
+        compute_item.random_state = None
+        compute_item.bootstrap_unit = None
+        compute_item.bootstrap_mode = None
+        compute_item.n_null = None
+        compute_item.null_model = None
     
     # Storage for resample results
     resample_results = []
@@ -7051,11 +7063,19 @@ def _execute_select_with_compositional_uq(
         
         # Create resampled network
         resampled_net = create_resampled_network(network, resample_spec, i)
+
+        # Seed-based UQ keeps the graph fixed but supplies independent,
+        # reproducible child seeds to stochastic query components.
+        resample_select = copy.deepcopy(select_no_uq)
+        if resample_spec.method == "seed":
+            replicate_seed = derive_resample_seed(resample_spec.seed, i)
+            if replicate_seed is not None:
+                apply_resample_seed(resample_select, replicate_seed)
         
         # Execute query on this resample (without UQ to avoid recursion)
         resample_result = _execute_select(
             resampled_net,
-            select_no_uq,
+            resample_select,
             params,
             progress=False,  # Don't log for each resample
             provenance_builder=None,
