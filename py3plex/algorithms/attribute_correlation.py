@@ -329,11 +329,11 @@ def _compute_correlation(x: np.ndarray, y: np.ndarray, method: str) -> Tuple[flo
     """
     valid_methods = ["pearson", "spearman", "kendall"]
     if method == "pearson":
-        return pearsonr(x, y)
+        result = pearsonr(x, y)
     elif method == "spearman":
-        return spearmanr(x, y)
+        result = spearmanr(x, y)
     elif method == "kendall":
-        return kendalltau(x, y)
+        result = kendalltau(x, y)
     else:
         from py3plex.errors import find_similar
         did_you_mean = find_similar(method, valid_methods)
@@ -348,6 +348,9 @@ def _compute_correlation(x: np.ndarray, y: np.ndarray, method: str) -> Tuple[flo
             ],
             did_you_mean=did_you_mean
         )
+
+    corr, pval = result
+    return float(np.clip(corr, -1.0, 1.0)), float(np.clip(pval, 0.0, 1.0))
 
 
 def multilayer_assortativity(
@@ -612,4 +615,5 @@ def attribute_centrality_independence_test(
             'error': str(e),
             'n_nodes': len(attrs)
         }
+
 
