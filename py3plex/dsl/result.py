@@ -22,10 +22,18 @@ _EXPLANATION_ATTRS = {
 def _json_safe(value: Any) -> Any:
     """Convert common scientific Python values to JSON-compatible values."""
     if isinstance(value, dict):
-        return {
-            key if isinstance(key, str) else json.dumps(_json_safe(key), separators=(",", ":")): _json_safe(item)
-            for key, item in value.items()
-        }
+        converted = {}
+        for key, item in value.items():
+            json_key = key if isinstance(key, str) else json.dumps(
+                _json_safe(key), separators=(",", ":")
+            )
+            if json_key in converted:
+                raise ValueError(
+                    f"JSON key collision for {json_key!r}; distinct identifiers "
+                    "cannot be represented safely. Use to_pandas() for row-aligned export."
+                )
+            converted[json_key] = _json_safe(item)
+        return converted
     if isinstance(value, (list, tuple)):
         return [_json_safe(item) for item in value]
     if isinstance(value, set):
