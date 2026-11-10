@@ -928,6 +928,8 @@ class QueryResult:
                 for edge in self.items:
                     if isinstance(edge, tuple) and len(edge) >= 2:
                         u, v = edge[0], edge[1]
+                        if len(edge) == 4 and not isinstance(edge[3], dict):
+                            u, v = (edge[0], edge[2]), (edge[1], edge[3])
                         attrs = (
                             edge[2]
                             if len(edge) >= 3 and isinstance(edge[2], dict)
@@ -958,6 +960,8 @@ class QueryResult:
             for item_index, edge in enumerate(self.items):
                 if isinstance(edge, tuple) and len(edge) >= 2:
                     u, v = edge[0], edge[1]
+                    if len(edge) == 4 and not isinstance(edge[3], dict):
+                        u, v = (edge[0], edge[2]), (edge[1], edge[3])
                     nodes_in_edges.add(u)
                     nodes_in_edges.add(v)
                     edge_key = None
