@@ -476,7 +476,12 @@ class GraphProgram:
             except Exception:
                 lines.append(f"Layers: {select.layer_expr}")
         elif select.layer_set:
-            lines.append(f"Layers: {', '.join(sorted(select.layer_set))}")
+            lines.append(f"Layers: {select.layer_set.explain()}")
+            if network is not None:
+                resolved = select.layer_set.resolve(network, warn_empty=False)
+                lines.append("Resolved layers: " + ", ".join(
+                    str(layer) for layer in sorted(resolved, key=repr)
+                ))
 
         # --- Compute metrics --------------------------------------------------
         if select.compute:
