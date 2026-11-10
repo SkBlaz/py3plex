@@ -333,7 +333,6 @@ def plot_critical_distance(
     fontsize: int = 10,
 ) -> None:
 
-    import operator
     from collections import defaultdict
 
     if groupby is None:
