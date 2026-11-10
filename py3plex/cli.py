@@ -3925,7 +3925,7 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
         net = _load_network(args.input)
 
         if args.verbose:
-            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
+            print(f"Network loaded: {net.core_network.number_of_nodes()} nodes, {net.core_network.number_of_edges()} edges")
 
         # Validate model-specific parameters
         if args.model in ["sir", "seir"] and args.gamma is None:
@@ -3940,74 +3940,48 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
             logger.error("SEIR model requires --sigma parameter")
             return 1
 
-        # Import dynamics module
-        from py3plex.dsl import Q
-        from py3plex.dsl.builder import DynamicsBuilder
+        # The OOP model API supports every epidemic model exposed by this CLI.
+        from collections import Counter
+        import pandas as pd
+        from py3plex.dynamics.models import SISDynamics
+        from py3plex.dynamics.compartmental import SIRDynamics, SEIRDynamics
 
-        # Construct dynamics query
-        if args.verbose:
-            print(f"Setting up {args.model.upper()} simulation...")
-            print(f"  Beta (infection rate): {args.beta}")
-            if args.model == "sir":
-                print(f"  Gamma (recovery rate): {args.gamma}")
-            elif args.model == "sis":
-                print(f"  Mu (recovery rate): {args.mu}")
-            elif args.model == "seir":
-                print(f"  Sigma (exposed rate): {args.sigma}")
-                print(f"  Gamma (recovery rate): {args.gamma}")
-            print(f"  Steps: {args.steps}")
-            print(f"  Replicates: {args.replicates}")
-
-        # Build dynamics query
-        query_builder = Q.dynamics(
-            args.model.upper(),
-            beta=args.beta,
-            gamma=args.gamma if args.model in ["sir", "seir"] else None,
-            mu=args.mu if args.model == "sis" else None,
-            sigma=args.sigma if args.model == "seir" else None,
-        )
-
-        # Restrict to specific layers if requested
+        graph = net.core_network
         if args.layers:
-            from py3plex.dsl import L
-            layer_expr = L[args.layers[0]]
-            for layer in args.layers[1:]:
-                layer_expr = layer_expr + L[layer]
-            query_builder = query_builder.on_layers(layer_expr)
-
-        # Seed infections
-        if args.seed_nodes:
-            # Seed specific nodes
-            seed_nodes_list = [(node, net.get_layers()[0]) for node in args.seed_nodes]
-            query_builder = query_builder.seed_infections(nodes=seed_nodes_list)
+            graph = graph.subgraph([node for node in graph if node[1] in args.layers]).copy()
+        if graph.number_of_nodes() == 0:
+            raise ValueError("No nodes in selected layers")
+        if args.steps < 0 or args.replicates < 1:
+            raise ValueError("steps must be nonnegative and replicates must be positive")
+        if not 0 <= args.seed_fraction <= 1:
+            raise ValueError("seed fraction must be between zero and one")
+        params = {"beta": args.beta, "initial_infected": args.seed_fraction}
+        if args.model == "sis":
+            params["mu"] = args.mu
         else:
-            # Seed fraction of nodes
-            query_builder = query_builder.seed_infections(fraction=args.seed_fraction)
-
-        # Run simulation
-        if args.seed is not None:
-            query_builder = query_builder.run(
-                steps=args.steps,
-                replicates=args.replicates,
-                seed=args.seed
-            )
-        else:
-            query_builder = query_builder.run(
-                steps=args.steps,
-                replicates=args.replicates
-            )
-
-        if args.verbose:
-            print("Running simulation...")
-
-        # Execute
-        result = query_builder.execute(net)
-
-        if args.verbose:
-            print("Simulation complete!")
-
-        # Extract trajectories
-        trajectories = result.trajectories
+            params["gamma"] = args.gamma
+        if args.model == "seir":
+            params["sigma"] = args.sigma
+        model_class = {"sis": SISDynamics, "sir": SIRDynamics, "seir": SEIRDynamics}[args.model]
+        rng = np.random.default_rng(args.seed)
+        rows = []
+        labels = {"S":"susceptible", "E":"exposed", "I":"infected", "R":"recovered"}
+        for replicate in range(args.replicates):
+            model = model_class(graph, seed=int(rng.integers(0, 2**32)), **params)
+            state = None
+            if args.seed_nodes:
+                requested = set(args.seed_nodes)
+                available = {node[0] for node in graph}
+                if not requested <= available:
+                    raise ValueError("Seed nodes must exist in the selected layers")
+                state = {node: "I" if node[0] in requested else "S" for node in graph}
+            result = model.run(steps=args.steps, state=state)
+            for step, state in enumerate(result.trajectory):
+                counts = Counter(state.values())
+                row = {"step":step, "replicate":replicate}
+                row.update({label:counts[code] for code,label in labels.items()})
+                rows.append(row)
+        trajectories = pd.DataFrame(rows)
 
         # Prepare output
         output_data = {
@@ -4021,9 +3995,9 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
                 "seed": args.seed,
             },
             "network": {
-                "nodes": len(net.get_nodes()),
-                "edges": len(net.get_edges()),
-                "layers": net.get_layers(),
+                "nodes": net.core_network.number_of_nodes(),
+                "edges": net.core_network.number_of_edges(),
+                "layers": list(net.layers),
             },
             "trajectories": trajectories.to_dict(orient="records") if hasattr(trajectories, "to_dict") else str(trajectories),
         }
