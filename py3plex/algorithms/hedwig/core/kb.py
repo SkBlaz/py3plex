@@ -44,7 +44,7 @@ class ExperimentKB:
         self._calc_predicate_members(triplets)
         self._find_roots(all_annotations)
         self._calc_members_closure()
-        self._calc_binary_members()
+        self._calc_binary_members(triplets)
         self._propagate_annotation_names(triplets)
 
         # Statistics
@@ -236,7 +236,7 @@ class ExperimentKB:
         # Run the closure from root
         closure(self.dummy_root, 0)
 
-    def _calc_binary_members(self):
+    def _calc_binary_members(self, g):
         self.binary_members = defaultdict(dict)
         self.reverse_binary_members = defaultdict(dict)
 
@@ -245,13 +245,13 @@ class ExperimentKB:
 
             for pair in pairs:
                 el1, el2 = self.uri_to_idx[pair[0]], self.uri_to_idx[pair[1]]
-                if self.binary_members[pred].has_key(el1):
+                if el1 in self.binary_members[pred]:
                     self.binary_members[pred][el1].append(el2)
                 else:
                     self.binary_members[pred][el1] = [el2]
 
                 # Add the reverse as well
-                if self.reverse_binary_members[pred].has_key(el2):
+                if el2 in self.reverse_binary_members[pred]:
                     self.reverse_binary_members[pred][el2].append(el1)
                 else:
                     self.reverse_binary_members[pred][el2] = [el1]
