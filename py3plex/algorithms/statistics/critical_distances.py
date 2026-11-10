@@ -35,13 +35,14 @@ def diagram(
     the_algorithm_candidate: Optional[str],
     output_figure_file: Optional[str],
     fontsize: int = 10,
+    critical_distance: Optional[float] = None,
 ) -> Optional[str]:
     """
     Draws critical distance diagram for Nemenyi or Bonferroni-Dunn post-hoc test.
     The diagram is shown if output_figure_file is None, and saved otherwise
     to the file.
     :param list_of_algorithms: [[(alg_name1, avg_rank1)], ...]
-    :param critical_distance:
+    :param critical_distance: Optional positive Nemenyi critical distance.
     :param output_figure_file: If not none, the diagram produced is saved to the specified file.
     Otherwise, the diagram is shown.
     :param the_algorithm_candidate: If we were performing Bonferroni-Dunn post-hcc test (1 vs all),
@@ -50,6 +51,10 @@ def diagram(
     :return: output_figure_file
     """
 
+    if critical_distance is not None and (
+        not np.isfinite(critical_distance) or critical_distance <= 0
+    ):
+        raise ValueError("critical_distance must be a positive finite number")
     n = len(list_of_algorithms)
     sorted_algorithms = sorted(list_of_algorithms, key=lambda t: t[1])
     the_index = None
@@ -96,7 +101,7 @@ def diagram(
         weight="normal",
         stretch="normal",
     )
-    rc("text", usetex=True)
+    # Respect the caller's text renderer; plotting does not require LaTeX.
     rc("font", **fontProperties)
 
     def name_length(name: str) -> float:
@@ -256,9 +261,9 @@ def diagram(
         plot_algorithm(i, alg_rank_tuple[0], alg_rank_tuple[1])
     # critical distance
 
-    #    plot_critical_distance()
-    # algorithm groups
-    #    plot_groups(algorithm_groups())
+    if critical_distance is not None:
+        plot_critical_distance()
+        plot_groups(algorithm_groups())
     # save / show the results
     if output_figure_file is not None:
         folder_end = output_figure_file.rfind("/")
@@ -362,9 +367,22 @@ def plot_critical_distance(
     avranks = list(clf_score.values())
     pairs = list(zip(names, avranks))
     if crit_dist:
-        cd = Orange.evaluation.compute_CD(  # type: ignore[name-defined]
-            avranks[0 : (len(avranks) - 1)], comparisons, alpha="0.05"  # type: ignore[name-defined]
-        )
+        # Nemenyi's CD uses the full algorithm count and independent datasets.
+        k = len(avranks)
+        comparisons = len(ranks)
+        if k < 2 or comparisons < 1:
+            raise ValueError("Critical distance requires at least two algorithms and one dataset")
+        algorithms = set(clf_score)
+        if any({name for name, _ in rows} != algorithms for rows in ranks.values()):
+            raise ValueError("Critical distance requires the same algorithms in every dataset")
+        if not np.all(np.isfinite(rkx.to_numpy())):
+            raise ValueError("Critical distance requires finite scores")
+        try:
+            from scipy.stats import studentized_range
+        except ImportError as exc:
+            raise ImportError("Critical distance plotting requires scipy>=1.7") from exc
+        q_alpha = studentized_range.ppf(0.95, k, np.inf) / np.sqrt(2)
+        cd = float(q_alpha * np.sqrt(k * (k + 1) / (6 * comparisons)))
+        diagram(pairs, None, outfile, fontsize=fontsize, critical_distance=cd)
     else:
-        cd = None
-    diagram(pairs, cd, outfile, fontsize=fontsize)
+        diagram(pairs, None, outfile, fontsize=fontsize)
