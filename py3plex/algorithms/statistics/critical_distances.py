@@ -350,10 +350,12 @@ def plot_critical_distance(
 
     for _k, v in ranks.items():
         a = dict(v)
-        sorted_d = sorted(a.items(), key=operator.itemgetter(1))
-        for en, j in enumerate(sorted_d):
-            logger.debug("Rank %d: %s", en, j[0])
-            clf_ranks[j[0]].append(len(sorted_d) - en)
+        from scipy.stats import rankdata
+        names = list(a)
+        # Higher scores are better; ties receive their shared average rank.
+        dataset_ranks = rankdata([-a[name] for name in names], method="average")
+        for name, rank in zip(names, dataset_ranks):
+            clf_ranks[name].append(float(rank))
 
     fname[groupby[0]].nunique()
     clf_score = {k: np.mean(v) for k, v in clf_ranks.items()}
