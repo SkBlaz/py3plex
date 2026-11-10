@@ -232,6 +232,20 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
                 first_line = f.readline().strip()
                 if first_line:
                     parts = first_line.split()
+                    if len(parts) == 3:
+                        try:
+                            float(parts[2])
+                        except ValueError:
+                            # Compact multilayer rows: source target layer.
+                            f.seek(0)
+                            for row in f:
+                                row = row.strip()
+                                if not row or row.startswith("#"):
+                                    continue
+                                source, target, layer = row.split()
+                                network.add_edges([{"source": source, "target": target,
+                                                    "source_type": layer, "target_type": layer}])
+                            return network
                     if len(parts) in [4, 5]:
                         # Multilayer format (with or without weight)
                         network.load_network(file_path, input_type="multiedgelist")
@@ -1037,6 +1051,9 @@ Examples:
         default="csv",
         help="Output format (default: csv)",
     )
+
+    embed_parser.add_argument("--verbose", "-v", action="store_true",
+                               help="Print detailed progress information")
 
     # EXPERIMENT command group
     from py3plex.experiments.cli import add_experiment_subparser
@@ -3905,8 +3922,7 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
             print(f"Loading network from: {args.input}")
 
         # Load network
-        net = multinet.multi_layer_network(directed=False)
-        net.load_network(args.input, input_type="multiedgelist")
+        net = _load_network(args.input)
 
         if args.verbose:
             print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
@@ -4110,11 +4126,10 @@ def cmd_embed(args: argparse.Namespace) -> int:
             print(f"Loading network from: {args.input}")
 
         # Load network
-        net = multinet.multi_layer_network(directed=False)
-        net.load_network(args.input, input_type="multiedgelist")
+        net = _load_network(args.input)
 
         if args.verbose:
-            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
+            print(f"Network loaded: {net.core_network.number_of_nodes()} nodes, {net.core_network.number_of_edges()} edges")
 
         # Prepare embedding parameters
         embed_params = {
@@ -4160,7 +4175,10 @@ def cmd_embed(args: argparse.Namespace) -> int:
             print("Embeddings learned successfully!")
 
         # Prepare output
-        if hasattr(result, "embeddings"):
+        if hasattr(result, "vectors"):
+            embeddings = result.vectors
+            node_list = result.item_ids
+        elif hasattr(result, "embeddings"):
             # EmbeddingResult object
             embeddings = result.embeddings
             node_list = result.nodes if hasattr(result, "nodes") else list(embeddings.keys())
@@ -4180,9 +4198,9 @@ def cmd_embed(args: argparse.Namespace) -> int:
                 "seed": args.seed,
             },
             "network": {
-                "nodes": len(net.get_nodes()),
-                "edges": len(net.get_edges()),
-                "layers": net.get_layers(),
+                "nodes": net.core_network.number_of_nodes(),
+                "edges": net.core_network.number_of_edges(),
+                "layers": list(net.layers),
             },
             "embeddings": {},
         }
