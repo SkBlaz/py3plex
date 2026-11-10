@@ -31,16 +31,14 @@ class ExplainResult:
         lines = ["=" * 60, "Graph Program Explanation", "=" * 60, ""]
         
         lines.append("Pipeline Steps:")
-        for i, (step, typ, cost) in enumerate(zip(
-            self.pipeline_steps,
-            self.type_flow,
-            self.cost_estimates
-        ), 1):
-            lines.append(f"  {i}. {step}")
-            lines.append(f"     Type: {typ}")
-            lines.append(f"     Cost: {cost}")
+        for i, step in enumerate(self.pipeline_steps):
+            lines.append(f"  {i + 1}. {step}")
+            if i < len(self.type_flow):
+                lines.append(f"     Type: {self.type_flow[i]}")
+            if i < len(self.cost_estimates):
+                lines.append(f"     Cost: {self.cost_estimates[i]}")
             lines.append("")
-        
+
         if self.optimizations:
             lines.append("Optimizations Applied:")
             for opt in self.optimizations:
@@ -48,7 +46,7 @@ class ExplainResult:
             lines.append("")
         
         if self.total_cost:
-            lines.append(f"Total Estimated Cost: {total_cost}")
+            lines.append(f"Total Estimated Cost: {self.total_cost}")
             lines.append("")
         
         if self.cache_status:
@@ -92,23 +90,23 @@ def explain_program(
         cost_estimates.append("O(V)" if target == "nodes" else "O(E)")
     
     # Extract layers filter
-    if hasattr(ast, "select") and hasattr(ast.select, "layers") and ast.select.layers:
-        layers_expr = _format_layers(ast.select.layers)
+    if hasattr(ast, "select") and (ast.select.layer_expr or ast.select.layer_set):
+        layers_expr = _format_layers(ast.select.layer_expr or ast.select.layer_set)
         pipeline_steps.append(f"FROM layers: {layers_expr}")
         type_flow.append(f"{type_flow[-1]} (filtered)")
         cost_estimates.append("O(1) filter")
     
     # Extract conditions
-    if hasattr(ast, "select") and hasattr(ast.select, "conditions") and ast.select.conditions:
-        conds = ast.select.conditions
+    if hasattr(ast, "select") and ast.select.where:
+        conds = ast.select.where
         pipeline_steps.append(f"WHERE {_format_conditions(conds)}")
         type_flow.append(type_flow[-1] if type_flow else "Set")
         cost_estimates.append("O(N) filter")
     
     # Extract computations
-    if hasattr(ast, "select") and hasattr(ast.select, "computes") and ast.select.computes:
-        for compute in ast.select.computes:
-            measure = compute.measure
+    if hasattr(ast, "select") and ast.select.compute:
+        for compute in ast.select.compute:
+            measure = compute.name
             pipeline_steps.append(f"COMPUTE {measure}")
             type_flow.append("Table")
             cost_estimates.append(_estimate_compute_cost(measure))
@@ -118,12 +116,12 @@ def explain_program(
         order_items = ast.select.order_by
         for item in order_items:
             direction = "DESC" if item.desc else "ASC"
-            pipeline_steps.append(f"ORDER BY {item.field} {direction}")
+            pipeline_steps.append(f"ORDER BY {item.key} {direction}")
             type_flow.append(type_flow[-1] if type_flow else "Table")
             cost_estimates.append("O(N log N) sort")
     
     # Extract limit
-    if hasattr(ast, "select") and hasattr(ast.select, "limit") and ast.select.limit:
+    if hasattr(ast, "select") and hasattr(ast.select, "limit") and ast.select.limit is not None:
         pipeline_steps.append(f"LIMIT {ast.select.limit}")
         type_flow.append(type_flow[-1] if type_flow else "Table")
         cost_estimates.append("O(1) slice")
@@ -156,26 +154,17 @@ def explain_program(
 
 
 def _format_layers(layers_expr) -> str:
-    """Format layer expression for display."""
-    if hasattr(layers_expr, "terms"):
-        terms = [t.name for t in layers_expr.terms]
-        ops = layers_expr.ops if hasattr(layers_expr, "ops") else []
-        if ops:
-            return " ".join(f"{t} {op}" for t, op in zip(terms, ops + [""]))
-        return ", ".join(terms)
+    """Format both layer builder expressions and first-class LayerSets."""
+    if hasattr(layers_expr, "explain"):
+        return layers_expr.explain()
+    if hasattr(layers_expr, "get_layer_names"):
+        return ", ".join(map(str, layers_expr.get_layer_names()))
     return str(layers_expr)
 
 
 def _format_conditions(conditions) -> str:
-    """Format conditions for display."""
-    if hasattr(conditions, "atoms"):
-        atoms = []
-        for atom in conditions.atoms:
-            if hasattr(atom, "comparison"):
-                comp = atom.comparison
-                atoms.append(f"{comp.field} {comp.op} {comp.value}")
-        return " AND ".join(atoms)
-    return str(conditions)
+    from .program import _format_condition
+    return _format_condition(conditions)
 
 
 def _estimate_compute_cost(measure: str) -> str:
