@@ -3995,9 +3995,9 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
                 "seed": args.seed,
             },
             "network": {
-                "nodes": net.core_network.number_of_nodes(),
-                "edges": net.core_network.number_of_edges(),
-                "layers": list(net.layers),
+                "nodes": graph.number_of_nodes(),
+                "edges": graph.number_of_edges(),
+                "layers": sorted({node[1] for node in graph}, key=repr),
             },
             "trajectories": trajectories.to_dict(orient="records") if hasattr(trajectories, "to_dict") else str(trajectories),
         }
