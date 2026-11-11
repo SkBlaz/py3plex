@@ -318,6 +318,18 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>py3plex:latest<span class="w"> </span><span class="nb">help</span>
 </pre></div>
 </div>
+<p>The default image installs the core package and its required dependencies from
+<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>. It does not include optional algorithm, Arrow, MCP, or
+interactive visualization extras. <code class="docutils literal notranslate"><span class="pre">--version</span></code> reports the version of the
+source checkout used to build the image; an image tag alone does not change it.</p>
+<p>The image runs as a nonroot user and renders plots to files with Matplotlib’s
+Agg backend. For bind-mounted output directories on Linux, use your host user
+and group IDs when they differ from the image’s UID/GID 1000:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>data
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--user<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">:</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="s2">"</span><span class="w"> </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/data:/data"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>py3plex:latest<span class="w"> </span>create<span class="w"> </span>--nodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--layers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span>--output<span class="w"> </span>/data/network.edgelist
+</pre></div>
+</div>
 </section>
 <section id="building-the-image">
 <h2><a class="toc-backref" href="#id4" role="doc-backlink">Building the Image</a><a class="headerlink" href="#building-the-image" title="Link to this heading"></a></h2>
@@ -328,7 +340,7 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
 
 <span class="c1"># Build with a specific tag</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:0.95a<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:2.0.93<span class="w"> </span>.
 
 <span class="c1"># Build without cache (if needed)</span>
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
@@ -675,7 +687,7 @@ docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"
 <ol class="arabic simple">
 <li><p><strong>Use Volume Mounts:</strong> Always mount volumes for input/output files.</p></li>
 <li><p><strong>Use –rm Flag:</strong> Remove containers after execution with <code class="docutils literal notranslate"><span class="pre">--rm</span></code> to save space.</p></li>
-<li><p><strong>Tag Images:</strong> Use specific tags (e.g., <code class="docutils literal notranslate"><span class="pre">py3plex:0.95a</span></code>) for reproducibility.</p></li>
+<li><p><strong>Tag Images:</strong> Use specific tags (e.g., <code class="docutils literal notranslate"><span class="pre">py3plex:2.0.93</span></code>) for reproducibility.</p></li>
 <li><p><strong>Keep Data Separate:</strong> Store network files in the mounted <code class="docutils literal notranslate"><span class="pre">data</span></code> directory.</p></li>
 <li><p><strong>Use Docker Compose:</strong> For repeated operations, Docker Compose simplifies commands.</p></li>
 <li><p><strong>Regular Updates:</strong> Rebuild after pulling new commits or dependency changes to keep images current.</p></li>
