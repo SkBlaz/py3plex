@@ -5,6 +5,9 @@ DSL Fundamentals: A Query Mental Model
 
 The DSL is useful when you need clear, replayable analytical pipelines over multilayer data. This chapter teaches the mental model first and syntax second.
 
+Runnable query examples and helper datasets are in ``examples/dsl_zoo/``
+in the source repository.
+
 Why a DSL Here?
 ---------------
 
