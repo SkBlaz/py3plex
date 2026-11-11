@@ -649,15 +649,6 @@ def plot_simplex(points, names=("C1", "C2"), proba_triplet=None):
     fig = plt.figure()
     fig.set_size_inches(8, 7)
 
-    nl, ne, nr = np.max(points, axis=0)
-    for i, n in enumerate((nl, ne, nr)):
-        if n < 0.001:
-            print(
-                "p{} is too small, switching to 2d plot".format(names[::-1] + ["rope"])
-            )
-            coords = sorted(set(range(3)) - i)
-            return plot2d(points[:, coords], labels[coords])
-
     # triangle
     fig.gca().add_line(
         Line2D([0, 0.5, 1.0, 0], [0, np.sqrt(3) / 2, 0, 0], color="black")
@@ -669,6 +660,10 @@ def plot_simplex(points, names=("C1", "C2"), proba_triplet=None):
                 [vert0[0, 0], vert0[i, 0]], [vert0[0, 1], vert0[i, 1]], color="black"
             )
         )
+    # Degenerate posteriors remain valid points on a simplex edge.
+    if proba_triplet is None:
+        proba_triplet = np.mean(points, axis=0)
+
     # vertex labels
     rcParams.update({"font.size": 16})
     fig.gca().text(-0.08, -0.08, f"p({names[0]} ({proba_triplet[0]}))", color="black")
