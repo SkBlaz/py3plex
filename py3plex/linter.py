@@ -410,8 +410,8 @@ class GraphFileLinter:
                 # Common column name variations
                 src_cols = ["src", "source", "from", "node1"]
                 dst_cols = ["dst", "destination", "to", "target", "node2"]
-                src_layer_cols = ["src_layer", "source_layer", "layer1"]
-                dst_layer_cols = ["dst_layer", "destination_layer", "target_layer", "layer2"]
+                src_layer_cols = ["src_layer", "source_layer", "layer1", "layer"]
+                dst_layer_cols = ["dst_layer", "destination_layer", "target_layer", "layer2", "layer"]
 
                 has_src = any(col in fieldnames for col in src_cols)
                 has_dst = any(col in fieldnames for col in dst_cols)
@@ -544,6 +544,7 @@ class GraphFileLinter:
                 row.get("src_layer")
                 or row.get("source_layer")
                 or row.get("layer1")
+                or row.get("layer")
                 or "default"
             )
             dst_layer = (
@@ -551,6 +552,7 @@ class GraphFileLinter:
                 or row.get("destination_layer")
                 or row.get("target_layer")
                 or row.get("layer2")
+                or row.get("layer")
                 or "default"
             )
 

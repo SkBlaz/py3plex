@@ -119,6 +119,7 @@ jobs:
           source .venv/bin/activate
         fi
         uv pip install pytest hypothesis pyarrow
+        uv run pytest -q tests/test_csv_onboarding.py
         if [ -f "run_tests.py" ]; then
           timeout 600 uv run python run_tests.py || echo " Tests timed out after 10 minutes"
         else
