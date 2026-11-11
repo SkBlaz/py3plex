@@ -1009,8 +1009,10 @@ class multi_layer_network:
                 - 'gml': Graph Modeling Language format
                 - 'graphml': GraphML XML format (node 'type' selects layer;
                   missing types use the GraphML default or 'generic')
-                - 'edgelist': Simple edge list (source target [weight])
+                - 'edgelist': Simple edge list (source target [weight]) or headered CSV
                 - 'multiedgelist': Multilayer edge list (node1 layer1 node2 layer2 weight)
+                  or headered CSV (source,target,layer[,weight] or separate
+                  source_layer and target_layer columns)
                 - 'multiplex_edges': Multiplex format (layer node1 node2 weight)
                 - 'multiplex_folder': Folder with layer files
                 - 'gpickle': Python pickle format

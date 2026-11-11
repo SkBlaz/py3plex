@@ -220,6 +220,8 @@ def _load_network(file_path: str) -> "multinet.multi_layer_network":
         network.directed = G.is_directed()
         # Normalize nodes from string representations back to tuples
         network = _normalize_network_nodes(network)
+    elif input_path.suffix.lower() == ".csv":
+        network.load_network(file_path, input_type="multiedgelist")
     elif input_path.suffix == ".gpickle":
         network.load_network(file_path, input_type="gpickle")
     else:

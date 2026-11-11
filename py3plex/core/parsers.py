@@ -1,6 +1,7 @@
 # set of parsers used in Py3plex.
 
 import glob
+import csv
 import base64
 import gzip
 import itertools
@@ -310,6 +311,55 @@ def parse_detangler_json(
     return (G, None)
 
 
+def _parse_csv_edgelist(
+    input_name: str, directed: bool, multigraph: bool
+) -> Tuple[nx.Graph, None]:
+    """Read headered CSV edge lists, preserving endpoint layers and attributes."""
+    graph_type = (nx.MultiDiGraph if directed else nx.MultiGraph) if multigraph else (nx.DiGraph if directed else nx.Graph)
+    graph = graph_type()
+    opener = gzip.open if str(input_name).endswith(".gz") else open
+    with opener(input_name, "rt", encoding="utf-8-sig", newline="") as stream:
+        sample = stream.read(4096)
+        stream.seek(0)
+        try:
+            delimiter = csv.Sniffer().sniff(sample, delimiters=",;\t").delimiter
+        except csv.Error:
+            delimiter = ","
+        reader = csv.DictReader(stream, delimiter=delimiter)
+        fields = reader.fieldnames or []
+        if len(fields) != len(set(fields)):
+            raise ValueError(f"{input_name}: duplicate CSV column names")
+        def column(names: Tuple[str, ...]) -> Optional[str]:
+            return next((name for name in names if name in fields), None)
+        source = column(("src", "source", "from", "node1"))
+        target = column(("dst", "destination", "to", "target", "node2"))
+        source_layer = column(("src_layer", "source_layer", "layer1", "layer"))
+        target_layer = column(("dst_layer", "destination_layer", "target_layer", "layer2", "layer"))
+        if source is None or target is None:
+            raise ValueError(f"{input_name}: CSV requires source and target columns (or src and dst)")
+        if (source_layer is None) != (target_layer is None):
+            raise ValueError(f"{input_name}: provide both endpoint layer columns, or one shared layer column")
+        endpoint_columns = {source, target, source_layer, target_layer}
+        for row in reader:
+            line = reader.line_num
+            if None in row or any(value is None for value in row.values()):
+                raise ValueError(f"{input_name}:{line}: CSV row does not match the header")
+            required = [source, target] + ([source_layer, target_layer] if source_layer else [])
+            if any(not row[key].strip() for key in required):
+                raise ValueError(f"{input_name}:{line}: node and layer IDs must not be empty")
+            first = (row[source].strip(), row[source_layer].strip() if source_layer else "null")
+            second = (row[target].strip(), row[target_layer].strip() if target_layer else "null")
+            attrs = {key: value for key, value in row.items() if key not in endpoint_columns}
+            try:
+                attrs["weight"] = float(attrs.get("weight") or 1.0)
+            except ValueError as exc:
+                raise ValueError(f"{input_name}:{line}: weight must be numeric") from exc
+            graph.add_node(first, type=first[1])
+            graph.add_node(second, type=second[1])
+            graph.add_edge(first, second, **attrs)
+    return graph, None
+
+
 def parse_multi_edgelist(
     input_name: str, directed: bool
 ) -> Tuple[Union[nx.MultiGraph, nx.MultiDiGraph], None]:
@@ -320,6 +370,9 @@ def parse_multi_edgelist(
         input_name: Path to text file containing multiedges
         directed: Whether to create directed graph
     """
+
+    if str(input_name).lower().endswith((".csv", ".csv.gz")):
+        return _parse_csv_edgelist(input_name, directed, multigraph=True)
 
     if directed:
         G = nx.MultiDiGraph()
@@ -388,6 +441,9 @@ def parse_simple_edgelist(
         input_name: Path to text file
         directed: Whether to create directed graph
     """
+
+    if str(input_name).lower().endswith((".csv", ".csv.gz")):
+        return _parse_csv_edgelist(input_name, directed, multigraph=False)
 
     if directed:
         G = nx.DiGraph()
