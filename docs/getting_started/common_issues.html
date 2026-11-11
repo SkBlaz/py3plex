@@ -256,7 +256,9 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 </pre></div>
 </div>
 <p><strong>Solution 2:</strong> Use an absolute path to avoid ambiguity:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network_path</span> <span class="o">=</span> <span class="s2">"/absolute/path/to/data.edgelist"</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network_path</span> <span class="o">=</span> <span class="s2">"/absolute/path/to/data.edgelist"</span>
 <span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
     <span class="n">network_path</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
@@ -264,6 +266,8 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 </div>
 <p><strong>Solution 3:</strong> Build a path relative to the script location (avoids brittle working-directory assumptions):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s2">"data"</span><span class="p">,</span> <span class="s2">"network.edgelist"</span><span class="p">)</span>
@@ -280,7 +284,7 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For simple edge lists (source target)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"data.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"edgelist"</span><span class="p">)</span>
 
-<span class="c1"># For multilayer edge lists (source target layer)</span>
+<span class="c1"># For multilayer edge lists (source source_layer target target_layer [weight])</span>
 <span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span><span class="s2">"data.txt"</span><span class="p">,</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span><span class="p">)</span>
 
 <span class="c1"># Always verify after loading</span>
@@ -290,36 +294,47 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <p>If counts are still zero:</p>
 <ul class="simple">
 <li><p>Inspect the first few lines for the expected number of columns and delimiters.</p></li>
-<li><p>Ensure header rows are skipped or removed before loading.</p></li>
+<li><p>Whitespace edge lists have no header; headered CSV input keeps its header.
+Use <code class="docutils literal notranslate"><span class="pre">source,target,layer,weight</span></code> or separate endpoint layer columns for CSV.</p></li>
 <li><p>Check that the file is not empty (<code class="docutils literal notranslate"><span class="pre">os.path.getsize</span></code>).</p></li>
 </ul>
 </section>
 </section>
 <section id="visualization-issues">
 <h2>Visualization Issues<a class="headerlink" href="#visualization-issues" title="Link to this heading"></a></h2>
+<p>For the plotting examples below, first create a small undirected test network.
+Replace this with your loaded network when diagnosing your own data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
+</pre></div>
+</div>
 <section id="visualization-not-showing">
 <h3>Visualization Not Showing<a class="headerlink" href="#visualization-not-showing" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> No window appears when calling visualization functions (plots silently finish).</p>
 <p><strong>Solution 1:</strong> For Jupyter notebooks, enable inline plots:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
 </pre></div>
 </div>
-<p><strong>Solution 2:</strong> For scripts, explicitly show the plot or set <code class="docutils literal notranslate"><span class="pre">display=True</span></code>:</p>
+<p><strong>Solution 2:</strong> For scripts, draw through the network wrapper and explicitly show the figure:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="c1"># Your visualization code</span>
-<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"hairball"</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Explicitly show</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <p><strong>Solution 3:</strong> Save to file instead of displaying:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">hairball_plot</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="n">hairball_plot</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span> <span class="n">layout_algorithm</span><span class="o">=</span><span class="s2">"force"</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"hairball"</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"network.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">'tight'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
@@ -330,13 +345,20 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <p><strong>Problem:</strong> Error on headless servers or SSH sessions without X11.</p>
 <p><strong>Solution:</strong> Use Agg backend for matplotlib so plots are rendered to files:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'Agg'</span><span class="p">)</span>  <span class="c1"># Must be before importing pyplot</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'Agg'</span><span class="p">)</span>  <span class="c1"># Set before importing py3plex or pyplot</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="c1"># Now visualization will save to file instead of displaying</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
-<span class="n">draw_multilayer_default</span><span class="p">([</span><span class="n">network</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+
+<span class="c1"># A complete headless example; replace with your own network when ready</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
+    <span class="p">[</span><span class="s1">'Alice'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'Carol'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">input_type</span><span class="o">=</span><span class="s2">"list"</span><span class="p">)</span>
+<span class="n">network</span><span class="o">.</span><span class="n">visualize_network</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"hairball"</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"output.png"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -368,8 +390,8 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 </pre></div>
 </div>
 <p>Or use alternative community detection methods if you cannot install the extra:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">community_louvain</span>
-<span class="n">communities</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.community_detection.multilayer_modularity</span><span class="w"> </span><span class="kn">import</span> <span class="n">louvain_multilayer</span>
+<span class="n">communities</span> <span class="o">=</span> <span class="n">louvain_multilayer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -384,13 +406,13 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py3plex[arrow]"</span><span class="w">  </span><span class="c1"># Quotes required on some shells</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">write</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_to_arrow</span><span class="p">,</span> <span class="n">load_from_arrow</span>
 
 <span class="c1"># Save in efficient format</span>
-<span class="n">write</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s2">"network.arrow"</span><span class="p">)</span>
+<span class="n">save_to_arrow</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s2">"network.arrow"</span><span class="p">)</span>
 
 <span class="c1"># Load faster from Arrow</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s2">"network.arrow"</span><span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_from_arrow</span><span class="p">(</span><span class="s2">"network.arrow"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Solution 2:</strong> Process in chunks or use subnetworks for testing:</p>
@@ -461,9 +483,8 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
 <section id="docker-build-fails">
 <h3>Docker Build Fails<a class="headerlink" href="#docker-build-fails" title="Link to this heading"></a></h3>
 <p><strong>Problem:</strong> Docker build fails or takes very long.</p>
-<p><strong>Solution:</strong> Clear Docker cache (removes all unused images and build layers) and rebuild:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"> </span>-a
-docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
+<p><strong>Solution:</strong> Run the build from the current repository root and inspect the plain-text log:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--progress<span class="o">=</span>plain<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
@@ -472,13 +493,13 @@ docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class
 <p><strong>Problem:</strong> Docker container can’t see your data files.</p>
 <p><strong>Solution:</strong> Mount volumes correctly so container paths resolve:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mount current directory</span>
-docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>/data/network.edgelist
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="s2">"</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">:/data"</span><span class="w"> </span>py3plex:latest<span class="w"> </span>load<span class="w"> </span>/data/network.edgelist<span class="w"> </span>--info
 
 <span class="c1"># On Windows (PowerShell)</span>
-docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:/data<span class="w"> </span>py3plex:latest<span class="w"> </span>/data/network.edgelist
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-v<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">:/data"</span><span class="w"> </span>py3plex:latest<span class="w"> </span>load<span class="w"> </span>/data/network.edgelist<span class="w"> </span>--info
 </pre></div>
 </div>
-<p>Adjust the command after the image name to match your workflow (for example, <code class="docutils literal notranslate"><span class="pre">py3plex</span> <span class="pre">load</span> <span class="pre">/data/network.edgelist</span> <span class="pre">--info</span></code>).</p>
+<p>Adjust the command after the image name to match your workflow (for example, <code class="docutils literal notranslate"><span class="pre">load</span> <span class="pre">/data/network.edgelist</span> <span class="pre">--info</span></code>).</p>
 <p>See <a class="reference internal" href="../deployment/cli_and_docker.html"><span class="doc">Docker Usage Guide</span></a> for complete Docker documentation.</p>
 </section>
 </section>
