@@ -36,6 +36,7 @@ jobs:
         cd "$RUNNER_TEMP"
         python "$GITHUB_WORKSPACE/scripts/check_onboarding_notebooks.py"
         python "$GITHUB_WORKSPACE/scripts/check_onboarding_guides.py"
+        python "$GITHUB_WORKSPACE/scripts/check_troubleshooting_examples.py"
 
   test:
     runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || matrix.os }}

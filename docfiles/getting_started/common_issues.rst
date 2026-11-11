@@ -88,6 +88,8 @@ File Not Found Errors
 
 .. code-block:: python
 
+    from py3plex.core import multinet
+
     network_path = "/absolute/path/to/data.edgelist"
     network = multinet.multi_layer_network().load_network(
         network_path, input_type="edgelist", directed=False
@@ -98,6 +100,8 @@ File Not Found Errors
 .. code-block:: python
 
     import os
+
+    from py3plex.core import multinet
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(script_dir, "data", "network.edgelist")
@@ -117,7 +121,7 @@ Empty or Malformed Networks
     # For simple edge lists (source target)
     network.load_network("data.txt", input_type="edgelist")
     
-    # For multilayer edge lists (source target layer)
+    # For multilayer edge lists (source source_layer target target_layer [weight])
     network.load_network("data.txt", input_type="multiedgelist")
     
     # Always verify after loading
@@ -126,11 +130,26 @@ Empty or Malformed Networks
 If counts are still zero:
 
 * Inspect the first few lines for the expected number of columns and delimiters.
-* Ensure header rows are skipped or removed before loading.
+* Whitespace edge lists have no header; headered CSV input keeps its header.
+  Use ``source,target,layer,weight`` or separate endpoint layer columns for CSV.
 * Check that the file is not empty (``os.path.getsize``).
 
 Visualization Issues
 --------------------
+
+For the plotting examples below, first create a small undirected test network.
+Replace this with your loaded network when diagnosing your own data:
+
+.. code-block:: python
+
+    from py3plex.core import multinet
+
+    network = multinet.multi_layer_network(directed=False)
+    network.add_edges([
+        ['Alice', 'layer1', 'Bob', 'layer1', 1.0],
+        ['Bob', 'layer1', 'Carol', 'layer1', 2.5],
+        ['Alice', 'layer2', 'Carol', 'layer2', 1.0],
+    ], input_type="list")
 
 Visualization Not Showing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,18 +158,17 @@ Visualization Not Showing
 
 **Solution 1:** For Jupyter notebooks, enable inline plots:
 
-.. code-block:: python
+.. code-block:: ipython
 
     %matplotlib inline
 
-**Solution 2:** For scripts, explicitly show the plot or set ``display=True``:
+**Solution 2:** For scripts, draw through the network wrapper and explicitly show the figure:
 
 .. code-block:: python
 
     import matplotlib.pyplot as plt
     
-    # Your visualization code
-    draw_multilayer_default([network], display=False)
+    network.visualize_network(style="hairball", show=False, verbose=False)
     
     # Explicitly show
     plt.show()
@@ -159,11 +177,10 @@ Visualization Not Showing
 
 .. code-block:: python
 
-    from py3plex.visualization.multilayer import hairball_plot
     import matplotlib.pyplot as plt
     
     plt.figure(figsize=(10, 10))
-    hairball_plot(network.core_network, layout_algorithm="force")
+    network.visualize_network(style="hairball", show=False, verbose=False)
     plt.savefig("network.png", dpi=150, bbox_inches='tight')
     plt.close()
 
@@ -177,13 +194,20 @@ Visualization Not Showing
 .. code-block:: python
 
     import matplotlib
-    matplotlib.use('Agg')  # Must be before importing pyplot
+    matplotlib.use('Agg')  # Set before importing py3plex or pyplot
     import matplotlib.pyplot as plt
     
-    # Now visualization will save to file instead of displaying
-    from py3plex.visualization.multilayer import draw_multilayer_default
-    draw_multilayer_default([network], display=False)
+    from py3plex.core import multinet
+
+    # A complete headless example; replace with your own network when ready
+    network = multinet.multi_layer_network(directed=False)
+    network.add_edges([
+        ['Alice', 'layer1', 'Bob', 'layer1', 1.0],
+        ['Bob', 'layer1', 'Carol', 'layer1', 2.5],
+    ], input_type="list")
+    network.visualize_network(style="hairball", show=False, verbose=False)
     plt.savefig("output.png")
+    plt.close()
 
 Blurry or Low-Quality Plots
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -227,8 +251,8 @@ Or use alternative community detection methods if you cannot install the extra:
 
 .. code-block:: python
 
-    from py3plex.algorithms.community_detection import community_louvain
-    communities = community_louvain.best_partition(network.core_network)
+    from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
+    communities = louvain_multilayer(network, random_state=42)
 
 Performance Issues
 ------------------
@@ -247,13 +271,13 @@ Very Slow Loading
 
 .. code-block:: python
 
-    from py3plex.io import read, write
+    from py3plex.io import save_to_arrow, load_from_arrow
     
     # Save in efficient format
-    write(network, "network.arrow")
+    save_to_arrow(network, "network.arrow")
     
     # Load faster from Arrow
-    network = read("network.arrow")
+    network = load_from_arrow("network.arrow")
 
 **Solution 2:** Process in chunks or use subnetworks for testing:
 
@@ -334,12 +358,11 @@ Docker Build Fails
 
 **Problem:** Docker build fails or takes very long.
 
-**Solution:** Clear Docker cache (removes all unused images and build layers) and rebuild:
+**Solution:** Run the build from the current repository root and inspect the plain-text log:
 
 .. code-block:: bash
 
-    docker system prune -a
-    docker build --no-cache -t py3plex:latest .
+    docker build --progress=plain -t py3plex:latest .
 
 Cannot Access Files in Docker
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -351,12 +374,12 @@ Cannot Access Files in Docker
 .. code-block:: bash
 
     # Mount current directory
-    docker run -v $(pwd):/data py3plex:latest /data/network.edgelist
+    docker run --rm -v "$(pwd):/data" py3plex:latest load /data/network.edgelist --info
     
     # On Windows (PowerShell)
-    docker run -v ${PWD}:/data py3plex:latest /data/network.edgelist
+    docker run --rm -v "${PWD}:/data" py3plex:latest load /data/network.edgelist --info
 
-Adjust the command after the image name to match your workflow (for example, ``py3plex load /data/network.edgelist --info``).
+Adjust the command after the image name to match your workflow (for example, ``load /data/network.edgelist --info``).
 
 See :doc:`../deployment/cli_and_docker` for complete Docker documentation.
 
