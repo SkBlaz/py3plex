@@ -1,50 +1,27 @@
-# Dockerfile for py3plex - A library for analysis and visualization of heterogeneous networks
-# This container includes py3plex and all its dependencies, and can be used as a CLI tool
+# Build a wheel and its dependencies from the canonical pyproject metadata.
+FROM python:3.11-slim AS build
+WORKDIR /build
+COPY pyproject.toml README.md MANIFEST.in LICENSE ./
+COPY py3plex ./py3plex
+COPY py3plex_mcp ./py3plex_mcp
+RUN python -m pip wheel --wheel-dir /wheels .
 
 FROM python:3.11-slim
-
-# Set metadata
 LABEL maintainer="Blaž Škrlj <blaz.skrlj@ijs.si>"
-LABEL description="Py3plex - A library for multilayer network analysis and visualization"
-LABEL version="0.95a"
-
-# Set environment variables
+LABEL description="Py3plex CLI with core Python dependencies"
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
-
-# Install system dependencies
-# Note: We need build-essential for compiling some Python packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    gcc \
-    g++ \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set working directory
-WORKDIR /app
-
-# Copy requirements and setup files first (for better layer caching)
-COPY requirements.txt setup.py pyproject.toml MANIFEST.in ./
-COPY py3plex/__init__.py ./py3plex/
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the entire application
-COPY . .
-
-# Install py3plex in editable mode
-RUN pip install --no-cache-dir -e .
-
-# Create a directory for user data/outputs
-RUN mkdir -p /data
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    MPLBACKEND=Agg \
+    MPLCONFIGDIR=/tmp/matplotlib
+COPY --from=build /wheels /wheels
+RUN python -m pip install --no-index --find-links=/wheels py3plex \
+    && rm -rf /wheels \
+    && useradd --create-home --uid 1000 py3plex \
+    && mkdir /data \
+    && chown py3plex:py3plex /data
+USER py3plex
 WORKDIR /data
-
-# Set the entrypoint to the py3plex CLI
 ENTRYPOINT ["py3plex"]
-
-# Default command shows help
 CMD ["help"]

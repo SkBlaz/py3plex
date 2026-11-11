@@ -27,6 +27,21 @@ The fastest way to get started with Py3plex using Docker:
     # Display help
     docker run --rm py3plex:latest help
 
+The default image installs the core package and its required dependencies from
+``pyproject.toml``. It does not include optional algorithm, Arrow, MCP, or
+interactive visualization extras. ``--version`` reports the version of the
+source checkout used to build the image; an image tag alone does not change it.
+
+The image runs as a nonroot user and renders plots to files with Matplotlib's
+Agg backend. For bind-mounted output directories on Linux, use your host user
+and group IDs when they differ from the image's UID/GID 1000:
+
+.. code-block:: bash
+
+    mkdir -p data
+    docker run --rm --user "$(id -u):$(id -g)" -v "$(pwd)/data:/data" \
+        py3plex:latest create --nodes 10 --layers 2 --seed 42 --output /data/network.edgelist
+
 Building the Image
 ------------------
 
@@ -39,7 +54,7 @@ Using Docker
     docker build -t py3plex:latest .
 
     # Build with a specific tag
-    docker build -t py3plex:0.95a .
+    docker build -t py3plex:2.0.93 .
 
     # Build without cache (if needed)
     docker build --no-cache -t py3plex:latest .
@@ -88,7 +103,7 @@ With docker compose, commands are slightly more verbose but easier to manage:
     docker compose run --rm py3plex --version
 
     # Run self-test
-    docker compose run --rm py3plex selftest -v
+    docker compose run --rm py3plex selftest
 
     # Show help
     docker compose run --rm py3plex help
@@ -419,7 +434,7 @@ Best Practices
 
 1. **Use Volume Mounts**: Always mount volumes for input/output files
 2. **Use --rm Flag**: Remove containers after execution with ``--rm`` to save space
-3. **Tag Images**: Use specific tags (e.g., ``py3plex:0.95a``) for reproducibility
+3. **Tag Images**: Use specific tags (e.g., ``py3plex:2.0.93``) for reproducibility
 4. **Keep Data Separate**: Store network files in the mounted ``data`` directory
 5. **Use Docker Compose**: For repeated operations, Docker Compose simplifies commands
 6. **Regular Updates**: Rebuild the image periodically to get latest py3plex updates

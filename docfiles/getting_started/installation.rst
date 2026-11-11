@@ -98,7 +98,7 @@ The ``-e`` flag installs in editable mode, so changes to the source code are imm
 Docker Installation (Alternative)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For a containerized environment with all dependencies pre-installed, use Docker:
+For a containerized environment with the core dependencies pre-installed, use Docker:
 
 .. code-block:: bash
 
@@ -116,7 +116,7 @@ For a containerized environment with all dependencies pre-installed, use Docker:
 **Benefits of Docker installation:**
 
 * No Python environment setup required
-* All dependencies pre-installed and tested
+* Core dependencies pre-installed; optional extras are installed separately
 * Consistent environment across different systems
 * Isolated from system Python installation
 
