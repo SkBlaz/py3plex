@@ -10992,3 +10992,5 @@ Recommended areas for future test coverage:
 **Construction/export docs:** ``python scripts/check_onboarding_guides.py`` executes all Python blocks in both how-to pages with an installed wheel and Arrow support, including weighted parallel-edge and isolated-node round trips. Use dictionary node inputs, ``add_edges`` for edge records, ``network.layers`` for layer IDs, and ``get_edges(data=True)`` for per-edge attributes.
 
 **Docker onboarding:** The root Dockerfile builds a wheel from ``pyproject.toml`` and installs core dependencies in a nonroot runtime image. Use ``docker run --rm py3plex:latest --version`` and ``selftest`` after building. On Linux, pass ``--user "$(id -u):$(id -g)"`` for host-owned bind-mounted output directories when required. Docker onboarding CI builds the real image and exercises CLI and CSV workflows.
+
+**Troubleshooting examples:** ``python scripts/check_troubleshooting_examples.py`` validates plotting, a fresh headless process, Arrow wrapper helpers, and algorithm recovery snippets from the troubleshooting page. Use ``network.visualize_network`` for a wrapper object; ``draw_multilayer_default`` expects layer graphs.
