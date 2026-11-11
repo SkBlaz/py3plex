@@ -30,6 +30,11 @@ The most common format for multilayer networks is a CSV with these columns:
     A,B,dependency,0.5
     C,D,collaboration,0.9
 
+A shared ``layer`` applies to both endpoints. For interlayer edges, use
+``source_layer`` and ``target_layer`` instead. ``src``/``dst`` and
+``src_layer``/``dst_layer`` are also accepted. CSV input requires a header;
+malformed rows raise an error identifying the file and line.
+
 Loading Multilayer CSV
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -54,7 +59,7 @@ Loading Multilayer CSV
 
 .. code-block:: text
 
-    Number of nodes: 4
+    Number of nodes: 7
     Number of edges: 5
     Number of unique nodes (as node-layer tuples): 7
     Number of unique node IDs (across all layers): 4

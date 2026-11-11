@@ -207,6 +207,10 @@ A,B,dependency,0.5
 C,D,collaboration,0.9
 </pre></div>
 </div>
+<p>A shared <code class="docutils literal notranslate"><span class="pre">layer</span></code> applies to both endpoints. For interlayer edges, use
+<code class="docutils literal notranslate"><span class="pre">source_layer</span></code> and <code class="docutils literal notranslate"><span class="pre">target_layer</span></code> instead. <code class="docutils literal notranslate"><span class="pre">src</span></code>/<code class="docutils literal notranslate"><span class="pre">dst</span></code> and
+<code class="docutils literal notranslate"><span class="pre">src_layer</span></code>/<code class="docutils literal notranslate"><span class="pre">dst_layer</span></code> are also accepted. CSV input requires a header;
+malformed rows raise an error identifying the file and line.</p>
 </section>
 <section id="loading-multilayer-csv">
 <h3><a class="toc-backref" href="#id3" role="doc-backlink">Loading Multilayer CSV</a><a class="headerlink" href="#loading-multilayer-csv" title="Link to this heading"></a></h3>
@@ -227,7 +231,7 @@ C,D,collaboration,0.9
 </pre></div>
 </div>
 <p><strong>Expected Output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 4
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 7
 Number of edges: 5
 Number of unique nodes (as node-layer tuples): 7
 Number of unique node IDs (across all layers): 4

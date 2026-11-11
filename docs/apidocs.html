@@ -1545,8 +1545,10 @@ retain the current setting (initially set by the constructor).</p></li>
 <div><p>missing types use the GraphML default or ‘generic’)</p>
 </div></blockquote>
 <ul>
-<li><p>’edgelist’: Simple edge list (source target [weight])</p></li>
-<li><p>’multiedgelist’: Multilayer edge list (node1 layer1 node2 layer2 weight)</p></li>
+<li><p>’edgelist’: Simple edge list (source target [weight]) or headered CSV</p></li>
+<li><p>’multiedgelist’: Multilayer edge list (node1 layer1 node2 layer2 weight)
+or headered CSV (source,target,layer[,weight] or separate
+source_layer and target_layer columns)</p></li>
 <li><p>’multiplex_edges’: Multiplex format (layer node1 node2 weight)</p></li>
 <li><p>’multiplex_folder’: Folder with layer files</p></li>
 <li><p>’gpickle’: Python pickle format</p></li>
