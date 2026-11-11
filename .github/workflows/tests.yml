@@ -28,13 +28,14 @@ jobs:
       run: python -m build --outdir "$RUNNER_TEMP/py3plex-dist"
     - name: Verify distribution and release versions
       run: python scripts/check_dist_metadata.py "$RUNNER_TEMP/py3plex-dist"
-    - name: Execute onboarding notebooks against the built wheel
+    - name: Execute onboarding guides and notebooks against the built wheel
       env:
         MPLBACKEND: Agg
       run: |
-        python -m pip install "$RUNNER_TEMP"/py3plex-dist/*.whl
+        python -m pip install "$RUNNER_TEMP"/py3plex-dist/*.whl pyarrow
         cd "$RUNNER_TEMP"
         python "$GITHUB_WORKSPACE/scripts/check_onboarding_notebooks.py"
+        python "$GITHUB_WORKSPACE/scripts/check_onboarding_guides.py"
 
   test:
     runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || matrix.os }}
