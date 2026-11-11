@@ -936,6 +936,8 @@ class QueryResult:
                 for edge in self.items:
                     if isinstance(edge, tuple) and len(edge) >= 2:
                         u, v = edge[0], edge[1]
+                        if len(edge) == 4 and not isinstance(edge[3], dict):
+                            u, v = (edge[0], edge[2]), (edge[1], edge[3])
                         attrs = (
                             edge[2]
                             if len(edge) >= 3 and isinstance(edge[2], dict)
@@ -963,9 +965,11 @@ class QueryResult:
             nodes_in_edges = set()
             edge_list = []
 
-            for edge in self.items:
+            for item_index, edge in enumerate(self.items):
                 if isinstance(edge, tuple) and len(edge) >= 2:
                     u, v = edge[0], edge[1]
+                    if len(edge) == 4 and not isinstance(edge[3], dict):
+                        u, v = (edge[0], edge[2]), (edge[1], edge[3])
                     nodes_in_edges.add(u)
                     nodes_in_edges.add(v)
                     edge_key = None
@@ -997,6 +1001,25 @@ class QueryResult:
                     elif len(edge) >= 3 and isinstance(edge[2], dict):
                         edge_data = edge[2].copy()
 
+                    # Resolve metrics for this selected edge before inserting it.
+                    # Keyed metrics take precedence over endpoint-pair fallbacks.
+                    for attr_name, values in self.attributes.items():
+                        if isinstance(values, dict):
+                            candidates = [edge]
+                            if edge_key is not None:
+                                candidates.append((u, v, edge_key))
+                            candidates.append((u, v))
+                            for candidate in candidates:
+                                try:
+                                    if candidate in values:
+                                        edge_data[attr_name] = values[candidate]
+                                        break
+                                except TypeError:
+                                    # Data-bearing edge IDs include an unhashable dict.
+                                    continue
+                        elif item_index < len(values):
+                            edge_data[attr_name] = values[item_index]
+
                     edge_list.append((u, v, edge_key, edge_data))
 
             # Create new graph with selected edges
@@ -1022,19 +1045,6 @@ class QueryResult:
                     subgraph.add_edges_from([(u, v, key, data)])
                 else:
                     subgraph.add_edge(u, v, **data)
-
-            # Attach computed edge attributes
-            for attr_name, values in self.attributes.items():
-                if isinstance(values, dict):
-                    for edge, val in values.items():
-                        if isinstance(edge, tuple) and len(edge) >= 2:
-                            u, v = edge[0], edge[1]
-                            if subgraph.has_edge(u, v):
-                                if subgraph.is_multigraph():
-                                    for edge_data in subgraph[u][v].values():
-                                        edge_data[attr_name] = val
-                                else:
-                                    subgraph[u][v][attr_name] = val
 
         return subgraph
 
