@@ -160,10 +160,11 @@
 <p>Get started with py3plex in just a few minutes. This tutorial shows you the essential concepts through three focused examples.</p>
 <div class="tip admonition">
 <p class="admonition-title">Executable Examples</p>
-<p>All examples are in the <code class="docutils literal notranslate"><span class="pre">examples/00_quickstart/</span></code> directory and can be run directly:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/00_quickstart/01_load_and_query.py
-python<span class="w"> </span>examples/00_quickstart/02_create_and_visualize.py
-python<span class="w"> </span>examples/00_quickstart/03_communities.py
+<p>Clone the repository first (the example scripts are not installed by pip).
+All examples are in the <code class="docutils literal notranslate"><span class="pre">examples/getting_started/</span></code> directory and can be run directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/getting_started/01_basic_query.py
+python<span class="w"> </span>examples/getting_started/tutorial_10min.py
+python<span class="w"> </span>examples/getting_started/02_community_detection.py
 </pre></div>
 </div>
 </div>
@@ -225,7 +226,7 @@ Top high-degree nodes:
 <li><p>Computes degree centrality</p></li>
 <li><p>Displays results as a pandas DataFrame</p></li>
 </ul>
-<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/03_dsl_v2/</span></code> for advanced DSL queries.</p>
+<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/network_analysis/</span></code> for advanced DSL queries.</p>
 </section>
 <hr class="docutils" />
 <section id="example-2-create-network-2-min">
@@ -263,7 +264,7 @@ Top high-degree nodes:
 <li><p>Nodes are created automatically from edge definitions</p></li>
 <li><p>Displays basic network statistics</p></li>
 </ul>
-<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/01_network_construction/</span></code> for more construction patterns.</p>
+<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/getting_started/</span></code> for more construction patterns.</p>
 </section>
 <hr class="docutils" />
 <section id="example-3-community-detection-api-2-min">
@@ -282,7 +283,7 @@ Top high-degree nodes:
 <span class="c1"># 3. Community detection API pattern</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Community detection API:"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"  from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"  partition, modularity = louvain_multilayer(network)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  partition = louvain_multilayer(network, random_state=42)"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>What this does:</strong></p>
@@ -292,29 +293,27 @@ Top high-degree nodes:
 <li><p>Demonstrates the API pattern for multilayer community detection</p></li>
 <li><p>Points to detailed examples in the repository</p></li>
 </ul>
-<p><strong>Note:</strong> Community detection algorithms work best with networks that have numeric node IDs. See the documentation for preprocessing steps when using string node IDs.</p>
-<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/05_communities/</span></code> for detailed community detection patterns.</p>
+<p><strong>Note:</strong> Node IDs may be strings or numbers. Each partition key identifies a node replica as <code class="docutils literal notranslate"><span class="pre">(node_id,</span> <span class="pre">layer)</span></code>.</p>
+<p><strong>Next:</strong> See <code class="docutils literal notranslate"><span class="pre">examples/network_analysis/</span></code> for detailed community detection patterns.</p>
 </section>
 <hr class="docutils" />
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <p><strong>Continue learning:</strong></p>
 <ol class="arabic simple">
-<li><p><strong>More Examples:</strong> Explore <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory (26 focused examples)</p></li>
+<li><p><strong>More Examples:</strong> Explore <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory</p></li>
 <li><p><strong>DSL Guide:</strong> <a class="reference internal" href="../user_guide/dsl.html"><span class="doc">SQL-like DSL for Multilayer Networks</span></a> - SQL-like queries</p></li>
 <li><p><strong>Visualization:</strong> <a class="reference internal" href="../user_guide/visualization.html"><span class="doc">Visualization</span></a> - Create plots</p></li>
 <li><p><strong>Advanced Topics:</strong> See the book (PDF) for case studies</p></li>
 </ol>
 <p><strong>Example categories:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">00_quickstart/</span></code> - Start here (3 examples)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">01_network_construction/</span></code> - Build networks (3 examples)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">02_basic_queries/</span></code> - Basic queries (4 examples)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">03_dsl_v2/</span></code> - Modern DSL (4 examples, <strong>recommended</strong>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">04_graph_ops/</span></code> - dplyr-style ops (3 examples)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">05_communities/</span></code> - Community detection (3 examples)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">06_dynamics/</span></code> - Network dynamics (3 examples)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">07_uncertainty/</span></code> - Uncertainty quantification (3 examples)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getting_started/</span></code> - Introductory scripts and datasets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">network_analysis/</span></code> - DSL queries and community detection</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">io_and_data/</span></code> - Loading and exporting data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">visualization/</span></code> - Network plots</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">advanced/</span></code> - Dynamics, uncertainty, and specialized analyses</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipelines/</span></code> - Reusable analysis workflows</p></li>
 </ul>
 <p>See <a class="reference internal" href="../examples/index.html"><span class="doc">Examples &amp; Recipes</span></a> for the complete examples catalog.</p>
 <p><strong>Getting help:</strong></p>

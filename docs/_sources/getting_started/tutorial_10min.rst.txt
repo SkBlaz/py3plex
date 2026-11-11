@@ -6,13 +6,14 @@ Get started with py3plex in just a few minutes. This tutorial shows you the esse
 .. admonition::  Executable Examples
    :class: tip
 
-   All examples are in the ``examples/00_quickstart/`` directory and can be run directly:
+   Clone the repository first (the example scripts are not installed by pip).
+   All examples are in the ``examples/getting_started/`` directory and can be run directly:
    
    .. code-block:: bash
 
-       python examples/00_quickstart/01_load_and_query.py
-       python examples/00_quickstart/02_create_and_visualize.py
-       python examples/00_quickstart/03_communities.py
+       python examples/getting_started/01_basic_query.py
+       python examples/getting_started/tutorial_10min.py
+       python examples/getting_started/02_community_detection.py
 
 **You will learn:**
 
@@ -80,7 +81,7 @@ Load a built-in dataset and run a simple query:
 * Computes degree centrality
 * Displays results as a pandas DataFrame
 
-**Next:** See ``examples/03_dsl_v2/`` for advanced DSL queries.
+**Next:** See ``examples/network_analysis/`` for advanced DSL queries.
 
 ----
 
@@ -122,7 +123,7 @@ Create a simple multilayer network from scratch:
 * Nodes are created automatically from edge definitions
 * Displays basic network statistics
 
-**Next:** See ``examples/01_network_construction/`` for more construction patterns.
+**Next:** See ``examples/getting_started/`` for more construction patterns.
 
 ----
 
@@ -146,7 +147,7 @@ Learn the API for community detection in multilayer networks:
     # 3. Community detection API pattern
     print("\nCommunity detection API:")
     print("  from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer")
-    print("  partition, modularity = louvain_multilayer(network)")
+    print("  partition = louvain_multilayer(network, random_state=42)")
 
 **What this does:**
 
@@ -155,9 +156,9 @@ Learn the API for community detection in multilayer networks:
 * Demonstrates the API pattern for multilayer community detection
 * Points to detailed examples in the repository
 
-**Note:** Community detection algorithms work best with networks that have numeric node IDs. See the documentation for preprocessing steps when using string node IDs.
+**Note:** Node IDs may be strings or numbers. Each partition key identifies a node replica as ``(node_id, layer)``.
 
-**Next:** See ``examples/05_communities/`` for detailed community detection patterns.
+**Next:** See ``examples/network_analysis/`` for detailed community detection patterns.
 
 ----
 
@@ -166,21 +167,19 @@ Next Steps
 
 **Continue learning:**
 
-1. **More Examples:** Explore ``examples/`` directory (26 focused examples)
+1. **More Examples:** Explore ``examples/`` directory
 2. **DSL Guide:** :doc:`../user_guide/dsl` - SQL-like queries
 3. **Visualization:** :doc:`../user_guide/visualization` - Create plots
 4. **Advanced Topics:** See the book (PDF) for case studies
 
 **Example categories:**
 
-* ``00_quickstart/`` - Start here (3 examples)
-* ``01_network_construction/`` - Build networks (3 examples)
-* ``02_basic_queries/`` - Basic queries (4 examples)
-* ``03_dsl_v2/`` - Modern DSL (4 examples, **recommended**)
-* ``04_graph_ops/`` - dplyr-style ops (3 examples)
-* ``05_communities/`` - Community detection (3 examples)
-* ``06_dynamics/`` - Network dynamics (3 examples)
-* ``07_uncertainty/`` - Uncertainty quantification (3 examples)
+* ``getting_started/`` - Introductory scripts and datasets
+* ``network_analysis/`` - DSL queries and community detection
+* ``io_and_data/`` - Loading and exporting data
+* ``visualization/`` - Network plots
+* ``advanced/`` - Dynamics, uncertainty, and specialized analyses
+* ``pipelines/`` - Reusable analysis workflows
 
 See :doc:`../examples/index` for the complete examples catalog.
 
