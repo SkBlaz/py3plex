@@ -1101,7 +1101,7 @@ class QueryResult:
             elif len(values) == len(self.items):
                 data[attr_name] = list(values)
             else:
-                data[attr_name] = list(values) + [None] * (
+                data[attr_name] = list(values)[:len(self.items)] + [None] * (
                     len(self.items) - len(values)
                 )
 
