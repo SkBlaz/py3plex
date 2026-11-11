@@ -90,3 +90,10 @@ background_knowledge/
 tests/
 run_tests.py
 validate_*.py
+
+# Local task environments and rendered artifacts are not build inputs.
+.venv/
+.mypy_cache/
+.ruff_cache/
+docs/
+book/

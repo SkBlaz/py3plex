@@ -38,6 +38,21 @@ The fastest way to get started with Py3plex using Docker. This builds the image 
     # Display help
     docker run --rm py3plex:latest help
 
+The default image installs the core package and its required dependencies from
+``pyproject.toml``. It does not include optional algorithm, Arrow, MCP, or
+interactive visualization extras. ``--version`` reports the version of the
+source checkout used to build the image; an image tag alone does not change it.
+
+The image runs as a nonroot user and renders plots to files with Matplotlib's
+Agg backend. For bind-mounted output directories on Linux, use your host user
+and group IDs when they differ from the image's UID/GID 1000:
+
+.. code-block:: bash
+
+    mkdir -p data
+    docker run --rm --user "$(id -u):$(id -g)" -v "$(pwd)/data:/data" \
+        py3plex:latest create --nodes 10 --layers 2 --seed 42 --output /data/network.edgelist
+
 Building the Image
 ------------------
 
@@ -52,7 +67,7 @@ Build directly from the repository root:
     docker build -t py3plex:latest .
 
     # Build with a specific tag
-    docker build -t py3plex:0.95a .
+    docker build -t py3plex:2.0.93 .
 
     # Build without cache (if needed)
     docker build --no-cache -t py3plex:latest .
@@ -445,7 +460,7 @@ Best Practices
 
 1. **Use Volume Mounts:** Always mount volumes for input/output files.
 2. **Use --rm Flag:** Remove containers after execution with ``--rm`` to save space.
-3. **Tag Images:** Use specific tags (e.g., ``py3plex:0.95a``) for reproducibility.
+3. **Tag Images:** Use specific tags (e.g., ``py3plex:2.0.93``) for reproducibility.
 4. **Keep Data Separate:** Store network files in the mounted ``data`` directory.
 5. **Use Docker Compose:** For repeated operations, Docker Compose simplifies commands.
 6. **Regular Updates:** Rebuild after pulling new commits or dependency changes to keep images current.

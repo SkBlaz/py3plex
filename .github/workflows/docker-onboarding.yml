@@ -1,0 +1,37 @@
+name: Docker onboarding
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  docker-onboarding:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the documented image
+        run: docker build -t py3plex:onboarding .
+      - name: Verify version, nonroot runtime, and installation
+        run: |
+          docker run --rm py3plex:onboarding --version
+          docker run --rm --entrypoint python py3plex:onboarding -c 'import os; assert os.getuid() != 0'
+          docker run --rm py3plex:onboarding selftest
+          docker run --rm py3plex:onboarding quickstart
+      - name: Exercise host-mounted files and documented CSV loading
+        run: |
+          mkdir -p "$RUNNER_TEMP/docker-data"
+          printf 'source,target,layer,weight\nA,B,social,2.5\nA,B,work,0\n' > "$RUNNER_TEMP/docker-data/network.csv"
+          docker run --rm --user "$(id -u):$(id -g)" -v "$RUNNER_TEMP/docker-data:/data" py3plex:onboarding check /data/network.csv --strict
+          docker run --rm --user "$(id -u):$(id -g)" -v "$RUNNER_TEMP/docker-data:/data" py3plex:onboarding query /data/network.csv 'SELECT nodes COMPUTE degree' --output /data/result.json
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          result = json.loads((Path(os.environ['RUNNER_TEMP']) / 'docker-data/result.json').read_text())
+          assert len(result['nodes']) == 4, result
+          PY
