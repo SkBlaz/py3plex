@@ -22,7 +22,7 @@ you do not need cross-language compatibility.
     import pickle
     
     # Create or load network
-    network = multinet.multi_layer_network()
+    network = multinet.multi_layer_network(directed=False)
     network.add_edges([
         ['Alice', 'friends', 'Bob', 'friends', 1.0],
         ['Bob', 'work', 'Carol', 'work', 1.0],
@@ -58,15 +58,14 @@ follows ``source source_layer target target_layer weight``.
 
 .. code-block:: python
 
+    # Each parallel edge supplies its own attributes
     # Export edges to text file
     with open('edges.txt', 'w') as f:
-        for edge in network.get_edges():
-            source, target = edge
+        for source, target, attrs in network.get_edges(data=True):
             source_node, source_layer = source
             target_node, target_layer = target
             
             # Get edge attributes
-            attrs = network.get_edge_data(source, target)
             weight = attrs.get('weight', 1.0)
             
             f.write(f"{source_node} {source_layer} {target_node} {target_layer} {weight}\n")
@@ -83,12 +82,10 @@ CSV is easier to load in spreadsheets and dataframes than the plain text format.
     
     # Convert to DataFrame
     edges_data = []
-    for edge in network.get_edges():
-        source, target = edge
+    for source, target, attrs in network.get_edges(data=True):
         source_node, source_layer = source
         target_node, target_layer = target
         
-        attrs = network.get_edge_data(source, target)
         
         edges_data.append({
             'source': source_node,
@@ -119,12 +116,12 @@ readable.
     network_data = {
         'nodes': [],
         'edges': [],
-        'layers': list(network.get_layers())
+        'layers': network.layers,
+        'directed': network.directed
     }
     
     # Add nodes
-    for node, layer in network.get_nodes():
-        node_attrs = network.get_node_attributes(node, layer)
+    for (node, layer), node_attrs in network.get_nodes(data=True):
         network_data['nodes'].append({
             'id': node,
             'layer': layer,
@@ -132,12 +129,10 @@ readable.
         })
     
     # Add edges
-    for edge in network.get_edges():
-        source, target = edge
+    for source, target, attrs in network.get_edges(data=True):
         source_node, source_layer = source
         target_node, target_layer = target
         
-        attrs = network.get_edge_data(source, target)
         
         network_data['edges'].append({
             'source': source_node,
@@ -166,15 +161,14 @@ Recreate a multilayer network from the exported JSON representation.
         data = json.load(f)
     
     # Reconstruct network
-    network = multinet.multi_layer_network()
-    
-    # Add edges (nodes created automatically)
+    network = multinet.multi_layer_network(directed=data['directed'])
+    network.add_nodes([{'source': node['id'], 'type': node['layer'],
+                        **node['attributes']} for node in data['nodes']])
     for edge in data['edges']:
-        network.add_edge(
-            edge['source'], edge['source_layer'],
-            edge['target'], edge['target_layer'],
-            **edge['attributes']
-        )
+        network.add_edges([{'source': edge['source'], 'target': edge['target'],
+                            'source_type': edge['source_layer'],
+                            'target_type': edge['target_layer'],
+                            **edge['attributes']}])
     
     network.basic_stats()
 
@@ -195,8 +189,7 @@ the same ID across layers.
     # Flatten to single layer
     G = nx.Graph()
     
-    for edge in network.get_edges():
-        source, target = edge
+    for source, target, attrs in network.get_edges(data=True):
         source_node, source_layer = source
         target_node, target_layer = target
         
@@ -205,7 +198,6 @@ the same ID across layers.
         G.add_node(target_node, layer=target_layer)
         
         # Add edge
-        attrs = network.get_edge_data(source, target)
         G.add_edge(source_node, target_node, **attrs)
     
     # Save as GraphML
@@ -227,9 +219,8 @@ Persist just one layer to a simpler graph file.
     
     # Convert to NetworkX
     G = nx.Graph()
-    for edge in subgraph.get_edges():
-        source, target = edge
-        G.add_edge(source[0], target[0])  # Just node IDs; include weights if needed
+    selected = subgraph.to_networkx(network)
+    G = nx.relabel_nodes(selected, lambda replica: replica[0])
     
     # Save
     nx.write_edgelist(G, f'layer_{layer}.edgelist')
@@ -272,7 +263,7 @@ Arrow is the preferred format for single-file storage with embedded metadata.
     loaded = load_from_arrow('network.arrow')
     
     # Verify preservation
-    assert loaded.get_nodes() == network.get_nodes()
+    assert set(loaded.get_nodes()) == set(network.get_nodes())
     assert loaded.directed == network.directed
 
 **Parquet Format (Directory)**
@@ -318,7 +309,7 @@ Non-scalar attributes (dict, list, set, tuple) are JSON-encoded automatically:
     loaded = load_from_arrow('network.arrow')
     
     # Complex attributes reconstructed
-    alice_attrs = loaded.get_node_attributes('Alice', 'social')
+    alice_attrs = loaded.core_network.nodes[('Alice', 'social')]
     assert alice_attrs['tags'] == ['researcher', 'python']
     assert alice_attrs['metadata']['department'] == 'CS'
 
@@ -362,12 +353,10 @@ For compatibility with external tools, you can export just edge lists:
         'weight': []
     }
     
-    for edge in network.get_edges():
-        source, target = edge
+    for source, target, attrs in network.get_edges(data=True):
         source_node, source_layer = source
         target_node, target_layer = target
         
-        attrs = network.get_edge_data(source, target)
         
         edges_data['source'].append(source_node)
         edges_data['source_layer'].append(source_layer)
@@ -418,11 +407,11 @@ visualization or comparison.
 
 .. code-block:: python
 
-    from py3plex.algorithms.community_detection import louvain_communities
+    from py3plex.algorithms.community_detection.multilayer_modularity import louvain_multilayer
     import pandas as pd
     
     # Detect communities
-    communities = louvain_communities(network)
+    communities = louvain_multilayer(network, random_state=42)
     
     # Convert to DataFrame
     data = []
@@ -455,9 +444,7 @@ formats.
     # Prepare reusable structures
     def edges_to_df(network):
         records = []
-        for edge in network.get_edges():
-            (src, src_layer), (dst, dst_layer) = edge
-            attrs = network.get_edge_data(edge[0], edge[1])
+        for (src, src_layer), (dst, dst_layer), attrs in network.get_edges(data=True):
             records.append({
                 "source": src,
                 "source_layer": src_layer,
@@ -472,7 +459,7 @@ formats.
     network_json = {
         "nodes": [{"id": n, "layer": l} for (n, l) in network.get_nodes()],
         "edges": edges_df.to_dict(orient="records"),
-        "layers": list(network.get_layers()),
+        "layers": network.layers,
     }
     
     # Create output directory

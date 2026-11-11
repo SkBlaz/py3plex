@@ -50,7 +50,7 @@ The simplest approach—nodes are created automatically when you add edges.
 Method 2: Add Nodes First
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For more control over node attributes and to ensure edges only connect existing nodes.  
+For more control over node attributes and to preserve isolated node replicas.
 Use this pattern when you need explicit node-layer registration before edges.
 
 .. code-block:: python
@@ -59,21 +59,21 @@ Use this pattern when you need explicit node-layer registration before edges.
     
     network = multinet.multi_layer_network()
     
-    # Add nodes explicitly (as node-layer tuples)
+    # Add nodes explicitly as dictionaries
     network.add_nodes([
-        ('Alice', 'friends'),
-        ('Bob', 'friends'),
-        ('Carol', 'friends'),
-        ('Alice', 'colleagues'),
-        ('Bob', 'colleagues'),
-        ('Dave', 'colleagues')
+        {'source': 'Alice', 'type': 'friends'},
+        {'source': 'Bob', 'type': 'friends'},
+        {'source': 'Carol', 'type': 'friends'},
+        {'source': 'Alice', 'type': 'colleagues'},
+        {'source': 'Bob', 'type': 'colleagues'},
+        {'source': 'Dave', 'type': 'colleagues'}
     ])
     
     # Add edges between existing nodes
     network.add_edges([
-        [('Alice', 'friends'), ('Bob', 'friends'), 1.0],
-        [('Bob', 'friends'), ('Carol', 'friends'), 1.0]
-    ])
+        ['Alice', 'friends', 'Bob', 'friends', 1.0],
+        ['Bob', 'friends', 'Carol', 'friends', 1.0]
+    ], input_type="list")
     
     # Verify network was built correctly
     network.basic_stats()
@@ -161,9 +161,15 @@ Most common format: one edge per line. The ``multiedgelist`` loader expects
     
     network = multinet.multi_layer_network()
     
-    # Option 1: Load from repository file
+    # Option 1: Write the sample above to a file and load it
+    from pathlib import Path
+    Path("simple_multiplex.txt").write_text(
+        "Alice friends Bob friends 1.0\n"
+        "Bob friends Carol friends 1.0\n"
+        "Alice colleagues Bob colleagues 1.0\n"
+    )
     network.load_network(
-        "datasets/simple_multiplex.txt",
+        "simple_multiplex.txt",
         input_type="multiedgelist"
     )
     
@@ -198,19 +204,14 @@ Convert tabular data to networks (each row becomes an edge). Use separate ``laye
     network = multinet.multi_layer_network()
     
     for _, row in df.iterrows():
-        network.add_edge(
-            row['source'], row['layer'],
-            row['target'], row['layer'],
-            weight=row['weight']
-        )
+        network.add_edges([{'source': row['source'], 'target': row['target'],
+                            'source_type': row['layer'], 'target_type': row['layer'],
+                            'weight': row['weight']}])
     
     # If your dataframe has ``source_layer`` and ``target_layer`` columns,
     # pass those instead of a single ``layer`` column:
-    # network.add_edge(
-    #     row['source'], row['source_layer'],
-    #     row['target'], row['target_layer'],
-    #     weight=row['weight']
-    # )
+    # Use source_type=row['source_layer'], target_type=row['target_layer']
+    # in the edge dictionary when the endpoints have separate layer columns.
     
     network.basic_stats()
 
@@ -226,23 +227,29 @@ edge dictionaries consistent: ``source``, ``source_layer``, ``target``,
     import json
     from py3plex.core import multinet
     
+    # Create a minimal sample file (omit this when loading your own file)
+    sample = {"nodes": [{"id": "Isolated", "layer": "friends"}],
+              "edges": [{"source": "Alice", "source_layer": "friends",
+                         "target": "Bob", "target_layer": "friends",
+                         "attributes": {"weight": 2.5}}]}
+    with open('network.json', 'w') as f:
+        json.dump(sample, f)
+
     # Load JSON
     with open('network.json', 'r') as f:
         data = json.load(f)
     
     network = multinet.multi_layer_network()
     
-    # Assuming JSON structure: {"edges": [...], "nodes": [...]}
+    # Preserve isolated nodes and any node attributes before adding edges
+    network.add_nodes([{'source': node['id'], 'type': node['layer'],
+                        **node.get('attributes', {})} for node in data.get('nodes', [])])
     for edge in data['edges']:
-        network.add_edge(
-            edge['source'], edge['source_layer'],
-            edge['target'], edge['target_layer'],
-            **edge.get('attributes', {})
-        )
+        network.add_edges([{'source': edge['source'], 'target': edge['target'],
+                            'source_type': edge['source_layer'],
+                            'target_type': edge['target_layer'],
+                            **edge.get('attributes', {})}])
     
-    # Optionally, add nodes first if your JSON includes node attributes
-    # for node in data.get('nodes', []):
-    #     network.add_nodes([(node['id'], node['layer'])])
     
     network.basic_stats()
 
@@ -250,8 +257,7 @@ Load from NetworkX
 ~~~~~~~~~~~~~~~~~~
 
 Convert existing single-layer networks by assigning a default layer name. If the
-original graph has edge attributes, pass them through ``add_edge`` as keyword
-arguments.
+original graph has edge attributes, include them in each dictionary passed to ``add_edges``.
 
 .. code-block:: python
 
@@ -265,7 +271,9 @@ arguments.
     network = multinet.multi_layer_network()
     
     for u, v in G.edges():
-        network.add_edge(u, 'layer1', v, 'layer1')
+        network.add_edges([{'source': u, 'target': v,
+                            'source_type': 'layer1', 'target_type': 'layer1',
+                            **G[u][v]}])
 
 Loading with Inter-layer Edges
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -283,8 +291,9 @@ To represent the same entity across layers, connect node-layer tuples that share
     ], input_type="list")
     
     # Inter-layer edges (same person across layers)
-    network.add_edge('Alice', 'friends', 'Alice', 'work', type='interlayer')
-    network.add_edge('Bob', 'friends', 'Bob', 'work', type='interlayer')
+    network.add_edges([{'source': person, 'source_type': 'friends',
+                        'target': person, 'target_type': 'work',
+                        'type': 'interlayer'} for person in ['Alice', 'Bob']])
 
 Common Patterns
 ---------------
@@ -355,11 +364,20 @@ After loading, verify the structure to catch layer/weight mistakes early:
 
 .. code-block:: python
 
+    # Rebuild the small example whose counts we want to inspect
+    network = multinet.multi_layer_network(directed=False)
+    network.add_edges([
+        ['Alice', 'friends', 'Bob', 'friends', 1],
+        ['Bob', 'friends', 'Carol', 'friends', 1],
+        ['Alice', 'colleagues', 'Bob', 'colleagues', 1],
+        ['Bob', 'colleagues', 'Dave', 'colleagues', 1],
+    ], input_type="list")
+
     # Basic stats
     network.basic_stats()
     
     # Get specific information
-    layers = network.get_layers()
+    layers = network.layers
     print(f"Layers: {layers}")
     
     num_nodes = len(list(network.get_nodes()))
@@ -374,7 +392,7 @@ After loading, verify the structure to catch layer/weight mistakes early:
 
 .. code-block:: text
 
-    Layers: ['friends', 'colleagues']
+    Layers: ['colleagues', 'friends']
     Total nodes: 6
     Friends layer: 3 nodes
 

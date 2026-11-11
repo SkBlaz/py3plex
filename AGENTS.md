@@ -10988,3 +10988,5 @@ Recommended areas for future test coverage:
 **CSV onboarding:** ``load_network(..., input_type="edgelist")`` and ``"multiedgelist"`` recognize headered ``.csv``/``.csv.gz`` files. Use ``source,target,layer,weight`` (shared layer) or separate ``source_layer,target_layer`` columns; ``src,dst`` aliases are accepted. Malformed CSV raises a file/line error. Whitespace edge-list formats remain supported.
 
 **Notebook onboarding:** Run ``python scripts/check_onboarding_notebooks.py`` with an installed py3plex wheel to execute the DSL and community notebooks in cell order. Legacy ``execute_query`` returns a dictionary; builder queries return ``QueryResult``. ``louvain_multilayer`` returns a partition dictionary; evaluate quality separately with ``multilayer_modularity``.
+
+**Construction/export docs:** ``python scripts/check_onboarding_guides.py`` executes all Python blocks in both how-to pages with an installed wheel and Arrow support, including weighted parallel-edge and isolated-node round trips. Use dictionary node inputs, ``add_edges`` for edge records, ``network.layers`` for layer IDs, and ``get_edges(data=True)`` for per-edge attributes.
