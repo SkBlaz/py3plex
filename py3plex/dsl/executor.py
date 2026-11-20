@@ -3840,6 +3840,12 @@ def _add_intrinsic_node_attributes(
         attributes["layer"][item] = layer
 
 
+def _embedding_edge_endpoints(edge):
+    if len(edge) >= 4 and not isinstance(edge[-1], dict):
+        return (edge[0], edge[2]), (edge[1], edge[3])
+    return edge[0], edge[1]
+
+
 def _execute_embedding(
     result: Any,
     network: Any,
@@ -3859,7 +3865,6 @@ def _execute_embedding(
         provenance_builder: Provenance builder for recording metadata.
     """
     import time as _time
-    import json
 
     t0 = _time.perf_counter()
 
@@ -3897,49 +3902,38 @@ def _execute_embedding(
         "negative_samples": getattr(spec, "negative_samples", 5),
         "workers": getattr(spec, "workers", 1),
         "order": getattr(spec, "order", 2),
+        "walk_length": getattr(spec, "walk_length", 80),
+        "num_walks": getattr(spec, "num_walks", 10),
+        "metapaths": getattr(spec, "metapaths", None) or [],
     }
     embed_config_hash = make_embed_config_hash(embed_config)
 
-    # --- network fingerprint ------------------------------------------------
-    try:
-        fp = network.fingerprint() if hasattr(network, "fingerprint") else ""
-        if not isinstance(fp, str):
-            fp = json.dumps(fp, sort_keys=True, default=str)
-    except Exception:
-        fp = ""
+    if result.target == "nodes":
+        node_items = list(result.items)
+    else:
+        node_items = list(dict.fromkeys(
+            endpoint
+            for edge in result.items
+            for endpoint in _embedding_edge_endpoints(edge)
+        ))
 
-    network_version = getattr(network, "network_version", None)
-
-    # --- cache key ----------------------------------------------------------
-    # Use a placeholder ast_hash since we don't have it here; the embed config
-    # hash encodes all parameters so two identical embeds will share a key.
-    cache_key = make_cache_key(fp, embed_config_hash, embed_config_hash, network_version)
-    cache_hit = False
-
-    node_emb = None
+    cache_key = None
     if spec.cache:
-        node_emb = cache_get(cache_key)
-        if node_emb is not None:
-            cache_hit = True
+        from .program.cache import _fingerprint_value, graph_fingerprint
 
+        try:
+            cache_key = make_cache_key(
+                graph_fingerprint(network),
+                _fingerprint_value(node_items),
+                embed_config_hash,
+                getattr(network, "network_version", None),
+            )
+        except (TypeError, ValueError):
+            pass
+
+    node_emb = cache_get(cache_key) if cache_key is not None else None
+    cache_hit = node_emb is not None
     if node_emb is None:
-        # Collect node items for embedding
-        if result.target == "nodes":
-            node_items = list(result.items)
-        else:
-            # For edges: collect unique node replicas referenced
-            node_set: dict = {}
-            for edge in result.items:
-                if len(edge) >= 4:
-                    src, src_layer = edge[0], edge[2]
-                    dst, dst_layer = edge[1], edge[3]
-                    node_set[(src, src_layer)] = True
-                    node_set[(dst, dst_layer)] = True
-                else:
-                    node_set[edge[0]] = True
-                    node_set[edge[1]] = True
-            node_items = list(node_set.keys())
-
         metapaths = getattr(spec, "metapaths", None) or []
         walk_length = getattr(spec, "walk_length", 80)
         num_walks = getattr(spec, "num_walks", 10)
@@ -3970,7 +3964,7 @@ def _execute_embedding(
                 metapaths=metapaths,
                 seed=spec.seed,
                 backend=spec.backend,
-            ).reorder(node_items)
+            )
         elif spec.method == "metapath2vec":
             from py3plex.embeddings.metapath2vec import MetaPath2VecEmbedder
 
@@ -4000,8 +3994,9 @@ def _execute_embedding(
                 item_ids=node_items,
             )
 
-        if spec.cache:
+        if cache_key is not None:
             cache_put(cache_key, node_emb)
+    node_emb = node_emb.reorder(node_items)
 
     # --- attach to result ---------------------------------------------------
     if not hasattr(result, "embeddings") or result.embeddings is None:
@@ -4023,13 +4018,13 @@ def _execute_embedding(
         link_op = spec.link_op or "hadamard"
         edge_emb = apply_link_op(
             node_embedding=node_emb,
-            edge_ids=list(result.items),
+            edge_ids=[_embedding_edge_endpoints(edge) for edge in result.items],
             op=link_op,
         )
         result.embeddings["node"] = node_emb.matrix
         result.embeddings["edge"] = edge_emb.matrix
         result.attributes["embedding"] = {
-            item: edge_emb.matrix[i]
+            (_get_edge_key(item) if isinstance(item[-1], dict) else item): edge_emb.matrix[i]
             for i, item in enumerate(result.items)
         }
 

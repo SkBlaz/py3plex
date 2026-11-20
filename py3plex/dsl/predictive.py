@@ -49,13 +49,6 @@ def _extract_edge_tuple(edge: tuple[Any, ...]) -> tuple[tuple[Any, Any], tuple[A
     raise PredictionTaskError(f"Malformed edge encountered: {edge!r}")
 
 
-def _to_numpy_scalar(x: Any) -> float:
-    try:
-        return float(x)
-    except Exception:
-        return 0.0
-
-
 def _js_divergence(p: np.ndarray, q: np.ndarray, eps: float = 1e-12) -> float:
     p = p + eps
     q = q + eps
@@ -181,13 +174,35 @@ def _iter_scoped_edges(network: Any, allowed_layers: set | None) -> list[tuple[E
     return out
 
 
+def _unique_positive_links(
+    edges: list[tuple[EdgeKey, dict[str, Any]]], temporal: bool
+) -> list[tuple[EdgeKey, dict[str, Any]]]:
+    """Keep one record per link, using its first observation for temporal splits."""
+    links = {}
+    for edge, data in edges:
+        if temporal:
+            timestamp = _extract_edge_time(data)
+            if timestamp is None:
+                raise SplitStrategyError(
+                    "temporal_holdout requires finite temporal edge attributes "
+                    "(t, t_start, or timestamp)."
+                )
+            if edge in links and _extract_edge_time(links[edge]) <= timestamp:
+                continue
+            links[edge] = data
+        else:
+            links.setdefault(edge, data)
+    return list(links.items())
+
+
 def _extract_edge_time(data: dict[str, Any]) -> float | None:
-    if "t_start" in data:
-        return _to_numpy_scalar(data["t_start"])
-    if "t" in data:
-        return _to_numpy_scalar(data["t"])
-    if "timestamp" in data:
-        return _to_numpy_scalar(data["timestamp"])
+    for name in ("t_start", "t", "timestamp"):
+        if name in data:
+            try:
+                timestamp = float(data[name])
+            except (TypeError, ValueError, OverflowError):
+                return None
+            return timestamp if np.isfinite(timestamp) else None
     return None
 
 
@@ -422,6 +437,10 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
     if not scoped_edges:
         raise PredictionTaskError("No edges available in selected scope.")
 
+    scoped_edges = _unique_positive_links(
+        scoped_edges, temporal=spec.split.strategy == "temporal_holdout"
+    )
+
     split_entry = SPLIT_REGISTRY.get(spec.split.strategy)
     if split_entry is None:
         raise SplitStrategyError(f"Unknown split strategy '{spec.split.strategy}'.")
@@ -455,6 +474,7 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
     rng = np.random.default_rng(neg_spec.seed)
     candidate_nodes = list(train_graph.nodes())
     same_layer_default = not bool(spec.scope.get("allow_interlayer", False))
+    known_positives = {edge for edge, _ in scoped_edges}
     train_neg = _sample_negative_edges(
         graph=train_graph,
         candidate_nodes=candidate_nodes,
@@ -462,8 +482,9 @@ def execute_predict_stmt(network: Any, stmt: PredictStmt) -> PredictionResult:
         directed=directed,
         same_layer_only=same_layer_default,
         rng=rng,
+        forbidden=known_positives,
     )
-    forbidden = set(train_neg) | set(train_pos) | set(test_pos)
+    forbidden = known_positives | set(train_neg)
     test_neg = _sample_negative_edges(
         graph=train_graph,
         candidate_nodes=candidate_nodes,

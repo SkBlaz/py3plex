@@ -6,6 +6,7 @@ and restoring networks from captured snapshots.
 
 import hashlib
 import json
+from copy import deepcopy
 from typing import Any, Dict, List, Optional
 
 
@@ -64,166 +65,109 @@ class NetworkCapture:
         return hasher.hexdigest()[:16]
 
 
+def _replica_parts(node):
+    if isinstance(node, tuple) and len(node) == 2:
+        return node
+    return node, None
+
+
+def _restore_identity(value):
+    """Recover tuple identifiers after a JSON bundle round trip."""
+    if isinstance(value, list):
+        return tuple(_restore_identity(part) for part in value)
+    return value
+
+
 def capture_network(network: Any, include_attributes: bool = True) -> NetworkCapture:
-    """Capture network state in canonical form.
-    
-    Args:
-        network: Multilayer network object
-        include_attributes: Whether to include node/edge attributes
-        
-    Returns:
-        NetworkCapture instance
-    """
+    """Capture graph topology, replica order, and data for replay."""
+    from py3plex.core.multinet import multi_layer_network
+
+    graph = network.core_network
+    is_multigraph = graph is None or graph.is_multigraph()
+    metadata = {
+        "network_type": getattr(network, "network_type", "multilayer"),
+        "coupling_weight": getattr(network, "coupling_weight", 1),
+        "multigraph": is_multigraph,
+        "layers": list(network.layers),
+    }
     nodes = []
     edges = []
-    
-    # Capture nodes
-    if hasattr(network, 'get_nodes'):
-        for node in network.get_nodes():
-            node_dict = {}
-            
-            # Extract node ID and layer
-            if isinstance(node, tuple) and len(node) >= 2:
-                node_dict['id'] = node[0]
-                node_dict['layer'] = node[1]
+    if graph is not None:
+        if include_attributes:
+            metadata["graph_attributes"] = deepcopy(graph.graph)
+        for replica, attrs in graph.nodes(data=True):
+            node_id, layer = _replica_parts(replica)
+            node = {"id": node_id, "layer": layer, "replica": replica}
+            if include_attributes:
+                node["attributes"] = deepcopy(attrs)
+            nodes.append(node)
+
+        if type(network) is multi_layer_network:
+            if is_multigraph:
+                edge_records = graph.edges(keys=True, data=True)
             else:
-                node_dict['id'] = node
-                node_dict['layer'] = None
-            
-            # Get node attributes if requested
-            if include_attributes and hasattr(network, 'core_network'):
-                try:
-                    attrs = network.core_network.nodes.get(node, {})
-                    if attrs:
-                        node_dict['attributes'] = dict(attrs)
-                except Exception:
-                    pass
-            
-            nodes.append(node_dict)
-    
-    # Sort nodes for stable ordering
-    nodes.sort(key=lambda n: (str(n.get('layer', '')), str(n['id'])))
-    
-    # Capture edges
-    if hasattr(network, 'get_edges'):
-        for edge in network.get_edges():
-            edge_dict = {}
-            
-            # Extract edge endpoints
-            if isinstance(edge, tuple) and len(edge) >= 2:
-                source, target = edge[0], edge[1]
-                
-                # Extract source info
-                if isinstance(source, tuple) and len(source) >= 2:
-                    edge_dict['source'] = source[0]
-                    edge_dict['source_layer'] = source[1]
-                else:
-                    edge_dict['source'] = source
-                    edge_dict['source_layer'] = None
-                
-                # Extract target info
-                if isinstance(target, tuple) and len(target) >= 2:
-                    edge_dict['target'] = target[0]
-                    edge_dict['target_layer'] = target[1]
-                else:
-                    edge_dict['target'] = target
-                    edge_dict['target_layer'] = None
-                
-                # Get edge attributes
-                if len(edge) >= 3 and isinstance(edge[2], dict):
-                    if include_attributes:
-                        edge_dict['attributes'] = dict(edge[2])
-                    # Always preserve weight
-                    edge_dict['weight'] = edge[2].get('weight', 1.0)
-                else:
-                    edge_dict['weight'] = 1.0
-            
-            edges.append(edge_dict)
-    
-    # Sort edges for stable ordering
-    edges.sort(key=lambda e: (
-        str(e.get('source_layer', '')),
-        str(e['source']),
-        str(e.get('target_layer', '')),
-        str(e['target'])
-    ))
-    
-    # Determine if network is directed
-    directed = False
-    if hasattr(network, 'directed'):
-        directed = network.directed
-    elif hasattr(network, 'core_network'):
-        try:
-            import networkx as nx
-            directed = isinstance(network.core_network, (nx.DiGraph, nx.MultiDiGraph))
-        except Exception:
-            pass
-    
-    # Capture network-level metadata
-    metadata = {}
-    if hasattr(network, 'layers'):
-        try:
-            metadata['layers'] = sorted([str(layer) for layer in network.layers])
-        except Exception:
-            pass
-    
-    return NetworkCapture(
-        nodes=nodes,
-        edges=edges,
-        directed=directed,
-        metadata=metadata
-    )
+                edge_records = graph.edges(data=True)
+        else:
+            edge_records = network.get_edges(data=True, multiplex_edges=True)
+
+        for record in edge_records:
+            source, target, attrs = record[0], record[1], record[-1]
+            src_id, src_layer = _replica_parts(source)
+            dst_id, dst_layer = _replica_parts(target)
+            edge = {
+                "source": src_id, "source_layer": src_layer,
+                "target": dst_id, "target_layer": dst_layer,
+                "source_replica": source, "target_replica": target,
+            }
+            if "weight" in attrs:
+                edge["weight"] = deepcopy(attrs["weight"])
+            if len(record) == 4:
+                edge["key"] = record[2]
+            if include_attributes:
+                edge["attributes"] = deepcopy(attrs)
+            elif metadata["network_type"] == "multiplex" and attrs.get("type") == "coupling":
+                edge["attributes"] = {"type": "coupling"}
+            edges.append(edge)
+
+    directed = graph.is_directed() if graph is not None else network.directed
+    return NetworkCapture(nodes, edges, directed, metadata)
 
 
 def restore_network(capture: NetworkCapture) -> Any:
-    """Restore network from capture.
-    
-    Args:
-        capture: NetworkCapture instance
-        
-    Returns:
-        Multilayer network object
-    """
+    """Restore a graph snapshot, including snapshots from older bundles."""
     from py3plex.core import multinet
-    
-    # Create new network
-    network = multinet.multi_layer_network(directed=capture.directed)
-    
-    # Add nodes
-    node_dicts = []
+
+    metadata = capture.metadata
+    network = multinet.multi_layer_network(
+        directed=capture.directed,
+        network_type=metadata.get("network_type", "multilayer"),
+        coupling_weight=metadata.get("coupling_weight", 1),
+    )
+    graph = network._create_graph(multi=metadata.get("multigraph", True))
+    graph.graph.update(deepcopy(metadata.get("graph_attributes", {})))
     for node in capture.nodes:
-        node_dict = {
-            'source': node['id'],
-            'type': node.get('layer', 'default')
-        }
-        # Add attributes if present
-        if 'attributes' in node:
-            node_dict.update(node['attributes'])
-        node_dicts.append(node_dict)
-    
-    if node_dicts:
-        network.add_nodes(node_dicts)
-    
-    # Add edges
-    edge_dicts = []
+        replica = _restore_identity(node.get("replica", [node["id"], node.get("layer", "default")]))
+        graph.add_node(replica)
+        graph.nodes[replica].update(deepcopy(node.get("attributes", {})))
+
     for edge in capture.edges:
-        edge_dict = {
-            'source': edge['source'],
-            'target': edge['target'],
-            'source_type': edge.get('source_layer', 'default'),
-            'target_type': edge.get('target_layer', 'default'),
-            'weight': edge.get('weight', 1.0)
-        }
-        # Add attributes if present
-        if 'attributes' in edge:
-            for k, v in edge['attributes'].items():
-                if k != 'weight':  # Weight already handled
-                    edge_dict[k] = v
-        edge_dicts.append(edge_dict)
-    
-    if edge_dicts:
-        network.add_edges(edge_dicts)
-    
+        source = _restore_identity(edge.get(
+            "source_replica", [edge["source"], edge.get("source_layer", "default")]
+        ))
+        target = _restore_identity(edge.get(
+            "target_replica", [edge["target"], edge.get("target_layer", "default")]
+        ))
+        if graph.is_multigraph():
+            key = graph.add_edge(source, target, key=_restore_identity(edge.get("key")))
+            attrs = graph.edges[source, target, key]
+        else:
+            graph.add_edge(source, target)
+            attrs = graph.edges[source, target]
+        attrs.update(deepcopy(edge.get("attributes", {})))
+        if "weight" in edge:
+            attrs["weight"] = deepcopy(edge["weight"])
+
+    network.core_network = graph
     return network
 
 

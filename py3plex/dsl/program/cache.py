@@ -44,69 +44,54 @@ class CacheKey:
 
 
 def graph_fingerprint(network: Any) -> str:
-    """Compute stable fingerprint of network structure.
-    
-    Args:
-        network: py3plex multi_layer_network object
-        
-    Returns:
-        64-character hex hash of network structure
+    """Hash graph data in traversal order, including identities and attributes.
+
+    Raise TypeError or ValueError for inputs that cannot safely be cached.
+    Order matters for queries with tied scores or positional limits.
     """
-    # Extract network properties in deterministic order.
-    #
-    # Deliberately network.layers, not network.get_layers(): the latter
-    # computes a full force-directed visualization layout as a side effect
-    # (network.get_layers() -> converters.prepare_for_visualization(...,
-    # compute_layouts="force")), which is extremely expensive on large
-    # networks -- and it returns a tuple of visualization artifacts
-    # (layer names, per-layer graphs, coordinates, ...), not a list of
-    # layers, so the old code below was iterating over that tuple's
-    # top-level elements and hashing their *types* (e.g. "list"), not their
-    # actual layer identities. network.layers is the cheap, correct
-    # property: a plain sorted list of layer name strings.
-    layers_list = []
+    import networkx as nx
+    from py3plex.core.multinet import multi_layer_network
+
+    graph_types = (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)
+    if type(network) is multi_layer_network:
+        graph = network.core_network
+    elif type(network) in graph_types:
+        graph = network
+    else:
+        raise TypeError("Unsupported network for cache fingerprint")
+    if type(graph) not in graph_types:
+        raise TypeError("Unsupported graph for cache fingerprint")
+
+    edges = graph.edges(keys=True, data=True) if graph.is_multigraph() else graph.edges(data=True)
+    partitions = []
+    if hasattr(network, "list_partitions"):
+        for name in network.list_partitions():
+            partition = network.get_partition_by_name(name)
+            if partition is not None:
+                partitions.append((name, list(partition.items())))
+    data = (
+        type(graph).__name__,
+        getattr(network, "directed", graph.is_directed()),
+        getattr(network, "network_type", None),
+        getattr(network, "network_version", None),
+        getattr(network, "coupling_weight", None),
+        getattr(network, "layers", None),
+        getattr(network, "temporal_edges", None),
+        graph.graph,
+        list(graph.nodes(data=True)),
+        list(edges),
+        partitions,
+    )
+    return _fingerprint_value(data)
+
+
+def _fingerprint_value(value: Any) -> str:
+    """Hash supported values with their types preserved."""
     try:
-        if hasattr(network, "layers"):
-            layers_list = [str(layer) for layer in network.layers]
-    except Exception:
-        pass
-    
-    data = {
-        "directed": getattr(network, "directed", False),
-        "layers": sorted(layers_list),
-    }
-    
-    # Get nodes and edges in sorted order
-    try:
-        nodes = []
-        edges = []
-        
-        if hasattr(network, "get_nodes"):
-            # Convert all nodes to strings before sorting to handle mixed types
-            nodes = sorted([str(n) for n in network.get_nodes()])
-        
-        if hasattr(network, "get_edges"):
-            edge_list = network.get_edges()
-            # Sort edges deterministically
-            edges = sorted([(str(e[0]), str(e[1]), str(e[2]), str(e[3])) for e in edge_list])
-        
-        data["num_nodes"] = len(nodes)
-        data["num_edges"] = len(edges)
-        
-        # Sample first 100 edges for large networks
-        if len(edges) > 100:
-            data["edge_sample"] = edges[:100]
-        else:
-            data["edges"] = edges
-            
-    except Exception:
-        # Fallback: just use basic structure
-        data["num_nodes"] = getattr(network, "N", 0)
-        data["num_edges"] = getattr(network, "E", 0)
-    
-    # Serialize deterministically
-    json_str = json.dumps(data, sort_keys=True)
-    return hashlib.sha256(json_str.encode()).hexdigest()
+        payload = json.dumps(_cache_value(value), allow_nan=False)
+    except RecursionError as exc:
+        raise ValueError("Nested value cannot be safely hashed") from exc
+    return hashlib.sha256(payload.encode()).hexdigest()
 
 
 def program_fingerprint(program_hash: str, optimization_level: int = 0) -> str:
@@ -195,6 +180,12 @@ class ProgramCache:
     Cache entries include full provenance for reproducibility verification.
     
     Example:
+        >>> import networkx as nx
+        >>> from py3plex.dsl import Q
+        >>> from py3plex.core.multinet import multi_layer_network
+        >>> net = multi_layer_network.from_networkx(nx.Graph([(("a", "L"), ("b", "L"))]))
+        >>> program = Q.nodes().to_program()
+        >>> result = program.execute(net, seed=42, cache_policy="disabled", progress=False)
         >>> cache = ProgramCache()
         >>> key = CacheKey(
         ...     graph_fingerprint=graph_fingerprint(net),
@@ -203,7 +194,8 @@ class ProgramCache:
         ...     environment_signature=environment_signature()
         ... )
         >>> cache.put(key, result)
-        >>> cached = cache.get(key)
+        >>> cache.get(key).items == result.items
+        True
     """
     
     def __init__(self):

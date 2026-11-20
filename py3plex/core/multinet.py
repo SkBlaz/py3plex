@@ -370,80 +370,21 @@ def _encode_multilayer_network(core_network, directed):
 
 
 def _encode_multiplex_network(core_network):
-    """Helper function to encode multiplex network to numeric format using sparse matrices.
+    """Build sparse adjacency from stored edges in layer-major replica order."""
+    if not core_network:
+        from scipy.sparse import csr_matrix
 
-    This implementation uses scipy.sparse block matrices for efficient memory usage
-    and faster operations on large multiplex networks. The supra-adjacency matrix
-    is constructed with intralayer adjacency matrices on the diagonal blocks and
-    identity matrices for interlayer coupling.
+        return csr_matrix((0, 0)), []
 
-    Complexity: O(E + N*L) where E is edges, N nodes per layer, L layers
-    Memory: O(E + N*L) sparse vs O(N²*L²) dense
-
-    Args:
-        core_network: NetworkX graph with multiplex structure
-
-    Returns:
-        Tuple of (numeric_network, node_order)
-            - numeric_network: scipy.sparse.csr_matrix supra-adjacency matrix
-            - node_order: list of (node_id, layer) tuples in matrix order
-    """
-    import scipy.sparse as sp
-
-    unique_layers = sorted({n[1] for n in core_network.nodes()})
-    if not unique_layers:
-        return sp.csr_matrix((0, 0)), []
-
-    base_node_order = list(dict.fromkeys(node[0] for node in core_network.nodes()))
-    num_layers = len(unique_layers)
-    individual_adj_sparse = []
-    all_nodes = []
-    layer_sizes = []
-
-    # Build sparse adjacency matrix for each layer
-    # Using sparse matrices from the start avoids dense intermediate arrays
-    for layer in unique_layers:
-        layer_nodes = [
-            (base_node, layer)
-            for base_node in base_node_order
-            if (base_node, layer) in core_network
-        ]
-        H = core_network.subgraph(layer_nodes)
-
-        # Use nx_to_scipy_sparse_matrix for direct sparse conversion
-        adj_sparse = nx_to_scipy_sparse_matrix(H, nodelist=layer_nodes)
-
-        all_nodes += list(H.nodes())
-        individual_adj_sparse.append(adj_sparse)
-        layer_sizes.append(adj_sparse.shape[0])
-
-    # Construct supra-adjacency matrix using sparse block matrices
-    # This avoids creating large dense arrays and is memory-efficient
-    # Block structure: diagonal blocks = intralayer adjacency, off-diagonal = identity (coupling)
-    block_rows = []
-    for i, adj_i in enumerate(individual_adj_sparse):
-        n_i = layer_sizes[i]
-        row_blocks = []
-        for j in range(num_layers):
-            n_j = layer_sizes[j]
-            if i == j:
-                # Diagonal block: intralayer adjacency matrix
-                row_blocks.append(adj_i)
-            else:
-                # Off-diagonal block: identity matrix for interlayer coupling
-                # Only create identity if dimensions match (multiplex assumption)
-                if n_i == n_j:
-                    row_blocks.append(sp.identity(n_i, format='csr'))
-                else:
-                    # For non-multiplex or layers with different sizes, use zeros
-                    row_blocks.append(sp.csr_matrix((n_i, n_j)))
-
-        # Horizontally stack blocks for this layer's row
-        block_rows.append(sp.hstack(row_blocks, format='csr'))
-
-    # Vertically stack all block rows to form supra-adjacency matrix
-    vectors = sp.vstack(block_rows, format='csr')
-    return vectors, all_nodes
+    nodes_by_layer = defaultdict(list)
+    for replica in core_network:
+        nodes_by_layer[replica[1]].append(replica)
+    try:
+        layers = sorted(nodes_by_layer)
+    except TypeError:
+        layers = list(nodes_by_layer)
+    node_order = [replica for layer in layers for replica in nodes_by_layer[layer]]
+    return nx_to_scipy_sparse_matrix(core_network, nodelist=node_order), node_order
 
 
 class multi_layer_network:
@@ -3338,8 +3279,8 @@ class multi_layer_network:
         """Encode network to numeric format for matrix operations.
 
         Converts the network structure to numeric matrices. For multilayer networks,
-        creates a simple numeric graph. For multiplex networks, creates a supra-adjacency
-        matrix with identity matrices coupling layers.
+        creates a simple numeric graph. For multiplex networks, creates a layer-ordered
+        supra-adjacency matrix using the stored coupling edges.
         """
         if self.network_type != "multiplex":
             self.numeric_core_network, self.node_order_in_matrix = _encode_multilayer_network(
