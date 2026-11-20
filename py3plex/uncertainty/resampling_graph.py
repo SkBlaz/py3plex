@@ -15,7 +15,7 @@ Examples
 >>> from py3plex.uncertainty.resampling_graph import perturb_network_edges
 >>> 
 >>> net = multinet.multi_layer_network(directed=False)
->>> net.add_edges([
+>>> _ = net.add_edges([
 ...     ['A', 'L1', 'B', 'L1', 1],
 ...     ['B', 'L1', 'C', 'L1', 1],
 ... ], input_type='list')
@@ -28,6 +28,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+import networkx as nx
 import numpy as np
 
 from py3plex.core import multinet
@@ -43,7 +44,8 @@ def perturb_network_edges(
 ) -> multinet.multi_layer_network:
     """Perturb network by randomly dropping edges.
     
-    Creates a new network with a fraction of edges randomly removed.
+    Creates a new network by dropping interactions independently. All
+    replicas and their attributes remain, and multiplex coupling is retained.
     Useful for structural uncertainty quantification via edge perturbation.
     
     **Never modifies the input network** - returns a new copy.
@@ -55,7 +57,7 @@ def perturb_network_edges(
     edge_drop_p : float
         Probability of dropping each edge, in [0, 1].
         - 0.0: No edges dropped (returns exact copy)
-        - 1.0: All edges dropped (returns empty network)
+        - 1.0: All edges dropped (retains nodes and multiplex coupling)
     seed : int, optional
         Random seed for reproducibility.
     preserve_layers : bool, default=True
@@ -78,18 +80,18 @@ def perturb_network_edges(
     >>> from py3plex.uncertainty.resampling_graph import perturb_network_edges
     >>> 
     >>> net = multinet.multi_layer_network(directed=False)
-    >>> net.add_edges([
+    >>> _ = net.add_edges([
     ...     ['A', 'L1', 'B', 'L1', 1],
     ...     ['B', 'L1', 'C', 'L1', 1],
     ...     ['C', 'L1', 'A', 'L1', 1],
     ... ], input_type='list')
     >>> 
     >>> # Drop 20% of edges
-    >>> perturbed = perturb_network_edges(net, edge_drop_p=0.2, seed=42)
+    >>> perturbed = perturb_network_edges(net, edge_drop_p=0.2, seed=0)
     >>> # Original net unchanged
     >>> len(list(net.get_edges()))
     3
-    >>> len(list(perturbed.get_edges()))  # ~2-3 edges
+    >>> len(list(perturbed.get_edges()))
     2
     """
     # Validate parameters
@@ -99,31 +101,12 @@ def perturb_network_edges(
             suggestions=["Set edge_drop_p between 0.0 (no drop) and 1.0 (drop all)"]
         )
     
-    # Create RNG
+    sample, edges = _edge_sample_base(network)
     rng = np.random.default_rng(seed)
-    
-    # Create new network (same type, directed status)
-    new_net = multinet.multi_layer_network(directed=network.directed)
-    
-    # Get all edges from original network
-    edges = list(network.get_edges())
-    
-    # Filter edges based on drop probability
-    kept_edges = []
-    for edge in edges:
+    for source, target, key, attrs in edges:
         if rng.random() >= edge_drop_p:
-            # Keep this edge
-            # Edge is ((node1, layer1), (node2, layer2))
-            if len(edge) == 2:
-                (node1, layer1), (node2, layer2) = edge
-                # Convert to list format for add_edges
-                kept_edges.append([node1, layer1, node2, layer2, 1.0])
-    
-    # Add edges to new network (which will also create nodes)
-    if kept_edges:
-        new_net.add_edges(kept_edges, input_type='list')
-    
-    return new_net
+            _add_sample_edge(sample.core_network, source, target, key, attrs)
+    return sample
 
 
 def bootstrap_network_edges(
@@ -135,8 +118,8 @@ def bootstrap_network_edges(
     """Bootstrap resample network edges with replacement.
     
     Creates a new network by sampling edges with replacement from the
-    original network. The new network has approximately the same number
-    of edges, but some may be duplicated and some omitted.
+    original network. Each sampled interaction retains its attributes.
+    The interaction count is preserved, and multiplex coupling is retained.
     
     **Never modifies the input network** - returns a new copy.
     
@@ -165,7 +148,7 @@ def bootstrap_network_edges(
     >>> from py3plex.uncertainty.resampling_graph import bootstrap_network_edges
     >>> 
     >>> net = multinet.multi_layer_network(directed=False)
-    >>> net.add_edges([
+    >>> _ = net.add_edges([
     ...     ['A', 'L1', 'B', 'L1', 1],
     ...     ['B', 'L1', 'C', 'L1', 1],
     ... ], input_type='list')
@@ -173,35 +156,65 @@ def bootstrap_network_edges(
     >>> boot = bootstrap_network_edges(net, seed=42)
     >>> # Some edges may be duplicated, some omitted
     """
-    # Create RNG
+    sample, edges = _edge_sample_base(network, bootstrap=True)
+    if not edges:
+        return sample
+
     rng = np.random.default_rng(seed)
-    
-    # Create new network
-    new_net = multinet.multi_layer_network(directed=network.directed)
-    
-    # Get all edges as list
-    edges = list(network.get_edges())
-    n_edges = len(edges)
-    
-    if n_edges == 0:
-        return new_net
-    
-    # Sample with replacement
-    sampled_indices = rng.integers(0, n_edges, size=n_edges)
-    
-    # Convert sampled edges to list format
-    sampled_edges = []
-    for idx in sampled_indices:
-        edge = edges[idx]
-        if len(edge) == 2:
-            (node1, layer1), (node2, layer2) = edge
-            sampled_edges.append([node1, layer1, node2, layer2, 1.0])
-    
-    # Add edges to new network
-    if sampled_edges:
-        new_net.add_edges(sampled_edges, input_type='list')
-    
-    return new_net
+    draws = rng.integers(0, len(edges), size=len(edges))
+    counts = {}
+    for index in draws:
+        counts[index] = counts.get(index, 0) + 1
+    # Reserve every original key before allocating keys for repeated draws.
+    for index in counts:
+        _add_sample_edge(sample.core_network, *edges[index])
+    for index, count in counts.items():
+        source, target, _, attrs = edges[index]
+        for _ in range(count - 1):
+            _add_sample_edge(sample.core_network, source, target, None, attrs)
+    return sample
+
+
+def _add_sample_edge(graph, source, target, key, attrs):
+    if graph.is_multigraph():
+        key = graph.add_edge(source, target, key=key)
+        graph.edges[source, target, key].update(attrs)
+    else:
+        graph.add_edge(source, target)
+        graph.edges[source, target].update(attrs)
+
+
+def _edge_sample_base(network, bootstrap=False):
+    """Copy all nodes and retain multiplex coupling outside the sampling pool."""
+    graph = network.core_network
+    sample = multinet.multi_layer_network(
+        directed=graph.is_directed() if graph is not None else network.directed,
+        network_type=network.network_type,
+        coupling_weight=network.coupling_weight,
+        dummy_layer=network.dummy_layer,
+        label_delimiter=network.label_delimiter,
+        verbose=network.verbose,
+    )
+    if graph is None:
+        sample._initiate_network()
+        return sample, []
+
+    sample.core_network = nx.create_empty_copy(graph, with_data=True)
+    if bootstrap and not graph.is_multigraph():
+        graph_type = nx.MultiDiGraph if graph.is_directed() else nx.MultiGraph
+        sample.core_network = graph_type(sample.core_network)
+
+    if graph.is_multigraph():
+        records = graph.edges(keys=True, data=True)
+    else:
+        records = ((u, v, None, attrs) for u, v, attrs in graph.edges(data=True))
+    edges = []
+    for source, target, key, attrs in records:
+        if network.network_type == "multiplex" and attrs.get("type") == "coupling":
+            _add_sample_edge(sample.core_network, source, target, key, attrs)
+        else:
+            edges.append((source, target, key, attrs))
+    return sample, edges
 
 
 def resample_network_nodes(
@@ -243,7 +256,7 @@ def resample_network_nodes(
     >>> from py3plex.uncertainty.resampling_graph import resample_network_nodes
     >>> 
     >>> net = multinet.multi_layer_network(directed=False)
-    >>> net.add_edges([
+    >>> _ = net.add_edges([
     ...     ['A', 'L1', 'B', 'L1', 1],
     ...     ['B', 'L1', 'C', 'L1', 1],
     ... ], input_type='list')
