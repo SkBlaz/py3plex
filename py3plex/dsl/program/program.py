@@ -31,7 +31,7 @@ import hashlib
 import json
 import time
 from pathlib import Path
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
 from ..ast import Query, SelectStmt, Target, ast_from_json, ast_to_json
@@ -298,6 +298,7 @@ class GraphProgram:
                 get_global_cache,
                 graph_fingerprint,
                 execution_fingerprint,
+                _fingerprint_value,
                 environment_signature,
                 CacheKey,
             )
@@ -312,6 +313,12 @@ class GraphProgram:
                     explain_plan=explain_plan,
                     optimize=optimize,
                 )
+                from ..layers import LayerSet
+
+                groups = LayerSet.list_groups()
+                if groups:
+                    group_definitions = {name: asdict(group.expr) for name, group in groups.items()}
+                    execution_context = _fingerprint_value((execution_context, group_definitions))
                 graph_identity = graph_fingerprint(network)
             except (TypeError, ValueError):
                 pass

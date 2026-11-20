@@ -132,7 +132,7 @@ def save_network_to_parquet(network, path: Union[str, Path], **kwargs) -> None:
     - edges.parquet: Edge table with (source, target, source_layer, target_layer) and attributes
     - metadata.json: Network metadata (network_type, directed, coupling, schema version)
     
-    This format ensures zero-loss roundtrip with atomic writes.
+    The export retains edge keys and stages its files before replacing an existing directory.
     
     Args:
         network: multi_layer_network instance

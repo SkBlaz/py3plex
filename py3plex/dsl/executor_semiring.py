@@ -3,7 +3,7 @@
 This module implements the execution logic for S builder queries (paths, closure).
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional
 import time
 
 from py3plex.exceptions import Py3plexException
@@ -15,8 +15,8 @@ from py3plex.algebra import (
 from .ast import (
     SemiringPathStmt,
     SemiringClosureStmt,
-    CrossingLayersSpec,
 )
+from .errors import DslExecutionError
 from .result import QueryResult
 
 
@@ -54,40 +54,62 @@ def execute_semiring_path_stmt(
     )
     
     # Extract nodes and edges from network
-    nodes, edges = _extract_graph_data(network, stmt.layer_expr, stmt.crossing_layers)
-    
-    # Resolve source/target (handle parameters)
-    source = _resolve_param(stmt.source, params)
-    target = _resolve_param(stmt.target, params) if stmt.target else None
-    
-    # Get backend
-    backend = get_backend(stmt.backend)
-    
-    # Execute SSSP
-    path_result = backend.sssp(
-        nodes=nodes,
-        edges=edges,
-        source=source,
-        semiring=semiring,
-        lift_spec=lift_spec,
-        target=target,
-        max_hops=stmt.max_hops,
+    replicas, edges, layers = _extract_graph_data(
+        network, stmt.layer_expr, stmt.crossing_layers, lift_spec
     )
     
+    source = _resolve_param(stmt.source, params)
+    target = _resolve_param(stmt.target, params) if stmt.target is not None else None
+    sources = _matching_replicas(replicas, source)
+    targets = _matching_replicas(replicas, target) if target is not None else []
+    if not sources:
+        raise DslExecutionError(f"Source {source!r} is absent from the selected layers.")
+    if target is not None and not targets:
+        raise DslExecutionError(f"Target {target!r} is absent from the selected layers.")
+
+    target_indices = set(targets)
+    target_node = replicas[targets[0]][0] if targets else None
+    backend = get_backend(stmt.backend)
+    nodes = list(range(len(replicas)))
+    values = dict.fromkeys((node for node, _ in replicas), semiring.zero())
+    witnesses = {}
+    witness_values = {}
+    better = getattr(semiring, "better", lambda new, old: new != old and semiring.add(old, new) == new)
+    iterations = 0
+    converged = True
+    for start in sources:
+        path_result = backend.sssp(
+            nodes=nodes,
+            edges=edges,
+            source=start,
+            semiring=semiring,
+            lift_spec=lift_spec,
+            target=targets[0] if len(targets) == 1 else None,
+            max_hops=stmt.max_hops,
+        )
+        iterations += path_result.iterations
+        converged = converged and path_result.converged
+        for idx, value in path_result.distances.items():
+            node = replicas[idx][0]
+            if targets and node == target_node and idx not in target_indices:
+                continue
+            values[node] = semiring.add(values[node], value)
+            if stmt.witness and value != semiring.zero() and (
+                node not in witness_values or better(value, witness_values[node])
+            ):
+                path = path_result.get_path(idx)
+                if path is not None:
+                    witnesses[node] = [replicas[step][0] for step in path]
+                    witness_values[node] = value
+
     end_time = time.time()
-    
-    # Convert to QueryResult
     items = []
-    for node, value in sorted(path_result.distances.items(), key=lambda pair: str(pair[0])):
-        item = {
-            'node': node,
-            'value': value,
-        }
-        if stmt.witness and path_result.predecessors:
-            path = path_result.get_path(node)
-            item['path'] = path if path else None
+    for node, value in sorted(values.items(), key=lambda pair: str(pair[0])):
+        item = {"node": node, "value": value}
+        if stmt.witness:
+            item["path"] = witnesses.get(node)
         items.append(item)
-    
+
     # Build provenance
     provenance = {
         'algebra': {
@@ -109,7 +131,7 @@ def execute_semiring_path_stmt(
                 'k_best': stmt.k_best,
             },
             'multilayer': {
-                'layers_included': _get_layer_names(stmt.layer_expr),
+                'layers_included': layers,
                 'crossing_layers_mode': stmt.crossing_layers.mode,
                 'penalty': stmt.crossing_layers.penalty,
             },
@@ -119,10 +141,10 @@ def execute_semiring_path_stmt(
             },
             'performance': {
                 'total_time': end_time - start_time,
-                'iterations': path_result.iterations,
+                'iterations': iterations,
             },
             'determinism': {
-                'converged': path_result.converged,
+                'converged': converged,
                 'stable_ordering': True,
             },
         },
@@ -170,14 +192,16 @@ def execute_semiring_closure_stmt(
     )
     
     # Extract nodes and edges
-    nodes, edges = _extract_graph_data(network, stmt.layer_expr, stmt.crossing_layers)
+    replicas, edges, layers = _extract_graph_data(
+        network, stmt.layer_expr, stmt.crossing_layers, lift_spec
+    )
     
     # Get backend
     backend = get_backend(stmt.backend)
     
     # Execute closure
     closure_result = backend.closure(
-        nodes=nodes,
+        nodes=list(range(len(replicas))),
         edges=edges,
         semiring=semiring,
         lift_spec=lift_spec,
@@ -187,8 +211,13 @@ def execute_semiring_closure_stmt(
     end_time = time.time()
     
     # Convert to QueryResult
+    values = {}
+    for (src, dst), value in closure_result.items():
+        pair = (replicas[src][0], replicas[dst][0])
+        values[pair] = semiring.add(values.get(pair, semiring.zero()), value)
+
     items = []
-    for (src, dst), value in sorted(closure_result.items(), key=lambda pair: (str(pair[0][0]), str(pair[0][1]))):
+    for (src, dst), value in sorted(values.items(), key=lambda pair: (str(pair[0][0]), str(pair[0][1]))):
         # Skip zero values for sparse output
         if stmt.output_format == "sparse" and value == semiring.zero():
             continue
@@ -216,7 +245,7 @@ def execute_semiring_closure_stmt(
                 'method': stmt.method,
             },
             'multilayer': {
-                'layers_included': _get_layer_names(stmt.layer_expr),
+                'layers_included': layers,
                 'crossing_layers_mode': stmt.crossing_layers.mode,
             },
             'backend': {
@@ -239,85 +268,46 @@ def execute_semiring_closure_stmt(
     )
 
 
-def _extract_graph_data(
-    network: Any,
-    layer_expr: Optional[Any],
-    crossing_spec: CrossingLayersSpec,
-) -> Tuple[List[Any], List[Tuple[Any, Any, Dict[str, Any]]]]:
-    """Extract nodes and edges from multilayer network.
-    
-    Args:
-        network: Multilayer network
-        layer_expr: Optional layer expression for filtering
-        crossing_spec: Cross-layer edge handling spec
-        
-    Returns:
-        Tuple of (nodes, edges)
-    """
-    # Get included layers
-    layers_result = network.get_layers()
-    # get_layers() returns a tuple: (layer_names, layer_graphs, ...)
-    all_layer_names = layers_result[0] if isinstance(layers_result, tuple) else layers_result
-    
-    if layer_expr:
-        included_layers = set(_get_layer_names(layer_expr))
-    else:
-        # All layers
-        included_layers = set(all_layer_names)
-    
-    # Collect physical node identifiers from the full replica list.
-    node_set = set()
-    for node in network.get_nodes():
-        if not (isinstance(node, tuple) and len(node) >= 2):
-            continue
-        node_id, layer = node[0], node[1]
-        if layer in included_layers:
-            node_set.add(node_id)
-    nodes = sorted(node_set, key=str)
-    
-    # Collect edges
+def _extract_graph_data(network, layer_expr, crossing_spec, lift_spec):
+    """Build arcs on replica indices, retaining each physical edge's attributes."""
+    from .executor import _evaluate_layer_expr
+
+    active = (
+        _evaluate_layer_expr(layer_expr, network)
+        if layer_expr is not None
+        else {str(layer) for layer in network.layers}
+    )
+    replicas = [] if network.core_network is None else [
+        replica for replica in network.get_nodes() if str(replica[1]) in active
+    ]
+    indices = {replica: index for index, replica in enumerate(replicas)}
     edges = []
-    for edge_data in network.get_edges(data=True):
-        if len(edge_data) != 3:
+    if not indices:
+        return replicas, edges, sorted(active)
+
+    # Include stored coupling arcs so the crossing policy applies to them too.
+    for source, target, attrs in network.get_edges(data=True, multiplex_edges=True):
+        if source not in indices or target not in indices:
             continue
-        
-        (u_node, u_layer), (v_node, v_layer), data = edge_data
-        
-        # Check layer constraints
-        if u_layer not in included_layers or v_layer not in included_layers:
-            continue
-        
-        # Check cross-layer policy
-        is_cross_layer = (u_layer != v_layer)
-        if is_cross_layer:
+        if source[1] != target[1]:
             if crossing_spec.mode == "forbidden":
                 continue
-            elif crossing_spec.mode == "penalty" and crossing_spec.penalty is not None:
-                # Add penalty to weight
-                data = data.copy()
-                weight_attr = data.get('weight', 1.0)
-                data['weight'] = weight_attr + crossing_spec.penalty
-        
-        # Store with simple node identifiers
-        edges.append((u_node, v_node, data))
-    
-    return nodes, edges
+            if crossing_spec.mode == "penalty" and crossing_spec.penalty is not None:
+                attr = lift_spec.attr
+                if attr is not None and (attr in attrs or lift_spec.on_missing == "default"):
+                    attrs = {**attrs, attr: attrs.get(attr, lift_spec.default) + crossing_spec.penalty}
+        u, v = indices[source], indices[target]
+        edges.append((u, v, attrs))
+        if not network.directed and u != v:
+            edges.append((v, u, attrs))
+    return replicas, edges, sorted(active)
 
 
-def _get_layer_names(layer_expr: Optional[Any]) -> List[str]:
-    """Extract layer names from layer expression."""
-    if layer_expr is None:
-        return []
-    
-    # Call get_layer_names method if available
-    if hasattr(layer_expr, 'get_layer_names'):
-        return layer_expr.get_layer_names()
-    
-    # Fallback: extract from terms
-    if hasattr(layer_expr, 'terms'):
-        return [term.name for term in layer_expr.terms]
-    
-    return []
+def _matching_replicas(replicas, selector):
+    # A physical identifier may itself be a tuple, so match it before
+    # interpreting a tuple selector as an explicit replica.
+    matches = [idx for idx, (node, _) in enumerate(replicas) if node == selector]
+    return matches or [idx for idx, replica in enumerate(replicas) if replica == selector]
 
 
 def _resolve_param(value: Any, params: Dict[str, Any]) -> Any:

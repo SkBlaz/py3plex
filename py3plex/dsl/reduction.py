@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import copy
 import logging
+from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Callable
 
 import numpy as np
-from scipy.cluster.hierarchy import fcluster, linkage
-from scipy.spatial.distance import squareform
+from scipy.cluster.hierarchy import cut_tree, linkage
+from scipy.spatial.distance import jensenshannon, squareform
 
 from py3plex.core.multinet import multi_layer_network
 from py3plex.algorithms.statistics import multilayer_statistics as mls
@@ -113,36 +114,24 @@ class LayerReductionResult:
 
 
 def _layer_names(network: Any) -> list[str]:
-    return sorted({layer for _, layer in network.get_nodes()})
+    return list(network.layers)
 
 
-def _layer_degree_signature(network: Any, layer: str, bins: int = 10) -> np.ndarray:
-    degrees = []
-    for node, node_layer in network.get_nodes():
-        if node_layer != layer:
-            continue
-        node_key = (node, node_layer)
-        try:
-            deg = network.core_network.degree(node_key)
-        except Exception:
-            deg = 0
-        degrees.append(float(deg))
-    if not degrees:
-        return np.zeros((bins,), dtype=float)
-    hist, _ = np.histogram(degrees, bins=bins, density=True)
-    return hist.astype(float)
+def _layer_degree_signature(network: Any, layer: str) -> Counter:
+    """Count degrees on the induced graph for a layer."""
+    replicas = [replica for replica in network.get_nodes() if replica[1] == layer]
+    return Counter(degree for _, degree in network.core_network.subgraph(replicas).degree())
 
 
 def _distance_js_divergence(network: Any, layer_i: str, layer_j: str) -> float:
-    s1 = _layer_degree_signature(network, layer_i)
-    s2 = _layer_degree_signature(network, layer_j)
-    eps = 1e-12
-    p = s1 + eps
-    q = s2 + eps
-    p = p / p.sum()
-    q = q / q.sum()
-    m = 0.5 * (p + q)
-    return float(0.5 * np.sum(p * np.log(p / m)) + 0.5 * np.sum(q * np.log(q / m)))
+    first = _layer_degree_signature(network, layer_i)
+    second = _layer_degree_signature(network, layer_j)
+    support = sorted(first.keys() | second.keys())
+    # Align both distributions on the same exact degree values.
+    return float(jensenshannon(
+        [first[degree] for degree in support],
+        [second[degree] for degree in support],
+    ) ** 2)
 
 
 def _distance_spectral(network: Any, layer_i: str, layer_j: str) -> float:
@@ -210,24 +199,14 @@ def _compute_distance_matrix(network: Any, layers: list[str], distance_name: str
 
 
 def _cluster_layers(distance_matrix: np.ndarray, target_k: int, seed: int | None = None) -> np.ndarray:
-    if distance_matrix.shape[0] <= 1:
-        return np.ones((distance_matrix.shape[0],), dtype=int)
+    n_layers = distance_matrix.shape[0]
     if target_k <= 1:
-        return np.ones((distance_matrix.shape[0],), dtype=int)
+        return np.ones(n_layers, dtype=int)
+    if target_k >= n_layers:
+        return np.arange(1, n_layers + 1)
     condensed = squareform(distance_matrix, checks=False)
-    z = linkage(condensed, method="average")
-    clusters = fcluster(z, t=target_k, criterion="maxclust")
-    if len(set(clusters.tolist())) > target_k:
-        remap = {}
-        next_label = 1
-        normalized = []
-        for cluster in clusters.tolist():
-            if cluster not in remap:
-                remap[cluster] = next_label
-                next_label += 1
-            normalized.append(remap[cluster])
-        clusters = np.asarray(normalized, dtype=int)
-    return clusters.astype(int)
+    tree = linkage(condensed, method="average")
+    return cut_tree(tree, n_clusters=[target_k])[:, 0] + 1
 
 
 def _merge_network(
@@ -253,10 +232,10 @@ def _merge_network(
         u = raw[0]
         v = raw[1]
         data = raw[-1] if len(raw) >= 3 and isinstance(raw[-1], dict) else {}
+        if not preserve_interlayer and u[1] != v[1]:
+            continue
         u2 = (u[0], layer_mapping.get(u[1], u[1]))
         v2 = (v[0], layer_mapping.get(v[1], v[1]))
-        if not preserve_interlayer and u2[1] != v2[1]:
-            continue
         if directed:
             key = (u2, v2)
         else:
