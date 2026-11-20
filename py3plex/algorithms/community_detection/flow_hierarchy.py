@@ -290,27 +290,21 @@ def _build_transition_matrix(
     # For multilayer, we aggregate across all layers
     A = sp.lil_matrix((n, n), dtype=np.float64)
 
-    edges = network.get_edges(data=True)
-    for edge_data in edges:
-        # In py3plex, edge_data format: ((src_node, src_layer), (dst_node, dst_layer), attrs_dict)
-        if len(edge_data) < 2:
-            continue
-            
-        src = edge_data[0]
-        tgt = edge_data[1]
-
+    for src, tgt, attrs in network.get_edges(data=True, multiplex_edges=True):
         if src not in node_to_idx or tgt not in node_to_idx:
             continue
 
         i, j = node_to_idx[src], node_to_idx[tgt]
-        
-        # Extract weight from attributes dict
-        w = 1.0
-        if len(edge_data) > 2 and isinstance(edge_data[2], dict):
-            w = edge_data[2].get(weight, 1.0)
+        w = attrs.get(weight, 1.0)
+        if multilayer:
+            src_layer = src[1] if isinstance(src, tuple) and len(src) >= 2 else None
+            tgt_layer = tgt[1] if isinstance(tgt, tuple) and len(tgt) >= 2 else None
+            w *= alpha if src_layer == tgt_layer else 1.0 - alpha
+        if w == 0:
+            continue
 
         A[i, j] += w
-        if not network.directed:
+        if not network.directed and i != j:
             A[j, i] += w
 
     A = A.tocsr()

@@ -9,6 +9,7 @@ import random
 import networkx as nx
 
 from py3plex.core import multinet
+from py3plex.exceptions import AlgorithmError
 
 
 class ModelRegistry:
@@ -331,6 +332,58 @@ def layer_shuffle_model(
     return new_network
 
 
+def _swap_directed_edges(graph, num_swaps, seed, preserve_coupling):
+    """Swap the targets of two arcs, preserving both directed degree sequences."""
+    is_multi = graph.is_multigraph()
+    records = (
+        graph.edges(keys=True, data=True) if is_multi
+        else ((u, v, None, data) for u, v, data in graph.edges(data=True))
+    )
+    arcs = [(u, v, key) for u, v, key, data in records
+            if not (preserve_coupling and data.get("type") == "coupling")]
+    rng = random.Random(seed)
+    completed = 0
+    if num_swaps < 0:
+        raise ValueError("num_swaps must be non-negative")
+    for _ in range(num_swaps * 10):
+        if completed == num_swaps or len(arcs) < 2:
+            break
+        first, second = rng.sample(range(len(arcs)), 2)
+        u, v, key1 = arcs[first]
+        x, y, key2 = arcs[second]
+        if u == x or v == y or u == y or x == v:
+            continue
+        if graph.has_edge(u, y) or graph.has_edge(x, v):
+            continue
+
+        if is_multi:
+            data1 = graph.edges[u, v, key1]
+            data2 = graph.edges[x, y, key2]
+            graph.remove_edge(u, v, key1)
+            graph.remove_edge(x, y, key2)
+            graph.add_edge(u, y, key=key1)
+            graph.add_edge(x, v, key=key2)
+            graph.edges[u, y, key1].update(data1)
+            graph.edges[x, v, key2].update(data2)
+        else:
+            data1 = graph.edges[u, v]
+            data2 = graph.edges[x, y]
+            graph.remove_edge(u, v)
+            graph.remove_edge(x, y)
+            graph.add_edge(u, y)
+            graph.add_edge(x, v)
+            graph.edges[u, y].update(data1)
+            graph.edges[x, v].update(data2)
+        arcs[first] = (u, y, key1)
+        arcs[second] = (x, v, key2)
+        completed += 1
+
+    if completed != num_swaps:
+        raise AlgorithmError(
+            f"Directed edge swap completed {completed} of {num_swaps} requested swaps."
+        )
+
+
 @model_registry.register("edge_swap",
                          description="Random edge swapping preserving degrees")
 def edge_swap_model(
@@ -352,9 +405,6 @@ def edge_swap_model(
     Returns:
         Randomized network
     """
-    if seed is not None:
-        random.seed(seed)
-    
     G = network.core_network if hasattr(network, 'core_network') else network
     
     if G is None or len(G.nodes()) == 0:
@@ -368,6 +418,17 @@ def edge_swap_model(
     if num_swaps is None:
         num_swaps = 10 * m
     
+    if random_G.is_directed():
+        network_type = getattr(network, "network_type", "multilayer")
+        _swap_directed_edges(random_G, num_swaps, seed, network_type == "multiplex")
+        sample = multinet.multi_layer_network(
+            network_type=network_type,
+            directed=True,
+            coupling_weight=getattr(network, "coupling_weight", 1),
+        )
+        sample.core_network = random_G
+        return sample
+
     # Perform edge swaps
     try:
         nx.double_edge_swap(random_G, nswap=num_swaps, max_tries=num_swaps * 10, seed=seed)
