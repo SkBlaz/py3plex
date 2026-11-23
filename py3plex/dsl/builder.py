@@ -310,6 +310,10 @@ class LayerExprBuilder:
         result.ops = self.ops + ["+"] + other.ops
         return result
 
+    def __or__(self, other: "LayerExprBuilder") -> "LayerExprBuilder":
+        """Union of layers: L["a"] | L["b"]."""
+        return self + other
+
     def __sub__(self, other: "LayerExprBuilder") -> "LayerExprBuilder":
         """Difference of layers: L["a"] - L["b"]"""
         result = LayerExprBuilder.__new__(LayerExprBuilder)
@@ -599,7 +603,7 @@ class QueryBuilder:
             >>>
             >>> # Plain list of strings
             >>> Q.nodes().from_layers(["social", "work"])
-            >>> Q.nodes().from_layers([])  # empty → no layer filter
+            >>> Q.nodes().from_layers([])  # select no layers
         """
         from .layers import LayerSet
         from .ast import LayerExpr, LayerTerm
@@ -626,12 +630,14 @@ class QueryBuilder:
             self._select.layer_set = layer_expr
             # Clear the old layer_expr to avoid conflicts
             self._select.layer_expr = None
-        else:
-            # LayerExprBuilder - use old path
+        elif isinstance(layer_expr, LayerExprBuilder):
             self._select.layer_expr = layer_expr._to_ast()
             # Clear layer_set
             if hasattr(self._select, "layer_set"):
                 self._select.layer_set = None
+
+        else:
+            raise TypeError('from_layers() expects L["name"], a LayerSet, or a list of layer names')
 
         return self
 
@@ -664,35 +670,20 @@ class QueryBuilder:
         # Import here to avoid circular dependency
         from .expressions import BooleanExpression
 
-        # Process expression arguments
         for arg in args:
-            if isinstance(arg, BooleanExpression):
-                condition = arg.to_condition_expr()
-                if self._select.where is None:
-                    self._select.where = condition
-                else:
-                    # Merge conditions with AND
-                    self._select.where.atoms.extend(condition.atoms)
-                    if condition.atoms:  # Only add AND if there are atoms to add
-                        self._select.where.ops.append("AND")
-                    self._select.where.ops.extend(condition.ops)
-            else:
+            if not isinstance(arg, BooleanExpression):
                 raise TypeError(
-                    f"Positional arguments to where() must be BooleanExpression objects (from F), "
-                    f"got {type(arg)}"
+                    "Positional arguments to where() must be BooleanExpression objects "
+                    f"(from F), got {type(arg)}"
                 )
+            condition = arg.to_condition_expr()
+            current = self._select.where
+            self._select.where = current.combine(condition, "AND") if current else condition
 
-        # Process keyword arguments
         if kwargs:
             condition = build_condition_from_kwargs(kwargs)
-            if self._select.where is None:
-                self._select.where = condition
-            else:
-                # Merge conditions with AND
-                self._select.where.atoms.extend(condition.atoms)
-                if condition.atoms:
-                    self._select.where.ops.append("AND")
-                self._select.where.ops.extend(condition.ops)
+            current = self._select.where
+            self._select.where = current.combine(condition, "AND") if current else condition
 
         return self
 
@@ -2018,10 +2009,17 @@ class QueryBuilder:
         return self
 
     def top_k_global(self, k: int, key: str) -> "QueryBuilder":
-        """Explicit global top-k helper for machine-facing clarity."""
+        """Rank globally by key, using existing order keys to break ties."""
         self._select.limit_per_group = None
         self._select.group_by = []
-        return self.order_by(f"-{key}").limit(int(k))
+        self._select.order_by = [
+            OrderItem(key=key, desc=True),
+            *(order for order in self._select.order_by if order.key != key),
+        ]
+        self._select.coverage_mode = None
+        self._select.coverage_k = None
+        self._select.coverage_p = None
+        return self.limit(int(k))
 
     def top_k_per_layer(self, k: int, key: str) -> "QueryBuilder":
         """Explicit per-layer top-k helper for machine-facing clarity."""
@@ -3655,22 +3653,29 @@ class QueryBuilder:
                 "    Example: L[\"social\"] + L[\"work\"] for multiple layers"
             )
         
-        # Filter suggestions
+        is_edge_query = self._select.target == Target.EDGES
         if not has_filters and not has_grouping:
-            suggestions.append(
-                "  -> .where(degree__gt=3)  # Filter nodes/edges by attributes\n"
-                "    Example: .where(layer=\"social\", degree__gt=5)"
-            )
-        
-        # Compute suggestions
+            if is_edge_query:
+                suggestions.append('  -> .where(weight__gt=1)  # Filter edges by weight')
+            else:
+                suggestions.append(
+                    '  -> .where(degree__gt=3)  # Filter nodes by degree\n'
+                    '    Example: .where(layer="social", degree__gt=5)'
+                )
+
         if not has_compute:
-            suggestions.append(
-                "  -> .compute(\"degree\", \"betweenness_centrality\")  # Compute metrics\n"
-                "    Available: degree, betweenness_centrality, pagerank, clustering, ..."
-            )
-        
+            if is_edge_query:
+                suggestions.append(
+                    '  -> .compute("edge_betweenness_centrality")  # Compute an edge metric'
+                )
+            else:
+                suggestions.append(
+                    '  -> .compute("degree", "betweenness_centrality")  # Compute metrics\n'
+                    '    Available: degree, betweenness_centrality, pagerank, clustering, ...'
+                )
+
         # Grouping suggestions
-        if not has_grouping and has_layers:
+        if not is_edge_query and not has_grouping and has_layers:
             suggestions.append(
                 "  -> .per_layer()  # Group results by layer for per-layer analysis\n"
                 "    Then use: .top_k(), .aggregate(), .coverage()"
@@ -3682,7 +3687,7 @@ class QueryBuilder:
             )
         
         # UQ suggestions
-        if has_compute and not has_uq:
+        if not is_edge_query and has_compute and not has_uq:
             suggestions.append(
                 "  -> .uq(method=\"bootstrap\", n_samples=100)  # Add uncertainty quantification\n"
                 "    Methods: bootstrap, perturbation, seed, stratified_perturbation"
@@ -3691,23 +3696,23 @@ class QueryBuilder:
         # Grouping-specific suggestions
         if has_grouping and not is_coverage_filtered:
             suggestions.append(
-                "  -> .aggregate(\"mean\", \"std\")  # Aggregate metrics within groups"
+                "  -> .aggregate(n_items=\"count()\")  # Count items within groups"
             )
             suggestions.append(
                 "  -> .coverage(mode=\"all\")  # Filter items present across groups\n"
                 "    Modes: all, any, at_least, exact, fraction"
             )
             suggestions.append(
-                "  -> .end_grouping()  # Return to ungrouped context"
+                "  -> .end_grouping()  # Mark the end of grouping in the query"
             )
         
-        # Ordering suggestions
+        # Use the actual metric or its alias when suggesting ordering.
+        rank_key = self._select.compute[0].result_name if has_compute else (
+            "weight" if is_edge_query else "degree"
+        )
         if has_compute and not has_ordering:
-            suggestions.append(
-                "  -> .order_by(\"-degree\")  # Sort results (use '-' for descending)\n"
-                "    Example: .order_by(\"-betweenness_centrality\", \"node_id\")"
-            )
-        
+            suggestions.append(f'  -> .order_by("-{rank_key}")  # Sort in descending order')
+
         # Limiting suggestions
         if has_ordering and not has_limit:
             suggestions.append(
@@ -3717,11 +3722,11 @@ class QueryBuilder:
         
         if has_grouping:
             suggestions.append(
-                "  -> .top_k(10, \"degree\")  # Get top-k items per group"
+                f'  -> .top_k(10, "{rank_key}")  # Get top-k items per group'
             )
         
         # Explanation suggestions
-        if has_compute and not has_explain:
+        if not is_edge_query and has_compute and not has_explain:
             suggestions.append(
                 "  -> .explain()  # Add explanatory context (community, neighbors, layers)\n"
                 "    Options: neighbors_top=5, include_community=True"

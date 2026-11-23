@@ -285,9 +285,7 @@ class TestGrouping:
         # Add community attribute to nodes for testing
         # In a real scenario, this would come from community detection
         for i, node in enumerate(net.get_nodes()):
-            node_id, layer = node
-            if hasattr(net, 'core_network') and node_id in net.core_network:
-                net.core_network.nodes[node_id]['community'] = i % 3
+            net.core_network.nodes[node]["community"] = i % 3
         
         # This should work without error
         result = (

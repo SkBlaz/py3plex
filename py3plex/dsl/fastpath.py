@@ -263,6 +263,8 @@ def match_fastpath(select_stmt: Any) -> Optional[FastPlan]:
     dst_degree_max: Optional[float] = None
 
     if where is not None:
+        if where.postfix is not None:
+            return None
         # Reject if there are any OR operators
         ops = getattr(where, "ops", [])
         for op in ops:

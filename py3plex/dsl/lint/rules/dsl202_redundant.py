@@ -45,6 +45,9 @@ class RedundantPredicateRule:
         # Collect comparisons grouped by attribute
         comparisons_by_attr = {}
         
+        if conditions.postfix is not None:
+            return []
+
         for i, atom in enumerate(conditions.atoms):
             if atom.comparison:
                 comp = atom.comparison

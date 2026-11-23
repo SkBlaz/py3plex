@@ -196,6 +196,69 @@ class ConditionExpr:
 
     atoms: List[ConditionAtom] = field(default_factory=list)
     ops: List[str] = field(default_factory=list)
+    # Builder expressions whose grouping differs from flat AND/OR precedence.
+    postfix: Optional[List[str]] = field(default=None, repr=False)
+
+    def _flat_postfix(self) -> List[str]:
+        if not self.atoms:
+            return []
+        tokens = ["ATOM"]
+        pending_or = 0
+        for op in self.ops:
+            tokens.append("ATOM")
+            if op == "AND":
+                tokens.append("AND")
+            else:
+                pending_or += 1
+        return tokens + ["OR"] * pending_or
+
+    def combine(self, other: "ConditionExpr", op: str) -> "ConditionExpr":
+        if not self.atoms:
+            return other
+        if not other.atoms:
+            return self
+        combined = ConditionExpr(self.atoms + other.atoms, self.ops + [op] + other.ops)
+        tokens = (self.postfix or self._flat_postfix()) + (other.postfix or other._flat_postfix()) + [op]
+        if tokens != combined._flat_postfix():
+            combined.postfix = tokens
+        return combined
+
+    def matches(self, evaluate_atom) -> bool:
+        if self.postfix is not None:
+            return self.fold_postfix(
+                evaluate_atom,
+                lambda op, left, right: (left and right) if op == "AND" else (left or right),
+                lambda value: not value,
+            )
+        if not self.atoms:
+            return True
+
+        # Legacy flat expressions use AND-before-OR precedence.
+        current_and_chain = evaluate_atom(self.atoms[0])
+        or_terms = []
+        for op, atom in zip(self.ops, self.atoms[1:]):
+            value = evaluate_atom(atom)
+            if op == "AND":
+                current_and_chain = current_and_chain and value
+            elif op == "OR":
+                or_terms.append(current_and_chain)
+                current_and_chain = value
+        or_terms.append(current_and_chain)
+        return any(or_terms)
+
+    def fold_postfix(self, atom_value, binary, negate):
+        """Evaluate or render a grouped expression in its original order."""
+        atoms = iter(self.atoms)
+        values = []
+        for token in self.postfix:
+            if token == "ATOM":
+                values.append(atom_value(next(atoms)))
+            elif token == "NOT":
+                values.append(negate(values.pop()))
+            else:
+                right = values.pop()
+                values.append(binary(token, values.pop(), right))
+        return values[0]
 
 
 @dataclass
@@ -849,8 +912,9 @@ def _serialize(obj: Any) -> Any:
     import dataclasses
     if dataclasses.is_dataclass(obj) and not isinstance(obj, type):
         return {
-            k: _serialize(v)
-            for k, v in dataclasses.asdict(obj).items()
+            item.name: _serialize(getattr(obj, item.name))
+            for item in dataclasses.fields(obj)
+            if not (isinstance(obj, ConditionExpr) and item.name == "postfix" and obj.postfix is None)
         }
     if isinstance(obj, Enum):
         return obj.value
@@ -1666,10 +1730,10 @@ def _canonicalize_condition_expr(cond: Optional[ConditionExpr]) -> Optional[Cond
     
     # If all operations are AND (commutative), sort the atoms
     all_and = all(op == "AND" for op in cond.ops)
-    if all_and:
+    if all_and and cond.postfix is None:
         canonical_atoms = _sort_atoms_by_repr(canonical_atoms)
     
-    return ConditionExpr(atoms=canonical_atoms, ops=list(cond.ops))
+    return ConditionExpr(atoms=canonical_atoms, ops=list(cond.ops), postfix=deepcopy(cond.postfix))
 
 
 def _canonicalize_compute_item(item: ComputeItem) -> ComputeItem:
@@ -1953,6 +2017,8 @@ def ast_to_json(query: Query, canonical: bool = True) -> str:
             result = {'__type__': type_name}
             for field_name in obj.__dataclass_fields__:
                 value = getattr(obj, field_name)
+                if isinstance(obj, ConditionExpr) and field_name == "postfix" and value is None:
+                    continue
                 result[field_name] = _serialize(value)
             return result
         # Fallback
@@ -2118,6 +2184,8 @@ def _serialize_node(node: Any) -> str:
     if hasattr(node, "__dataclass_fields__"):
         parts = [node.__class__.__name__]
         for fname in sorted(node.__dataclass_fields__):
+            if isinstance(node, ConditionExpr) and fname == "postfix" and node.postfix is None:
+                continue
             parts.append(f"{fname}={_serialize_node(getattr(node, fname))}")
         return "(" + ",".join(parts) + ")"
     return repr(node)
@@ -2169,7 +2237,7 @@ def _canonicalize_select_stmt_scoped(
     new_where = base.where
     if new_where is not None:
         all_and = len(new_where.ops) == 0 or all(op == "AND" for op in new_where.ops)
-        if all_and:
+        if all_and and new_where.postfix is None:
             deduped, new_ops = _dedup_atoms(new_where.atoms, list(new_where.ops))
             if deduped != new_where.atoms or new_ops != list(new_where.ops):
                 proof.append("R2:where_idempotence")

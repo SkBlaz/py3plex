@@ -81,7 +81,7 @@ class TestProgressLogging:
             # Check for all major steps
             assert "Step 3.1: Getting initial nodes" in caplog.text
             assert "Step 3.2: Applying layer filter" in caplog.text
-            assert "Step 3.3: Applying WHERE conditions" in caplog.text
+            assert "Step 3.4.1: Applying WHERE conditions on computed fields" in caplog.text
             assert "Step 3.4: Computing 2 measure(s)" in caplog.text
             assert "Computing degree (1/2)" in caplog.text
             assert "Computing betweenness (2/2)" in caplog.text

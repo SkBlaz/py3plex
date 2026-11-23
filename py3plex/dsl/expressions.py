@@ -120,37 +120,14 @@ class BooleanExpression:
         if not isinstance(other, BooleanExpression):
             raise TypeError(f"Cannot combine BooleanExpression with {type(other)}")
         
-        # Handle negation by applying De Morgan's laws if needed
-        # For simplicity, we'll just combine the expressions
-        # Negation is handled during AST conversion
-        
-        # Combine atoms and ops
-        new_atoms = self._condition.atoms + other._condition.atoms
-        new_ops = self._condition.ops + ["AND"] + other._condition.ops
-        
-        # Simplify ops list (remove empty trailing ops)
-        while new_ops and new_ops[-1] == "":
-            new_ops.pop()
-        
-        new_condition = ConditionExpr(atoms=new_atoms, ops=new_ops)
-        return BooleanExpression(new_condition, negated=False)
-    
+        return BooleanExpression(self.to_condition_expr().combine(other.to_condition_expr(), "AND"))
+
     def __or__(self, other: "BooleanExpression") -> "BooleanExpression":
         """OR operator: (F.degree > 5) | (F.layer == "social")"""
         if not isinstance(other, BooleanExpression):
             raise TypeError(f"Cannot combine BooleanExpression with {type(other)}")
-        
-        # Combine atoms and ops
-        new_atoms = self._condition.atoms + other._condition.atoms
-        new_ops = self._condition.ops + ["OR"] + other._condition.ops
-        
-        # Simplify ops list
-        while new_ops and new_ops[-1] == "":
-            new_ops.pop()
-        
-        new_condition = ConditionExpr(atoms=new_atoms, ops=new_ops)
-        return BooleanExpression(new_condition, negated=False)
-    
+        return BooleanExpression(self.to_condition_expr().combine(other.to_condition_expr(), "OR"))
+
     def __invert__(self) -> "BooleanExpression":
         """NOT operator: ~F.is_infected"""
         # Create a new expression with negation flipped
@@ -162,40 +139,15 @@ class BooleanExpression:
         Returns:
             ConditionExpr that can be used in SelectStmt
         """
-        if self._negated:
-            # To implement negation, we would need to wrap the entire expression
-            # in a NOT operation. For now, we'll handle simple cases.
-            # TODO: Full negation support with parentheses
-            # For MVP, we'll just mark it somehow or raise an error
-            # Actually, let's handle single-atom negation
-            if len(self._condition.atoms) == 1 and not self._condition.ops:
-                atom = self._condition.atoms[0]
-                if atom.comparison:
-                    # Invert the operator
-                    comp = atom.comparison
-                    inverted_op = {
-                        ">": "<=",
-                        ">=": "<",
-                        "<": ">=",
-                        "<=": ">",
-                        "=": "!=",
-                        "!=": "=",
-                    }.get(comp.op, comp.op)
-                    new_comp = Comparison(left=comp.left, op=inverted_op, right=comp.right)
-                    new_atom = ConditionAtom(comparison=new_comp)
-                    return ConditionExpr(atoms=[new_atom], ops=[])
-            # For complex expressions, we can't easily negate without adding NOT to AST
-            raise NotImplementedError(
-                "Negation of complex expressions is not yet supported. "
-                "Try rewriting using inverted operators or applying De Morgan's laws. "
-                "For example:\n"
-                "  Instead of: ~((F.degree > 5) & (F.layer == 'social'))\n"
-                "  Use: (F.degree <= 5) | (F.layer != 'social')\n"
-                "  Or: ~(F.degree > 5) | ~(F.layer == 'social')"
-            )
-        
-        return self._condition
-    
+        condition = self._condition
+        if not self._negated:
+            return condition
+        return ConditionExpr(
+            atoms=condition.atoms,
+            ops=condition.ops,
+            postfix=(condition.postfix or condition._flat_postfix()) + ["NOT"],
+        )
+
     def __repr__(self) -> str:
         neg_str = "~" if self._negated else ""
         if len(self._condition.atoms) == 1:

@@ -20,8 +20,8 @@ def test_query_with_dsl_documents_layer_count_with_concrete_example_and_output()
     content = path.read_text(encoding="utf-8")
 
     assert "Concrete example (using the network built in this page):" in content
-    assert "layer_specific = Q.nodes().where(layer_count__eq=1).execute(network)" in content
-    assert "connectors = Q.nodes().where(layer_count__gte=2).execute(network)" in content
+    assert "layer_specific = Q.nodes().compute(\"layer_count\").where(layer_count__eq=1).execute(network)" in content
+    assert "connectors = Q.nodes().compute(\"layer_count\").where(layer_count__gte=2).execute(network)" in content
     assert "Layer-specific nodes:" in content
     assert "Connector nodes:" in content
 

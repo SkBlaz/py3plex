@@ -131,15 +131,13 @@ class TestBooleanOperators:
         expr = ~(F.degree > 5)
         condition = expr.to_condition_expr()
         
-        # Should invert to degree <= 5
-        assert condition.atoms[0].comparison.op == "<="
+        assert condition.atoms[0].comparison.op == ">"
+        assert condition.postfix == ["ATOM", "NOT"]
 
-    def test_not_operator_complex_raises(self):
-        """Test that ~ on complex expressions raises NotImplementedError."""
-        expr = ~((F.degree > 5) & (F.layer == "social"))
-        
-        with pytest.raises(NotImplementedError, match="Negation of complex expressions"):
-            expr.to_condition_expr()
+    def test_not_operator_complex(self, sample_network):
+        expr = ~((F.degree > 1) & (F.layer == "social"))
+        result = Q.nodes().where(expr).execute(sample_network)
+        assert set(result.items) == {("D", "work"), ("E", "work"), ("F", "work")}
 
 
 class TestQueryBuilderIntegration:

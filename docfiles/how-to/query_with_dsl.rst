@@ -109,28 +109,11 @@ Select all nodes and inspect the result:
         ['bob', 'work', 'dave', 'work', 1],
     ], input_type="list")
     
-    # Get all nodes
-    result = execute_query(network, 'SELECT nodes')
-    
-    print(f"Found {len(result)} nodes")
-    # Inspect a few items
-    for i, (node, data) in enumerate(result.items()):
-        print(f"  {node}: {data}")
-        if i >= 4:
-            break
+    result = execute_query(network, 'SELECT nodes COMPUTE degree')
 
-**Expected output (will vary with your data):**
-
-.. code-block:: text
-
-    Found 7 nodes
-      ('alice', 'social'): {'degree': 1, 'layer': 'social', 'layer_count': 2}
-      ('bob', 'social'): {'degree': 2, 'layer': 'social', 'layer_count': 2}
-      ('charlie', 'social'): {'degree': 1, 'layer': 'social', 'layer_count': 2}
-      ('alice', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
-      ('bob', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
-      ('charlie', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 2}
-      ('dave', 'work'): {'degree': 1, 'layer': 'work', 'layer_count': 1}
+    print(f"Found {result['count']} node replicas")
+    for replica in result["nodes"][:5]:
+        print(replica, result["computed"]["degree"][replica])
 
 .. tip:: Loading from files
    
@@ -146,7 +129,9 @@ Select all nodes and inspect the result:
        path = os.path.join(os.path.dirname(__file__), "datasets", "multiedgelist.txt")
        network.load_network(path, input_type="multiedgelist")
 
-**Note:** ``execute_query`` returns a dict-like result. Keys are ``(node, layer)`` tuples representing node-layer pairs. The ``layer_count`` attribute counts how many distinct layers the node appears in across the entire network. ``len(result)`` gives the number of returned items, and ``result.items()`` yields the full (key, value) pairs.
+The string API returns a dictionary. A node query stores replica IDs in
+``result["nodes"]``, the number of rows in ``result["count"]``, and computed
+metrics in ``result["computed"]``. Use the builder API for ``to_pandas()``.
 
 Filter by Layer
 ~~~~~~~~~~~~~~~
@@ -155,40 +140,37 @@ Restrict queries to nodes in a specific layer:
 
 .. code-block:: python
 
-    # Get nodes in the 'friends' layer only
+    # Get nodes in the social layer
     result = execute_query(
         network,
-        'SELECT nodes WHERE layer="friends"'
+        'SELECT nodes WHERE layer="social"'
     )
-    
-    print(f"Nodes in 'friends' layer: {len(result)}")
+    print(f"Nodes in 'social' layer: {result['count']}")
 
 **Understanding Layer Filters:**
 
-* ``layer="friends"`` selects only the node-layer pairs where ``layer == "friends"``
-* This does **not** select all occurrences of nodes across layers—only their representation in the specified layer
-* Use ``layer_count >= 2`` to find nodes appearing in multiple layers (``layer_count`` is the number of distinct layers for that node)
+* ``layer="social"`` selects only the replicas in the social layer.
+* Use the builder's layer coverage to find entities that appear in multiple layers.
 
 **Example with statistics:**
 
 .. code-block:: python
 
-    result = execute_query(
-        network,
-        'SELECT nodes WHERE layer="friends" COMPUTE degree'
-    )
+    from py3plex.dsl import Q
+
+    result = Q.nodes().where(layer="social").compute("degree").execute(network)
     df = result.to_pandas()
-    print(f"Nodes in 'friends': {len(df)}")
-    print(f"Average degree in 'friends': {df['degree'].mean():.2f}")
-    print(f"Max degree in 'friends': {df['degree'].max()}")
+    print(f"Nodes in 'social' layer: {len(df)}")
+    print(f"Average degree: {df['degree'].mean():.2f}")
+    print(f"Max degree: {df['degree'].max()}")
 
 **Expected output (example from a synthetic dataset):**
 
 .. code-block:: text
 
-    Nodes in 'friends': 42
-    Average degree in 'friends': 5.23
-    Max degree in 'friends': 15
+    Nodes in 'social' layer: 3
+    Average degree: 1.33
+    Max degree: 2
 
 Filter by Property
 ~~~~~~~~~~~~~~~~~~
@@ -202,14 +184,11 @@ Use comparisons to filter nodes by computed or intrinsic attributes:
         network,
         'SELECT nodes WHERE degree > 5'
     )
-    print(f"High-degree nodes: {len(result)}")
+    print(f"High-degree nodes: {result['count']}")
     
-    # Multilayer nodes with high degree
-    result = execute_query(
-        network,
-        'SELECT nodes WHERE degree > 5 AND layer_count >= 2'
-    )
-    print(f"High-degree multilayer nodes: {len(result)}")
+    # High-degree replicas in the social layer
+    result = execute_query(network, 'SELECT nodes WHERE degree > 5 AND layer="social"')
+    print(f"High-degree social replicas: {result['count']}")
 
 **Supported operators:** ``>``, ``>=``, ``<``, ``<=``, ``=``, ``!=``
 
@@ -219,8 +198,8 @@ Use comparisons to filter nodes by computed or intrinsic attributes:
 
 .. code-block:: text
 
-    High-degree nodes: 34
-    High-degree multilayer nodes: 18
+    High-degree nodes: 0
+    High-degree social replicas: 0
 
 Compute Statistics
 ~~~~~~~~~~~~~~~~~~
@@ -230,10 +209,13 @@ The ``COMPUTE`` clause calculates network metrics and attaches them to result ro
 .. code-block:: python
 
     # Compute degree and betweenness centrality for nodes in 'social' layer
-    result = execute_query(
-        network,
-        'SELECT nodes WHERE layer="social" '
-        'COMPUTE degree COMPUTE betweenness_centrality'
+    from py3plex.dsl import Q
+
+    result = (
+        Q.nodes()
+         .where(layer="social")
+         .compute("degree", "betweenness_centrality")
+         .execute(network)
     )
     
     # Convert to pandas for analysis
@@ -333,8 +315,8 @@ Use ``where()`` to add filter conditions. The builder API uses Django-style ``__
     # Multiple conditions (combined with AND)
     result = (
         Q.nodes()
-         .from_layers(L["work"])
-         .where(degree__gt=3, layer_count__gte=2)
+         .compute("layer_count")
+         .where(layer="work", degree__gt=3, layer_count__gte=2)
          .execute(network)
     )
     print(f"Multilayer high-degree nodes in 'work': {len(result)}")
@@ -357,19 +339,19 @@ Concrete example (using the network built in this page):
 .. code-block:: python
 
     # Nodes that appear in exactly one layer
-    layer_specific = Q.nodes().where(layer_count__eq=1).execute(network)
+    layer_specific = Q.nodes().compute("layer_count").where(layer_count__eq=1).execute(network)
     print(f"Layer-specific nodes: {len(layer_specific)}")
     
     # Nodes that appear in two or more layers (cross-layer connectors)
-    connectors = Q.nodes().where(layer_count__gte=2).execute(network)
+    connectors = Q.nodes().compute("layer_count").where(layer_count__gte=2).execute(network)
     print(f"Connector nodes: {len(connectors)}")
 
 **Expected output (illustrative):**
 
 .. code-block:: text
 
-    Layer-specific nodes: 3
-    Connector nodes: 2
+    Layer-specific nodes: 1
+    Connector nodes: 6
 
 * ``layer_count__gte=2``: nodes appearing in at least 2 layers
 * ``layer_count__eq=1``: nodes appearing in exactly 1 layer (layer-specific nodes)
@@ -599,14 +581,15 @@ Use ``order_by()`` and ``limit()`` to control result ordering and size:
     )
     
     print("Top 10 highest-degree nodes:")
-    for node, data in result.items():
-        print(f"  {node}: degree={data['degree']}")
+    for replica in result.items:
+        print(f"  {replica}: degree={result.attributes['degree'][replica]}")
 
 **Sorting conventions:**
 
 * ``order_by("degree")``: ascending (low to high)
 * ``order_by("-degree")``: descending (high to low)
-* Multiple keys: ``order_by("-degree", "layer_count")``: sort by degree descending, then layer_count ascending
+* Multiple keys: ``order_by("-degree", "layer")`` sorts by degree descending, then layer ascending.
+* ``top_k_global(10, "degree")`` ranks by degree first and uses any existing order keys to break ties.
 
 **Expected output (example ranking):**
 
@@ -629,42 +612,18 @@ Working with Results
 
 DSL queries return a ``QueryResult`` object that provides multiple ways to access and export data. Understanding how to work with results is crucial for integrating DSL queries into analysis pipelines.
 
-Access as Dictionary
+Iterate Over Results
 ~~~~~~~~~~~~~~~~~~~~
 
-``QueryResult`` provides dictionary-like access via ``.items()``:
+``result.items`` lists the selected replicas. Computed columns are available in
+``result.attributes``. For builder queries, metrics such as ``degree`` are keyed
+by the replica tuple.
 
 .. code-block:: python
 
     result = Q.nodes().compute("degree").execute(network)
-    
-    # Iterate over all items
-    for node, data in result.items():
-        print(f"{node}: degree={data['degree']}")
-    
-    # Inspect one sample entry
-    sample_key, sample_value = next(iter(result.items()))
-    print(f"Sample key type: {type(sample_key)}")
-    print(f"Sample key: {sample_key}")
-    print(f"Sample value: {sample_value}")
-
-**Result structure for nodes:**
-
-* **Keys**: ``(node_id, layer)`` tuples (for multilayer queries) or ``node_id`` (for single-layer queries)
-* **Values**: Dictionaries with computed attributes (``{"degree": 5, "betweenness_centrality": 0.23, ...}``)
-
-**Result structure for edges:**
-
-* **Keys**: ``((source, source_layer), (target, target_layer))`` tuples (interlayer edges include both layer names)
-* **Values**: Dictionaries with edge attributes and computed metrics
-
-**Expected output:**
-
-.. code-block:: text
-
-    Sample key type: <class 'tuple'>
-    Sample key: ('alice', 'social')
-    Sample value: {'degree': 12, 'layer': 'social', 'layer_count': 2}
+    for replica in result.items:
+        print(f"{replica}: degree={result.attributes['degree'][replica]}")
 
 Convert to Pandas
 ~~~~~~~~~~~~~~~~~
@@ -725,55 +684,44 @@ Convert to Pandas
 
 **Multi-index option:**
 
-For more complex analyses, you can reshape the ``id`` tuple into a multi-index:
+For more complex analyses, index the DataFrame by node ID and layer.
 
 .. code-block:: python
 
     df = result.to_pandas()
-    # Split 'id' tuple into separate columns
-    df[['node', 'layer']] = pd.DataFrame(df['id'].tolist(), index=df.index)
-    df = df.drop('id', axis=1)
-    df = df.set_index(['node', 'layer'])
+    df = df.set_index(["id", "layer"])
     print(df.head())
 
 Filter Results
 ~~~~~~~~~~~~~~
 
-You can filter results in two ways: **using the DSL's** ``where()`` **clause** (recommended) or **post-processing** with Python/pandas.
+Use ``where()`` to filter in the query, or use Python or pandas to filter the
+returned rows.
 
-**Option 1: Filter in the query (recommended for large networks):**
+**Option 1. Filter in the query**
 
 .. code-block:: python
 
-    # Filter before computation for efficiency
-    result = (
-        Q.nodes()
-         .compute("degree", "betweenness_centrality")
-         .where(degree__gt=5)
-         .execute(network)
-    )
+    result = Q.nodes().compute("degree", "betweenness_centrality").where(degree__gt=5).execute(network)
 
-**Option 2: Filter the result dictionary (for small networks or ad-hoc filtering):**
+**Option 2. Filter in Python**
 
 .. code-block:: python
 
     result = Q.nodes().compute("degree").execute(network)
-    
-    # Pure Python filtering
     high_degree = {
-        node: data
-        for node, data in result.items()
-        if data['degree'] > 5
+        replica: result.attributes["degree"][replica]
+        for replica in result.items
+        if result.attributes["degree"][replica] > 5
     }
-    print(f"High-degree nodes: {len(high_degree)}")
+    print(f"High-degree replicas: {len(high_degree)}")
 
-**Option 3: Filter the DataFrame (most flexible for complex conditions):**
+**Option 3. Filter the DataFrame**
 
 .. code-block:: python
 
+    result = Q.nodes().compute("degree", "betweenness_centrality").execute(network)
     df = result.to_pandas()
-    
-    # Use pandas boolean indexing
     filtered = df[df['degree'] > 5]
     
     # Complex conditions
@@ -801,20 +749,20 @@ Use **layer algebra** to combine layers. The ``L`` object supports set operation
     # Union: nodes/edges from EITHER layer
     result = (
         Q.nodes()
-         .from_layers(L["friends"] | L["work"])
+         .from_layers(L["social"] | L["work"])
          .compute("degree")
          .execute(network)
     )
     
     df = result.to_pandas()
-    print(f"Combined nodes from 'friends' and 'work': {len(df)}")
+    print(f"Combined nodes from 'social' and 'work': {len(df)}")
     print(f"Average degree across both layers: {df['degree'].mean():.2f}")
 
 **Set semantics:**
 
-* ``L["friends"] | L["work"]``: **Union** of nodes/edges from both layers (nodes appearing in either layer)
-* ``L["friends"] & L["work"]``: **Intersection** (see next section)
-* ``L["friends"] - L["work"]``: **Difference** (nodes in friends but not work)
+* ``L["social"] | L["work"]`` selects both layers.
+* ``L["social"] & L["work"]`` intersects layer names. Two distinct names have no layers in common.
+* ``L["social"] - L["work"]`` selects the social layer. An entity can still have a replica in work.
 
 **Use case:** Compare activity across related contexts. For example, analyze user behavior across social and professional networks together.
 
@@ -822,61 +770,33 @@ Use **layer algebra** to combine layers. The ``L`` object supports set operation
 
 .. code-block:: text
 
-    Combined nodes from 'friends' and 'work': 87
-    Average degree across both layers: 6.12
+    Combined nodes from 'social' and 'work': 7
+    Average degree across both layers: 1.14
 
-Layer Intersection
-~~~~~~~~~~~~~~~~~~
+Nodes Shared Across Layers
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Find nodes that appear in **multiple specific layers**:
+Select the layers, group replicas by layer, and use coverage to keep physical
+node IDs that have a replica in every selected layer.
 
 .. code-block:: python
 
-    # Nodes present in BOTH 'friends' AND 'work' layers
     result = (
         Q.nodes()
-         .from_layers(L["friends"] & L["work"])
+         .from_layers(L["social"] | L["work"])
          .compute("degree", "betweenness_centrality")
+         .per_layer()
+         .coverage(mode="all")
          .execute(network)
     )
-    
+
     df = result.to_pandas()
-    print(f"Nodes in both 'friends' and 'work': {len(df)}")
-    print("\nThese are 'connector' nodes bridging social and professional contexts")
-    print(df.head(10))
+    print(f"Physical nodes shared by both layers: {df['id'].nunique()}")
+    print(df[["id", "layer", "degree"]])
 
-**Semantics:**
-
-* ``L["friends"] & L["work"]`` selects nodes that have representations in **both** layers
-* This is different from ``layer_count >= 2``, which selects nodes in **any** two layers
-* Use intersection to find nodes bridging specific contexts
-
-**Alternative approach using** ``layer_count``:
-
-.. code-block:: python
-
-    # More general: nodes in at least 2 layers (any layers)
-    result = (
-        Q.nodes()
-         .where(layer_count__gte=2)
-         .compute("degree")
-         .execute(network)
-    )
-    print(f"Multilayer nodes (any 2+ layers): {len(result)}")
-
-**Expected output:**
-
-.. code-block:: text
-
-    Nodes in both 'friends' and 'work': 23
-    
-    These are 'connector' nodes bridging social and professional contexts
-                       id  degree  betweenness_centrality
-    0    (alice, friends)      12                 0.245000
-    1      (alice, work)       8                 0.189000
-    2  (charlie, friends)      10                 0.201000
-    3    (charlie, work)       7                 0.145000
-    ...
+Coverage keeps the matching replicas in the output. For nodes present in at
+least two layers, use ``coverage(mode="at_least", k=2)``. A selected layer with
+zero rows still counts for ``mode="all"`` and ``mode="fraction"``.
 
 Query Edges
 ~~~~~~~~~~~
@@ -1567,6 +1487,7 @@ Extract a subnetwork based on query criteria for focused analysis or visualizati
     # Extract high-activity multilayer nodes
     active_nodes = (
         Q.nodes()
+         .compute("layer_count")
          .where(layer_count__gt=2)
          .compute("degree", "betweenness_centrality")
          .execute(network)
@@ -1634,7 +1555,7 @@ This pattern is often combined with community detection, dynamics simulation, or
 .. code-block:: python
 
     # 1. Select subnetwork
-    core_nodes = Q.nodes().where(layer_count__gte=2, degree__gt=5).execute(network)
+    core_nodes = Q.nodes().compute("layer_count").where(layer_count__gte=2, degree__gt=5).execute(network)
     subnetwork = network.subgraph(core_nodes.keys())
     
     # 2. Run community detection on subnetwork

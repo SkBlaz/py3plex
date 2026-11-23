@@ -354,8 +354,8 @@ result.export_bundle("analysis.bundle.json.gz", compress=True)
 ## Quick Start: Golden Paths
 
 **Validation status**:
-- Path 1 and Path 2 are exercised in `tests/test_agents_golden_paths.py`
-- Path 3, Path 4, and Path 5 are advanced workflows and may require optional modules or setup in the current environment
+- Paths 1–3 are exercised in `tests/test_agents_golden_paths.py`
+- Paths 4 and 5 are advanced workflows and may require optional modules or setup in the current environment
 
 ### Path 1: Network Analysis from CSV
 
@@ -399,19 +399,18 @@ result = (
 
 # Get confidence intervals
 df = result.to_pandas(expand_uncertainty=True)
-print(df[["node", "pagerank", "pagerank_ci95_low", "pagerank_ci95_high"]])
+print(df[["id", "pagerank", "pagerank_ci95_low", "pagerank_ci95_high"]])
 ```
 
 ### Path 3: Temporal Network Analysis
 
 ```python
 from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
-from py3plex.dsl import Q
+from py3plex.dsl import Q, L
 
-# Create temporal network
 tnet = TemporalMultiLayerNetwork()
-tnet.add_edge('A', 'B', layer='social', t_start=100.0, t_end=200.0)
-# ... add more edges
+tnet.add_edge("A", "social", "B", "social", 100.0)
+tnet.add_edge("B", "social", "C", "social", 200.0)
 
 # Query specific time window
 result = (
@@ -792,6 +791,9 @@ Add filtering conditions.
 2. NOT (`~`)
 3. AND (`&`)
 4. OR (`|`)
+
+Use parentheses to group conditions explicitly. Multiple `.where()` calls combine
+with AND, preserving the grouping of each condition.
 
 **Semantics**:
 - Multiple conditions are combined with AND

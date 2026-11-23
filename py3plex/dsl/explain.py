@@ -298,7 +298,9 @@ def _get_neighbors_from_network(
     direction: str,
 ) -> List[Tuple[str, Optional[str], float]]:
     """Get neighbors from the network.
-    
+
+    Use the strongest matching parallel edge for each neighbor.
+
     Args:
         network: Multilayer network instance
         node_id: Node identifier
@@ -309,49 +311,42 @@ def _get_neighbors_from_network(
     Returns:
         List of (neighbor_id, neighbor_layer, weight) tuples
     """
-    neighbors = []
-    
-    # Access the underlying graph representation
-    if hasattr(network, 'core_network'):
-        # multi_layer_network style
-        G = network.core_network
-        
-        if scope == "layer" and layer:
-            # Layer-scoped neighbors
-            node_key = (node_id, layer)
-            if node_key in G:
-                if direction in ("out", "both"):
-                    for neighbor in G.neighbors(node_key):
-                        if isinstance(neighbor, tuple) and len(neighbor) >= 2:
-                            nbr_id, nbr_layer = neighbor[0], neighbor[1]
-                            # Get edge weight
-                            edge_data = G.get_edge_data(node_key, neighbor)
-                            weight = edge_data.get('weight', 1.0) if edge_data else 1.0
-                            neighbors.append((nbr_id, nbr_layer, weight))
-                        else:
-                            neighbors.append((neighbor, None, 1.0))
-                
-                # For undirected graphs, "in" and "both" give same results as "out"
-                # For directed graphs, we'd need to check predecessors
-        else:
-            # Global scope - get neighbors from all layers
-            # Find all layer keys for this node
-            node_keys = [n for n in G.nodes() if (isinstance(n, tuple) and n[0] == node_id) or n == node_id]
-            
-            for nk in node_keys:
-                if direction in ("out", "both"):
-                    for neighbor in G.neighbors(nk):
-                        if isinstance(neighbor, tuple) and len(neighbor) >= 2:
-                            nbr_id, nbr_layer = neighbor[0], neighbor[1]
-                            edge_data = G.get_edge_data(nk, neighbor)
-                            weight = edge_data.get('weight', 1.0) if edge_data else 1.0
-                            neighbors.append((nbr_id, nbr_layer, weight))
-                        else:
-                            neighbors.append((neighbor, None, 1.0))
+    G = getattr(network, "core_network", None)
+    if G is None:
+        return []
+
+    if scope == "layer" and layer is not None:
+        node_keys = [(node_id, layer)]
     else:
-        # Fallback: unsupported network type
-        logger.warning(f"Unsupported network type for neighbor lookup: {type(network)}")
-    
+        node_keys = [node for node in G if node == node_id or (
+            isinstance(node, tuple) and node[0] == node_id
+        )]
+
+    neighbors = []
+    for node in node_keys:
+        if node not in G:
+            continue
+        weights = {}
+        edge_sources = []
+        if not G.is_directed() or direction in ("out", "both"):
+            edge_sources.append((neighbor, G.get_edge_data(node, neighbor)) for neighbor in G[node])
+        if G.is_directed() and direction in ("in", "both"):
+            edge_sources.append(
+                (neighbor, G.get_edge_data(neighbor, node)) for neighbor in G.predecessors(node)
+            )
+        for edges in edge_sources:
+            for neighbor, data in edges:
+                if G.is_multigraph():
+                    weight = max(attrs.get("weight", 1.0) for attrs in data.values())
+                else:
+                    weight = data.get("weight", 1.0)
+                if neighbor not in weights or weight > weights[neighbor]:
+                    weights[neighbor] = weight
+        for neighbor, weight in weights.items():
+            if isinstance(neighbor, tuple) and len(neighbor) >= 2:
+                neighbors.append((neighbor[0], neighbor[1], weight))
+            else:
+                neighbors.append((neighbor, None, weight))
     return neighbors
 
 
@@ -394,7 +389,7 @@ def _rank_neighbors(
         })
     
     # Sort by score (descending), then by neighbor_id for deterministic ordering
-    neighbor_data.sort(key=lambda x: (-x["score"], x["id"]))
+    neighbor_data.sort(key=lambda x: (-x["score"], str(x["id"]), str(x["layer"])))
     
     return neighbor_data
 

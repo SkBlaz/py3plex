@@ -143,28 +143,26 @@ def test_golden_path_2_uncertainty_aware_centrality(sample_multilayer_network):
     # Get confidence intervals (AGENTS.md example)
     df = result.to_pandas(expand_uncertainty=True)
     
-    # Validate UQ columns exist
     assert len(df) > 0
-    # UQ should create mean, std, and CI columns
-    uq_columns = [col for col in df.columns if 'pagerank' in col or 'betweenness' in col]
-    assert len(uq_columns) > 0  # Should have UQ columns
+    assert list(df[["id", "pagerank", "pagerank_ci95_low", "pagerank_ci95_high"]].columns) == [
+        "id", "pagerank", "pagerank_ci95_low", "pagerank_ci95_high",
+    ]
 
 
 # ============================================================================
 # Path 3: Temporal Network Analysis  
 # ============================================================================
 
-@pytest.mark.skip(reason="Requires TemporalMultiLayerNetwork which may not be fully implemented")
 def test_golden_path_3_temporal_network_analysis():
-    """
-    Golden Path 3: Temporal Network Analysis
-    
-    From AGENTS.md lines 392-410:
-    Create temporal network -> Query time window -> Analyze
-    
-    Skipped: Temporal network implementation may be incomplete.
-    """
-    pass
+    from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+
+    tnet = TemporalMultiLayerNetwork()
+    tnet.add_edge("A", "social", "B", "social", 100.0)
+    tnet.add_edge("B", "social", "C", "social", 200.0)
+    result = Q.edges().during(100.0, 150.0).from_layers(L["social"]).execute(tnet)
+
+    assert result.count == 1
+    assert result.to_pandas()["target"].tolist() == ["B"]
 
 
 # ============================================================================
