@@ -18,6 +18,7 @@ import scipy.sparse as sp
 
 # Import algorithm requirements system
 from py3plex.requirements import AlgoRequirements, requires
+from .multilayer_modularity import _supra_replica_order
 
 
 # Define requirements for Leiden multilayer
@@ -343,12 +344,12 @@ def leiden_multilayer(
     if hasattr(graph_layers, 'get_supra_adjacency_matrix'):
         # py3plex multi_layer_network object
         network = graph_layers
-        node_layer_list = list(network.get_nodes())
         supra_matrix = network.get_supra_adjacency_matrix()
+        node_layer_list = _supra_replica_order(network)
         if sp.issparse(supra_matrix):
             supra_matrix = supra_matrix.toarray()
 
-        layers = list({nl[1] for nl in node_layer_list})
+        layers = list(network.layers)
 
     elif isinstance(graph_layers, list):
         # List of graphs or matrices - convert to py3plex network
@@ -385,8 +386,8 @@ def leiden_multilayer(
                             network.add_edge(i, layer_name, j, layer_name, adj_matrix[i, j])
             layers = [f"L{i}" for i in range(len(graph_layers))]
 
-        node_layer_list = list(network.get_nodes())
         supra_matrix = network.get_supra_adjacency_matrix()
+        node_layer_list = _supra_replica_order(network)
         if sp.issparse(supra_matrix):
             supra_matrix = supra_matrix.toarray()
 

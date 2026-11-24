@@ -561,3 +561,22 @@ class TestMultilayerModularityConsistency(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_multiplex_modularity_uses_layer_major_replica_order():
+    graph = multinet.multi_layer_network(directed=False, network_type="multiplex")
+    graph.add_edges([
+        ["a", "Z", "b", "Z", 1],
+        ["a", "A", "c", "A", 1],
+        ["b", "A", "c", "A", 1],
+    ], input_type="list")
+    partition = {
+        ("a", "Z"): 0, ("b", "Z"): 0,
+        ("a", "A"): 1, ("b", "A"): 2, ("c", "A"): 3,
+    }
+
+    assert np.isclose(multilayer_modularity(graph, partition, omega=0), -0.25)
+    matrix, order = build_supra_modularity_matrix(graph, omega=0)
+    assert order == graph.node_order_in_matrix
+    same = np.equal.outer([partition[node] for node in order], [partition[node] for node in order])
+    assert np.isclose(matrix[same].sum(), -1.5)
