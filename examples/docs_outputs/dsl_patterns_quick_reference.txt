@@ -83,11 +83,11 @@ Result: Computed PageRank with confidence intervals for 18 nodes
 
 Sample with confidence intervals:
       id  pagerank  pagerank_ci95_low  pagerank_ci95_high
-0  Alice  0.061113           0.000000            0.127837
-1  Alice  0.055856           0.000000            0.118034
-2  Alice  0.054414           0.000000            0.111111
-3    Bob  0.098658           0.040936            0.189493
-4    Bob  0.064047           0.000000            0.111111
+0  Alice  0.058037           0.010909            0.117154
+1  Alice  0.054778           0.011071            0.102641
+2  Alice  0.054913           0.010909            0.096618
+3    Bob  0.089765           0.038495            0.162316
+4    Bob  0.062264           0.011628            0.096618
 
 ======================================================================
 PATTERN 4: Layer Algebra
