@@ -304,15 +304,9 @@ def _prepare_network(network: Any, layer_expr: Any) -> Tuple[
     if len(nodes) == 0:
         return [], np.array([[]]), {}, {}
 
-    # Build node to index mapping
-    node_to_idx = {node: i for i, node in enumerate(nodes)}
+    from ._utils import get_adjacency_matrix
 
-    # Rows represent sources and columns represent destinations.
-    import networkx as nx
-
-    adj_matrix = nx.to_numpy_array(G.subgraph(nodes), nodelist=nodes, dtype=float)
-    if not np.all(np.isfinite(adj_matrix)) or np.any(adj_matrix < 0):
-        raise ValueError("Dynamics requires finite nonnegative edge weights.")
+    adj_matrix, node_to_idx = get_adjacency_matrix(G, nodes)
 
     # Build layer info
     layer_info: Dict[str, List[Any]] = {}

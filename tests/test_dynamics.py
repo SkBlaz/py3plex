@@ -640,3 +640,23 @@ class TestIntegration:
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
+
+
+def test_sis_uses_incoming_arcs_in_python_and_numpy():
+    import networkx as nx
+    import numpy as np
+    from py3plex.dynamics import SISDynamics
+
+    graph = nx.MultiDiGraph()
+    graph.add_weighted_edges_from([("source", "target", 2), ("source", "target", 5)])
+    for backend in ("python", "numpy"):
+        process = SISDynamics(
+            graph, beta=1, mu=0, seed=7, initial_infected={"source"}, backend=backend
+        )
+        state = process.initialize_state()
+        result = process.step(state, 0)
+        if backend == "numpy":
+            np.testing.assert_array_equal(result, [1, 1])
+            np.testing.assert_array_equal(process._adj_matrix, [[0, 7], [0, 0]])
+        else:
+            assert result == {"source": "I", "target": "I"}

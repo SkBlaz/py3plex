@@ -446,8 +446,7 @@ class SISDynamics(DynamicsProcess):
         susceptible = np.where(state == 0)[0]
         for s in susceptible:
             # Count infected neighbors
-            neighbors = np.where(self._adj_matrix[s] > 0)[0]
-            k = np.sum(state[neighbors] == 1)
+            k = self._adj_matrix[infected, s].sum()
             
             if k > 0:
                 p_infect = 1.0 - (1.0 - self.beta) ** k

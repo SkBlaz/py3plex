@@ -6,6 +6,7 @@ and extracting network information needed by dynamics processes.
 
 from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 
+import networkx as nx
 import numpy as np
 
 
@@ -86,19 +87,10 @@ def get_adjacency_matrix(
         nodelist = list(G.nodes())
     
     node_to_idx = {node: i for i, node in enumerate(nodelist)}
-    n = len(nodelist)
-    
-    # Create adjacency matrix
-    adj = np.zeros((n, n), dtype=float)
-    for u, v in G.edges():
-        if u in node_to_idx and v in node_to_idx:
-            i, j = node_to_idx[u], node_to_idx[v]
-            # Get edge weight if available
-            weight = G[u][v].get('weight', 1.0) if hasattr(G[u][v], 'get') else 1.0
-            adj[i, j] = weight
-            if not G.is_directed():
-                adj[j, i] = weight
-    
+    adj = nx.to_numpy_array(G.subgraph(nodelist), nodelist=nodelist, dtype=float)
+    if not np.all(np.isfinite(adj)) or np.any(adj < 0):
+        raise ValueError("Dynamics requires finite nonnegative edge weights.")
+
     return adj, node_to_idx
 
 
@@ -172,25 +164,20 @@ def get_node_layer_info(graph: Any) -> Optional[Dict[Any, str]]:
     return layer_info if layer_info else None
 
 
-def count_infected_neighbors(
-    graph: Any,
-    node: Any,
-    state: Dict[Any, Any],
-    infected_value: Any = 1,
-) -> int:
-    """Count how many neighbors of a node are in infected state.
-    
-    Args:
-        graph: NetworkX graph or py3plex multilayer network
-        node: Node to check neighbors of
-        state: Dictionary mapping node -> state
-        infected_value: Value that represents infected state (default: 1)
-    
-    Returns:
-        Number of infected neighbors
-    """
-    count = 0
-    for neighbor in iter_multilayer_neighbors(graph, node):
-        if neighbor in state and state[neighbor] == infected_value:
-            count += 1
-    return count
+def iter_incoming_exposures(graph, node):
+    """Yield an incoming weight for each edge, including parallel edges."""
+    network = graph.core_network if hasattr(graph, "core_network") else graph
+    adjacency = network.pred[node] if network.is_directed() else network.adj[node]
+    for neighbor, attrs in adjacency.items():
+        records = attrs.values() if network.is_multigraph() else (attrs,)
+        for data in records:
+            weight = float(data.get("weight", 1.0))
+            if not np.isfinite(weight) or weight < 0:
+                raise ValueError("Dynamics requires finite nonnegative edge weights.")
+            yield neighbor, weight
+
+
+def count_infected_neighbors(graph, node, state, infected_value=1) -> float:
+    """Return total incoming weight from neighbors in the infected state."""
+    return sum(weight for neighbor, weight in iter_incoming_exposures(graph, node)
+               if state.get(neighbor) == infected_value)
