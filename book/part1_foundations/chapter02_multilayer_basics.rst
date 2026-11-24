@@ -28,19 +28,27 @@ Do not silently reinterpret replica counts as physical-node counts.
 Replica-Level vs Physical-Node-Level Reading
 ---------------------------------------------
 
-+-------------------------------+--------------------------------------------+----------------------------------------------+
-| Question                      | Replica-level interpretation                | Physical-node-level interpretation            |
-+===============================+============================================+==============================================+
-| Unit of analysis              | ``(node, layer)``                          | ``node`` aggregated across layers             |
-+-------------------------------+--------------------------------------------+----------------------------------------------+
-| Count of entities             | number of replicas in :math:`V_M`          | number of unique entities in :math:`V`        |
-+-------------------------------+--------------------------------------------+----------------------------------------------+
-| Degree meaning                | context-specific participation              | aggregate participation footprint             |
-+-------------------------------+--------------------------------------------+----------------------------------------------+
-| Typical failure mode          | overcounting "important actors"             | hiding context-specific specialization        |
-+-------------------------------+--------------------------------------------+----------------------------------------------+
-| Safe reporting pattern        | report layer explicitly                     | report aggregation rule explicitly            |
-+-------------------------------+--------------------------------------------+----------------------------------------------+
+.. list-table::
+   :header-rows: 1
+
+   * - Question
+     - Replica-level interpretation
+     - Physical-node-level interpretation
+   * - Unit of analysis
+     - ``(node, layer)``
+     - ``node`` aggregated across layers
+   * - Count of entities
+     - number of replicas in :math:`V_M`
+     - number of unique entities in :math:`V`
+   * - Degree meaning
+     - context-specific participation
+     - aggregate participation footprint
+   * - Typical failure mode
+     - overcounting "important actors"
+     - hiding context-specific specialization
+   * - Safe reporting pattern
+     - report layer explicitly
+     - report aggregation rule explicitly
 
 Replica Semantics: The First Major Pitfall
 ------------------------------------------

@@ -18,7 +18,7 @@ How to Compute Network Statistics
    Examples in this guide use:
    
    * **Programmatically created networks** (recommended for self-contained examples)
-   * **Built-in generators**: ``from py3plex.algorithms import random_generators``
+   * **Built-in generators**: ``from py3plex.core import random_generators``
    * **Example files**: ``datasets/multiedgelist.txt`` in the repository
    
    For reproducibility, we'll create networks from scratch in most examples.
@@ -33,7 +33,7 @@ Get a fast overview (total nodes, edges, layers):
     from py3plex.core import multinet
     
     # Create a multilayer network
-    network = multinet.multi_layer_network()
+    network = multinet.multi_layer_network(directed=False)
     network.add_edges([
         ['A', '1', 'B', '1', 1],
         ['B', '1', 'C', '1', 1],
@@ -48,8 +48,7 @@ Get a fast overview (total nodes, edges, layers):
 
 .. code-block:: text
 
-    Number of nodes: 6
-    Number of edges: 4
+    Number of unique nodes (as node-layer tuples): 6
     Number of unique node IDs (across all layers): 4
     Nodes per layer:
       Layer '1': 3 nodes
@@ -63,27 +62,16 @@ Understand how structure varies per layer before aggregating the network.
 Compute Per-Layer Density
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Density compares observed edges ``m`` to the maximum possible edges among ``n`` nodes in one layer.
+Density is the fraction of possible within-layer connections present.
+The statistic includes isolated replicas and counts each non-loop connection once.
+Directed layers count ordered pairs.
 
 .. code-block:: python
 
-    layers = network.get_layers()
-    
-    for layer in layers:
-        # Get nodes and edges in this layer
-        nodes = Q.nodes().from_layers(L[layer]).execute(network)
-        edges = Q.edges().from_layers(L[layer]).execute(network)
-        
-        n = len(nodes)
-        m = len(edges)
-        
-        # Density = actual edges / possible edges
-        max_edges = n * (n - 1) / 2  # undirected
-        density = m / max_edges if max_edges > 0 else 0
-        
-        print(f"Layer {layer}: density = {density:.4f}")
+    from py3plex.algorithms.statistics.multilayer_statistics import layer_density
 
-For directed layers, use ``max_edges = n * (n - 1)`` instead (ordered pairs).
+    for layer in network.layers:
+        print(f"Layer {layer}: density = {layer_density(network, layer):.4f}")
 
 Compare Layers
 ~~~~~~~~~~~~~~
@@ -92,11 +80,11 @@ Use the DSL for efficient comparison:
 
 .. code-block:: python
 
-    for layer in network.get_layers():
+    for layer in network.layers:
         result = (
             Q.nodes()
              .from_layers(L[layer])
-             .compute("degree")
+             .compute("degree", kind="intra")
              .execute(network)
         )
         df = result.to_pandas()
@@ -118,31 +106,20 @@ Once you know layer-level trends, drill down to node importance and activity.
 Node Activity (Layer Count)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-How many layers does each node participate in? ``layer_count`` counts unique layers where the node appears.
+The ``layer_count`` operator reports how many selected layers contain each
+physical node. The query returns one row per replica. Drop repeated physical
+IDs for a one-row-per-entity summary.
 
 .. code-block:: python
 
-    # Get nodes present in multiple layers
+    result = Q.nodes().compute("layer_count").execute(network)
+    df = result.to_pandas()
     active_nodes = (
-        Q.nodes()
-         .compute("layer_count")
-         .where(layer_count__gt=1)
-         .order_by("-layer_count")
-         .execute(network)
+        df.loc[df["layer_count"] > 1, ["id", "layer_count"]]
+        .drop_duplicates(subset="id")
+        .sort_values("layer_count", ascending=False)
     )
-    
-    df = active_nodes.to_pandas()
-    print(df.head(10))
-
-**Example output:**
-
-.. code-block:: text
-
-         node  layer_count
-    0   Alice           3
-    1     Bob           3
-    2   Carol           2
-    3    Dave           1
+    print(active_nodes)
 
 Degree Centrality
 ~~~~~~~~~~~~~~~~~
@@ -208,13 +185,13 @@ Use these measures when the interaction between layers matters, not just within-
 Node Versatility
 ~~~~~~~~~~~~~~~~
 
-Versatility measures how evenly a node distributes its connections across layers; higher values mean more balanced participation across layers.
+Versatility centrality combines a physical node’s centrality scores across layers. By default, each layer receives the same weight.
 
 .. code-block:: python
 
-    from py3plex.algorithms.statistics import calculate_versatility
+    from py3plex.algorithms.statistics.multilayer_statistics import versatility_centrality
     
-    versatility_scores = calculate_versatility(network)
+    versatility_scores = versatility_centrality(network, centrality_type="degree")
     
     # Sort by versatility
     sorted_scores = sorted(
@@ -234,13 +211,13 @@ How many connections exist in multiple layers?
 
 .. code-block:: python
 
-    from py3plex.algorithms.statistics import calculate_edge_overlap
+    from py3plex.algorithms.statistics.multilayer_statistics import edge_overlap
     
-    overlap = calculate_edge_overlap(network, 'layer1', 'layer2')
+    overlap = edge_overlap(network, "1", "2")
     
-    print(f"Edge overlap between layer1 and layer2: {overlap:.2%}")
+    print(f"Edge overlap between layers 1 and 2: {overlap:.2%}")
 
-``overlap`` is a ratio (0–1) of edges shared by both layers.
+``overlap`` is the size of the intersection divided by the size of the union of physical-node edge sets.
 
 Inter-Layer Degree Correlation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -249,44 +226,40 @@ Are high-degree nodes in layer 1 also high-degree in layer 2?
 
 .. code-block:: python
 
-    from py3plex.algorithms.statistics import inter_layer_correlation
-    
-    correlation = inter_layer_correlation(
-        network,
-        'layer1',
-        'layer2',
-        metric='degree'
+    from py3plex.algorithms.statistics.multilayer_statistics import (
+        inter_layer_degree_correlation,
     )
-    
+
+    correlation = inter_layer_degree_correlation(network, "1", "2")
     print(f"Degree correlation: {correlation:.3f}")
-    # Values near 1.0 indicate that high-degree nodes stay high across layers.
 
 Network-Wide Statistics
-------------------------
+-----------------------
 
-Aggregate everything into a single view of the whole multilayer graph.
+These examples measure the simple undirected graph of node replicas. The
+projection retains layer IDs on the nodes and includes interlayer edges.
 
 Global Clustering Coefficient
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    from py3plex.algorithms.statistics import global_clustering_coefficient
-    
-    gcc = global_clustering_coefficient(network)
-    print(f"Global clustering: {gcc:.3f}")
+    import networkx as nx
+
+    graph = nx.Graph(network.core_network)
+    graph.remove_edges_from(nx.selfloop_edges(graph))
+    print(f"Global clustering (transitivity): {nx.transitivity(graph):.3f}")
 
 Average Path Length
 ~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    from py3plex.algorithms.statistics import average_path_length
-    
-    # Note: computationally expensive for large networks; ensure the graph
-    # is connected or run on the largest connected component.
-    apl = average_path_length(network)
-    print(f"Average path length: {apl:.2f}")
+    largest_component = max(nx.connected_components(graph), key=len, default=set())
+    if largest_component:
+        connected = graph.subgraph(largest_component)
+        length = nx.average_shortest_path_length(connected)
+        print(f"Average path length of the largest component: {length:.2f}")
 
 Exporting Statistics
 --------------------
@@ -315,24 +288,16 @@ Save to JSON
 .. code-block:: python
 
     import json
-    from py3plex.dsl import Q, L
-    
+
     stats = {
-        'num_nodes': len(list(network.get_nodes())),
-        'num_edges': len(list(network.get_edges())),
-        'num_layers': len(network.get_layers()),
-        'density_by_layer': {}
+        "num_replicas": network.core_network.number_of_nodes(),
+        "num_edges": network.core_network.number_of_edges(),
+        "num_layers": network.layer_count,
+        "density_by_layer": {
+            layer: layer_density(network, layer) for layer in network.layers
+        },
     }
-    
-    for layer in network.get_layers():
-        layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
-        layer_edges = Q.edges().from_layers(L[layer]).execute(network)
-        n = len(layer_nodes)
-        m = len(layer_edges)
-        max_edges = n * (n - 1) / 2  # undirected density
-        stats['density_by_layer'][layer] = m / max_edges if max_edges > 0 else 0
-    
-    with open('stats.json', 'w') as f:
+    with open("stats.json", "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2)
 
 Common Patterns
@@ -345,14 +310,15 @@ Pattern: Compare Node Importance Across Layers
 
     import pandas as pd
     
-    layers = network.get_layers()
+    layers = network.layers
     all_stats = []
     
     for layer in layers:
         result = (
             Q.nodes()
              .from_layers(L[layer])
-             .compute("degree", "betweenness_centrality")
+             .compute("degree", kind="intra")
+             .compute("betweenness_centrality")
              .execute(network)
         )
         df = result.to_pandas()
@@ -364,7 +330,7 @@ Pattern: Compare Node Importance Across Layers
     # Find nodes that are important in all layers
     pivot = combined.pivot_table(
         values='degree',
-        index='node',
+        index='id',
         columns='layer',
         aggfunc='mean'
     )
@@ -376,11 +342,11 @@ Pattern: Identify Layer-Specific Hubs
 
 .. code-block:: python
 
-    for layer in network.get_layers():
+    for layer in network.layers:
         result = (
             Q.nodes()
              .from_layers(L[layer])
-             .compute("degree")
+             .compute("degree", kind="intra")
              .order_by("-degree")
              .limit(5)
              .execute(network)

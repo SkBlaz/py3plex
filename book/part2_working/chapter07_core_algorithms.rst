@@ -139,23 +139,41 @@ What it does not give: robustness, causal explanation, or cross-representation i
 Method Family Summary Table
 ---------------------------
 
-+-------------------------+---------------------------+-----------------------------------------------+-----------------------------------------------+
-| Method family           | Typical output type       | Main assumption                                | Common failure mode                            |
-+=========================+===========================+===============================================+===============================================+
-| Native multilayer       | layer-aware score/partition| layer boundaries are meaningful                | overclaiming from one representation choice    |
-+-------------------------+---------------------------+-----------------------------------------------+-----------------------------------------------+
-| Delegated single-layer  | projected score/partition | projection preserves relevant signal           | semantic drift hidden as "equivalent result"   |
-+-------------------------+---------------------------+-----------------------------------------------+-----------------------------------------------+
-| Approximate             | approximate ranking/value | approximation error acceptable for objective   | interpreting tiny score differences literally   |
-+-------------------------+---------------------------+-----------------------------------------------+-----------------------------------------------+
-| Stochastic              | seeded output or UQ summary| sampled/heuristic search reflects target space | treating one run as final without stability     |
-+-------------------------+---------------------------+-----------------------------------------------+-----------------------------------------------+
-| Embedding               | vector representation      | walk/objective captures relevant similarity    | treating latent coordinates as explanations     |
-+-------------------------+---------------------------+-----------------------------------------------+-----------------------------------------------+
-| Algebraic path/closure  | path value or witness      | semiring/lift matches the substantive path cost| hiding semantics in an arbitrary weight lift    |
-+-------------------------+---------------------------+-----------------------------------------------+-----------------------------------------------+
-| Meta-analysis           | pooled effect/interval     | comparable effects and uncertainty estimates   | pooling incompatible networks or estimands      |
-+-------------------------+---------------------------+-----------------------------------------------+-----------------------------------------------+
+.. list-table::
+   :header-rows: 1
+
+   * - Method family
+     - Typical output type
+     - Main assumption
+     - Common failure mode
+   * - Native multilayer
+     - layer-aware score/partition
+     - layer boundaries are meaningful
+     - overclaiming from one representation choice
+   * - Delegated single-layer
+     - projected score/partition
+     - projection preserves relevant signal
+     - semantic drift hidden as "equivalent result"
+   * - Approximate
+     - approximate ranking/value
+     - approximation error acceptable for objective
+     - interpreting tiny score differences literally
+   * - Stochastic
+     - seeded output or UQ summary
+     - sampled/heuristic search reflects target space
+     - treating one run as final without stability
+   * - Embedding
+     - vector representation
+     - walk/objective captures relevant similarity
+     - treating latent coordinates as explanations
+   * - Algebraic path/closure
+     - path value or witness
+     - semiring/lift matches the substantive path cost
+     - hiding semantics in an arbitrary weight lift
+   * - Meta-analysis
+     - pooled effect/interval
+     - comparable effects and uncertainty estimates
+     - pooling incompatible networks or estimands
 
 Method Selection Checklist
 --------------------------

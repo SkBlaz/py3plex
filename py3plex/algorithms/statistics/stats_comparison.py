@@ -72,7 +72,7 @@ def compare_multilayer_networks(
             Default: ['average_degree', 'density', 'clustering']
         test: Type of statistical test:
             - 'permutation': Permutation test (non-parametric)
-            - 't-test': Student's t-test (parametric, 2 groups)
+            - 't-test': Welch's t-test (parametric, 2 groups)
             - 'mann-whitney': Mann-Whitney U test (non-parametric, 2 groups)
             - 'anova': One-way ANOVA (parametric, 2+ groups)
             - 'kruskal': Kruskal-Wallis H test (non-parametric, 2+ groups)
@@ -111,7 +111,7 @@ def compare_multilayer_networks(
         >>> net2 = multinet.multi_layer_network(directed=False)
         >>> net2.add_edges([['A', 'L1', 'B', 'L1', 1]], input_type='list')
         >>>
-        >>> # Compare networks
+        >>> # Describe differences between two individual networks
         >>> results = compare_multilayer_networks(
         ...     [net1, net2],
         ...     metrics=['density', 'average_degree'],

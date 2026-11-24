@@ -3,12 +3,11 @@
 Example: Statistical Comparison of Multilayer Networks
 
 This script demonstrates how to use py3plex's statistical comparison framework
-to compare multilayer networks and detect statistically significant differences.
-
-SKIP_CI: slow - Runs 1000 permutations which takes more than 10 seconds
+to describe individual networks and test differences between independent cohorts.
 """
 
 from py3plex.core import multinet
+from py3plex.datasets import make_random_multiplex
 from py3plex.algorithms.statistics.stats_comparison import compare_multilayer_networks
 
 
@@ -53,66 +52,30 @@ def main():
 
     print(f"   Network 2: {len(list(net2.get_nodes()))} nodes, {len(list(net2.get_edges()))} edges")
 
-    # Perform statistical comparison
-    print("\n3. Comparing networks using permutation test...")
+    print("\n3. Descriptive comparison of the two networks")
+    descriptive = compare_multilayer_networks(
+        [net1, net2], metrics=["density", "average_degree", "node_activity"]
+    )
+    summaries = ["metric", "layer", "mean_group_0", "mean_group_1"]
+    print(descriptive[summaries].to_string(index=False))
+
+    print("\n4. Permutation test on two cohorts of independent graphs")
+    cohorts = [
+        [
+            make_random_multiplex(
+                n_nodes=20, n_layers=2, p=probability,
+                random_state=100 * group + replicate,
+            )
+            for replicate in range(8)
+        ]
+        for group, probability in enumerate((0.15, 0.35))
+    ]
     results = compare_multilayer_networks(
-        [net1, net2],
-        metrics=['density', 'average_degree', 'node_activity'],
-        test='permutation',
-        n_permutations=1000,
-        correction='fdr_bh',
-        alpha=0.05
+        cohorts, metrics=["density", "average_degree"],
+        n_permutations=999, correction="fdr_bh", seed=42,
     )
-
-    print("\n4. Results:")
-    print("-" * 70)
-    print(results.to_string(index=False))
-
-    # Show significant differences
-    print("\n5. Statistically Significant Differences (alpha = 0.05):")
-    print("-" * 70)
-    significant = results[results['significant']]
-    if len(significant) > 0:
-        for _, row in significant.iterrows():
-            print(f"   Metric: {row['metric']}")
-            print(f"   Layer: {row['layer']}")
-            print(f"   P-value: {row['p_value']:.4f}")
-            print(f"   Adjusted P-value: {row['adjusted_p_value']:.4f}")
-            print(f"   Effect size: {row['effect_size']:.4f}")
-            print(f"   Mean Group 0: {row['mean_group_0']:.4f}")
-            print(f"   Mean Group 1: {row['mean_group_1']:.4f}")
-            print()
-    else:
-        print("   No statistically significant differences found.")
-
-    # Example with multiple networks
-    print("\n6. Comparing three networks using Kruskal-Wallis test...")
-
-    # Create third network
-    net3 = multinet.multi_layer_network(directed=False)
-    net3.add_edges([
-        ['Alice', 'facebook', 'Bob', 'facebook', 1],
-        ['Bob', 'facebook', 'Carol', 'facebook', 1],
-        ['Alice', 'twitter', 'Bob', 'twitter', 1],
-        ['Alice', 'facebook', 'Alice', 'twitter', 1],
-        ['Bob', 'facebook', 'Bob', 'twitter', 1],
-    ], input_type='list')
-
-    results_multi = compare_multilayer_networks(
-        [net1, net2, net3],
-        metrics=['density'],
-        test='kruskal',
-        correction='bonferroni',
-        alpha=0.05
-    )
-
-    print("\n   Multi-network comparison results:")
-    print("-" * 70)
-    print(results_multi[['metric', 'layer', 'p_value', 'adjusted_p_value', 'significant']].to_string(index=False))
-
-    print("\n" + "=" * 70)
-    print("Example completed successfully!")
-    print("=" * 70)
+    columns = summaries + ["p_value", "adjusted_p_value", "significant"]
+    print(results[columns].to_string(index=False))
 
 
 if __name__ == "__main__":

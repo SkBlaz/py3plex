@@ -341,8 +341,8 @@ Complete Parameter Reference
         graphs,                   # List of layer subgraphs
         
         # Display control
-        display=True,             # Show plot immediately
-        axis=None,                # Matplotlib axis (None = create new)
+        display=False,            # Show plot immediately
+        ax=None,                # Matplotlib axis (None = create new)
         
         # Node appearance
         node_size=10,             # Base node size
@@ -365,7 +365,7 @@ Complete Parameter Reference
         background_color="rainbow",  # Background color scheme
         
         # Labels
-        labels=True,              # Show layer labels?
+        labels=False,             # Show layer labels?
         label_position=1.0,       # Label distance from center
         
         # Cleanup
@@ -442,7 +442,7 @@ Save to File
     draw_multilayer_default(
         graphs,
         display=False,
-        axis=ax,
+        ax=ax,
         labels=labels
     )
     
@@ -474,7 +474,7 @@ High-Quality Publications
     draw_multilayer_default(
         graphs,
         display=False,
-        axis=ax,
+        ax=ax,
         node_size=15,
         labels=labels,
         alphalevel=0.5,

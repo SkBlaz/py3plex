@@ -112,7 +112,7 @@ add_output(1, "Creating Your First Multilayer Network", "", snippet1_output,
 
 nodes = list(network.get_nodes())
 edges = list(network.get_edges())
-layers = list(network.get_layers())
+layers = network.layers
 
 snippet5_output = f"Nodes: {len(nodes)}, Edges: {len(edges)}, Layers: {len(layers)}"
 

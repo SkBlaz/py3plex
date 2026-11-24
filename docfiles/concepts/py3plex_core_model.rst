@@ -91,7 +91,7 @@ Basic Structure
     nx_graph = network.core_network  # MultiDiGraph or MultiGraph
     
     # Layer management
-    layers = network.get_layers()  # List of layer names
+    layers = network.layers  # List of layer names
     layer_map = network.layer_name_map  # Layer name to ID mapping
 
 Key Components
@@ -307,10 +307,10 @@ Construction
     # ... add nodes and edges ...
     
     # Get supra-adjacency matrix (sparse by default for efficiency)
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     
     # Dense version (for small networks only)
-    supra_adj_dense = network.get_supra_adjacency_matrix(sparse=False)
+    supra_adj_dense = network.get_supra_adjacency_matrix(mtype="dense")
     
     # Shape: (total_nodes, total_nodes)
     # where total_nodes = sum of nodes across all layers
@@ -625,7 +625,7 @@ Querying Network Elements
     nodes = network.get_nodes(data=False)  # Without attributes
     
     # Get nodes in a specific layer
-    layer_nodes = network.get_nodes(layer='friends')
+    layer_nodes = [replica for replica in network.get_nodes() if replica[1] == 'friends']
     
     # Get all edges
     edges = network.get_edges(data=True)
@@ -634,7 +634,7 @@ Querying Network Elements
     neighbors = list(network.get_neighbors('Alice', layer_id='friends'))
     
     # Get all layers
-    layers = network.get_layers()
+    layers = network.layers
     print(f"Layers: {layers}")
 
 Basic Statistics
@@ -677,7 +677,7 @@ Matrix Representations
 .. code-block:: python
 
     # Get supra-adjacency matrix (all layers stacked)
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     
     # Get adjacency matrix for a single layer
     layer_subgraph = network.subnetwork(['friends'], subset_by="layers")
@@ -771,11 +771,11 @@ For large networks, always use sparse matrix representations:
 .. code-block:: python
 
     # Good: Sparse matrix (efficient for large networks)
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     
     # Bad: Dense matrix (memory-intensive)
     # Only use for small networks (< 1000 nodes)
-    supra_adj_dense = network.get_supra_adjacency_matrix(sparse=False)
+    supra_adj_dense = network.get_supra_adjacency_matrix(mtype="dense")
 
 Memory Usage
 ~~~~~~~~~~~~

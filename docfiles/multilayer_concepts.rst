@@ -74,7 +74,7 @@ Basic Structure
     nx_graph = network.core_network
     
     # Layer management
-    layers = network.get_layers()  # List of layer names
+    layers = network.layers  # List of layer names
     layer_map = network.layer_name_map  # Layer name to ID mapping
 
 Internal Representation
@@ -173,7 +173,7 @@ Querying Network Elements
     nodes = network.get_nodes(data=True)  # yields (node, data_dict)
     
     # Get nodes in a specific layer
-    layer_nodes = network.get_nodes(layer='layer1')
+    layer_nodes = [replica for replica in network.get_nodes() if replica[1] == 'layer1']
     
     # Get all edges
     edges = network.get_edges(data=True)
@@ -182,7 +182,7 @@ Querying Network Elements
     neighbors = network.get_neighbors(('Alice', 'social'))
     
     # Get all layers (sorted by internal ID)
-    layers = network.get_layers()
+    layers = network.layers
 
 Network Transformations
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -319,7 +319,7 @@ Supra-Adjacency Matrix
 Mathematical Definition
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The **supra-adjacency matrix** is a block matrix representation of a multilayer network where rows and columns correspond to node-layer pairs. If layer :math:`\alpha` has :math:`n_\alpha` nodes, the overall matrix has size :math:`(\sum_\alpha n_\alpha) \times (\sum_\alpha n_\alpha)`. Blocks are ordered by the layer mapping in ``network.layer_name_map`` (the same ordering returned by ``network.get_layers()``):
+The **supra-adjacency matrix** is a block matrix representation of a multilayer network where rows and columns correspond to node-layer pairs. If layer :math:`\alpha` has :math:`n_\alpha` nodes, the overall matrix has size :math:`(\sum_\alpha n_\alpha) \times (\sum_\alpha n_\alpha)`. Blocks are ordered by the layer mapping in ``network.layer_name_map`` (the same ordering returned by ``network.layers``):
 
 .. math::
 
@@ -346,7 +346,7 @@ Construction in py3plex
     # ... add nodes and edges ...
     
     # Get supra-adjacency matrix (sparse by default)
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     
     # Shape: (total_node_layer_pairs, total_node_layer_pairs)
     # where total_node_layer_pairs = sum of nodes in each layer (node repeated per layer)

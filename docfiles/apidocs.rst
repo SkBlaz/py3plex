@@ -273,6 +273,7 @@ Command-line friendly wrappers for embeddings and benchmarking workflows.
    :members:
    :undoc-members:
    :show-inheritance:
+   :exclude-members: TopKRanker
 
 I/O Operations
 --------------

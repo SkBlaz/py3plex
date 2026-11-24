@@ -592,12 +592,9 @@ Random Walk Primitives
 Node2Vec Embedding
 ~~~~~~~~~~~~~~~~~~
 
-**Path:** ``wrappers.node2vec_embedding``
+**API:** ``network.embed(method="node2vec", ...)``
 
-**Functions:**
-
-* ``generate_embeddings(graph, dimensions, walk_length, num_walks, p, q, ...)`` - Generate embeddings
-* ``train_node2vec(graph, ...)`` - Training wrapper
+Returns an ``EmbeddingResult`` containing a matrix and its replica IDs.
 
 **Best for:** Feature learning, link prediction, node classification
 
@@ -617,7 +614,7 @@ Node2Vec Embedding
 DeepWalk Embedding
 ~~~~~~~~~~~~~~~~~~
 
-**Implementation:** Node2Vec with p=1, q=1
+**API:** ``network.embed(method="deepwalk", ...)``
 
 **Best for:** Simpler alternative to Node2Vec with uniform random walks
 
@@ -910,12 +907,10 @@ Embedding Workflow
     # 1. Generate walks
     from py3plex.algorithms.general.walkers import generate_walks
     walks = generate_walks(network.core_network, num_walks=10, 
-                          walk_length=80, strategy='node2vec')
+                          walk_length=80, seed=42)
     
     # 2. Learn embeddings
-    from py3plex.wrappers.node2vec_embedding import generate_embeddings
-    embeddings = generate_embeddings(network.core_network, 
-                                     dimensions=128, p=1.0, q=1.0)
+    embeddings = network.embed(method="node2vec", dimensions=128, p=1.0, q=1.0, seed=42)
     
     # 3. Use for classification
     from py3plex.algorithms.network_classification.label_propagation import label_propagation

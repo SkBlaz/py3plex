@@ -124,7 +124,8 @@ def multiplex_jaccard(
 ) -> Dict[str, Any]:
     """Compute multiplex Jaccard similarity between two networks.
     
-    The Jaccard similarity is computed as |intersection| / |union| of edge sets.
+    Jaccard similarity divides the size of the edge-set intersection by the
+    size of the edge-set union.
     
     Args:
         network_a: First multilayer network

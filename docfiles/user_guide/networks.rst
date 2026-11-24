@@ -111,7 +111,7 @@ You can define layers explicitly before adding content:
     network.add_layer('family')
     
     # Check layers
-    print("Layers:", network.get_layers())
+    print("Layers:", network.layers)
     
     # Add edges (nodes created automatically)
     network.add_edges([
@@ -330,7 +330,7 @@ Querying Network Elements
 .. code-block:: python
 
     # Filter by layer
-    friends_nodes = network.get_nodes(layer='friends')
+    friends_nodes = [replica for replica in network.get_nodes() if replica[1] == 'friends']
     print("Friends layer nodes:", list(friends_nodes))
 
 **Get all edges:**
@@ -358,7 +358,7 @@ Querying Network Elements
 
 .. code-block:: python
 
-    layers = network.get_layers()
+    layers = network.layers
     print(f"Layers: {layers}")
     print(f"Number of layers: {len(layers)}")
 
@@ -430,7 +430,7 @@ Iterating Over Network Elements
 
 .. code-block:: python
 
-    for layer_name in network.get_layers():
+    for layer_name in network.layers:
         layer_subnet = network.subnetwork([layer_name], subset_by="layers")
         num_nodes = len(list(layer_subnet.get_nodes()))
         num_edges = len(list(layer_subnet.get_edges()))
@@ -550,7 +550,7 @@ Basic Statistics
     # Count elements manually
     num_nodes = len(list(network.get_nodes()))
     num_edges = len(list(network.get_edges()))
-    num_layers = len(network.get_layers())
+    num_layers = len(network.layers)
     
     print(f"Nodes: {num_nodes}, Edges: {num_edges}, Layers: {num_layers}")
 
@@ -597,12 +597,12 @@ Matrix Representations
 .. code-block:: python
 
     # Get supra-adjacency matrix
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     print(f"Supra-adjacency shape: {supra_adj.shape}")
     
     # For small networks, get dense version
     if num_nodes < 1000:
-        supra_adj_dense = network.get_supra_adjacency_matrix(sparse=False)
+        supra_adj_dense = network.get_supra_adjacency_matrix(mtype="dense")
 
 See :doc:`../concepts/py3plex_core_model` for details on supra-adjacency matrices.
 
@@ -949,7 +949,7 @@ Always Verify After Loading
     network.basic_stats()
     
     # Verify it matches expectations
-    assert len(network.get_layers()) == 3, "Expected 3 layers"
+    assert len(network.layers) == 3, "Expected 3 layers"
     assert len(list(network.get_nodes())) > 0, "Network is empty!"
 
 Use Appropriate Data Structures
@@ -958,10 +958,10 @@ Use Appropriate Data Structures
 .. code-block:: python
 
     # For large networks, use sparse matrices
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)  # Good
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")  # Good
     
     # Avoid dense matrices for large networks
-    # supra_adj = network.get_supra_adjacency_matrix(sparse=False)  # Bad for n > 1000
+    # supra_adj = network.get_supra_adjacency_matrix(mtype="dense")  # Bad for n > 1000
 
 Common Patterns
 ---------------
@@ -1012,7 +1012,7 @@ Pattern 3: Layer-by-Layer Analysis
 .. code-block:: python
 
     # Analyze each layer separately
-    for layer_name in network.get_layers():
+    for layer_name in network.layers:
         print(f"\n=== Layer: {layer_name} ===")
         
         # Extract layer

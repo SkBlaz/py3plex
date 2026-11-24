@@ -631,14 +631,16 @@ The ``QueryBuilder`` returned supports these chainable methods:
 
 .. code-block:: python
 
-    Q.nodes()
-     .from_layers(layer_expr)    # Filter by layers (optional)
-     .where(**conditions)        # Filter by conditions (optional)
-     .compute(*measures)         # Compute measures (optional)
-     .mutate(**transformations)  # Transform/create columns (optional)
-     .order_by(*keys)            # Order results (optional)
-     .limit(n)                   # Limit results (optional)
-     .execute(network, **params) # Execute the query
+    (
+        Q.nodes()
+        .from_layers(layer_expr)    # Filter by layers (optional)
+        .where(**conditions)        # Filter by conditions (optional)
+        .compute(*measures)         # Compute measures (optional)
+        .mutate(**transformations)  # Transform/create columns (optional)
+        .order_by(*keys)            # Order results (optional)
+        .limit(n)                   # Limit results (optional)
+        .execute(network, **params) # Execute the query
+    )
 
 WHERE Conditions
 ~~~~~~~~~~~~~~~~
@@ -3174,27 +3176,31 @@ S Builder API Reference
 
 .. code-block:: python
 
-    S.paths()
-      .from_node(source)           # Required: source node
-      .to_node(target)              # Optional: target node (all if omitted)
-      .semiring(name)               # Semiring name or spec
-      .lift(attr="weight", default=1.0)  # Edge attribute extraction
-      .from_layers(L[...])          # Layer filter
-      .max_hops(n)                  # Maximum path length
-      .witness(True)                # Request path witnesses
-      .algorithm("auto"|"dijkstra"|"bellman_ford")
-      .execute(network)
+    (
+        S.paths()
+        .from_node(source)           # Required: source node
+        .to_node(target)              # Optional: target node (all if omitted)
+        .semiring(name)               # Semiring name or spec
+        .lift(attr="weight", default=1.0)  # Edge attribute extraction
+        .from_layers(L[...])          # Layer filter
+        .max_hops(n)                  # Maximum path length
+        .witness(True)                # Request path witnesses
+        .backend("graph")             # Optional: "graph" or "matrix"
+        .execute(network)
+    )
 
 **Closure queries**:
 
 .. code-block:: python
 
-    S.closure()
-      .semiring(name)
-      .lift(attr="weight", default=1.0)
-      .from_layers(L[...])
-      .max_hops(n)
-      .execute(network)
+    (
+        S.closure()
+        .semiring(name)
+        .lift(attr="weight", default=1.0)
+        .from_layers(L[...])
+        .max_hops(n)
+        .execute(network)
+    )
 
 Custom Semirings
 ~~~~~~~~~~~~~~~~
@@ -3505,15 +3511,14 @@ Meta-analysis aggregates provenance from all networks:
 .. code-block:: python
 
     # Deterministic meta-analysis
-    meta1 = (
+    analysis = (
         M.meta()
          .on_networks(nets)
-         .run(Q.nodes().uq(seed=42).compute("pagerank"), effect="pagerank", se="pagerank_std")
+         .run(Q.nodes().uq(seed=42).compute("pagerank"), effect="pagerank")
          .seed(42)  # Fills missing seeds only
-         .execute()
     )
-    
-    meta2 = (/* same config */).execute()
+    meta1 = analysis.execute()
+    meta2 = analysis.execute()
     
     # meta1 and meta2 produce identical results
 

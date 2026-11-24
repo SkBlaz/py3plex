@@ -6,10 +6,19 @@ This page summarizes the release history of py3plex. For granular, date-stamped 
 Release History
 ---------------
 
-Version 1.0.0 (Current)
-~~~~~~~~~~~~~~~~~~~~~~~
+Version 2.0.94
+~~~~~~~~~~~~~~
 
-**Release Date:** 2024 (current stable line)
+Released on 2026-11-24. The release corrects numerical algorithms, statistical
+inference, uncertainty quantification, and reproducibility. See the
+`v2.0.94 release notes <https://github.com/SkBlaz/py3plex/releases/tag/v2.0.94>`_
+for the changes and linked pull requests. GitHub Releases lists newer versions
+as they become available.
+
+Version 1.0.0
+~~~~~~~~~~~~~
+
+**Release Date:** 2024
 
 The 1.0 series focuses on a stable DSL, multilayer ergonomics, and reproducible analysis workflows.
 

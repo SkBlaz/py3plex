@@ -13,7 +13,7 @@ Core API (Minimal Reference)
     from py3plex.core import multinet
     net = multinet.multi_layer_network(directed=False)
     net.add_edges([['A', 'social', 'B', 'social', 1]], input_type='list')
-    layers = net.get_layers()
+    layers = net.layers
 
 DSL Builder Quick Reference
 ---------------------------

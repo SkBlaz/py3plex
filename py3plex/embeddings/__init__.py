@@ -5,7 +5,7 @@ integrated into the DSL v2 builder/executor pipeline.
 
 Public API::
 
-    from py3plex.embeddings import embed_nodes, EmbeddingResult
+    from py3plex.embeddings import EmbeddingResult, NetMFEmbedder, MetaPath2VecEmbedder
     from py3plex.embeddings.link_ops import hadamard, concat, l1, l2
 """
 

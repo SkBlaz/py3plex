@@ -35,7 +35,7 @@ A Minimal, Auditable Loading Pattern
          'source_type': 'social', 'target_type': 'social'},
     ])
 
-    layers = net.get_layers()
+    layers = net.layers
     print(layers)
 
 Implementation detail: py3plex expects explicit layer attributes in node and edge dictionaries for multilayer semantics.

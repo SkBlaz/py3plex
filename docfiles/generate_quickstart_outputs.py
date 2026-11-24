@@ -86,7 +86,7 @@ print("-"*70)
 
 nodes = list(network.get_nodes())
 edges = list(network.get_edges())
-layers = list(network.get_layers())
+layers = network.layers
 
 print(f"Nodes: {len(nodes)}, Edges: {len(edges)}, Layers: {len(layers)}")
 
