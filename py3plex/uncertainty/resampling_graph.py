@@ -26,7 +26,8 @@ Examples
 
 from __future__ import annotations
 
-from typing import Optional
+from dataclasses import dataclass
+from typing import Any, Optional
 
 import networkx as nx
 import numpy as np
@@ -156,11 +157,14 @@ def bootstrap_network_edges(
     >>> boot = bootstrap_network_edges(net, seed=42)
     >>> # Some edges may be duplicated, some omitted
     """
+    return _bootstrap_edges(network, np.random.default_rng(seed))
+
+
+def _bootstrap_edges(network, rng):
     sample, edges = _edge_sample_base(network, bootstrap=True)
     if not edges:
         return sample
 
-    rng = np.random.default_rng(seed)
     draws = rng.integers(0, len(edges), size=len(edges))
     counts = {}
     for index in draws:
@@ -263,37 +267,51 @@ def resample_network_nodes(
     >>> 
     >>> boot = resample_network_nodes(net, seed=42)
     """
-    # Create RNG
-    rng = np.random.default_rng(seed)
-    
-    # Get all nodes
-    nodes = list(network.get_nodes())
-    n_nodes = len(nodes)
-    
-    if n_nodes == 0:
-        return multinet.multi_layer_network(directed=network.directed)
-    
-    # Sample nodes with replacement
-    sampled_indices = rng.integers(0, n_nodes, size=n_nodes)
-    sampled_nodes = [nodes[i] for i in sampled_indices]
-    sampled_node_set = set(sampled_nodes)
-    
-    # Create new network
-    new_net = multinet.multi_layer_network(directed=network.directed)
-    
-    # Get edges where both endpoints are in sampled set
-    edges = list(network.get_edges())
-    kept_edges = []
-    
-    for edge in edges:
-        if len(edge) == 2:
-            node1, node2 = edge
-            if node1 in sampled_node_set and node2 in sampled_node_set:
-                (n1, l1), (n2, l2) = node1, node2
-                kept_edges.append([n1, l1, n2, l2, 1.0])
-    
-    # Add edges (which will create nodes)
-    if kept_edges:
-        new_net.add_edges(kept_edges, input_type='list')
-    
-    return new_net
+    return _bootstrap_units(network, "nodes", np.random.default_rng(seed))
+
+
+@dataclass(frozen=True)
+class _BootstrapReplica:
+    original: Any
+    occurrence: int
+
+
+def _bootstrap_units(network, unit, rng):
+    """Build an induced bootstrap graph, retaining the multiplicity of draws."""
+    sample, _ = _edge_sample_base(network, bootstrap=True)
+    graph = network.core_network
+    if graph is None or len(graph) == 0:
+        return sample
+
+    result = sample.core_network
+    result.remove_nodes_from(list(result))
+    units = list(graph) if unit == "nodes" else list(dict.fromkeys(node[1] for node in graph))
+    counts = dict.fromkeys(units, 0)
+    for index in rng.integers(0, len(units), size=len(units)):
+        counts[units[index]] += 1
+
+    copies = {}
+    for replica, attrs in graph.nodes(data=True):
+        physical, layer = replica
+        count = counts[replica if unit == "nodes" else layer]
+        replicas = [replica] if count else []
+        for occurrence in range(1, count):
+            if unit == "nodes":
+                replicas.append((_BootstrapReplica(replica, occurrence), layer))
+            else:
+                replicas.append((physical, _BootstrapReplica(layer, occurrence)))
+        copies[replica] = replicas
+        for copied in replicas:
+            result.add_node(copied)
+            result.nodes[copied].update(attrs)
+
+    records = (graph.edges(keys=True, data=True) if graph.is_multigraph()
+               else ((u, v, None, attrs) for u, v, attrs in graph.edges(data=True)))
+    for u, v, key, attrs in records:
+        if u == v or (unit == "layers" and u[1] == v[1]):
+            pairs = zip(copies[u], copies[v])
+        else:
+            pairs = ((a, b) for a in copies[u] for b in copies[v])
+        for source, target in pairs:
+            _add_sample_edge(result, source, target, key, attrs)
+    return sample

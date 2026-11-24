@@ -72,6 +72,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test basic comparison between two networks."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['density'],
             test='permutation',
             n_permutations=100,
@@ -99,6 +100,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test comparison with multiple metrics."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['density', 'average_degree', 'clustering'],
             test='permutation',
             n_permutations=100
@@ -115,6 +117,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test t-test comparison."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['density'],
             test='t-test',
             alpha=0.05
@@ -129,6 +132,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test Mann-Whitney U test."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['density'],
             test='mann-whitney',
             alpha=0.05
@@ -142,6 +146,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test ANOVA with three groups."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2, self.net3],
+            assume_exchangeable=True,
             metrics=['density'],
             test='anova',
             alpha=0.05
@@ -158,6 +163,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test Kruskal-Wallis test."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2, self.net3],
+            assume_exchangeable=True,
             metrics=['density'],
             test='kruskal',
             alpha=0.05
@@ -171,6 +177,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test Bonferroni correction."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['density', 'average_degree'],
             test='permutation',
             n_permutations=100,
@@ -188,6 +195,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test Holm-Bonferroni correction."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['density', 'average_degree'],
             test='permutation',
             n_permutations=100,
@@ -206,6 +214,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test FDR (Benjamini-Hochberg) correction."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['density', 'average_degree'],
             test='permutation',
             n_permutations=100,
@@ -221,6 +230,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test Cohen's d effect size calculation."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['density'],
             test='t-test',
             alpha=0.05
@@ -238,6 +248,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         with self.assertRaises(ValueError):
             sc.compare_multilayer_networks(
                 [self.net1],
+                assume_exchangeable=True,
                 metrics=['density']
             )
         
@@ -245,6 +256,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         with self.assertRaises(ValueError):
             sc.compare_multilayer_networks(
                 [self.net1, self.net2],
+                assume_exchangeable=True,
                 metrics=['density'],
                 test='invalid_test'
             )
@@ -254,6 +266,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test node activity metric comparison."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['node_activity'],
             test='permutation',
             n_permutations=100
@@ -284,6 +297,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         
         results = sc.compare_multilayer_networks(
             [net1, net2],
+            assume_exchangeable=True,
             metrics=['coupling_strength'],
             test='permutation',
             n_permutations=100
@@ -297,6 +311,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test entropy of multiplexity metric."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             metrics=['entropy'],
             test='permutation',
             n_permutations=100
@@ -310,6 +325,7 @@ class TestCompareMultilayerNetworks(unittest.TestCase):
         """Test with default metrics."""
         results = sc.compare_multilayer_networks(
             [self.net1, self.net2],
+            assume_exchangeable=True,
             test='permutation',
             n_permutations=100
         )
@@ -492,6 +508,7 @@ class TestEdgeCases(unittest.TestCase):
             warnings.simplefilter("ignore")
             results = sc.compare_multilayer_networks(
                 [net1, net2],
+                assume_exchangeable=True,
                 metrics=['density'],
                 test='permutation',
                 n_permutations=10
@@ -512,6 +529,7 @@ class TestEdgeCases(unittest.TestCase):
             warnings.simplefilter("ignore")
             results = sc.compare_multilayer_networks(
                 [net1, net2],
+                assume_exchangeable=True,
                 metrics=['density'],
                 test='permutation',
                 n_permutations=10
@@ -532,6 +550,7 @@ class TestEdgeCases(unittest.TestCase):
             warnings.simplefilter("always")
             results = sc.compare_multilayer_networks(
                 [net1, net2],
+                assume_exchangeable=True,
                 metrics=['unknown_metric'],
                 test='permutation',
                 n_permutations=10
@@ -543,3 +562,30 @@ class TestEdgeCases(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_comparison_bootstrap_recomputes_on_drawn_edges():
+    graph = multinet.multi_layer_network(directed=False)
+    graph.add_edges([
+        ["a", "L", "b", "L", 1],
+        ["a", "L", "c", "L", 1],
+    ], input_type="list")
+    values = sc.bootstrap_confidence_interval(
+        [graph], lambda sample: sample.core_network.degree(("b", "L")),
+        n_bootstrap=100, seed=7,
+    )
+    assert values["group_0"] == (0, 2)
+
+
+def test_cohort_permutation_uses_independent_graph_summaries():
+    def metric(network):
+        return {"global": [network] * 100}
+    from unittest.mock import patch
+    with patch.object(sc, "_get_layers", return_value=[]):
+        results = sc.compare_multilayer_networks(
+            [[0, 1], [4, 5]], metrics=["m"], custom_metrics={"m": metric},
+            n_permutations=100, seed=42,
+        )
+    assert results["mean_group_0"].iloc[0] == 0.5
+    assert results["mean_group_1"].iloc[0] == 4.5
+    assert results["p_value"].iloc[0] > 0.2

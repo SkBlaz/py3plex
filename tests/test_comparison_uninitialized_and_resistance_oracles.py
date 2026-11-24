@@ -142,3 +142,18 @@ def test_property_layer_edge_overlap_symmetry_and_global_average():
 
     check()
 
+
+
+def test_frobenius_distance_aligns_labeled_nodes_and_honors_layer_scope():
+    a, b, c = [(item, "L") for item in "abc"]
+    first = nx.Graph([(a, b), (b, c)])
+    second = nx.Graph([(b, c), (a, b)])
+    assert metrics.multilayer_resistance_distance(first, second)["global_distance"] == 0
+    assert metrics.multilayer_resistance_distance(first, nx.Graph([(b, c)]))["global_distance"] > 0
+    assert metrics.multilayer_resistance_distance(first, nx.Graph([(b, c)]), layers=[])["global_distance"] == 0
+
+
+def test_directed_jaccard_keeps_arc_orientation_and_scoped_loops():
+    a, b = ("a", "L"), ("b", "L")
+    first, second = nx.DiGraph([(a, b), (a, a)]), nx.DiGraph([(b, a), (a, a)])
+    assert metrics.multiplex_jaccard(first, second, layers=["L"])["global_distance"] == pytest.approx(2 / 3)

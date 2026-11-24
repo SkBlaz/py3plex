@@ -6,6 +6,13 @@ Overview
 
 The ``stats_comparison`` module provides a comprehensive framework for performing statistical comparisons between multilayer networks. This enables quantification of structural or topological differences across network ensembles or experimental conditions.
 
+Pass a list of cohorts (each a list of independent graphs) for inferential
+comparisons. Each graph contributes one summary per metric and layer. A flat
+list reports descriptive results by default. Set
+``assume_exchangeable=True`` only when the study design supports treating
+within-graph observations as exchangeable. Set ``seed`` for reproducible
+permutations.
+
 Features
 --------
 

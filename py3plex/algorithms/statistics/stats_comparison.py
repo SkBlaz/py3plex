@@ -31,6 +31,7 @@ import pandas as pd
 from scipy.stats import f_oneway, kruskal, mannwhitneyu, ttest_ind
 
 from . import multilayer_statistics as mls
+from py3plex.uncertainty.resampling_graph import _bootstrap_edges
 
 
 def compare_multilayer_networks(
@@ -43,6 +44,9 @@ def compare_multilayer_networks(
     node_mapping: Optional[Dict] = None,
     layer_scope: str = "both",
     custom_metrics: Optional[Dict[str, Callable]] = None,
+    *,
+    assume_exchangeable: bool = False,
+    seed: Optional[int] = None,
 ) -> pd.DataFrame:
     """
     Compare multilayer networks using statistical tests.
@@ -51,7 +55,12 @@ def compare_multilayer_networks(
     statistical tests to determine if the differences are significant.
 
     Args:
-        networks: List of MultilayerNetwork objects to compare
+        networks: Networks for a descriptive comparison, or a list of
+            cohorts containing independent networks. A cohort contributes
+            one summary per network and metric/layer.
+        assume_exchangeable: Allow inference over node/layer observations
+            within flat inputs when the study design makes them exchangeable.
+        seed: Seed for randomized permutation tests.
         metrics: List of metric names to compute. Options include:
             - 'average_degree': Mean degree across all layers
             - 'modularity': Community structure strength (requires communities)
@@ -74,7 +83,7 @@ def compare_multilayer_networks(
             - 'holm': Holm-Bonferroni correction
             - 'fdr_bh': Benjamini-Hochberg FDR
             - None: No correction
-        node_mapping: Optional mapping for node correspondence across networks
+        node_mapping: Reserved for paired analyses; currently rejected
         layer_scope: Which layers to analyze:
             - 'intralayer': Only within-layer metrics
             - 'interlayer': Only between-layer metrics
@@ -133,22 +142,41 @@ def compare_multilayer_networks(
     if metrics is None:
         metrics = ["average_degree", "density", "clustering"]
 
-    # Extract metric values for each network
-    metric_values = _extract_metrics(networks, metrics, layer_scope, custom_metrics)
+    if node_mapping is not None:
+        raise ValueError("node_mapping requires a paired statistical test; only unpaired designs are supported.")
+    if layer_scope not in {"both", "intralayer", "interlayer"}:
+        raise ValueError(f"Unknown layer_scope: {layer_scope}")
+    if test == "permutation" and n_permutations <= 0:
+        raise ValueError("n_permutations must be positive")
 
-    # Perform statistical tests
+    cohort_design = all(isinstance(group, (list, tuple)) for group in networks)
+    if not cohort_design and any(isinstance(group, (list, tuple)) for group in networks):
+        raise ValueError("Use either a flat list of networks or a list of cohorts.")
+    if cohort_design:
+        if any(not group for group in networks):
+            raise ValueError("Each cohort must contain at least one network.")
+        flat_networks = [network for group in networks for network in group]
+    else:
+        flat_networks = networks
+
+    metric_values = _extract_metrics(flat_networks, metrics, layer_scope, custom_metrics)
+    rng = np.random.default_rng(seed)
     results = []
     for metric_name, values_dict in metric_values.items():
-        for layer_key, values_per_network in values_dict.items():
-            # values_per_network is a list of lists (one per network)
-            result = _perform_test(
-                values_per_network,
-                test=test,
-                n_permutations=n_permutations,
-                metric_name=metric_name,
-                layer=layer_key,
-            )
-            results.append(result)
+        for layer_key, values in values_dict.items():
+            if cohort_design:
+                grouped = []
+                start = 0
+                for group in networks:
+                    stop = start + len(group)
+                    grouped.append([np.mean(sample) for sample in values[start:stop] if len(sample)])
+                    start = stop
+                values = grouped
+            results.append(_perform_test(
+                values, test=test, n_permutations=n_permutations,
+                metric_name=metric_name, layer=layer_key, rng=rng,
+                infer=cohort_design or assume_exchangeable,
+            ))
 
     # Convert to DataFrame
     df = pd.DataFrame(results)
@@ -195,7 +223,10 @@ def _extract_metrics(
         metric_values[metric_name] = {}
 
         for net_idx, network in enumerate(networks):
-            # Get all layers
+            if layer_scope == "interlayer" and metric_name in {"average_degree", "density", "clustering", "entropy"}:
+                continue
+            if layer_scope == "intralayer" and metric_name == "coupling_strength":
+                continue
             layers = _get_layers(network)
 
             if metric_name == "average_degree":
@@ -218,25 +249,15 @@ def _extract_metrics(
 
             # Organize by layer
             for layer_key, layer_values in values.items():
-                if layer_key not in metric_values[metric_name]:
-                    metric_values[metric_name][layer_key] = []
-                metric_values[metric_name][layer_key].append(layer_values)
+                slots = metric_values[metric_name].setdefault(layer_key, [[] for _ in networks])
+                slots[net_idx] = list(layer_values)
 
     return metric_values
 
 
 def _get_layers(network: Any) -> List[str]:
     """Extract unique layer identifiers from network."""
-    layers = set()
-    try:
-        for edge in network.get_edges(data=True):
-            (_, l1), (_, l2) = edge[0], edge[1]
-            layers.add(l1)
-            layers.add(l2)
-    except (AttributeError, TypeError):
-        # Empty network or no core_network
-        pass
-    return sorted(layers)
+    return list(network.layers)
 
 
 def _compute_average_degree(network: Any, layers: List[str]) -> Dict[str, List[float]]:
@@ -246,18 +267,8 @@ def _compute_average_degree(network: Any, layers: List[str]) -> Dict[str, List[f
 
     for layer in layers:
         layer_degrees = []
-        nodes = set()
-
-        for edge in network.get_edges(data=True):
-            (n1, l1), (n2, l2) = edge[0], edge[1]
-            if l1 == layer and l2 == layer:
-                nodes.add(n1)
-                nodes.add(n2)
-
-        for node in nodes:
-            degree_dict = mls.degree_vector(network, node, weighted=False)
-            if layer in degree_dict:
-                layer_degrees.append(degree_dict[layer])
+        replicas = [node for node in network.get_nodes() if node[1] == layer]
+        layer_degrees = [degree for _, degree in network.core_network.subgraph(replicas).degree()]
 
         if layer_degrees:
             result[f"layer_{layer}"] = layer_degrees
@@ -350,6 +361,8 @@ def _perform_test(
     n_permutations: int,
     metric_name: str,
     layer: str,
+    rng: Optional[np.random.Generator] = None,
+    infer: bool = True,
 ) -> Dict:
     """
     Perform statistical test on metric values.
@@ -365,7 +378,7 @@ def _perform_test(
         Dictionary with test results
     """
     # Flatten and compute means
-    means = [np.mean(vals) if vals else 0.0 for vals in values_per_network]
+    means = [np.mean(vals) if len(vals) else np.nan for vals in values_per_network]
 
     # Basic result structure
     result = {
@@ -380,9 +393,18 @@ def _perform_test(
     # Perform test based on number of groups
     n_groups = len(values_per_network)
 
+    if n_groups < 2 or any(not len(values) or not np.all(np.isfinite(values))
+                           for values in values_per_network):
+        return {**result, "statistic": np.nan, "p_value": np.nan, "effect_size": np.nan}
+
+    effect_size = (_compute_cohens_d(*values_per_network) if n_groups == 2
+                   else _compute_eta_squared(values_per_network))
+    if not infer:
+        return {**result, "statistic": np.nan, "p_value": np.nan, "effect_size": effect_size}
+
     try:
         if test == "permutation":
-            statistic, p_value = _permutation_test(values_per_network, n_permutations)
+            statistic, p_value = _permutation_test(values_per_network, n_permutations, rng)
         elif test == "t-test" and n_groups == 2:
             statistic, p_value = ttest_ind(
                 values_per_network[0],
@@ -403,22 +425,13 @@ def _perform_test(
         result["statistic"] = float(statistic)
         result["p_value"] = float(p_value)
 
-        # Compute effect size
-        if n_groups == 2:
-            effect_size = _compute_cohens_d(
-                values_per_network[0], values_per_network[1]
-            )
-        else:
-            # For multiple groups, use eta-squared
-            effect_size = _compute_eta_squared(values_per_network)
-
         result["effect_size"] = effect_size
 
-    except Exception as e:
+    except ValueError as e:
         warnings.warn(f"Test failed for {metric_name}/{layer}: {e}", stacklevel=2)
         result["statistic"] = np.nan
-        result["p_value"] = 1.0
-        result["effect_size"] = 0.0
+        result["p_value"] = np.nan
+        result["effect_size"] = effect_size
 
     return result
 
@@ -426,6 +439,7 @@ def _perform_test(
 def _permutation_test(
     values_per_network: List[List[float]],
     n_permutations: int,
+    rng: Optional[np.random.Generator] = None,
 ) -> Tuple[float, float]:
     """
     Perform permutation test.
@@ -450,10 +464,11 @@ def _permutation_test(
     all_values = np.array(all_values)
 
     # Perform permutations
+    rng = np.random.default_rng() if rng is None else rng
     perm_stats = []
     for _ in range(n_permutations):
         # Shuffle values
-        np.random.shuffle(all_values)
+        rng.shuffle(all_values)
 
         # Split back into groups
         perm_groups = []
@@ -472,7 +487,7 @@ def _permutation_test(
 
     # Compute p-value
     perm_stats = np.array(perm_stats)
-    p_value = np.mean(np.abs(perm_stats) >= np.abs(observed_stat))
+    p_value = (1 + np.count_nonzero(np.abs(perm_stats) >= abs(observed_stat))) / (n_permutations + 1)
 
     return observed_stat, p_value
 
@@ -492,7 +507,7 @@ def _compute_f_statistic(groups: List[np.ndarray]) -> float:
 
     # F-statistic
     if ss_within == 0:
-        return 0.0
+        return float("inf") if ss_between > 0 else 0.0
 
     ms_between = ss_between / (k - 1)
     ms_within = ss_within / (n_total - k)
@@ -555,7 +570,8 @@ def _apply_correction(
     alpha: float,
 ) -> pd.DataFrame:
     """Apply multiple comparison correction."""
-    p_values = df["p_value"].values
+    valid = np.isfinite(df["p_value"])
+    p_values = df.loc[valid, "p_value"].to_numpy()
     n_tests = len(p_values)
 
     if correction == "bonferroni":
@@ -568,8 +584,9 @@ def _apply_correction(
     else:
         raise ValueError(f"Unknown correction method: {correction}")
 
-    df["adjusted_p_value"] = adjusted
-    df["significant"] = adjusted < alpha
+    df["adjusted_p_value"] = np.nan
+    df.loc[valid, "adjusted_p_value"] = adjusted
+    df["significant"] = df["adjusted_p_value"] <= alpha
 
     return df
 
@@ -615,59 +632,24 @@ def bootstrap_confidence_interval(
     metric_func: Callable,
     n_bootstrap: int = 1000,
     confidence_level: float = 0.95,
+    *,
+    seed: Optional[int] = None,
 ) -> Dict[str, Tuple[float, float]]:
+    """Compute conditional percentile intervals by resampling each graph's edges.
+
+    Each draw retains the node set and multiplex couplings. The interval
+    describes variability under exchangeable edge draws within each input graph.
     """
-    Compute bootstrap confidence intervals for network metrics.
+    if n_bootstrap <= 0 or not 0 < confidence_level < 1:
+        raise ValueError("Require positive n_bootstrap and confidence_level in (0, 1).")
 
-    Args:
-        networks: List of networks
-        metric_func: Function that takes a network and returns a scalar metric
-        n_bootstrap: Number of bootstrap samples
-        confidence_level: Confidence level (e.g., 0.95 for 95% CI)
-
-    Returns:
-        Dictionary mapping group index to (lower, upper) CI bounds
-
-    Examples:
-        >>> def avg_degree_metric(net):
-        ...     layers = _get_layers(net)
-        ...     return np.mean([mls.layer_density(net, l) for l in layers])
-        >>> ci = bootstrap_confidence_interval(
-        ...     [net1, net2],
-        ...     avg_degree_metric,
-        ...     n_bootstrap=1000
-        ... )
-    """
+    rng = np.random.default_rng(seed)
+    tail = (1 - confidence_level) / 2
     results = {}
-
-    for group_idx, network in enumerate(networks):
-        bootstrap_values = []
-
-        # Get all nodes for resampling
-        nodes = set()
-        for edge in network.get_edges(data=True):
-            (n1, _), (n2, _) = edge[0], edge[1]
-            nodes.add(n1)
-            nodes.add(n2)
-        nodes = list(nodes)
-
-        for _ in range(n_bootstrap):
-            # Resample nodes with replacement
-            # Note: This is a simplified bootstrap; more sophisticated methods
-            # would preserve network structure better
-            try:
-                metric_value = metric_func(network)
-                bootstrap_values.append(metric_value)
-            except Exception:
-                continue
-
-        if bootstrap_values:
-            lower_percentile = (1 - confidence_level) / 2 * 100
-            upper_percentile = (1 - (1 - confidence_level) / 2) * 100
-            ci_lower = np.percentile(bootstrap_values, lower_percentile)
-            ci_upper = np.percentile(bootstrap_values, upper_percentile)
-            results[f"group_{group_idx}"] = (ci_lower, ci_upper)
-        else:
-            results[f"group_{group_idx}"] = (0.0, 0.0)
-
+    for i, network in enumerate(networks):
+        values = [metric_func(_bootstrap_edges(network, rng)) for _ in range(n_bootstrap)]
+        if not np.all(np.isfinite(values)):
+            raise ValueError(f"Non-finite bootstrap metric in network {i}.")
+        low, high = np.quantile(values, [tail, 1 - tail])
+        results[f"group_{i}"] = (float(low), float(high))
     return results

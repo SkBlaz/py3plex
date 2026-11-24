@@ -264,6 +264,7 @@ class TestIntuitiveStatisticalBehavior:
         # Compare them
         results = sc.compare_multilayer_networks(
             [net1, net2],
+            assume_exchangeable=True,
             metrics=['density', 'average_degree'],
             test='permutation',
             n_permutations=100,
@@ -281,32 +282,20 @@ class TestIntuitiveStatisticalBehavior:
         assert results['p_value'].min() > 0.1, \
             "P-values for identical networks should be large"
     
-    def test_very_different_networks_are_significant(self, dense_network, sparse_network):
-        """Test that comparing very different networks shows significance."""
+    def test_dense_network_has_larger_descriptive_metrics(self, dense_network, sparse_network):
+        """A flat comparison describes each network without testing dependence."""
         results = sc.compare_multilayer_networks(
-            [dense_network, sparse_network],
-            metrics=['density', 'average_degree'],
-            test='permutation',
-            n_permutations=100,
-            alpha=0.05
+            [dense_network, sparse_network], metrics=["density", "average_degree"]
         )
-        
-        # At least some comparisons should be significant
-        significant_count = results['significant'].sum()
-        assert significant_count > 0, \
-            "Dense vs sparse networks should show significant differences"
-        
-        # P-values should be small for at least one metric (density or average_degree)
-        # Note: Due to multilayer structure, some layers might have similar density
-        # so we just check that at least one comparison shows a trend toward difference
-        min_p_value = results['p_value'].min()
-        assert min_p_value < 0.5, \
-            f"At least one metric should show trend toward difference (min p={min_p_value})"
-    
+
+        assert (results["mean_group_0"] > results["mean_group_1"]).all()
+        assert results["p_value"].isna().all()
+
     def test_p_values_in_valid_range(self, simple_network, sparse_network):
         """Test that p-values are always in [0, 1] range."""
         results = sc.compare_multilayer_networks(
             [simple_network, sparse_network],
+            assume_exchangeable=True,
             metrics=['density', 'clustering', 'average_degree'],
             test='permutation',
             n_permutations=50,
@@ -325,6 +314,7 @@ class TestIntuitiveStatisticalBehavior:
         """Test that effect sizes reflect the magnitude of differences."""
         results = sc.compare_multilayer_networks(
             [dense_network, sparse_network],
+            assume_exchangeable=True,
             metrics=['density'],
             test='t-test',
             alpha=0.05
@@ -348,6 +338,7 @@ class TestIntuitiveStatisticalBehavior:
         """Test that Bonferroni correction properly increases p-values."""
         results = sc.compare_multilayer_networks(
             [simple_network, sparse_network],
+            assume_exchangeable=True,
             metrics=['density', 'average_degree', 'clustering'],
             test='permutation',
             n_permutations=50,
@@ -370,6 +361,7 @@ class TestIntuitiveStatisticalBehavior:
         # Run with few permutations
         results_few = sc.compare_multilayer_networks(
             [dense_network, sparse_network],
+            assume_exchangeable=True,
             metrics=['density'],
             test='permutation',
             n_permutations=20,
@@ -379,6 +371,7 @@ class TestIntuitiveStatisticalBehavior:
         # Run with many permutations
         results_many = sc.compare_multilayer_networks(
             [dense_network, sparse_network],
+            assume_exchangeable=True,
             metrics=['density'],
             test='permutation',
             n_permutations=200,
@@ -413,6 +406,7 @@ class TestEdgeCaseBehavior:
         # Should not crash
         results = sc.compare_multilayer_networks(
             [net1, net2],
+            assume_exchangeable=True,
             metrics=['density'],
             test='permutation',
             n_permutations=10
@@ -432,6 +426,7 @@ class TestEdgeCaseBehavior:
         # Should not crash
         results = sc.compare_multilayer_networks(
             [net1, net2],
+            assume_exchangeable=True,
             metrics=['density'],
             test='permutation',
             n_permutations=10
@@ -473,6 +468,7 @@ class TestStatisticalConsistency:
         """Test that permutation test is symmetric (order doesn't matter much)."""
         results1 = sc.compare_multilayer_networks(
             [simple_network, sparse_network],
+            assume_exchangeable=True,
             metrics=['density'],
             test='permutation',
             n_permutations=100,
@@ -482,6 +478,7 @@ class TestStatisticalConsistency:
         # Reverse order
         results2 = sc.compare_multilayer_networks(
             [sparse_network, simple_network],
+            assume_exchangeable=True,
             metrics=['density'],
             test='permutation',
             n_permutations=100,
@@ -498,6 +495,7 @@ class TestStatisticalConsistency:
         # Permutation test
         results_perm = sc.compare_multilayer_networks(
             [dense_network, sparse_network],
+            assume_exchangeable=True,
             metrics=['density'],
             test='permutation',
             n_permutations=50,
@@ -507,6 +505,7 @@ class TestStatisticalConsistency:
         # T-test
         results_ttest = sc.compare_multilayer_networks(
             [dense_network, sparse_network],
+            assume_exchangeable=True,
             metrics=['density'],
             test='t-test',
             alpha=0.05
