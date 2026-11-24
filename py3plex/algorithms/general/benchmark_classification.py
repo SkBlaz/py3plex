@@ -44,8 +44,9 @@ def evaluate_oracle_F1(probs: np.ndarray, Y_real: np.ndarray) -> tuple[float, fl
     for i, k in enumerate(top_k_list):
         probs_ = probs[i, :]
         a = np.zeros(probs.shape[1])
-        labels_tmp = probs_.argsort()[-k:]
-        a[labels_tmp] = 1
+        if k:
+            labels_tmp = probs_.argsort()[-k:]
+            a[labels_tmp] = 1
         predictions.append(a)
     predictions = np.asarray(predictions)
 
