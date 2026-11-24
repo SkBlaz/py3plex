@@ -204,14 +204,14 @@ class TestSemiringValidation:
         
         # Non-commutative plus
         def non_commutative_plus(a, b):
-            return a  # Always return first argument
+            return a if a != 0 else b
         
         spec = SemiringSpec(
             name="non_commutative",
             zero=0,
             one=1,
             plus=non_commutative_plus,
-            times=lambda a, b: a + b,
+            times=lambda a, b: a * b,
             strict=True,
             examples=(0, 1, 2),
         )
