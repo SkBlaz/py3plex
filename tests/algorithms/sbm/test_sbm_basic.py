@@ -495,3 +495,22 @@ def test_sparse_operations():
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def test_one_block_likelihood_counts_missing_dyads():
+    from scipy.sparse import csr_matrix
+    from py3plex.algorithms.sbm.multilayer_sbm import fit_single_sbm
+    from py3plex.algorithms.sbm.objectives import bernoulli_log_likelihood
+
+    adjacency = csr_matrix([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
+    for likelihood in ("bernoulli", "poisson"):
+        fit = fit_single_sbm(
+            [adjacency], K=1, layers=["L"], node_to_idx={i: i for i in range(3)},
+            model="sbm", likelihood=likelihood, init="random", seed=42, verbose=False,
+        )
+        assert np.isclose(fit.block_affinity_[0][0, 0], 2 / 3)
+    expected = 2 * np.log(2 / 3) + np.log(1 / 3)
+    assert np.isclose(
+        bernoulli_log_likelihood(adjacency, np.ones((3, 1)), np.array([[2 / 3]])),
+        expected,
+    )
