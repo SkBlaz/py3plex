@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=eaacc997"></script>
+      <script src="_static/documentation_options.js?v=2125595a"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -2944,7 +2944,7 @@ Same for all layers in this simple model.</p>
 <dd><p>Generate random multilayer Erdős-Rényi network.</p>
 <p>This generator creates a general multilayer network where each base node is
 assigned to exactly one layer. As a result, the number of node-layer pairs
-is typically <code class="docutils literal notranslate"><span class="pre">n</span></code> rather than <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">*</span> <span class="pre">l</span></code>.</p>
+is <code class="docutils literal notranslate"><span class="pre">n</span></code>, spread across <code class="docutils literal notranslate"><span class="pre">min(n,</span> <span class="pre">l)</span></code> nonempty layers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -5974,7 +5974,8 @@ and Nᴹ(&gt;k) is the number of such nodes.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>network</strong> – py3plex multi_layer_network object</p></li>
 <li><p><strong>k</strong> – Degree threshold</p></li>
-<li><p><strong>normalized</strong> – Whether to normalize by random expectation</p></li>
+<li><p><strong>normalized</strong> – Divide the physical rich-club edge count by its expected
+count under the configuration model of the simple physical projection</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -6273,7 +6274,11 @@ Cᵢᵅ = centrality of node i in layer α (can be degree, betweenness, closenes
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.statistics.enrichment_modules.compute_enrichment">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.statistics.enrichment_modules.</span></span><span class="sig-name descname"><span class="pre">compute_enrichment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term_database</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">whole_term_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multitest_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fdr_bh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'two-sided'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intra_community</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#py3plex.algorithms.statistics.enrichment_modules.compute_enrichment" title="Link to this definition"></a></dt>
-<dd><p>The main method for computing the enrichment of a subnetwork. This work in parallel and also offers methods for multiple test correction.</p>
+<dd><p>Test partition membership and annotation on disjoint sets of unique entities.</p>
+<p>The term database specifies which terms to test. Background counts are
+computed from term_dataset; all_counts is retained for callers that pass
+a count of annotation rows. With intra_community, the background is
+restricted to annotated entities in the union of the partitions.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -6317,33 +6322,16 @@ all_counts = number of all annotation occurences</p>
 <dl class="py function" id="module-py3plex.algorithms.statistics.correlation_networks">
 <dt class="sig sig-object py" id="py3plex.algorithms.statistics.correlation_networks.default_correlation_to_network">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.statistics.correlation_networks.</span></span><span class="sig-name descname"><span class="pre">default_correlation_to_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'matrix'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'standard'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#py3plex.algorithms.statistics.correlation_networks.default_correlation_to_network" title="Link to this definition"></a></dt>
-<dd><p>Convert correlation matrix to network using optimal thresholding.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>matrix</strong> – Input data matrix</p></li>
-<li><p><strong>input_type</strong> – Type of input (default: “matrix”)</p></li>
-<li><p><strong>preprocess</strong> – Preprocessing method (default: “standard”)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Binary adjacency matrix</p>
-</dd>
-</dl>
+<dd><p>Return a binary symmetric adjacency over the input variables.</p>
+<p>A matrix of observations has shape (observations, variables). For
+input_type=”correlation”, pass a symmetric precomputed correlation matrix.
+Standardizing variables does not change Spearman ranks.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="py3plex.algorithms.statistics.correlation_networks.pick_threshold">
 <span class="sig-prename descclassname"><span class="pre">py3plex.algorithms.statistics.correlation_networks.</span></span><span class="sig-name descname"><span class="pre">pick_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#py3plex.algorithms.statistics.correlation_networks.pick_threshold" title="Link to this definition"></a></dt>
-<dd><p>Pick optimal threshold for correlation network construction.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>matrix</strong> – Input data matrix</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Optimal threshold value</p>
-</dd>
-</dl>
+<dd><p>Select a positive correlation threshold from a matrix of observations.</p>
 </dd></dl>
 
 <dl class="py function" id="module-py3plex.algorithms.statistics.basic_statistics">

@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=ae6b746b"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=eaacc997"></script>
+      <script src="_static/documentation_options.js?v=2125595a"></script>
       <script src="_static/doctools.js?v=7ba34365"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -150,6 +150,12 @@
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">stats_comparison</span></code> module provides a comprehensive framework for performing statistical comparisons between multilayer networks. This enables quantification of structural or topological differences across network ensembles or experimental conditions.</p>
+<p>Pass a list of cohorts (each a list of independent graphs) for inferential
+comparisons. Each graph contributes one summary per metric and layer. A flat
+list reports descriptive results by default. Set
+<code class="docutils literal notranslate"><span class="pre">assume_exchangeable=True</span></code> only when the study design supports treating
+within-graph observations as exchangeable. Set <code class="docutils literal notranslate"><span class="pre">seed</span></code> for reproducible
+permutations.</p>
 </section>
 <section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>

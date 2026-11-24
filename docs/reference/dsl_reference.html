@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=ae6b746b"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=eaacc997"></script>
+      <script src="../_static/documentation_options.js?v=2125595a"></script>
       <script src="../_static/doctools.js?v=7ba34365"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -698,9 +698,9 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 </section>
 <section id="attribution-block">
 <h3>Attribution Block<a class="headerlink" href="#attribution-block" title="Link to this heading"></a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">&quot;attribution&quot;</span></code> block provides Shapley value-based explanations for why nodes/edges have high metric values or rankings.</p>
-<p><strong>Purpose</strong>: Decompose metric contributions across layers and/or edges using game-theoretic attribution.</p>
-<p><strong>Basic Example</strong>:</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">&quot;attribution&quot;</span></code> block to explain node scores or ranks with Shapley values.
+The engine recomputes the metric for each graph formed by a coalition of layers
+or incident edges.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
      <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">)</span>
@@ -736,7 +736,7 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metric</span></code></p></td>
 <td><p>str | None</p></td>
 <td><p>Auto-infer</p></td>
-<td><p>Which computed metric to explain (required if multiple metrics)</p></td>
+<td><p>Computed metric to explain. Inferred from the first sort key or the only computed metric.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">objective</span></code></p></td>
 <td><p>str</p></td>
@@ -751,17 +751,17 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">method</span></code></p></td>
 <td><p>str</p></td>
 <td><p>“shapley_mc”</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;shapley&quot;</span></code> (exact), <code class="docutils literal notranslate"><span class="pre">&quot;shapley_mc&quot;</span></code> (Monte Carlo), <code class="docutils literal notranslate"><span class="pre">&quot;influence&quot;</span></code> (approx)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;shapley&quot;</span></code> (exact) or <code class="docutils literal notranslate"><span class="pre">&quot;shapley_mc&quot;</span></code> (Monte Carlo)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">feature_space</span></code></p></td>
 <td><p>str</p></td>
 <td><p>“layers”</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;layers&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;layer_pairs&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;coupling_types&quot;</span></code></p></td>
+<td><p>Layer attribution uses <code class="docutils literal notranslate"><span class="pre">&quot;layers&quot;</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">n_permutations</span></code></p></td>
 <td><p>int</p></td>
 <td><p>128</p></td>
-<td><p>Monte Carlo sample count (≥16)</p></td>
+<td><p>Positive number of sampled feature permutations</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_exact_features</span></code></p></td>
 <td><p>int</p></td>
@@ -776,47 +776,37 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">edge_scope</span></code></p></td>
 <td><p>str</p></td>
 <td><p>“incident”</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;incident&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ego_k_hop&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;shortest_path_sample&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;global_top_m&quot;</span></code></p></td>
+<td><p>Edge attribution uses <code class="docutils literal notranslate"><span class="pre">&quot;incident&quot;</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">k_hop</span></code></p></td>
-<td><p>int</p></td>
-<td><p>2</p></td>
-<td><p>Ego network radius (for <code class="docutils literal notranslate"><span class="pre">edge_scope=&quot;ego_k_hop&quot;</span></code>)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_edges</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">max_edges</span></code></p></td>
 <td><p>int</p></td>
 <td><p>40</p></td>
 <td><p>Maximum candidate edges to consider</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">top_k_layers</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">top_k_layers</span></code></p></td>
 <td><p>int</p></td>
 <td><p>10</p></td>
 <td><p>Number of top layer contributions to return</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">top_k_edges</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">top_k_edges</span></code></p></td>
 <td><p>int</p></td>
 <td><p>20</p></td>
 <td><p>Number of top edge contributions to return</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_negative</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_negative</span></code></p></td>
 <td><p>bool</p></td>
 <td><p>True</p></td>
 <td><p>Include negative contributions</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cache</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cache</span></code></p></td>
 <td><p>bool</p></td>
 <td><p>True</p></td>
 <td><p>Cache subset computations for performance</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">uq</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">uq</span></code></p></td>
 <td><p>str</p></td>
 <td><p>“off”</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&quot;off&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;propagate&quot;</span></code> (compute per UQ replicate), <code class="docutils literal notranslate"><span class="pre">&quot;summarize_only&quot;</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ci_level</span></code></p></td>
-<td><p>float</p></td>
-<td><p>0.95</p></td>
-<td><p>Confidence interval level for UQ propagation</p></td>
+<td><p>Use deterministic measures with <code class="docutils literal notranslate"><span class="pre">uq=&quot;off&quot;</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -824,18 +814,18 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">"metric"</span><span class="p">:</span> <span class="s2">"pagerank"</span><span class="p">,</span>
     <span class="s2">"objective"</span><span class="p">:</span> <span class="s2">"value"</span><span class="p">,</span>
-    <span class="s2">"utility_def"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># or "margin_to_cutoff(k=10)" for rank</span>
+    <span class="s2">"utility_def"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># or "margin_to_cutoff(limit=10)" for rank</span>
     <span class="s2">"levels"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"layer"</span><span class="p">],</span>
     <span class="s2">"method"</span><span class="p">:</span> <span class="s2">"shapley_mc"</span><span class="p">,</span>
     <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
     <span class="s2">"n_permutations"</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
     <span class="s2">"feature_space"</span><span class="p">:</span> <span class="s2">"layers"</span><span class="p">,</span>
     <span class="s2">"full_value"</span><span class="p">:</span> <span class="mf">0.1186</span><span class="p">,</span>
-    <span class="s2">"baseline_value"</span><span class="p">:</span> <span class="mf">0.0500</span><span class="p">,</span>
-    <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">0.0686</span><span class="p">,</span>
+    <span class="s2">"baseline_value"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">0.1186</span><span class="p">,</span>
     <span class="s2">"residual"</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>  <span class="c1"># sum(phi) ≈ delta</span>
     <span class="s2">"layer_contrib"</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s2">"layer"</span><span class="p">:</span> <span class="s2">"social"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0401</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"layer"</span><span class="p">:</span> <span class="s2">"social"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0901</span><span class="p">},</span>
         <span class="p">{</span><span class="s2">"layer"</span><span class="p">:</span> <span class="s2">"work"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0285</span><span class="p">}</span>
     <span class="p">],</span>
     <span class="s2">"edge_contrib"</span><span class="p">:</span> <span class="p">[],</span>  <span class="c1"># populated if levels includes "edge"</span>
@@ -856,8 +846,6 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
          <span class="n">attribution</span><span class="o">=</span><span class="p">{</span>
              <span class="s2">"objective"</span><span class="p">:</span> <span class="s2">"rank"</span><span class="p">,</span>  <span class="c1"># Explain ranking position</span>
              <span class="s2">"levels"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"layer"</span><span class="p">,</span> <span class="s2">"edge"</span><span class="p">],</span>
-             <span class="s2">"edge_scope"</span><span class="p">:</span> <span class="s2">"ego_k_hop"</span><span class="p">,</span>
-             <span class="s2">"k_hop"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
              <span class="s2">"max_edges"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
              <span class="s2">"n_permutations"</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
              <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">42</span>
@@ -865,44 +853,20 @@ use <code class="docutils literal notranslate"><span class="pre">summarize()</sp
      <span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
-
-<span class="c1"># With UQ propagation</span>
-<span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">"perturbation"</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">explain</span><span class="p">(</span>
-         <span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s2">"attribution"</span><span class="p">],</span>
-         <span class="n">attribution</span><span class="o">=</span><span class="p">{</span>
-             <span class="s2">"metric"</span><span class="p">:</span> <span class="s2">"pagerank"</span><span class="p">,</span>
-             <span class="s2">"uq"</span><span class="p">:</span> <span class="s2">"propagate"</span><span class="p">,</span>  <span class="c1"># Compute attribution per UQ replicate</span>
-             <span class="s2">"levels"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"layer"</span><span class="p">],</span>
-             <span class="s2">"seed"</span><span class="p">:</span> <span class="mi">42</span>
-         <span class="p">}</span>
-     <span class="p">)</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Determinism</strong>:</p>
-<ul class="simple">
-<li><p>Setting <code class="docutils literal notranslate"><span class="pre">seed</span></code> ensures reproducible Shapley values across runs</p></li>
-<li><p>Same seed produces identical attributions regardless of parallel execution settings</p></li>
-<li><p>Different seeds produce statistically different but valid attributions</p></li>
-</ul>
-<p><strong>Performance Notes</strong>:</p>
-<ul class="simple">
-<li><p><strong>Exact Shapley</strong>: Only feasible for ≤ <code class="docutils literal notranslate"><span class="pre">max_exact_features</span></code> layers (default 8)</p></li>
-<li><p><strong>Monte Carlo Shapley</strong>: Scales to larger feature sets via sampling</p></li>
-<li><p><strong>Edge Attribution</strong>: More expensive than layer attribution; bounded by <code class="docutils literal notranslate"><span class="pre">max_edges</span></code></p></li>
-<li><p><strong>Caching</strong>: Enabled by default to reuse subset metric computations</p></li>
-</ul>
-<p><strong>UQ Integration</strong>:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">uq=&quot;off&quot;</span></code>: No UQ (default), deterministic scalar Shapley values</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">uq=&quot;propagate&quot;</span></code>: Compute attribution per UQ replicate, aggregate mean/std/CI</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">uq=&quot;summarize_only&quot;</span></code>: Compute once on base network, wrap in UQ-like structure</p></li>
-</ul>
+<p>Layer coalitions retain replicas and edges from the selected layers and start from
+an empty graph. Edge coalitions keep all replicas and all edges outside the
+candidate set. For multigraphs each edge contribution includes the edge key.
+When both levels are requested, the result includes each level’s baseline and
+residual. The top-level baseline and residual refer to the layer game.</p>
+<p>Rank attribution recomputes the margin to the cutoff or median on each
+coalition using the eligible nodes before the query limit. A node missing from
+the coalition has score zero. Rank attribution uses the explained metric as
+the primary sort key when the query specifies an ordering.</p>
+<p>Use a seed to reproduce sampled permutations. Exact attribution switches to
+Monte Carlo above <code class="docutils literal notranslate"><span class="pre">max_exact_features</span></code>. Edge attribution considers at most
+<code class="docutils literal notranslate"><span class="pre">max_edges</span></code> candidates.</p>
 <p><strong>Export</strong>:</p>
 <p>Attribution data serializes to JSON strings when using <code class="docutils literal notranslate"><span class="pre">expand_explanations=True</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">expand_explanations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
