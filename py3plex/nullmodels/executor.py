@@ -65,7 +65,8 @@ def generate_null_model(
         if graph is not None:
             scope = [node for node in graph if isinstance(node, tuple)
                      and len(node) == 2 and node[1] in allowed]
-            network = _with_graph(network, graph.subgraph(scope).copy())
+            scoped_graph = graph.subgraph(scope).copy()
+            network = _with_graph(network, scoped_graph) if hasattr(network, "core_network") else scoped_graph
 
     # Get the model function
     model_fn = model_registry.get(model)

@@ -83,11 +83,11 @@ def _copy_network(network: Any) -> Any:
 
 
 def _with_graph(network, graph):
-    if not hasattr(network, "core_network"):
-        return graph
     sample = multinet.multi_layer_network(
-        network_type=network.network_type, directed=graph.is_directed(),
-        coupling_weight=network.coupling_weight, verbose=network.verbose,
+        network_type=getattr(network, "network_type", "multilayer"),
+        directed=graph.is_directed(),
+        coupling_weight=getattr(network, "coupling_weight", 1),
+        verbose=getattr(network, "verbose", True),
     )
     sample.core_network = graph
     return sample
