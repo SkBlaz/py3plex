@@ -240,13 +240,9 @@ def _netmf_embed(
 
     PT_sum = PT_sum / window
 
-    # M = (vol / (negative * T)) * D * PT_sum
-    # where D is the degree diagonal; we work with the normalised version.
+    # Divide by the context nodes' stationary degrees before taking the log.
     scale = vol / max(negative, 1e-12)
-    # M_ij = scale * (d_i / vol) * PT_sum_ij
-    #       = scale * PT_sum_ij / deg_safe_i  (already divided by deg in P)
-    # Full PMI_ij = log(M_ij); clamp negatives to 0 (PPMI)
-    M_dense: np.ndarray = np.asarray(PT_sum.todense()) * scale
+    M_dense = (PT_sum @ d_inv).toarray() * scale
 
     # Log + PPMI
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -277,12 +273,12 @@ def _netmf_embed(
             )
         # eigsh on symmetric PPMI matrix
         sym_M = (log_M + log_M.T) / 2.0
-        eigenvalues, U = eigsh(sp.csr_matrix(sym_M), k=k)
+        eigenvalues, U = eigsh(sp.csr_matrix(sym_M), k=k, v0=rng.standard_normal(n))
         # Sort by descending eigenvalue magnitude
         order = np.argsort(-np.abs(eigenvalues))
         eigenvalues = eigenvalues[order]
         U = U[:, order]
-        s = np.sqrt(np.abs(eigenvalues))
+        s = np.abs(eigenvalues)
 
     # Embedding: U * sqrt(S)
     embeddings = U[:, :dim] * np.sqrt(np.maximum(s[:dim], 0.0))

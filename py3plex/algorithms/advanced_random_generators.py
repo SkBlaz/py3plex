@@ -70,9 +70,6 @@ def multilayer_barabasi_albert(
     # Initialize RNG consistently
     rng = np.random.RandomState(seed)
     
-    # Use RNG to generate seed for NetworkX functions
-    nx_seed = None if seed is None else rng.randint(0, 2**31)
-    
     if directed:
         G = nx.MultiDiGraph()
     else:
@@ -80,6 +77,7 @@ def multilayer_barabasi_albert(
     
     # Generate BA network for each layer
     for layer in range(num_layers):
+        nx_seed = None if seed is None else int(rng.randint(0, 2**31))
         layer_graph = nx.barabasi_albert_graph(n, m, seed=nx_seed)
         
         # Add nodes with layer information
@@ -158,9 +156,6 @@ def multilayer_stochastic_block_model(
     # Initialize RNG consistently
     rng = np.random.RandomState(seed)
     
-    # Use RNG to generate seed for NetworkX functions
-    nx_seed = None if seed is None else rng.randint(0, 2**31)
-    
     if directed:
         G = nx.MultiDiGraph()
     else:
@@ -168,6 +163,7 @@ def multilayer_stochastic_block_model(
     
     # Generate SBM for each layer
     for layer in range(num_layers):
+        nx_seed = None if seed is None else int(rng.randint(0, 2**31))
         layer_graph = nx.stochastic_block_model(
             block_sizes, block_probs, directed=directed, seed=nx_seed
         )
@@ -341,9 +337,6 @@ def multilayer_erdos_renyi(
     # Initialize RNG consistently
     rng = np.random.RandomState(seed)
     
-    # Use RNG to generate seed for NetworkX functions
-    nx_seed = None if seed is None else rng.randint(0, 2**31)
-    
     if directed:
         G = nx.MultiDiGraph()
     else:
@@ -351,6 +344,7 @@ def multilayer_erdos_renyi(
     
     # Generate ER network for each layer
     for layer in range(num_layers):
+        nx_seed = None if seed is None else int(rng.randint(0, 2**31))
         layer_graph = nx.erdos_renyi_graph(n, p, seed=nx_seed, directed=directed)
         
         # Add nodes with layer information
@@ -411,9 +405,6 @@ def multilayer_configuration_model(
     # Initialize RNG consistently
     rng = np.random.RandomState(seed)
     
-    # Use RNG to generate seed for NetworkX functions
-    nx_seed = None if seed is None else rng.randint(0, 2**31)
-    
     if directed:
         G = nx.MultiDiGraph()
     else:
@@ -423,6 +414,7 @@ def multilayer_configuration_model(
     
     # Generate configuration model for each layer
     for layer, degree_seq in enumerate(degree_sequences):
+        nx_seed = None if seed is None else int(rng.randint(0, 2**31))
         try:
             if directed:
                 # For directed, need in-degree and out-degree sequences
