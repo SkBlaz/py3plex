@@ -12,7 +12,7 @@ import numpy as np
 from .core import ContinuousTimeProcess, DynamicsProcess
 from ._utils import (
     iter_multilayer_nodes,
-    iter_multilayer_neighbors,
+    iter_incoming_exposures,
     count_infected_neighbors,
 )
 
@@ -97,10 +97,9 @@ class SISContinuousTime(ContinuousTimeProcess):
         # Infection events: S -> I
         for node, node_state in state.items():
             if node_state == 'S':
-                # Count infected neighbors
+                # Sum the weights of incoming contacts from infected nodes
                 k = count_infected_neighbors(self.graph, node, state, infected_value='I')
                 if k > 0:
-                    # Rate proportional to number of infected neighbors
                     propensities[('infect', node)] = self.beta * k
         
         return propensities
@@ -249,15 +248,11 @@ class CompartmentalDynamics(DynamicsProcess):
                 new_state[node] = current_compartment
                 continue
             
-            # Get neighbor information
-            neighbors = list(iter_multilayer_neighbors(self.graph, node))
-            neighbor_states = {n: state[n] for n in neighbors if n in state}
-            
-            # Count neighbors in each compartment
-            neighbor_counts = {comp: 0 for comp in self.compartments}
-            for neighbor, neighbor_state in neighbor_states.items():
-                neighbor_counts[neighbor_state] += 1
-            
+            neighbor_counts = dict.fromkeys(self.compartments, 0.0)
+            for neighbor, weight in iter_incoming_exposures(self.graph, node):
+                if neighbor in state:
+                    neighbor_counts[state[neighbor]] += weight
+
             # Apply transition rule
             transition_fn = self.transition_rules[current_compartment]
             new_compartment = transition_fn(
@@ -292,7 +287,7 @@ class SIRDynamics(CompartmentalDynamics):
     Update rules:
     - Infected node recovers (I -> R) with probability gamma
     - Susceptible node gets infected (S -> I) with probability 1 - (1 - beta)^k
-      where k is the number of infected neighbors
+      where k is the total incoming contact weight from infected nodes
     - Recovered nodes stay recovered (absorbing state)
     
     Parameters (via kwargs):

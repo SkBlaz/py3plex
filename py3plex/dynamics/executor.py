@@ -130,7 +130,7 @@ def run_simulation(network: Any, stmt: SimulationStmt,
     Notes:
         Parallel execution is deterministic: same seed produces identical results
         regardless of n_jobs value. Replicates are executed with deterministic
-        child seeds spawned from the base seed.
+        replicate seeds derived from the base seed.
     """
     # Validate configuration
     if stmt.steps < 1:
@@ -172,7 +172,7 @@ def run_simulation(network: Any, stmt: SimulationStmt,
     # Step 3: Create update function
     process_spec.update_fn(params, stmt.coupling)
 
-    # Step 4: Initialize RNG and spawn seeds for replicates
+    # Step 4: Derive deterministic seeds for replicates
     base_seed = stmt.seed if stmt.seed is not None else 42
     
     # Get n_jobs from dynamics_config if available, otherwise default to 1
@@ -181,10 +181,10 @@ def run_simulation(network: Any, stmt: SimulationStmt,
         n_jobs = stmt._dynamics_config.n_jobs
     
     # Import parallel utilities
-    from py3plex._parallel import spawn_seeds, parallel_map
+    from py3plex._parallel import parallel_map
     
-    # Spawn deterministic seeds for each replicate
-    replicate_seeds = spawn_seeds(base_seed, stmt.replicates)
+    # Retain the historical replicate stream across serial and parallel execution.
+    replicate_seeds = [base_seed + i for i in range(stmt.replicates)]
 
     # Step 5: Run replicates (parallel or serial based on n_jobs)
     # Create runner instance (picklable for multiprocessing)
@@ -262,6 +262,7 @@ def run_simulation(network: Any, stmt: SimulationStmt,
         "params": params,
         "coupling": stmt.coupling,
         "seed": base_seed,
+        "seed_derivation": "base_seed_plus_replicate",
         "network_nodes": len(nodes),
         "uq_config": uq_config,
     }
@@ -303,18 +304,9 @@ def _prepare_network(network: Any, layer_expr: Any) -> Tuple[
     if len(nodes) == 0:
         return [], np.array([[]]), {}, {}
 
-    # Build node to index mapping
-    node_to_idx = {node: i for i, node in enumerate(nodes)}
+    from ._utils import get_adjacency_matrix
 
-    # Build adjacency matrix
-    n = len(nodes)
-    adj_matrix = np.zeros((n, n))
-
-    for u, v in G.edges():
-        if u in node_to_idx and v in node_to_idx:
-            i, j = node_to_idx[u], node_to_idx[v]
-            adj_matrix[i, j] = 1
-            adj_matrix[j, i] = 1  # Undirected
+    adj_matrix, node_to_idx = get_adjacency_matrix(G, nodes)
 
     # Build layer info
     layer_info: Dict[str, List[Any]] = {}
