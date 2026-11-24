@@ -575,3 +575,29 @@ class TestEdgeCases:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def test_repeats_use_distinct_seeds_and_summary_keeps_replicas(simple_network, monkeypatch):
+    seeds = []
+    original = RemoveEdgesSpec.apply
+
+    def record(spec, network, seed):
+        seeds.append(seed)
+        return original(spec, network, seed)
+
+    monkeypatch.setattr(RemoveEdgesSpec, "apply", record)
+    result = CounterfactualEngine(
+        simple_network, Q.nodes().compute("degree"),
+        RemoveEdgesSpec(proportion=0), repeats=3, seed=42,
+    ).run()
+    assert len(set(seeds)) == 3
+    assert set(result.summary.index) == set(simple_network.get_nodes())
+
+
+def test_counterfactual_metrics_align_by_replica_under_row_reordering():
+    from py3plex.counterfactual.comparator import compute_delta_stats, compute_topk_overlap
+
+    baseline = pd.DataFrame({"id": ["a", "a"], "layer": ["L1", "L2"], "m": [0, 10]})
+    reordered = baseline.iloc[::-1].reset_index(drop=True)
+    assert compute_delta_stats(baseline, [reordered], "m")["delta_std"] == 0
+    assert compute_topk_overlap(baseline, reordered, "m", 1) == 1
