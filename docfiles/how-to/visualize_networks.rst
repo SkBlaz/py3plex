@@ -18,7 +18,7 @@ Quick Plot
     from py3plex.core import multinet
 
     # Load network
-    network = multinet.multi_layer_network()
+    network = multinet.multi_layer_network(directed=False)
     network.add_edges([
         ['Alice', 'friends', 'Bob', 'friends', 1],
         ['Bob', 'friends', 'Carol', 'friends', 1],
@@ -28,7 +28,7 @@ Quick Plot
     # Visualize
     network.visualize_network(show=True)
 
-This opens an interactive window with the aggregated multilayer visualization. Set
+This displays the default diagonal layout with a panel for each layer. Set
 ``show=False`` for headless environments.
 
 Save to File
@@ -36,10 +36,12 @@ Save to File
 
 .. code-block:: python
 
-    network.visualize_network(
-        output_file='network.png',  # png, pdf, svg are supported
-        show=False
-    )
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots()
+    network.visualize_network(axis=ax, show=False)
+    fig.savefig("network.png", dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
 Customizing Visualizations
 ---------------------------
@@ -59,10 +61,8 @@ You can override sizing and colors explicitly to emphasize node importance:
     # Compute degrees for sizing
     degree_data = Q.nodes().compute("degree").execute(network)
     node_order = list(network.core_network.nodes())
-    node_sizes = [
-        degree_data.get(node, {'degree': 1})['degree'] * 50
-        for node in node_order
-    ]
+    degrees = degree_data.attributes["degree"]
+    node_sizes = [max(degrees.get(node, 0), 1) * 50 for node in node_order]
 
     fig, ax = plt.subplots(figsize=(8, 8))
     hairball_plot(
@@ -177,7 +177,7 @@ Visualize Single Layer
 
     # Extract nodes belonging to one layer
     layer_nodes = Q.nodes().from_layers(L["friends"]).execute(network)
-    friends_subgraph = network.core_network.subgraph(layer_nodes.keys())
+    friends_subgraph = network.core_network.subgraph(layer_nodes.items)
 
     pos = nx.spring_layout(friends_subgraph, k=0.6)
     plt.figure(figsize=(6, 6))
@@ -203,25 +203,25 @@ Side-by-Side Layer Comparison
     import matplotlib.pyplot as plt
     from py3plex.dsl import Q, L
     
-    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-    
-    for idx, layer in enumerate(['friends', 'work', 'family']):
+    fig, axes = plt.subplots(1, network.layer_count, figsize=(12, 6), squeeze=False)
+
+    for idx, layer in enumerate(network.layers):
         layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
-        layer_subgraph = network.core_network.subgraph(layer_nodes.keys())
+        layer_subgraph = network.core_network.subgraph(layer_nodes.items)
         pos = nx.spring_layout(layer_subgraph, k=0.6)
 
         nx.draw_networkx(
             layer_subgraph,
             pos,
-            ax=axes[idx],
+            ax=axes[0, idx],
             node_color='lightblue',
             edge_color='gray',
             with_labels=False,
             node_size=120,
             alpha=0.8
         )
-        axes[idx].set_title(f'Layer: {layer}')
-        axes[idx].axis('off')
+        axes[0, idx].set_title(f'Layer: {layer}')
+        axes[0, idx].axis('off')
     
     plt.tight_layout()
     plt.savefig('layers_comparison.png', dpi=300)
@@ -248,11 +248,9 @@ Visualize High-Degree Subnetwork
     import matplotlib.pyplot as plt
     
     # Load network
-    network = multinet.multi_layer_network(directed=False)
-    network.load_network(
-        "py3plex/datasets/_data/synthetic_multilayer.edges",
-        input_type="multiedgelist"
-    )
+    from py3plex.datasets import load_synthetic_multilayer
+
+    network = load_synthetic_multilayer()
     
     # Query high-degree nodes
     hubs = (
@@ -265,7 +263,7 @@ Visualize High-Degree Subnetwork
     print(f"Hub nodes (degree > 6): {len(hubs)}")
     
     # Extract hub subgraph
-    hub_subgraph = network.core_network.subgraph(hubs.keys())
+    hub_subgraph = network.core_network.subgraph(hubs.items)
     
     # Create visualization
     import networkx as nx
@@ -278,7 +276,7 @@ Visualize High-Degree Subnetwork
     node_colors = [layer_colors.get(node[1], 'gray') for node in hub_subgraph.nodes()]
     
     # Size by degree
-    node_sizes = [hubs[node]['degree'] * 100 for node in hub_subgraph.nodes()]
+    node_sizes = [hubs.attributes["degree"][node] * 100 for node in hub_subgraph.nodes()]
     
     nx.draw_networkx(
         hub_subgraph,
@@ -376,7 +374,7 @@ Layer-Specific Visualizations with DSL
     import matplotlib.pyplot as plt
     import networkx as nx
     
-    layers = network.get_layers()
+    layers = network.layers
     n_layers = len(layers)
     
     fig, axes = plt.subplots(1, n_layers, figsize=(6*n_layers, 5))
@@ -389,13 +387,13 @@ Layer-Specific Visualizations with DSL
         layer_edges = Q.edges().from_layers(L[layer]).execute(network)
         
         # Extract layer subgraph
-        layer_subgraph = network.core_network.subgraph(layer_nodes.keys())
+        layer_subgraph = network.core_network.subgraph(layer_nodes.items)
         
         # Compute metrics for sizing
         layer_metrics = (
             Q.nodes()
              .from_layers(L[layer])
-             .compute("degree")
+             .compute("degree", kind="intra")
              .execute(network)
         )
         
@@ -403,7 +401,7 @@ Layer-Specific Visualizations with DSL
         pos = nx.spring_layout(layer_subgraph, k=0.5, iterations=50)
         
         # Size by degree
-        node_sizes = [layer_metrics[node]['degree'] * 50 for node in layer_subgraph.nodes()]
+        node_sizes = [layer_metrics.attributes["degree"][node] * 50 for node in layer_subgraph.nodes()]
         
         nx.draw_networkx(
             layer_subgraph,
@@ -448,10 +446,7 @@ Visualize Central Nodes
     )
     
     # Extract betweenness values for coloring
-    betweenness = {
-        node: data['betweenness_centrality']
-        for node, data in centrality_result.items()
-    }
+    betweenness = centrality_result.attributes["betweenness_centrality"]
     
     # Create visualization
     plt.figure(figsize=(14, 10))
@@ -462,7 +457,7 @@ Visualize Central Nodes
     betw_values = [betweenness.get(node, 0) for node in node_list]
     
     # Node sizes based on degree
-    degrees = {node: data['degree'] for node, data in centrality_result.items()}
+    degrees = centrality_result.attributes["degree"]
     node_sizes = [degrees.get(node, 1) * 100 for node in node_list]
     
     # Draw
@@ -580,9 +575,12 @@ Interactive Visualization with DSL Filtering
     )
     
     # Extract subgraph (optional: filter for clarity)
+    degree = metrics.attributes["degree"]
+    betweenness = metrics.attributes["betweenness_centrality"]
     high_degree = {
-        node: data for node, data in metrics.items()
-        if data['degree'] > 4
+        node: {"degree": degree[node], "betweenness_centrality": betweenness[node]}
+        for node in metrics.items
+        if degree[node] > 4
     }
     
     subgraph = network.core_network.subgraph(high_degree.keys())
@@ -681,38 +679,19 @@ Color by Communities
 
 .. code-block:: python
 
-    from py3plex.algorithms.community_detection import louvain_communities
-    from py3plex.visualization import visualize_communities
-    
-    # Detect communities
-    communities = louvain_communities(network)
-    
-    # Visualize with community colors
-    visualize_communities(
-        network,
-        communities,
-        output_file='communities.png',
-        show=True
+    import matplotlib.pyplot as plt
+    import networkx as nx
+    from py3plex.algorithms.community_detection.community_wrapper import (
+        louvain_communities,
     )
 
-Interactive Visualization
--------------------------
-
-Using Plotly
-~~~~~~~~~~~~
-
-.. code-block:: python
-
-    from py3plex.visualization import plotly_visualization
-    
-    # Create interactive plot
-    fig = plotly_visualization(network)
-    
-    # Show in browser
-    fig.show()
-    
-    # Or save as HTML
-    fig.write_html('network_interactive.html')
+    graph = network.core_network
+    communities = louvain_communities(network)
+    colors = [communities.get(node, -1) for node in graph.nodes()]
+    fig, ax = plt.subplots()
+    nx.draw_networkx(graph, nx.spring_layout(graph, seed=42), node_color=colors, ax=ax)
+    fig.savefig("communities.png", dpi=200, bbox_inches="tight")
+    plt.close(fig)
 
 Export for Gephi/Cytoscape
 ---------------------------
@@ -724,14 +703,14 @@ Export to GraphML
 
     import networkx as nx
     
-    # Convert to NetworkX
-    G = network.to_networkx()
-    
-    # Export
-    nx.write_graphml(G, 'network.graphml')
+    graph = network.to_networkx().copy()
+    nx.set_node_attributes(graph, {replica: str(replica[0]) for replica in graph}, "node_id")
+    nx.set_node_attributes(graph, {replica: str(replica[1]) for replica in graph}, "layer")
+    graph = nx.convert_node_labels_to_integers(graph)
+    nx.write_graphml(graph, "network.graphml")
 
 Then open ``network.graphml`` in Gephi or Cytoscape for advanced visualization
-of the aggregated network.
+of the multilayer replica graph.
 
 Next Steps
 ----------

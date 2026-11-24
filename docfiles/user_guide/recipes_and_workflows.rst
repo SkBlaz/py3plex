@@ -188,7 +188,7 @@ Recipe 4: Quick Network Summary
     network.basic_stats()
     
     # Layer information
-    layers = network.get_layers()
+    layers = network.layers
     print(f"\nLayers: {layers}")
     print(f"Number of layers: {len(layers)}")
     
@@ -241,7 +241,7 @@ Recipe 5: Layer-by-Layer Analysis
     )
     
     # Analyze each layer
-    layers = network.get_layers()
+    layers = network.layers
     layer_stats = {}
     
     for layer_name in layers:
@@ -294,7 +294,7 @@ Recipe 6: Compute Multilayer Statistics
         input_type="multiedgelist"
     )
     
-    layers = network.get_layers()
+    layers = network.layers
     
     # === Layer-Level Statistics ===
     print("=== Layer Statistics ===")
@@ -356,7 +356,7 @@ Recipe 7: Single-Layer Centrality Analysis
     )
     
     # Select a layer
-    layers = network.get_layers()
+    layers = network.layers
     target_layer = [str(layers[0])]
     layer = network.subnetwork(target_layer, subset_by="layers")
     
@@ -676,7 +676,7 @@ Recipe 13: Complete Analysis Pipeline
     
     # === 2. Compute Statistics ===
     print("\n=== Computing Multilayer Statistics ===")
-    layers = network.get_layers()
+    layers = network.layers
     
     stats = {
         'num_layers': len(layers),
@@ -755,7 +755,7 @@ Recipe 14: Network Comparison Study
         )
         
         # Compute metrics
-        layers = network.get_layers()
+        layers = network.layers
         nodes = list(network.get_nodes())
         edges = list(network.get_edges())
         
@@ -892,7 +892,7 @@ Recipe 16: Handle Large Networks Efficiently
     # (This is a conceptual example - actual implementation may vary)
     
     # === 2. Process layers independently ===
-    layers = network.get_layers()
+    layers = network.layers
     
     layer_results = {}
     for layer_name in layers:
@@ -917,7 +917,7 @@ Recipe 16: Handle Large Networks Efficiently
     
     # === 3. Use sparse representations ===
     # When computing supra-adjacency matrix
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     print(f"\nSupra-adjacency matrix: {supra_adj.shape} (sparse)")
     
     # === 4. Sample for exploratory analysis ===

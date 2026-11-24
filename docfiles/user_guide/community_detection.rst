@@ -534,7 +534,7 @@ Accounts for multilayer structure following Mucha et al. (2010):
     from py3plex.algorithms.community_detection import multilayer_modularity as mlm
     
     # Get supra-adjacency matrix
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     
     # Detect communities with multilayer modularity
     communities = mlm.multilayer_louvain(

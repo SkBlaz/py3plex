@@ -6,20 +6,28 @@ using auto_select_community for automated algorithm selection and uncertainty
 quantification throughout.
 """
 
+from pathlib import Path
+
 import pytest
 from py3plex.core import multinet
 from py3plex.dsl import Q, UQ
 
 
-def test_flagship_example_imports():
-    """Test that all imports from flagship example work."""
-    from py3plex.core import datasets
-    from py3plex.dsl import Q
-    from py3plex.algorithms.community_detection import auto_select_community
+def test_flagship_readme_example(monkeypatch):
+    """Execute the published example and verify that it produces a ranked table."""
+    monkeypatch.setenv("MPLBACKEND", "Agg")
+    readme = Path(__file__).resolve().parents[1] / "README.md"
+    snippet = readme.read_text(encoding="utf-8").split("\n```python\n", 1)[1]
+    source = snippet.split("\n```", 1)[0]
+    namespace = {}
+    exec(compile(source, str(readme), "exec"), namespace)
 
-    assert datasets is not None
-    assert Q is not None
-    assert auto_select_community is not None
+    table = namespace["df"]
+    assert not table.empty
+    assert table["score"].gt(0).all()
+    assert table["community"].notna().all()
+    assert table["betweenness_centrality_ci95_low"].notna().all()
+    assert table["top_neighbors"].notna().all()
 
 
 def test_flagship_dsl_query_structure_with_uq():

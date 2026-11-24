@@ -271,7 +271,7 @@ def make_social_network(
     --------
     >>> from py3plex.datasets import make_social_network
     >>> net = make_social_network(n_people=25)
-    >>> print(net.get_layers())  # ['friendship', 'work', 'family']
+    >>> print(net.layers)  # ['family', 'friendship', 'work']
     """
     if n_people <= 0:
         raise ValueError("n_people must be positive")

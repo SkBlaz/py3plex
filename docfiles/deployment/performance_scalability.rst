@@ -357,7 +357,7 @@ Favor minimal styling for large graphs to avoid overplotting:
     
     # For large networks (>1000 nodes)
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         node_size=3,              # Tiny nodes
         labels=False,             # No labels
         edge_size=0.3,            # Thin edges
@@ -375,9 +375,9 @@ Save to File Instead of Display
     # Don't show interactively (faster)
     fig, ax = plt.subplots(1, 1, figsize=(10, 8))
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         display=False,  # Don't show
-        axis=ax
+        ax=ax
     )
     
     # Save directly to file

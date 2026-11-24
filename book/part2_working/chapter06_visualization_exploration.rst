@@ -23,9 +23,8 @@ A Focused Workflow
 
     from py3plex.visualization.multilayer import draw_multilayer_default
 
-    layers, layer_graphs, positions = network.get_layers()
-    # layers: layer-name list; layer_graphs: per-layer graph objects; positions: layout coordinates
-    draw_multilayer_default((layers, layer_graphs, positions), display=False)
+    labels, layer_graphs, interlayer_links = network.get_layers()
+    draw_multilayer_default(dict(zip(labels, layer_graphs)), display=False)
 
 Implementation note: layout defaults are convenience choices. They are not statistical estimators.
 

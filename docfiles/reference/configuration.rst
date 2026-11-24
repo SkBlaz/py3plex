@@ -194,16 +194,14 @@ Node2Vec
 
 .. code-block:: python
 
-    from py3plex.wrappers import train_node2vec
-    
-    embeddings = train_node2vec(
-        network,
+    embeddings = network.embed(
+        method="node2vec",
         dimensions=128,      # Embedding size
         walk_length=80,      # Steps per walk
         num_walks=10,        # Walks per node
         p=1.0,               # Return parameter (larger discourages backtracking)
         q=1.0,               # In-out parameter (smaller explores outward)
-        workers=4            # Parallel workers
+        seed=42
     )
 
 Dynamics
@@ -229,14 +227,15 @@ Customize visualization; adjust node/edge sizes to match network scale. Set ``sh
 
 .. code-block:: python
 
-    network.visualize_network(
-        output_file='network.png',
-        layout_algorithm='force_directed',
-        node_size=50,
-        edge_width=2,
-        dpi=300,
-        show=False
+    import matplotlib.pyplot as plt
+    from py3plex.visualization import hairball_plot
+
+    fig, ax = plt.subplots()
+    hairball_plot(
+        network.core_network, ax=ax, node_size=50, edge_width=2, display=False,
     )
+    fig.savefig("network.png", dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
 See :doc:`../how-to/visualize_networks` for visualization options.
 

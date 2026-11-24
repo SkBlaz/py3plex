@@ -92,7 +92,7 @@ Manual Counting
     # Count elements
     num_nodes = len(list(network.get_nodes()))
     num_edges = len(list(network.get_edges()))
-    num_layers = len(network.get_layers())
+    num_layers = len(network.layers)
     
     # Unique node IDs (across all layers)
     unique_nodes = set()
@@ -454,8 +454,8 @@ Compare two multilayer networks:
     network2.basic_stats()
     
     # Compare layer densities (if same layers)
-    for layer in network1.get_layers():
-        if layer in network2.get_layers():
+    for layer in network1.layers:
+        if layer in network2.layers:
             density1 = mls.layer_density(network1, layer)
             density2 = mls.layer_density(network2, layer)
             print(f"{layer}: {density1:.4f} vs {density2:.4f}")
@@ -472,7 +472,7 @@ Systematic comparison of all layers:
     
     # Collect stats for each layer
     layer_stats = []
-    for layer in network.get_layers():
+    for layer in network.layers:
         # Extract layer
         layer_subnet = network.subnetwork([layer], subset_by="layers")
         G_layer = layer_subnet.core_network
@@ -537,12 +537,12 @@ Save to JSON
     stats = {
         'num_nodes': len(list(network.get_nodes())),
         'num_edges': len(list(network.get_edges())),
-        'num_layers': len(network.get_layers()),
+        'num_layers': len(network.layers),
         'layers': {}
     }
     
     # Layer stats
-    for layer in network.get_layers():
+    for layer in network.layers:
         stats['layers'][layer] = {
             'density': float(mls.layer_density(network, layer)),
             # Add more stats
@@ -607,7 +607,7 @@ Complete Example
     network.basic_stats()
     
     print("\n=== Layer Statistics ===")
-    for layer in network.get_layers():
+    for layer in network.layers:
         density = mls.layer_density(network, layer)
         print(f"{layer}: density = {density:.4f}")
     
@@ -619,7 +619,7 @@ Complete Example
         print(f"{node}: {activity:.4f}")
     
     print("\n=== Layer Similarity ===")
-    layers = network.get_layers()
+    layers = network.layers
     if len(layers) >= 2:
         similarity = mls.layer_similarity(
             network, layers[0], layers[1], method='jaccard'

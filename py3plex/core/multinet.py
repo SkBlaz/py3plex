@@ -947,6 +947,7 @@ class multi_layer_network:
             directed: Whether the network is directed. If omitted or None,
                 retain the current setting (initially set by the constructor).
             input_type: Format of the input file. Supported values:
+
                 - 'gml': Graph Modeling Language format
                 - 'graphml': GraphML XML format (node 'type' selects layer;
                   missing types use the GraphML default or 'generic')
@@ -959,6 +960,7 @@ class multi_layer_network:
                 - 'gpickle': Python pickle format
                 - 'nx': NetworkX graph object
                 - 'sparse': Sparse matrix format
+
             label_delimiter: Delimiter used to separate layer names in node labels
 
         Returns:
@@ -2671,7 +2673,12 @@ class multi_layer_network:
         multiplex=False,
         convert_to_simple=False,
     ):
-        """A method for obtaining layerwise distributions"""
+        """Prepare layer graphs and edge information for visualization.
+
+        Use :attr:`layers` to get layer identifiers without computing a layout.
+        The diagonal style returns labels, layer graphs, and interlayer links.
+        The hairball style returns node colors and a graph.
+        """
 
         if self.verbose:
             self.monitor("Network splitting in progress")

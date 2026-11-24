@@ -86,7 +86,7 @@ Dynamics models work with:
 
 * **py3plex multilayer networks**: Full support for inter-layer and intra-layer edges
 * **NetworkX graphs**: Single-layer networks (directed or undirected)
-* **Edge weights**: Epidemic models currently treat edges as unweighted contacts. ``RandomWalkDynamics`` samples neighbors uniformly, so weights are ignored unless you implement a weighted variant.
+* **Edge weights**: The epidemic models sum incoming infectious contact weights. Missing weights default to one, and parallel edges each contribute their weight. ``RandomWalkDynamics`` samples neighbors uniformly.
 
 Common Base Interface
 ~~~~~~~~~~~~~~~~~~~~~
@@ -128,13 +128,13 @@ The **SIR (Susceptible-Infected-Recovered)** model describes epidemic spread wit
 **Discrete-Time Update Rules** (synchronous):
 
 1. **Recovery**: Each infected node recovers (I → R) with probability :math:`\gamma \in (0, 1)` per time step
-2. **Infection**: Each susceptible node with k infected neighbors becomes infected (S → I) with probability
+2. **Infection**: Each susceptible node becomes infected (S → I) with probability
 
    .. math::
 
       p_{\text{infect}} = 1 - (1 - \beta)^k
 
-   where :math:`\beta \in (0, 1)` is the per-contact infection probability under independent transmission attempts from each infected neighbor
+   where :math:`\beta \in (0, 1)` is the infection probability per unit contact weight, and :math:`k` is the total incoming contact weight from infected nodes.
 
 3. **Absorption**: Recovered nodes remain recovered (R → R) forever
 
@@ -142,7 +142,7 @@ The **SIR (Susceptible-Infected-Recovered)** model describes epidemic spread wit
 
 On multilayer networks, the infection pressure on a node aggregates across all layers:
 
-* A susceptible node ``(i, layer_A)`` counts infected neighbors from both intra-layer edges (within ``layer_A``) and inter-layer edges (to other layers)
+* A susceptible node ``(i, layer_A)`` sums incoming contact weights from infected neighbors across both intra-layer edges (within ``layer_A``) and inter-layer edges (to other layers)
 * The built-in ``SIRDynamics`` uses a single :math:`\beta` value across all layers; to model heterogeneous layers, see :ref:`layer-specific-params` for a small customization pattern
 
 This means epidemics can spread within layers and jump between layers via inter-layer connections, mimicking real-world scenarios like workplace and household transmission.
@@ -202,7 +202,7 @@ Code Example
     print(f"Final susceptible: {state_counts['S'][-1]} nodes")
     print(f"Final infected: {state_counts['I'][-1]} nodes")
     print(f"Final recovered: {state_counts['R'][-1]} nodes")
-    print(f"Attack rate: {state_counts['R'][-1] / network.core_network.number_of_nodes():.2%}")
+    print(f"Attack rate: {(1 - state_counts['S'][-1] / network.core_network.number_of_nodes()):.2%}")
 
 **Expected Output**
 
@@ -259,19 +259,19 @@ The **SIS (Susceptible-Infected-Susceptible)** model describes epidemics **witho
 **Discrete-Time Update Rules** (synchronous):
 
 1. **Recovery**: Each infected node recovers (I → S) with probability :math:`\gamma` (or :math:`\mu`) per time step
-2. **Infection**: Each susceptible node with k infected neighbors becomes infected (S → I) with probability
+2. **Infection**: Each susceptible node becomes infected (S → I) with probability
 
    .. math::
 
       p_{\text{infect}} = 1 - (1 - \beta)^k
 
-   where :math:`\beta \in (0, 1)` is the transmission probability per contact
+   where :math:`\beta \in (0, 1)` is the infection probability per unit contact weight and :math:`k` is the incoming infectious contact weight.
 
 3. **No absorption**: Recovered nodes immediately return to susceptible state, allowing reinfection
 
-**Endemic Equilibrium**
+**Mean-Field Endemic Equilibrium**
 
-Unlike SIR (which eventually dies out), SIS can reach an **endemic equilibrium** where a steady fraction of nodes remain infected. The basic reproduction number is:
+An SIS outbreak can persist for a long time through reinfection. The all-susceptible state is absorbing in the finite stochastic model. A homogeneous mean-field approximation gives:
 
 .. math::
 
@@ -281,7 +281,7 @@ where ⟨k⟩ is the average degree in a homogeneous-network, small-:math:`\beta
 
 **Multilayer Extension**
 
-On multilayer networks, SIS infection pressure aggregates across all layers, similar to SIR. The endemic prevalence can differ across layers if you use layer-specific transmission rates.
+On multilayer networks, SIS infection pressure aggregates across all layers, similar to SIR. Prevalence during an outbreak can differ across layers, including when layers use the same transmission probability.
 
 Code Example
 ~~~~~~~~~~~~
@@ -316,25 +316,25 @@ Code Example
     sis = SISDynamics(
         network,
         beta=0.3,    # Infection probability per contact
-        mu=0.1,      # Recovery probability (also accepts 'gamma')
-        initial_infected=0.05
+        mu=0.1,      # Recovery probability
+        initial_infected=0.05,
+        seed=42
     )
     
-    # Run for longer to reach equilibrium
-    sis.set_seed(42)
+    # Run for longer to observe sustained transmission
     results = sis.run(steps=200)
     
     # Extract prevalence time series
     prevalence = results.get_measure("prevalence")
     
-    # Compute endemic prevalence (mean of last 50 steps)
+    # Compute mean prevalence over the last 50 steps
     endemic_prevalence = prevalence[-50:].mean()
-    print(f"Endemic prevalence: {endemic_prevalence:.2%}")
+    print(f"Mean prevalence (last 50 steps): {endemic_prevalence:.2%}")
     print(f"Std (last 50 steps): {prevalence[-50:].std():.3f}")
     
     # Check if epidemic persisted
     if endemic_prevalence > 0.01:
-        print("Status: Endemic state reached")
+        print("Status: Transmission persisted in the final window")
     else:
         print("Status: Epidemic died out")
 
@@ -342,11 +342,11 @@ Code Example
 
 .. code-block:: text
 
-    Endemic prevalence: 0.00%
-    Std (last 50 steps): 0.000
-    Status: Epidemic died out
+    Mean prevalence (last 50 steps): 83.15%
+    Std (last 50 steps): 0.058
+    Status: Transmission persisted in the final window
 
-*Note: On sparse chain-like networks with moderate β/γ, the epidemic often dies out due to low R₀. Try denser networks or higher β to observe endemic states.*
+These values summarize the final 50 steps of this run. The finite SIS simulation can still reach the all-susceptible state.
 
 Comparison with SIR
 ~~~~~~~~~~~~~~~~~~~
@@ -366,8 +366,7 @@ The key difference between SIS and SIR:
     G = nx.watts_strogatz_graph(n=100, k=6, p=0.1, seed=42)
     
     # Run SIS
-    sis = SISDynamics(G, beta=0.3, mu=0.1, initial_infected=0.1)
-    sis.set_seed(42)
+    sis = SISDynamics(G, beta=0.3, mu=0.1, initial_infected=0.1, seed=42)
     sis_results = sis.run(steps=150)
     sis_prev = sis_results.get_measure("prevalence")
     
@@ -471,7 +470,7 @@ Code Example
     sorted_visits = sorted(visit_counts.items(), key=lambda x: x[1], reverse=True)
     
     print(f"Total unique nodes visited: {len(visit_counts)}")
-    print(f"\\nTop 10 most visited nodes:")
+    print("\nTop 10 most visited nodes:")
     for node, count in sorted_visits[:10]:
         print(f"  {node}: {count} visits ({count/len(trajectory):.2%})")
 
@@ -482,16 +481,10 @@ Code Example
     Total unique nodes visited: 30
     
     Top 10 most visited nodes:
-      (0, 'star'): 87 visits (8.69%)
-      (0, 'ring'): 64 visits (6.39%)
-      (1, 'ring'): 42 visits (4.20%)
-      (14, 'ring'): 39 visits (3.90%)
-      (1, 'star'): 37 visits (3.70%)
-      (2, 'ring'): 36 visits (3.60%)
-      (13, 'ring'): 35 visits (3.50%)
-      (2, 'star'): 34 visits (3.40%)
-      (3, 'star'): 32 visits (3.20%)
-      (14, 'star'): 31 visits (3.10%)
+      (0, 'star'): 153 visits (15.28%)
+      (6, 'ring'): 57 visits (5.69%)
+      (7, 'ring'): 54 visits (5.39%)
+      ...
 
 *Note: The hub node in the star layer receives disproportionately high visits due to its high degree.*
 
@@ -693,7 +686,7 @@ Extracting and Analyzing Measures
     
     # Compute attack rate (fraction ever infected)
     total_nodes = sum(state_counts[s][0] for s in state_counts.keys())  # Total at t=0
-    attack_rate = state_counts['R'][-1] / total_nodes
+    attack_rate = 1 - state_counts['S'][-1] / total_nodes
     print(f"Attack rate: {attack_rate:.2%}")
 
 For multilayer networks, ``total_nodes`` counts supra-nodes (node-layer tuples). If you want a per-entity attack rate, aggregate layers first.
@@ -766,7 +759,7 @@ Epidemic dynamics are stochastic, so we often run multiple realizations and repo
             
             state_counts = results.get_measure("state_counts")
             total = network.core_network.number_of_nodes()
-            attack_rates.append(state_counts['R'][-1] / total)
+            attack_rates.append(1 - state_counts['S'][-1] / total)
         
         return {
             'peak_prevalence_mean': np.mean(peak_prevalences),
@@ -784,8 +777,8 @@ Epidemic dynamics are stochastic, so we often run multiple realizations and repo
 
 .. code-block:: text
 
-    Peak prevalence: 34.85% ± 2.13%
-    Attack rate: 98.60% ± 3.42%
+    Peak prevalence: 60.07% ± 17.67%
+    Attack rate: 92.20% ± 19.24%
 
 *Note: Mean and std quantify variability across stochastic realizations.*
 
@@ -824,7 +817,7 @@ To explore how outcomes depend on parameters, run a grid sweep:
                 'R0_approx': beta / gamma * 4.6,  # Mean-field R0 ≈ (β/γ)<k>; <k> ≈ 4.6 here (small-β assumption)
                 'peak_prevalence': prevalence.max(),
                 'peak_time': prevalence.argmax(),
-                'attack_rate': state_counts['R'][-1] / G.number_of_nodes(),
+                'attack_rate': 1 - state_counts['S'][-1] / G.number_of_nodes(),
             })
     
     # Convert to DataFrame
@@ -940,8 +933,8 @@ We implement a simple threshold model where nodes adopt a binary opinion if enou
 
 .. code-block:: text
 
-    Initial adopters: 4
-    Final adopters: 40
+    Initial adopters: 3
+    Final adopters: 30
     Adoption rate: 100.00%
 
 *Note: With a low threshold (0.3), the initial adopters trigger a cascade where all nodes eventually adopt.*
@@ -949,38 +942,17 @@ We implement a simple threshold model where nodes adopt a binary opinion if enou
 Adding Custom Measures
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-To expose custom measures through ``.get_measure()``, override the ``compute_measure`` method:
+Compute model-specific measures from the recorded trajectory. The
+threshold model uses state 1 for adopters and 0 for non-adopters.
 
 .. code-block:: python
 
-    class ThresholdDynamics(DynamicsProcess):
-        # ... (same as above) ...
-        
-        def compute_measure(self, measure_name, trajectory):
-            """Compute custom measures for threshold model."""
-            if measure_name == "adoption_fraction":
-                # Fraction of nodes in state 1 over time
-                fractions = []
-                for state in trajectory:
-                    fractions.append(sum(state.values()) / len(state))
-                return np.array(fractions)
-            
-            elif measure_name == "cascade_size":
-                # Final number of adopters
-                final_state = trajectory[-1]
-                return sum(final_state.values())
-            
-            else:
-                raise ValueError(f"Unknown measure: {measure_name}")
-    
-    # Now you can use:
     results = threshold.run(steps=50)
-    adoption_frac = results.get_measure("adoption_fraction")
-    cascade_size = results.get_measure("cascade_size")
-    
+    adoption_fraction = [
+        sum(state.values()) / len(state) for state in results.trajectory
+    ]
+    cascade_size = sum(results.trajectory[-1].values())
     print(f"Cascade size: {cascade_size} nodes")
-
-This pattern makes your custom dynamics consistent with built-in models.
 
 Query Dynamics Results with DSL
 --------------------------------
@@ -1001,16 +973,11 @@ To use DSL for querying simulation results, first attach the dynamics state to t
 
 .. code-block:: python
 
-    from py3plex.core import multinet
+    from py3plex.datasets import load_synthetic_multilayer
     from py3plex.dynamics import SIRDynamics
     from py3plex.dsl import Q
     
-    # Load network
-    network = multinet.multi_layer_network(directed=False)
-    network.load_network(
-        "py3plex/datasets/_data/synthetic_multilayer.edges",
-        input_type="multiedgelist"
-    )
+    network = load_synthetic_multilayer()
     
     # Run SIR simulation
     sir = SIRDynamics(
@@ -1022,9 +989,10 @@ To use DSL for querying simulation results, first attach the dynamics state to t
     sir.set_seed(42)
     results = sir.run(steps=100)
     
-    # Attach final state to network as node attributes
-    final_state = results.trajectory[-1]
-    for node, state in final_state.items():
+    # Attach the state at peak prevalence to query an active outbreak
+    peak_step = results.get_measure("prevalence").argmax()
+    peak_state = results.trajectory[peak_step]
+    for node, state in peak_state.items():
         network.core_network.nodes[node]['sir_state'] = state
         # Also add a numeric version for filtering
         network.core_network.nodes[node]['is_infected'] = (state == 'I')
@@ -1047,20 +1015,8 @@ Query Infected Nodes
     
     print(f"Infected nodes: {infected.count}")
     print(f"Sample infected:")
-    for node in infected_nodes[:5]:
+    for node in infected.items[:5]:
         print(f"  {node}")
-
-**Expected output:**
-
-.. code-block:: text
-
-    Infected nodes: 12
-    Sample infected:
-      ('node7', 'layer1')
-      ('node12', 'layer2')
-      ('node3', 'layer3')
-      ('node15', 'layer1')
-      ('node8', 'layer2')
 
 **Using builder API for complex queries:**
 
@@ -1074,24 +1030,12 @@ Query Infected Nodes
          .where(sir_state='I')
          .compute("degree")
          .where(degree__gt=5)
-         .order_by("degree", reverse=True)
+         .order_by("degree", desc=True)
          .execute(network)
     )
     
     print(f"High-degree infected nodes: {len(high_degree_infected)}")
-    for node, data in list(high_degree_infected.items())[:5]:
-        print(f"  {node}: degree={data['degree']}")
-
-**Expected output:**
-
-.. code-block:: text
-
-    High-degree infected nodes: 7
-      ('node7', 'layer1'): degree=12
-      ('node12', 'layer2'): degree=10
-      ('node3', 'layer1'): degree=9
-      ('node15', 'layer3'): degree=8
-      ('node8', 'layer2'): degree=7
+    print(high_degree_infected.to_pandas().head())
 
 Layer-Specific Dynamics Queries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1100,7 +1044,7 @@ Layer-Specific Dynamics Queries
 
 .. code-block:: python
 
-    layers = network.get_layers()
+    layers = network.layers
     
     print("Infection by layer:")
     for layer in layers:
@@ -1111,48 +1055,29 @@ Layer-Specific Dynamics Queries
         )
         
         infected_in_layer = sum(
-            1 for node in layer_nodes
+            1 for node in layer_nodes.items
             if network.core_network.nodes[node].get('sir_state') == 'I'
         )
         
         prevalence = infected_in_layer / len(layer_nodes) if len(layer_nodes) > 0 else 0
         print(f"  {layer}: {infected_in_layer}/{len(layer_nodes)} ({prevalence:.2%})")
 
-**Expected output:**
-
-.. code-block:: text
-
-    Infection by layer:
-      layer1: 5/40 (12.50%)
-      layer2: 4/40 (10.00%)
-      layer3: 3/40 (7.50%)
-
-**Find susceptible nodes in high-risk layers:**
+**Find high-degree susceptible replicas in one layer:**
 
 .. code-block:: python
 
-    # Identify high-risk layers (high infection prevalence)
-    high_risk_layer = 'layer1'  # From analysis above
+    selected_layer = network.layers[0]
     
-    # Find susceptible nodes in high-risk layer
-    at_risk_nodes = (
+    # Find susceptible replicas and sort by degree
+    susceptible = (
         Q.nodes()
-         .from_layers(L[high_risk_layer])
-         .where(sir_state='S')
-         .compute("degree")
-         .execute(network)
+        .from_layers(L[selected_layer])
+        .where(sir_state="S")
+        .compute("degree", kind="intra")
+        .order_by("degree", desc=True)
+        .execute(network)
     )
-    
-    # Sort by degree (higher degree = more neighbors, higher risk)
-    at_risk_list = sorted(
-        at_risk_nodes.items(),
-        key=lambda x: x[1]['degree'],
-        reverse=True
-    )
-    
-    print(f"High-risk susceptible nodes in {high_risk_layer}:")
-    for node, data in at_risk_list[:5]:
-        print(f"  {node}: degree={data['degree']}")
+    print(susceptible.to_pandas().head())
 
 Temporal Queries Across Simulation Steps
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1162,12 +1087,8 @@ Temporal Queries Across Simulation Steps
 .. code-block:: python
 
     # Select a few nodes to track
-    tracked_nodes = [
-        ('node7', 'layer1'),
-        ('node12', 'layer2'),
-        ('node3', 'layer3')
-    ]
-    
+    tracked_nodes = list(network.get_nodes())[:3]
+
     print("Temporal evolution:")
     print("Time  " + "  ".join(f"{n[0]:8}" for n in tracked_nodes))
     print("-" * 50)
@@ -1183,20 +1104,6 @@ Temporal Queries Across Simulation Steps
             )
             print(f"{t:4}  {states_str}")
 
-**Expected output:**
-
-.. code-block:: text
-
-    Temporal evolution:
-    Time  node7     node12    node3    
-    --------------------------------------------------
-       0  S         S         S        
-      20  I         S         S        
-      40  R         I         I        
-      60  R         R         I        
-      80  R         R         R        
-     100  R         R         R        
-
 **Query state transitions:**
 
 .. code-block:: python
@@ -1207,7 +1114,7 @@ Temporal Queries Across Simulation Steps
     
     newly_infected = [
         node for node in state_20.keys()
-        if state_20[node] == 'S' and state_40.get(node) == 'I'
+        if state_20[node] == 'S' and state_40.get(node) in {'I', 'R'}
     ]
     
     print(f"Newly infected between t=20 and t=40: {len(newly_infected)}")
@@ -1236,15 +1143,6 @@ Extract Subpopulations
     print(f"  Nodes: {recovered_subgraph.number_of_nodes()}")
     print(f"  Edges: {recovered_subgraph.number_of_edges()}")
     print(f"  Layers: {set(node[1] for node in recovered_matches)}")
-
-**Expected output:**
-
-.. code-block:: text
-
-    Recovered subnetwork:
-      Nodes: 38
-      Edges: 145
-      Layers: {'layer1', 'layer2', 'layer3'}
 
 **Analyze connectivity within susceptible population:**
 
@@ -1275,50 +1173,35 @@ Extract Subpopulations
 Combine with Dynamics Measures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Identify superspreaders (high-degree infected nodes):**
+**Rank infected replicas by centrality:**
 
 .. code-block:: python
 
-    from py3plex.dsl import Q
-    
-    # Find infected nodes with highest degree
-    superspreaders = (
+    infected_hubs = (
         Q.nodes()
-         .where(sir_state='I')
-         .compute("degree", "betweenness_centrality")
-         .where(degree__gt=7)
-         .order_by("betweenness_centrality", reverse=True)
-         .execute(network)
+        .where(sir_state="I")
+        .compute("degree", "betweenness_centrality")
+        .where(degree__gt=7)
+        .order_by("betweenness_centrality", desc=True)
+        .execute(network)
     )
-    
-    print(f"Potential superspreaders: {len(superspreaders)}")
-    for node, data in list(superspreaders.items())[:5]:
-        print(f"  {node}: deg={data['degree']}, betw={data['betweenness_centrality']:.4f}")
-
-**Expected output:**
-
-.. code-block:: text
-
-    Potential superspreaders: 4
-      ('node7', 'layer1'): deg=12, betw=0.0456
-      ('node12', 'layer2'): deg=10, betw=0.0345
-      ('node15', 'layer3'): deg=9, betw=0.0234
-      ('node3', 'layer1'): deg=8, betw=0.0198
+    print(infected_hubs.to_pandas().head())
 
 **Compute attack rate by layer using DSL:**
 
 .. code-block:: python
 
-    print("Attack rate (recovered / total) by layer:")
-    for layer in network.get_layers():
+    final_state = results.trajectory[-1]
+    print("Attack rate (ever infected / total) by layer:")
+    for layer in network.layers:
         layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
         
-        recovered = sum(
-            1 for node in layer_nodes
-            if network.core_network.nodes[node].get('sir_state') == 'R'
+        ever_infected = sum(
+            1 for node in layer_nodes.items
+            if final_state.get(node) in {'I', 'R'}
         )
-        
-        attack_rate = recovered / len(layer_nodes) if len(layer_nodes) > 0 else 0
+
+        attack_rate = ever_infected / layer_nodes.count if layer_nodes.count else 0
         print(f"  {layer}: {attack_rate:.2%}")
 
 Export Dynamics Results with DSL
@@ -1338,18 +1221,9 @@ Export Dynamics Results with DSL
          .execute(network)
     )
     
-    # Convert to DataFrame
-    df = pd.DataFrame([
-        {
-            'node': node[0],
-            'layer': node[1],
-            'sir_state': data.get('sir_state', 'unknown'),
-            'degree': data['degree'],
-            'betweenness': data['betweenness_centrality']
-        }
-        for node, data in result.items()
-    ])
-    
+    df = result.to_pandas().rename(columns={"betweenness_centrality": "betweenness"})
+    df["sir_state"] = [peak_state[node] for node in result.items]
+
     # Group by state and compute statistics
     state_stats = df.groupby('sir_state').agg({
         'degree': ['mean', 'std', 'max'],

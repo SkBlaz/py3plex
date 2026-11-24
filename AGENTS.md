@@ -436,9 +436,10 @@ sim = (
      .execute(net)
 )
 
-# Extract peak time
+# Find the peak step in each replicate
 trajectories = sim.trajectories
-peak_time = trajectories['infected'].idxmax()
+peak_rows = trajectories.groupby("replicate")["infected"].idxmax()
+peak_steps = trajectories.loc[peak_rows, ["replicate", "step"]]
 ```
 
 ### Path 5: Hypothesis Testing with Counterexamples
@@ -1147,8 +1148,8 @@ Iterate over sliding time windows (temporal networks).
 
 **Example**:
 ```python
-.window(size=100.0, step=50.0)  # Overlapping windows
-.window(size="7d", step="1d")  # Duration strings (if supported)
+.window(100.0, step=50.0)  # Overlapping windows
+.window("7d", step="1d")  # Duration strings (if supported)
 ```
 
 ##### `.community(method="leiden", gamma=1.0, omega=1.0, random_state=None, partition_name="default", **kwargs) -> QueryBuilder`
@@ -1591,21 +1592,21 @@ P.shortest("Alice", "Bob").crossing_layers().execute(net)
 
 ---
 
-#### 3.10 D — Dynamics Builder Factory
+#### 3.10 Dynamics Builder
 
-**Import**: `from py3plex.dsl import D` (if available)
+Use `Q.dynamics(process_name, **params)` to build a discrete-time simulation.
+Set steps and replicates with `.run()` and a reproducible seed with `.random_seed()`.
 
-**Factory Methods**:
-- `D.simulate(model)` -> DynamicsBuilder
-
-**Semantics**:
-- MUST simulate network dynamics (SIR, SIS, etc.)
-- MUST support `.steps(n)` for number of timesteps
-
-**Example**:
 ```python
-from py3plex.dynamics import SIRModel
-D.simulate(SIRModel(beta=0.3, gamma=0.1)).steps(100).execute(net)
+from py3plex.dsl import Q
+
+result = (
+    Q.dynamics("SIR", beta=0.3, gamma=0.1)
+    .seed_infections(0.05)
+    .random_seed(42)
+    .run(steps=100, replicates=3)
+    .execute(net)
+)
 ```
 
 ---
@@ -2579,21 +2580,19 @@ UQ algebra is verified via:
 #### 11.1 Temporal Network Requirements
 
 Temporal queries MUST work with `TemporalMultiLayerNetwork` instances that support:
-- `.get_snapshot(time)`: Get network state at specific time
-- `.get_edges_in_range(t_start, t_end)`: Get edges active in time range
+- `.snapshot_at(time, mode="exact")`: Get a network snapshot at a time
+- `.edges_between(t_start, t_end)`: Iterate over edges in a time range
 
 #### 11.2 `.at(time)` Semantics
 
 **Behavior**:
 - Filter network to snapshot at `time`
-- MUST use `get_snapshot(time)` method
 - Result MUST include only edges/nodes active at specified time
 
 #### 11.3 `.during(t_start, t_end)` Semantics
 
 **Behavior**:
 - Filter network to time range [t_start, t_end] (inclusive)
-- MUST use `get_edges_in_range(t_start, t_end)` method
 - Result MUST include all edges/nodes active anytime during interval
 
 #### 11.4 `.window(size, step)` Semantics
@@ -2754,8 +2753,15 @@ Temporal queries MUST work with `TemporalMultiLayerNetwork` instances that suppo
 
 To enable replayable provenance:
 ```python
-from py3plex.provenance import enable_provenance
-enable_provenance(mode="replayable", capture_network=True)
+from py3plex.dsl import Q
+
+result = (
+    Q.nodes()
+    .compute("degree")
+    .provenance(mode="replayable", capture="snapshot", seed=42)
+    .execute(net)
+)
+assert result.is_replayable
 ```
 
 **Captured Information**:
@@ -3257,7 +3263,7 @@ Need uncertainty quantification?
 ```
 Start with network file (CSV, edgelist, etc.)
 ├─ Load: net.load_network("file.csv", input_type="edgelist")
-├─ Explore structure: net.get_layers(), len(net.get_nodes()), len(net.get_edges())
+├─ Explore structure: net.layers, len(list(net.get_nodes())), len(list(net.get_edges()))
 ├─ Query:
 │  ├─ Descriptive stats -> Q.nodes().per_layer().aggregate(...)
 │  ├─ Top nodes -> Q.nodes().per_layer().top_k(...)
@@ -3459,95 +3465,36 @@ df = (
 
 ## Pipeline API (Sklearn-Style)
 
-py3plex provides sklearn-style pipelines for composable, reproducible workflows.
-
-### Core Concepts
+`Pipeline` chains the outputs of named `PipelineStep` instances. Call
+`.run()` to execute the chain and get the final step's output.
 
 ```python
-from py3plex.pipeline import Pipeline, Step
+from py3plex.pipeline import ComputeStats, LoadStep, Pipeline
 
-# Define pipeline
 pipeline = Pipeline([
     ("load", LoadStep(path="network.csv", input_type="edgelist")),
-    ("stats", ComputeStatsStep(measures=["degree", "betweenness"])),
-    ("filter", FilterStep(condition="degree > 5")),
-    ("export", ExportStep(path="output.csv", format="csv"))
+    ("stats", ComputeStats(include_layer_stats=True)),
 ])
-
-# Run pipeline
-result = pipeline.fit(network)
+stats = pipeline.run()
 ```
 
-### Built-in Steps
+`LoadStep` reads a graph. Other steps include `AggregateLayers`, `FilterNodes`,
+`LeidenMultilayer`, `LouvainCommunity`, `ComputeEmbedding`, and `SaveNetwork`.
+`ComputeStats` returns a dictionary. Custom steps subclass `PipelineStep` and
+implement `transform(data)`. Each step receives the preceding step's output.
 
-**I/O Steps**:
-- `LoadStep` - Load network from file
-- `ExportStep` - Export results to file
-
-**Transformation Steps**:
-- `ComputeStatsStep` - Compute centrality measures
-- `FilterStep` - Filter nodes/edges
-- `AggregateStep` - Per-layer aggregation
-
-**Analysis Steps**:
-- `CommunityDetectionStep` - Run community detection
-- `CentralityStep` - Compute centrality with options
-- `DynamicsStep` - Run dynamics simulation
-
-**Custom Steps**:
-```python
-from py3plex.pipeline import BaseStep
-
-class CustomStep(BaseStep):
-    def __init__(self, param=1.0):
-        self.param = param
-
-    def fit(self, network, context=None):
-        # Your logic here
-        return result
-```
-
-### Config-Driven Workflows
-
-```yaml
-# workflow.yaml
-pipeline:
-  - step: load
-    path: network.csv
-    input_type: edgelist
-
-  - step: compute_stats
-    measures:
-      - degree
-      - betweenness_centrality
-
-  - step: filter
-    condition: "degree > 5"
-
-  - step: export
-    path: output.csv
-    format: csv
-```
+For a YAML or JSON workflow, use the `datasets` and `operations` schema
+documented in [Config-Driven Workflows](docfiles/config_workflows.rst).
 
 ```python
-from py3plex.workflows import load_workflow, run_workflow
+from py3plex.workflows import WorkflowConfig, WorkflowRunner
 
-workflow = load_workflow("workflow.yaml")
-result = run_workflow(workflow, network)
+runner = WorkflowRunner(WorkflowConfig.from_file("workflow.yaml"))
+runner.run()
+results = runner.results
 ```
 
-### Provenance
-
-Pipelines track full provenance:
-
-```python
-result = pipeline.fit(network)
-prov = result.meta['provenance']
-
-# Pipeline execution trace
-for step in prov['steps']:
-    print(f"{step['name']}: {step['duration_ms']}ms")
-```
+Use `.provenance(mode="replayable", capture="snapshot")` for replayable DSL results.
 
 ---
 
@@ -3606,16 +3553,23 @@ net = load_from_arrow("network.arrow")
 ### Export to File
 
 ```python
-# JSON
-net.to_json("output.json")
+# NetworkX node-link JSON
+import json
+
+with open("output.json", "w", encoding="utf-8") as stream:
+    json.dump(net.to_json(), stream)
 
 # CSV (via query result)
 result = Q.nodes().compute("degree").execute(net)
 result.to_pandas().to_csv("output.csv", index=False)
 
-# Arrow
+# Arrow table for the query result
+table = result.to_arrow()
+
+# Arrow file for the network
 from py3plex.io import save_to_arrow
-save_to_arrow(result, "output.arrow")
+
+save_to_arrow(net, "network.arrow")
 ```
 
 ### Built-in Datasets
@@ -3623,8 +3577,7 @@ save_to_arrow(result, "output.arrow")
 ```python
 from py3plex.datasets import (
     load_aarhus_cs,
-    load_imdb,
-    load_example_multilayer,
+    load_synthetic_multilayer,
     make_random_multilayer,
 )
 
@@ -3635,9 +3588,8 @@ net = load_aarhus_cs()
 net = make_random_multilayer(
     n_nodes=100,
     n_layers=3,
-    p_intra=0.1,
-    p_inter=0.01,
-    seed=42
+    p=0.1,
+    random_state=42,
 )
 ```
 
@@ -3883,60 +3835,40 @@ Set starting nodes for random walk.
 
 ##### .run(steps, replicates, track="all") -> DynamicsBuilder
 
-Configure simulation execution.
+Configure simulation execution. Add `.random_seed(42)` to make the run reproducible.
 
 **Args**:
 - `steps` (int): Number of simulation steps
 - `replicates` (int): Number of independent runs
 - `track` (str): What to track - "all", "infected", "peak_time", etc.
 
-##### .execute(network) -> DynamicsResult
+##### .execute(network) -> SimulationResult
 
 Run simulation and return results.
 
-**Returns**: DynamicsResult with trajectories, statistics, provenance
+**Returns**: `SimulationResult` with recorded measures and run metadata.
 
-### DynamicsResult
+### Inspecting SIS Results
 
 ```python
-# Access trajectories
-sim.trajectories  # DataFrame with columns: step, replicate, susceptible, infected, recovered
+# SIS prevalence and its complement, with one row per replicate and step
+print(sim.trajectories[["replicate", "step", "infected", "susceptible"]])
 
-# Summary statistics
 print(sim.mean_peak_time)
 print(sim.mean_final_infected)
 
-# Per-replicate data
-for rep in range(sim.n_replicates):
-    traj = sim.trajectories[sim.trajectories['replicate'] == rep]
-    # Analyze individual trajectory
+for replicate, trajectory in sim.trajectories.groupby("replicate"):
+    print(replicate, trajectory["infected"].max())
 ```
+
+For other processes, inspect `sim.measures` and export a recorded measure
+with `sim.to_pandas(measure)`.
 
 ### Custom Dynamics (Advanced)
 
-```python
-def custom_process(node, state, neighbors, params):
-    """Custom dynamics process.
-
-    Args:
-        node: Current node (tuple: (id, layer))
-        state: Current state dict
-        neighbors: List of neighbor nodes
-        params: Process parameters
-
-    Returns:
-        new_state: Updated state for node
-    """
-    # Your logic here
-    return new_state
-
-sim = (
-    Q.dynamics("CUSTOM", process_func=custom_process, alpha=0.5)
-     .on_layers(L["*"])
-     .run(steps=100, replicates=10)
-     .execute(net)
-)
-```
+Subclass `py3plex.dynamics.DynamicsProcess` for a custom discrete-time
+process. Follow the state initialization and step methods in the
+[custom dynamics guide](docfiles/how-to/simulate_dynamics.rst).
 
 ---
 
@@ -5333,17 +5265,24 @@ Q.nodes().compute("betweenness").uq(method="bootstrap", bootstrap_unit="edges", 
 
 ### Sensitivity Analysis
 
-**PSEUDOCODE** (Feature planned):
-```python
-sensitivity = (
-    Q.sensitivity()
-     .on_metric("pagerank")
-     .perturb_edges(fraction=0.1, n_trials=50)
-     .measure_ranking_stability()
-     .execute(net)
-)
+Use `.sensitivity()` on a query to measure how its ranking changes under
+controlled perturbations.
 
-print(f"Ranking correlation: {sensitivity.kendall_tau_mean}")
+```python
+result = (
+    Q.nodes()
+    .compute("pagerank")
+    .order_by("-pagerank")
+    .sensitivity(
+        perturb="edge_drop",
+        grid=[0.0, 0.1],
+        n_samples=30,
+        metrics=["kendall_tau"],
+        seed=42,
+    )
+    .execute(net)
+)
+print(result.sensitivity_curves)
 ```
 
 ---
@@ -5423,13 +5362,9 @@ the requested size, regardless of stride. Explicit equal or reversed bounds
 still produce no windows. Empty networks also produce no windows.
 
 ```python
-result = (
-    Q.edges()
-     .window(size=100.0, stride=50.0)  # 100-unit windows, 50-unit stride
-     .per_window()
-     .aggregate(edge_count="count()", avg_weight="mean(weight)")
-     .execute(tnet)
-)
+windows = Q.edges().window(100.0, step=50.0).execute(tnet)
+for window in windows:
+    print(window.count)
 ```
 
 ### Temporal Snapshots
@@ -5444,7 +5379,7 @@ temporal and cumulative snapshot modes; an empty iterable selects no edges.
 
 ```python
 # Get snapshot as static network
-snapshot = tnet.get_snapshot(time_range=(100.0, 150.0))
+snapshot = tnet.slice_time_window(100.0, 150.0).snapshot_at(150.0)
 
 # Query snapshot
 result = Q.nodes().compute("degree").execute(snapshot)
@@ -5464,7 +5399,7 @@ degree used to divide a source node's contribution.
 # Count edges per time window per layer
 result = (
     Q.edges()
-     .window(size=50.0, stride=50.0)
+     .window(50.0, step=50.0)
      .per_layer_pair()
      .aggregate(
          edge_count="count()",
@@ -5494,17 +5429,16 @@ Directed, parallel, or self-loop edges can produce values above 1. With
 
 py3plex provides null model generators for hypothesis testing.
 
-`layer_shuffle_model(network, seed=...)` collects layers in first-occurrence
-order from the graph's nodes before shuffling. The same node insertion order
-and seed give identical assignments across Python hash seeds, including mixed
-layer ID types. `N.layer_shuffle().seed(...)` uses the same ordering for its samples.
+`layer_shuffle_model(network, seed=...)` swaps replica layer assignments
+while preserving layer sizes and each physical node's replica count. The
+seeded sampler uses the graph's replica order.
 
 ### Configuration Model
 
 For directed input, `configuration_model()` preserves each replica's in-degree
 and out-degree separately using a directed configuration multigraph. Samples
-may contain self-loops and parallel arcs; retain these to preserve both degree
-sequences. Undirected input continues to use a simple degree-preserving realization.
+may contain self-loops and parallel arcs. The undirected configuration model
+also returns a multigraph and preserves total degree for each replica.
 
 ```python
 from py3plex.nullmodels import configuration_model
@@ -5530,46 +5464,39 @@ Reciprocal directed edges are sampled independently. Edge density is preserved
 in expectation, rather than requiring an exact edge count in every sample.
 
 ```python
-from py3plex.nullmodels import erdos_renyi_multilayer
+from py3plex.nullmodels import erdos_renyi_model
 
-null_net = erdos_renyi_multilayer(
-    n_nodes=100,
-    n_layers=3,
-    p=0.1,  # Edge probability
-    seed=42
-)
+null_net = erdos_renyi_model(net, seed=42)
 ```
 
 ### Random Graph with Layer Structure
 
-```python
-from py3plex.nullmodels import random_multilayer
+Use a generator to specify graph size and edge probability directly.
 
-null_net = random_multilayer(
-    n_nodes=100,
-    layers=['social', 'work', 'family'],
-    p_intra=0.15,  # Intra-layer edge prob
-    p_inter=0.01,  # Inter-layer edge prob
-    seed=42
-)
+```python
+from py3plex.datasets import make_random_multilayer
+
+random_net = make_random_multilayer(n_nodes=100, n_layers=3, p=0.15, random_state=42)
 ```
 
 ### Statistical Testing Pattern
 
+This example tests the upper tail of mean replica betweenness against the
+configuration model.
+
 ```python
-# Compute observed statistic
-observed_stat = Q.nodes().compute("betweenness").execute(net).attributes['betweenness'].mean()
+from py3plex.dsl import Q
+from py3plex.nullmodels import generate_null_model
 
-# Generate null distribution
-null_stats = []
-for i in range(100):
-    null_net = configuration_model(net, seed=i)
-    null_stat = Q.nodes().compute("betweenness").execute(null_net).attributes['betweenness'].mean()
-    null_stats.append(null_stat)
+def mean_betweenness(network):
+    result = Q.nodes().compute("betweenness_centrality").execute(network)
+    return result.to_pandas()["betweenness_centrality"].mean()
 
-# p-value
-p_value = sum(ns >= observed_stat for ns in null_stats) / len(null_stats)
-print(f"p-value: {p_value}")
+observed = mean_betweenness(net)
+samples = generate_null_model(net, model="configuration", num_samples=100, seed=42)
+null_stats = [mean_betweenness(sample) for sample in samples]
+p_value = (1 + sum(value >= observed for value in null_stats)) / (len(null_stats) + 1)
+print(f"Monte Carlo p-value: {p_value:.3f}")
 ```
 
 ### Null Model Builder (DSL Extension)
@@ -5582,7 +5509,6 @@ null_models = (
     N.configuration()
      .samples(100)
      .seed(42)
-     .preserve_layers(True)
      .execute(net)
 )
 
@@ -6509,26 +6435,12 @@ with open("community_provenance.json", "w") as f:
     }, f, indent=2)
 ```
 
-**DSL Integration** (Planned):
+**DSL Integration**:
 ```python
 from py3plex.dsl import Q
 
-# Query communities with confidence filtering
-result = (
-    Q.communities()
-     .auto()
-     .confidence__gt(0.9)  # Only high-confidence assignments
-     .execute(network)
-)
-
-# Combine with other DSL operations
-result = (
-    Q.nodes()
-     .community_auto()
-     .where(community_size__gt=10)  # Large communities only
-     .compute("pagerank")
-     .execute(network)
-)
+assignments = Q.communities().auto(seed=42, fast=True).execute(network)
+print(assignments.to_pandas()[["community", "community_size", "confidence"]])
 ```
 
 **Anti-Patterns to Avoid**:
@@ -6589,16 +6501,15 @@ result = (
 ### Detect Communities
 
 ```python
-from py3plex.algorithms.community_detection import louvain, leiden, label_propagation
+from py3plex.algorithms.community_detection import (
+    multilayer_label_propagation_supra,
+    multilayer_leiden,
+    multilayer_louvain,
+)
 
-# Louvain
-communities = louvain(net, resolution=1.0, seed=42)
-
-# Leiden (higher quality)
-communities = leiden(net, resolution=1.0, seed=42)
-
-# Label propagation (fast)
-communities = label_propagation(net, seed=42)
+louvain_partition, louvain_score = multilayer_louvain(net, gamma=1.0, random_state=42)
+leiden_partition, leiden_score = multilayer_leiden(net, gamma=1.0, random_state=42)
+labels = multilayer_label_propagation_supra(net, random_state=42)
 ```
 
 ### Query Communities
@@ -6606,8 +6517,8 @@ communities = label_propagation(net, seed=42)
 ```python
 from py3plex.dsl import Q
 
-# Detect first
-communities = louvain(net, seed=42)
+# Detect and store the default partition
+Q.nodes().community(method="louvain", random_state=42).execute(net)
 
 # Query large communities
 result = (
@@ -7086,8 +6997,8 @@ from py3plex.dsl import Q
 # Compatibility checked during execution
 try:
     result = (
-        Q.communities("leiden")
-         .with_params(resolution=1.0, seed=42)
+        Q.nodes()
+         .community(method="leiden", gamma=1.0, random_state=42)
          .execute(net)
     )
 except AlgorithmCompatibilityError as e:
@@ -8057,18 +7968,14 @@ from py3plex.nullmodels import configuration_model
 # Generate null model
 null_net = configuration_model(net, seed=42)
 
-# Certificate 1: Degree sequence preserved (per layer)
-for layer in net.get_layers():
-    original_degrees = sorted([net.degree(n, layer) for n in net.get_nodes(layer)])
-    null_degrees = sorted([null_net.degree(n, layer) for n in null_net.get_nodes(layer)])
-    assert original_degrees == null_degrees
+original = net.core_network
+randomized = null_net.core_network
 
-# Certificate 2: Layer count preserved
-assert len(net.get_layers()) == len(null_net.get_layers())
-
-# Certificate 3: Node count preserved (per layer)
-for layer in net.get_layers():
-    assert len(net.get_nodes(layer)) == len(null_net.get_nodes(layer))
+assert set(original) == set(randomized)
+assert dict(original.degree()) == dict(randomized.degree())
+if original.is_directed():
+    assert dict(original.in_degree()) == dict(randomized.in_degree())
+    assert dict(original.out_degree()) == dict(randomized.out_degree())
 ```
 
 ### Differential Testing
@@ -8426,7 +8333,7 @@ print(result.count)  # Returns 300, not 100!
 IF user asks "how many nodes are in the network?"
 THEN clarify:
   - Physical nodes: len(set(n[0] for n in network.get_nodes()))
-  - Node replicas: len(network.get_nodes())
+  - Node replicas: len(list(network.get_nodes()))
   - Default py3plex operations return replicas
 ```
 
@@ -8780,7 +8687,7 @@ result = Q.nodes().where(degree__gt=5).execute(network)
 
 ```python
 # Check available layers first
-print(net.get_layers())
+print(net.layers)
 
 # Or use wildcard
 Q.nodes().from_layers(L["*"]).execute(net)

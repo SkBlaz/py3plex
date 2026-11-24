@@ -417,7 +417,7 @@ matches ``network.get_nodes()``, so indices are aligned with tuple-based nodes:
     from scipy.sparse import lil_matrix
     
     # Get supra-adjacency matrix (number of rows = node-layer pairs)
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     
     print(f"Supra-adjacency matrix: {supra_adj.shape}")
     print(f"Sparsity: {1 - supra_adj.nnz / (supra_adj.shape[0]**2):.2%}")

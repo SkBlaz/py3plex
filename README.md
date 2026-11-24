@@ -30,77 +30,61 @@ some of the state-of-the-art algorithms for decomposition, visualization and ana
 
 
 ```python
-from py3plex.core import datasets
+from py3plex.datasets import make_random_multiplex
 from py3plex.dsl import Q
 
-# Load a built-in multilayer biological network (~500 nodes, 4 layers)
-network = datasets.fetch_multilayer("human_ppi_gene_disease_drug")
+network = make_random_multiplex(
+    n_nodes=24, n_layers=3, p=0.25, random_state=42,
+)
 
-# Find key regulator candidates with integrated community detection and uncertainty quantification
-master_regulators = (
-    Q.communities(                           # Automated community detection
-        mode="pareto",                       # Multi-objective Pareto selection
-        uq=True,                             # Uncertainty quantification enabled
-        uq_n_samples=30,                     # Robustness via 30 perturbed runs
-        uq_method="seed",                    # Vary random seeds for stability
-        seed=42,                             # Reproducibility
-        write_attrs={                        # Attribute names for community info
-            "community_id": "community_id",
-            "community_stability": "community_stability",
-        },
-    )
-    .nodes()                                 # Switch to node-level analysis
-    .node_type("gene")                       # Filter by node type
-    .where(degree__gt=3)                     # Remove peripheral nodes
-    .uq(method="perturbation", n_samples=100, ci=0.95, seed=42)  # Quantify confidence
-    .compute("betweenness_centrality", "pagerank", "degree_centrality")
-    .per_layer()                             # Group by layer
-        .top_k(30, "betweenness_centrality__mean")  # Top 30 per layer by mean
+assignments = (
+    Q.communities().auto(fast=True, seed=42).execute(network)
+    .to_pandas()[["node", "layer", "community"]]
+    .rename(columns={"node": "id"})
+)
+
+hubs = (
+    Q.nodes()
+    .compute("betweenness_centrality")
+    .per_layer()
+    .top_k(8, "betweenness_centrality")
     .end_grouping()
-    .coverage(mode="at_least", k=2)          # Keep nodes that are hubs in ≥2 layers
-    .mutate(                                 # Create derived influence score
-        score=lambda row: (
-            0.5 * row.get("betweenness_centrality__mean", 0.0) +
-            0.3 * row.get("pagerank__mean", 0.0) +
-            0.2 * row.get("degree_centrality__mean", 0.0)
-        )
-    )
-    .order_by("score", desc=True)
-    .limit(20)                               # Final top 20 candidates
-    .explain(neighbors_top=5)                # Enrich: community ID, top 5 partners, layers
+    .coverage(mode="at_least", k=2)
+    .execute(network)
+)
+estimates = (
+    Q.nodes()
+    .uq(method="perturbation", n_samples=20, ci=0.95, seed=42)
+    .compute("betweenness_centrality", "pagerank", "degree_centrality")
+    .explain(neighbors_top=5)
     .execute(network)
 )
 
-df = master_regulators.to_pandas(expand_uncertainty=True, expand_explanations=True)
-print(df[["id", "layer", "community_id",
-          "betweenness_centrality__mean", "betweenness_centrality_ci95_low",
-          "betweenness_centrality_ci95_high", "score", "top_neighbors"]].head(10))
+selected = hubs.to_pandas()[["id", "layer"]]
+df = selected.merge(
+    estimates.to_pandas(expand_uncertainty=True, expand_explanations=True),
+    on=["id", "layer"],
+    validate="one_to_one",
+).merge(assignments, on=["id", "layer"], validate="one_to_one")
+df["score"] = (
+    0.5 * df["betweenness_centrality"]
+    + 0.3 * df["pagerank"]
+    + 0.2 * df["degree_centrality"]
+)
+print(df.sort_values("score", ascending=False)[[
+    "id", "layer", "community", "betweenness_centrality",
+    "betweenness_centrality_ci95_low", "betweenness_centrality_ci95_high",
+    "score", "top_neighbors",
+]].head(10))
 ```
 
-Uses a strict two-phase flow:
-
-1. **Build query** on `Q...` (`.where()`, `.compute()`, `.order_by()`, `.per_layer()`, `.coverage()`, ...)
-2. **Execute once** with `.execute(network)`
-3. **Handle results** on `QueryResult` (`.to_pandas()`, `.group_summary()`, `.to_json()`, ...)
-
-**Example output:**
-```
-    id  layer  community_id  betweenness_centrality__mean  betweenness_centrality_ci95_low  betweenness_centrality_ci95_high     score  top_neighbors
-0  252      0            42                      0.025961                         0.021820                          0.030102  0.015577  [{'id': '91', 'weight': 2.3}, {'id': '419', 'weight': 1.9}]
-1   91      0            42                      0.024918                         0.020902                          0.028934  0.014951  [{'id': '252', 'weight': 2.3}, {'id': '103', 'weight': 2.1}]
-2  419      0            42                      0.024184                         0.020298                          0.028070  0.014510  [{'id': '252', 'weight': 1.9}, {'id': '91', 'weight': 1.7}]
-3  103      0            42                      0.023450                         0.019596                          0.027304  0.014069  [{'id': '91', 'weight': 2.1}, {'id': '252', 'weight': 1.8}]
-4  375      0            42                      0.022716                         0.018894                          0.026538  0.013628  [{'id': '91', 'weight': 1.8}, {'id': '252', 'weight': 1.6}]
-```
-
-
-**Key features demonstrated:**
-- **Streamlined API**: Community detection integrated directly into the DSL query chain
-- **AutoCommunity**: Multi-objective Pareto-optimal selection across algorithms (Louvain, Leiden, etc.)
-- **Uncertainty Quantification**: Confidence intervals for both community detection and centrality measures
-- **Cross-layer analysis**: `.coverage(mode="at_least", k=2)` keeps only nodes that are hubs in ≥2 layers
-- **Interpretability**: `.explain()` enriches results with community IDs, top interaction partners, and layer presence
-- **Composite scoring**: Weighted combination of multiple centrality measures for robust ranking
+This example detects communities on a seeded synthetic multiplex and ranks
+candidate hubs. The hub query selects the top eight replicas per layer and
+keeps nodes represented among those selections in at least two layers. The
+final table combines community assignments, centrality estimates, and
+neighbor explanations for each retained replica.
+The exported table stores the mean in `betweenness_centrality` and the
+interval endpoints in the `_ci95_low` and `_ci95_high` columns.
 
 ### Ecosystem positioning
 
