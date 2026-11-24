@@ -97,9 +97,7 @@ def sis_update_factory(params: Dict[str, Any], coupling: Dict[str, Any]) -> Call
         # Infection: S -> I based on infected neighbors
         susceptible = np.where(state == 0)[0]
         for s in susceptible:
-            # Get neighbors
-            neighbors = np.where(adj_matrix[s] > 0)[0]
-            infected_neighbors = np.sum(state[neighbors] == 1)
+            infected_neighbors = adj_matrix[infected, s].sum()
 
             if infected_neighbors > 0:
                 # Calculate infection probability
@@ -153,8 +151,7 @@ def sir_update_factory(params: Dict[str, Any], coupling: Dict[str, Any]) -> Call
         # Infection: S -> I based on infected neighbors
         susceptible = np.where(state == 0)[0]
         for s in susceptible:
-            neighbors = np.where(adj_matrix[s] > 0)[0]
-            infected_neighbors = np.sum(state[neighbors] == 1)
+            infected_neighbors = adj_matrix[infected, s].sum()
 
             if infected_neighbors > 0:
                 infection_prob = 1.0 - (1.0 - beta) ** infected_neighbors
@@ -220,8 +217,9 @@ def random_walk_update_factory(params: Dict[str, Any], coupling: Dict[str, Any])
             # No neighbors, stay in place or teleport
             new_state[rng.integers(0, n)] = 1
         else:
-            # Move to random neighbor
-            new_pos = rng.choice(neighbors)
+            weights = adj_matrix[current_pos, neighbors]
+            probabilities = None if np.all(weights == weights[0]) else weights / weights.sum()
+            new_pos = rng.choice(neighbors, p=probabilities)
             new_state[new_pos] = 1
 
         return new_state

@@ -3920,193 +3920,89 @@ def cmd_dynamics(args: argparse.Namespace) -> int:
         Exit code (0 for success)
     """
     try:
-        if args.verbose:
-            print(f"Loading network from: {args.input}")
+        from collections import Counter
 
-        # Load network
+        import pandas as pd
+
+        from py3plex._parallel import spawn_seeds
+        from py3plex.dynamics import SEIRDynamics, SIRDynamics, SISDynamics
+
         net = _load_network(args.input)
-
-        if args.verbose:
-            print(f"Network loaded: {len(net.get_nodes())} nodes, {len(net.get_edges())} edges")
-
-        # Validate model-specific parameters
-        if args.model in ["sir", "seir"] and args.gamma is None:
-            logger.error(f"{args.model.upper()} model requires --gamma parameter")
-            return 1
-
-        if args.model == "sis" and args.mu is None:
-            logger.error("SIS model requires --mu parameter")
-            return 1
-
-        if args.model == "seir" and args.sigma is None:
-            logger.error("SEIR model requires --sigma parameter")
-            return 1
-
-        # Import dynamics module
-        from py3plex.dsl import Q
-        from py3plex.dsl.builder import DynamicsBuilder
-
-        # Construct dynamics query
-        if args.verbose:
-            print(f"Setting up {args.model.upper()} simulation...")
-            print(f"  Beta (infection rate): {args.beta}")
-            if args.model == "sir":
-                print(f"  Gamma (recovery rate): {args.gamma}")
-            elif args.model == "sis":
-                print(f"  Mu (recovery rate): {args.mu}")
-            elif args.model == "seir":
-                print(f"  Sigma (exposed rate): {args.sigma}")
-                print(f"  Gamma (recovery rate): {args.gamma}")
-            print(f"  Steps: {args.steps}")
-            print(f"  Replicates: {args.replicates}")
-
-        # Build dynamics query
-        query_builder = Q.dynamics(
-            args.model.upper(),
-            beta=args.beta,
-            gamma=args.gamma if args.model in ["sir", "seir"] else None,
-            mu=args.mu if args.model == "sis" else None,
-            sigma=args.sigma if args.model == "seir" else None,
-        )
-
-        # Restrict to specific layers if requested
-        if args.layers:
-            from py3plex.dsl import L
-            layer_expr = L[args.layers[0]]
-            for layer in args.layers[1:]:
-                layer_expr = layer_expr + L[layer]
-            query_builder = query_builder.on_layers(layer_expr)
-
-        # Seed infections
-        if args.seed_nodes:
-            # Seed specific nodes
-            seed_nodes_list = [(node, net.get_layers()[0]) for node in args.seed_nodes]
-            query_builder = query_builder.seed_infections(nodes=seed_nodes_list)
-        else:
-            # Seed fraction of nodes
-            query_builder = query_builder.seed_infections(fraction=args.seed_fraction)
-
-        # Run simulation
-        if args.seed is not None:
-            query_builder = query_builder.run(
-                steps=args.steps,
-                replicates=args.replicates,
-                seed=args.seed
-            )
-        else:
-            query_builder = query_builder.run(
-                steps=args.steps,
-                replicates=args.replicates
-            )
-
-        if args.verbose:
-            print("Running simulation...")
-
-        # Execute
-        result = query_builder.execute(net)
-
-        if args.verbose:
-            print("Simulation complete!")
-
-        # Extract trajectories
-        trajectories = result.trajectories
-
-        # Prepare output
-        output_data = {
-            "model": args.model,
-            "parameters": {
-                "beta": args.beta,
-            },
-            "simulation": {
-                "steps": args.steps,
-                "replicates": args.replicates,
-                "seed": args.seed,
-            },
-            "network": {
-                "nodes": len(net.get_nodes()),
-                "edges": len(net.get_edges()),
-                "layers": net.get_layers(),
-            },
-            "trajectories": trajectories.to_dict(orient="records") if hasattr(trajectories, "to_dict") else str(trajectories),
+        options = {
+            "sis": (SISDynamics, {"S": "susceptible", "I": "infected"}, ("mu",)),
+            "sir": (SIRDynamics, {"S": "susceptible", "I": "infected", "R": "recovered"}, ("gamma",)),
+            "seir": (SEIRDynamics, {"S": "susceptible", "E": "exposed", "I": "infected",
+                                   "R": "recovered"}, ("sigma", "gamma")),
         }
+        process_type, compartments, names = options[args.model]
+        params = {name: getattr(args, name) for name in ("beta", *names)}
+        for name, probability in params.items():
+            if probability is None or not 0 <= probability <= 1:
+                raise ValueError(f"{args.model.upper()} requires --{name} in [0, 1].")
+        if args.steps <= 0 or args.replicates <= 0:
+            raise ValueError("Steps and replicates must be positive.")
+        if not 0 <= args.seed_fraction <= 1:
+            raise ValueError("Seed fraction must be in [0, 1].")
 
-        # Add model-specific parameters
-        if args.model == "sir":
-            output_data["parameters"]["gamma"] = args.gamma
-        elif args.model == "sis":
-            output_data["parameters"]["mu"] = args.mu
-        elif args.model == "seir":
-            output_data["parameters"]["sigma"] = args.sigma
-            output_data["parameters"]["gamma"] = args.gamma
+        allowed = set(args.layers) if args.layers else None
+        graph = net.core_network
+        if graph is None:
+            raise ValueError("The network has no nodes.")
+        nodes = [node for node in graph if allowed is None or str(node[1]) in allowed]
+        if not nodes:
+            raise ValueError("No nodes in the selected layers.")
+        graph = graph.subgraph(nodes)
+        explicit = set(args.seed_nodes or ())
+        unknown = explicit - {str(node[0]) for node in nodes}
+        if unknown:
+            raise ValueError(f"Unknown seed nodes: {', '.join(sorted(unknown))}")
 
-        # Save results
-        if args.output:
-            if args.format == "json":
-                with open(args.output, "w") as f:
-                    json.dump(output_data, f, indent=2)
-                if args.verbose:
-                    print(f"Results saved to: {args.output}")
-            elif args.format == "csv":
-                if hasattr(trajectories, "to_csv"):
-                    trajectories.to_csv(args.output, index=False)
-                else:
-                    print("Warning: Could not export trajectories to CSV format")
-                if args.verbose:
-                    print(f"Trajectories saved to: {args.output}")
+        rows = []
+        for replicate, seed in enumerate(spawn_seeds(args.seed, args.replicates)):
+            process = process_type(graph, seed=seed, **params)
+            infected = {node for node in nodes if str(node[0]) in explicit}
+            if not explicit and args.seed_fraction > 0:
+                count = max(1, int(args.seed_fraction * len(nodes)))
+                infected = {nodes[i] for i in process.rng.choice(len(nodes), size=count, replace=False)}
+            initial = {node: "I" if node in infected else "S" for node in nodes}
+            result = process.run(steps=args.steps - 1, state=initial)
+            for step, state in enumerate(result.trajectory):
+                counts = Counter(state.values())
+                rows.append({"replicate": replicate, "step": step,
+                             **{label: counts[code] for code, label in compartments.items()}})
+
+        trajectories = pd.DataFrame(rows)
+        output = {
+            "model": args.model, "parameters": params,
+            "simulation": {"steps": args.steps, "replicates": args.replicates, "seed": args.seed},
+            "network": {"nodes": len(graph), "edges": graph.number_of_edges(),
+                        "layers": list(dict.fromkeys(node[1] for node in nodes))},
+            "trajectories": rows,
+        }
+        if args.format == "csv":
+            if args.output:
+                trajectories.to_csv(args.output, index=False)
+            else:
+                print(trajectories.to_csv(index=False), end="")
+        elif args.output:
+            Path(args.output).write_text(json.dumps(output, indent=2), encoding="utf-8")
         else:
-            # Print to stdout
-            print(json.dumps(output_data, indent=2))
+            print(json.dumps(output, indent=2))
 
-        # Generate plot if requested
         if args.plot or args.plot_file:
+            import matplotlib.pyplot as plt
+
+            figure, axes = plt.subplots(figsize=(10, 6))
             try:
-                import matplotlib.pyplot as plt
-
-                plot_file = args.plot_file if args.plot_file else "dynamics_plot.png"
-
-                plt.figure(figsize=(10, 6))
-
-                if args.model == "sis":
-                    # Plot S and I
-                    if "susceptible" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
-                    if "infected" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
-                elif args.model == "sir":
-                    # Plot S, I, and R
-                    if "susceptible" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
-                    if "infected" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
-                    if "recovered" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["recovered"], label="Recovered", color="green")
-                elif args.model == "seir":
-                    # Plot S, E, I, and R
-                    if "susceptible" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["susceptible"], label="Susceptible", color="blue")
-                    if "exposed" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["exposed"], label="Exposed", color="orange")
-                    if "infected" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["infected"], label="Infected", color="red")
-                    if "recovered" in trajectories.columns:
-                        plt.plot(trajectories["step"], trajectories["recovered"], label="Recovered", color="green")
-
-                plt.xlabel("Time Step")
-                plt.ylabel("Population")
-                plt.title(f"{args.model.upper()} Dynamics Simulation")
-                plt.legend()
-                plt.grid(True, alpha=0.3)
-                plt.tight_layout()
-                plt.savefig(plot_file, dpi=150)
-                plt.close()
-
-                if args.verbose:
-                    print(f"Plot saved to: {plot_file}")
-            except Exception as e:
-                logger.warning(f"Could not generate plot: {e}")
-
+                means = trajectories.groupby("step")[list(compartments.values())].mean()
+                means.plot(ax=axes)
+                axes.set(xlabel="Time step", ylabel="Mean population",
+                         title=f"{args.model.upper()} Dynamics Simulation")
+                figure.tight_layout()
+                figure.savefig(args.plot_file or "dynamics_plot.png", dpi=150)
+            finally:
+                plt.close(figure)
         return 0
-
     except Exception as e:
         logger.error(f"Error during dynamics simulation: {e}")
         if args.verbose:
