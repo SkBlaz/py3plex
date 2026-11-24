@@ -77,6 +77,13 @@ from py3plex.uncertainty import (
 )
 
 
+class _DefaultUQMethod:
+    """Distinguish an omitted method from an explicit UQ opt-out."""
+
+
+_DEFAULT_UQ_METHOD = _DefaultUQMethod()
+
+
 # Comparator suffix mapping
 COMPARATOR_MAP = {
     "gt": ">",
@@ -1250,7 +1257,7 @@ class QueryBuilder:
 
     def uq(
         self,
-        method: Optional[str] = None,
+        method: Union[str, UQConfig, _DefaultUQMethod, None] = _DEFAULT_UQ_METHOD,
         n_samples: Optional[int] = None,
         ci: Optional[float] = None,
         seed: Optional[int] = None,
@@ -1270,7 +1277,7 @@ class QueryBuilder:
 
         Args:
             method: Uncertainty estimation method ('bootstrap', 'perturbation', 'seed', 'null_model')
-                   If None, uses global or library default.
+                   Omit to use global or library defaults. None disables query UQ.
             n_samples: Number of samples for uncertainty estimation
                       If None, uses global or library default (50).
             ci: Confidence interval level (e.g., 0.95 for 95% CI)
@@ -1326,6 +1333,18 @@ class QueryBuilder:
         if isinstance(method, UQConfig):
             self._select.uq_config = method
             return self
+
+        if isinstance(method, _DefaultUQMethod):
+            from .uq_resolution import LIBRARY_UQ_DEFAULTS, get_global_uq_defaults
+
+            defaults = {
+                **LIBRARY_UQ_DEFAULTS,
+                **{key: value for key, value in get_global_uq_defaults().items() if value is not None},
+            }
+            method = defaults["method"]
+            n_samples = defaults["n_samples"] if n_samples is None else n_samples
+            ci = defaults["ci"] if ci is None else ci
+            seed = defaults["seed"] if seed is None else seed
 
         # If method=None explicitly, disable UQ (backward compatibility)
         if method is None:
