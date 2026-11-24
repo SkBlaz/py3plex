@@ -82,7 +82,7 @@ class TestSPathsIntegration:
             S.paths()
             .from_node('A')
             .semiring('max_times')
-            .lift(attr='weight', default=1.0, transform=lambda x: 1.0/x)  # Invert for reliability
+            .lift(attr='weight', default=1.0, transform=lambda x: 1.0/(1.0 + x))  # Lift to a probability
             .execute(net)
         )
         
@@ -279,3 +279,20 @@ class TestResultFormats:
         assert 'source' in df.columns
         assert 'target' in df.columns
         assert 'value' in df.columns
+
+
+def test_bounded_path_can_use_costlier_intermediate_with_more_remaining_hops():
+    from py3plex.core.multinet import multi_layer_network
+
+    graph = multi_layer_network(directed=True)
+    graph.add_edges([
+        ["s", "L", "x", "L", 1], ["x", "L", "v", "L", 1],
+        ["s", "L", "v", "L", 5], ["v", "L", "t", "L", 1],
+    ], input_type="list")
+    result = (
+        S.paths().from_node("s").to_node("t").semiring("min_plus")
+        .lift("weight").max_hops(2).witness().execute(graph)
+    )
+    target = next(item for item in result.items if item["node"] == "t")
+    assert target["value"] == 6
+    assert target["path"] == ["s", "v", "t"]

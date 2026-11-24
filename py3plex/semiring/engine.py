@@ -12,9 +12,22 @@ where I has I[u,u]=1 and I[u,v]=0 for u≠v, and multiplication/addition are sem
 """
 
 import warnings
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 from .core import SemiringSpec, SemiringExecutionError
 from .types import PathResult
+from py3plex.algebra.paths import sssp
+from py3plex.algebra.lift import WeightLiftSpec
+from py3plex.exceptions import Py3plexException
+
+
+class _AlgebraAdapter:
+    def __init__(self, spec):
+        self.name = spec.name
+        self.add = spec.plus
+        self.mul = spec.times
+        self.zero = lambda: spec.zero
+        self.one = lambda: spec.one
+        self.props = {"idempotent_add": spec.is_idempotent_plus}
 
 
 def semiring_paths(
@@ -73,31 +86,32 @@ def semiring_paths(
                 UserWarning
             )
     
-    # Select algorithm
-    if algorithm == "auto":
-        # Use Dijkstra for min_plus or idempotent with non-negative weights
-        if semiring.name == "min_plus" or (semiring.is_idempotent_plus and semiring.leq):
-            algorithm = "dijkstra"
-        else:
-            algorithm = "bellman_ford"
-    
-    # Extract graph data
     nodes, edges = _extract_graph(network, layer_filter)
-    
-    # Default lift function
+    source = _resolve_node(nodes, source)
+    target = _resolve_node(nodes, target) if target is not None else None
     if lift is None:
-        lift = lambda e: e.get('weight', semiring.one)
-    
-    # Run selected algorithm
-    if algorithm == "dijkstra":
-        return _dijkstra(nodes, edges, semiring, source, target, lift, witness)
-    elif algorithm == "bellman_ford":
-        return _bellman_ford(nodes, edges, semiring, source, target, lift, max_hops, witness)
-    else:
-        raise SemiringExecutionError(
-            f"Unknown algorithm: '{algorithm}'",
-            suggestions=["Use 'auto', 'dijkstra', or 'bellman_ford'"]
+        lift = lambda edge: edge.get("weight", semiring.one)
+    weighted = [(edge["source"], edge["target"], {"value": lift(edge)}) for edge in edges]
+    try:
+        result = sssp(
+            list(nodes), weighted, source, _AlgebraAdapter(semiring),
+            WeightLiftSpec(attr="value"), target, max_hops,
+            None if algorithm == "auto" else algorithm,
         )
+    except Py3plexException as error:
+        raise SemiringExecutionError(str(error)) from error
+
+    return {node: PathResult(value, result.get_path(node) if witness else None)
+            for node, value in result.distances.items()}
+
+
+def _resolve_node(nodes, selector):
+    if selector in nodes:
+        return selector
+    replicas = [node for node in nodes if isinstance(node, tuple) and node[0] == selector]
+    if len(replicas) == 1:
+        return replicas[0]
+    raise SemiringExecutionError(f"Select an unambiguous node replica for {selector!r}.")
 
 
 def semiring_closure(
@@ -142,150 +156,49 @@ def semiring_closure(
     if lift is None:
         lift = lambda e: e.get('weight', semiring.one)
     
-    # Use Floyd-Warshall for small graphs
-    if n <= size_threshold:
-        return _floyd_warshall(node_list, edges, semiring, lift)
-    else:
-        # Bounded closure with max_hops
+    if max_hops is not None:
         return _bounded_closure(node_list, edges, semiring, lift, max_hops)
+    if not semiring.is_idempotent_plus:
+        raise SemiringExecutionError("max_hops parameter is required for non-idempotent closure.")
+    result = _floyd_warshall(node_list, edges, semiring, lift)
+    if semiring.name == "min_plus" and any(result[node, node] < 0 for node in nodes):
+        raise SemiringExecutionError("Unbounded semiring closure contains a negative cycle.")
+    return result
 
 
-# ============================================================================
-# Helper Functions
-# ============================================================================
-
-def _extract_graph(network: Any, layer_filter: Optional[List[str]] = None) -> Tuple[Set[Any], List[Dict[str, Any]]]:
-    """Extract nodes and edges from network."""
+def _extract_graph(network: Any, layer_filter: Optional[List[str]] = None):
+    """Normalize py3plex replicas and legacy dictionary records."""
+    if hasattr(network, "core_network") and network.core_network is None:
+        return set(), []
+    allowed = None if layer_filter is None else set(layer_filter)
     nodes = set()
+    for record in network.get_nodes():
+        if isinstance(record, dict):
+            if allowed is None or record.get("type") in allowed:
+                nodes.add(record["source"])
+        elif allowed is None or record[1] in allowed:
+            nodes.add(record)
+
     edges = []
-    
-    for node_data in network.get_nodes():
-        if layer_filter is None or node_data.get('type') in layer_filter:
-            nodes.add(node_data['source'])
-    
-    for edge_data in network.get_edges():
-        if layer_filter is None or (
-            edge_data.get('source_type') in layer_filter and
-            edge_data.get('target_type') in layer_filter
-        ):
-            edges.append(edge_data)
-            nodes.add(edge_data['source'])
-            nodes.add(edge_data['target'])
-    
-    return nodes, edges
-
-
-def _dijkstra(
-    nodes: Set[Any],
-    edges: List[Dict[str, Any]],
-    semiring: SemiringSpec,
-    source: Any,
-    target: Optional[Any],
-    lift: Callable,
-    witness: bool,
-) -> Dict[Any, PathResult]:
-    """Dijkstra-like algorithm for semirings with ordering."""
-    import heapq
-    
-    # Initialize distances
-    dist = {node: semiring.zero for node in nodes}
-    dist[source] = semiring.one
-    
-    # Track predecessors if witness requested
-    pred = {node: None for node in nodes} if witness else None
-    
-    # Build adjacency list
-    adj = {node: [] for node in nodes}
-    for e in edges:
-        u, v = e['source'], e['target']
+    if hasattr(network, "core_network"):
+        records = network.core_network.edges(data=True)
+    else:
+        records = network.get_edges()
+    for record in records:
+        if isinstance(record, dict):
+            edge = record
+        else:
+            u, v, attrs = record
+            edge = {**attrs, "source": u, "target": v,
+                    "source_type": u[1], "target_type": v[1]}
+        u, v = edge["source"], edge["target"]
         if u in nodes and v in nodes:
-            adj[u].append((v, lift(e)))
-    
-    # Priority queue: (distance, node)
-    pq = [(semiring.one, source)]
-    visited = set()
-    
-    while pq:
-        d_u, u = heapq.heappop(pq)
-        
-        if u in visited:
-            continue
-        visited.add(u)
-        
-        if target and u == target:
-            break
-        
-        for v, weight in adj.get(u, []):
-            new_dist = semiring.times(dist[u], weight)
-            
-            # Check if this is better
-            if semiring.leq and semiring.leq(new_dist, dist[v]):
-                if not _eq_with_default(new_dist, dist[v], semiring.eq):
-                    dist[v] = new_dist
-                    if pred is not None:
-                        pred[v] = u
-                    heapq.heappush(pq, (new_dist, v))
-    
-    # Build results
-    results = {}
-    for node in nodes:
-        path_list = None
-        if witness and pred is not None:
-            path_list = _reconstruct_path(pred, source, node)
-        results[node] = PathResult(value=dist[node], path=path_list)
-    
-    return results
-
-
-def _bellman_ford(
-    nodes: Set[Any],
-    edges: List[Dict[str, Any]],
-    semiring: SemiringSpec,
-    source: Any,
-    target: Optional[Any],
-    lift: Callable,
-    max_hops: Optional[int],
-    witness: bool,
-) -> Dict[Any, PathResult]:
-    """Bellman-Ford relaxation for general semirings."""
-    # Initialize
-    dist = {node: semiring.zero for node in nodes}
-    dist[source] = semiring.one
-    
-    pred = {node: None for node in nodes} if witness else None
-    
-    # Relaxation iterations
-    n_iterations = max_hops if max_hops else len(nodes) - 1
-    
-    for iteration in range(n_iterations):
-        changed = False
-        for e in edges:
-            u, v = e['source'], e['target']
-            if u not in nodes or v not in nodes:
-                continue
-            
-            edge_weight = lift(e)
-            new_dist = semiring.times(dist[u], edge_weight)
-            combined = semiring.plus(dist[v], new_dist)
-            
-            if not _eq_with_default(combined, dist[v], semiring.eq):
-                dist[v] = combined
-                if pred is not None:
-                    pred[v] = u
-                changed = True
-        
-        if not changed:
-            break
-    
-    # Build results
-    results = {}
-    for node in nodes:
-        path_list = None
-        if witness and pred is not None:
-            path_list = _reconstruct_path(pred, source, node)
-        results[node] = PathResult(value=dist[node], path=path_list)
-    
-    return results
+            edges.append(edge)
+            if u != v and not getattr(network, "directed", True):
+                edges.append({**edge, "source": v, "target": u,
+                              "source_type": edge.get("target_type"),
+                              "target_type": edge.get("source_type")})
+    return nodes, edges
 
 
 def _floyd_warshall(
@@ -334,64 +247,8 @@ def _bounded_closure(
     max_hops: int,
 ) -> Dict[Tuple[Any, Any], Any]:
     """Bounded closure with max_hops iterations."""
-    closure = {}
-    
-    # Initialize with identity
-    for u in nodes:
-        for v in nodes:
-            if u == v:
-                closure[(u, v)] = semiring.one
-            else:
-                closure[(u, v)] = semiring.zero
-    
-    # Build adjacency
-    adj = {node: [] for node in nodes}
-    for e in edges:
-        u, v = e['source'], e['target']
-        if u in set(nodes) and v in set(nodes):
-            adj[u].append((v, lift(e)))
-    
-    # Iterate up to max_hops
-    for hop in range(max_hops):
-        changed = False
-        new_closure = closure.copy()
-        
-        for u in nodes:
-            for v, weight in adj.get(u, []):
-                for w in nodes:
-                    # new_closure[u][w] = old[u][w] ⊕ (old[u][v] ⊗ old[v][w])
-                    through_v = semiring.times(closure[(u, v)], closure[(v, w)])
-                    combined = semiring.plus(new_closure[(u, w)], through_v)
-                    
-                    if not _eq_with_default(combined, new_closure[(u, w)], semiring.eq):
-                        new_closure[(u, w)] = combined
-                        changed = True
-        
-        closure = new_closure
-        if not changed:
-            break
-    
-    return closure
-
-
-def _reconstruct_path(pred: Dict[Any, Any], source: Any, target: Any) -> Optional[List[Any]]:
-    """Reconstruct path from predecessor map."""
-    if pred[target] is None and target != source:
-        return None
-    
-    path = []
-    current = target
-    while current is not None:
-        path.append(current)
-        if current == source:
-            break
-        current = pred[current]
-    
-    return list(reversed(path)) if path else None
-
-
-def _eq_with_default(a: Any, b: Any, eq_fn: Optional[Callable] = None) -> bool:
-    """Equality check with optional custom function."""
-    if eq_fn:
-        return eq_fn(a, b)
-    return a == b
+    weighted = [(edge["source"], edge["target"], {"value": lift(edge)}) for edge in edges]
+    adapter = _AlgebraAdapter(semiring)
+    spec = WeightLiftSpec(attr="value")
+    return {(u, v): value for u in nodes
+            for v, value in sssp(nodes, weighted, u, adapter, spec, max_hops=max_hops).distances.items()}

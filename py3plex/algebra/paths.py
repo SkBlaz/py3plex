@@ -10,6 +10,7 @@ Algorithm selection:
 """
 
 import heapq
+from itertools import count
 from typing import Any, Dict, List, Optional, Tuple
 from dataclasses import dataclass
 
@@ -40,6 +41,7 @@ class PathResult:
     algorithm: str = "dijkstra"
     converged: bool = True
     iterations: int = 0
+    witnesses: Optional[Dict[Any, tuple]] = None
     
     def get_path(self, target: Any) -> Optional[List[Any]]:
         """Reconstruct path to target node.
@@ -50,6 +52,9 @@ class PathResult:
         Returns:
             List of nodes in path from source to target, or None if no path
         """
+        if self.witnesses is not None:
+            path = self.witnesses.get(target)
+            return list(path) if path is not None else None
         if self.predecessors is None:
             return None
         if target not in self.predecessors:
@@ -71,7 +76,7 @@ class PathResult:
             current = self.predecessors.get(current)
         
         path.reverse()
-        return path
+        return path if path[0] == self.source else None
 
 
 def sssp_dijkstra(
@@ -100,94 +105,51 @@ def sssp_dijkstra(
     Returns:
         PathResult with distances and predecessors
     """
-    # Initialize distances
-    distances = {node: semiring.zero() for node in nodes}
+    if max_hops is not None:
+        return sssp_bellman_ford(nodes, edges, source, semiring, lift_spec, target, max_hops)
+    weighted = _lift_edges(edges, lift_spec)
+    if not _greedy_safe(semiring, weighted):
+        raise Py3plexException("Dijkstra requires non-improving edge extensions.")
+    adjacency = {node: [] for node in nodes}
+    for u, v, weight in weighted:
+        adjacency[u].append((v, weight))
+
+    distances = dict.fromkeys(nodes, semiring.zero())
     distances[source] = semiring.one()
-    
-    # Predecessors for path reconstruction
-    predecessors = {node: None for node in nodes}
-    
-    # Priority queue: (priority, node, hops)
-    # Priority is determined by semiring.better()
-    # For min_plus: smaller is better (use value directly)
-    # For max_times: larger is better (use negative for min-heap)
-    pq = [(semiring.one(), source, 0)]
+    predecessors = dict.fromkeys(nodes)
+    order = count()
+    queue = [(0, next(order), source)]
     visited = set()
-    
-    # Build adjacency list
-    adj = {node: [] for node in nodes}
-    for src, dst, attrs in edges:
-        weight = lift_edge_value(attrs, lift_spec)
-        if weight is None:  # on_missing="drop"
-            continue
-        # Add nodes to adj if not present (they might come from edges)
-        if src not in adj:
-            adj[src] = []
-            if src not in distances:
-                distances[src] = semiring.zero()
-                predecessors[src] = None
-        if dst not in adj:
-            adj[dst] = []
-            if dst not in distances:
-                distances[dst] = semiring.zero()
-                predecessors[dst] = None
-        adj[src].append((dst, weight))
-    
-    iterations = 0
-    while pq:
-        iterations += 1
-        
-        # Get node with best value
-        # For min-heap, we need to adapt based on semiring.better()
-        current_dist, current, hops = heapq.heappop(pq)
-        
+    while queue:
+        _, _, current = heapq.heappop(queue)
         if current in visited:
             continue
         visited.add(current)
-        
-        # Early termination if target reached
-        if target is not None and current == target:
-            break
-        
-        # Check hop limit
-        if max_hops is not None and hops >= max_hops:
-            continue
-        
-        # Relax neighbors
-        for neighbor, edge_weight in adj[current]:
-            if neighbor in visited:
-                continue
-            
-            # Compute new distance: current_dist ⊗ edge_weight
-            new_dist = semiring.mul(distances[current], edge_weight)
-            
-            # Update if better: new_dist ⊕ old_dist
-            old_dist = distances[neighbor]
-            combined = semiring.add(old_dist, new_dist)
-            
-            if combined != old_dist:  # Value changed
+        for neighbor, weight in adjacency[current]:
+            candidate = semiring.mul(distances[current], weight)
+            combined = semiring.add(distances[neighbor], candidate)
+            if combined != distances[neighbor]:
                 distances[neighbor] = combined
                 predecessors[neighbor] = current
-                
-                # Add to priority queue
-                # Use negative for max-heap behavior
-                if semiring.name in ("max_plus", "max_times"):
-                    priority = -_value_as_float(combined)
-                else:
-                    priority = _value_as_float(combined)
-                
-                heapq.heappush(pq, (priority, neighbor, hops + 1))
-    
-    return PathResult(
-        distances=distances,
-        predecessors=predecessors,
-        source=source,
-        target=target,
-        semiring_name=semiring.name,
-        algorithm="dijkstra",
-        converged=True,
-        iterations=iterations,
-    )
+                priority = -float(combined) if semiring.name == "max_times" else float(combined)
+                heapq.heappush(queue, (priority, next(order), neighbor))
+    return PathResult(distances, predecessors, source, target, semiring.name,
+                      "dijkstra", iterations=len(visited))
+
+
+def _lift_edges(edges, lift_spec):
+    return [(u, v, weight) for u, v, attrs in edges
+            if (weight := lift_edge_value(attrs, lift_spec)) is not None]
+
+
+def _greedy_safe(semiring, edges):
+    if not getattr(semiring, "props", {}).get("idempotent_add"):
+        return False
+    if semiring.name == "min_plus":
+        return all(weight >= 0 for _, _, weight in edges)
+    if semiring.name == "max_times":
+        return all(0 <= weight <= 1 for _, _, weight in edges)
+    return False
 
 
 def sssp_bellman_ford(
@@ -217,62 +179,53 @@ def sssp_bellman_ford(
     Returns:
         PathResult with distances and predecessors
     """
-    # Initialize distances
-    distances = {node: semiring.zero() for node in nodes}
-    distances[source] = semiring.one()
-    
-    # Predecessors
-    predecessors = {node: None for node in nodes}
-    
-    # Process edges
-    edge_list = []
-    for src, dst, attrs in edges:
-        weight = lift_edge_value(attrs, lift_spec)
-        if weight is None:
-            continue
-        edge_list.append((src, dst, weight))
-    
-    # Relax edges iteratively
-    if max_iterations is None:
-        max_iterations = len(nodes) - 1
-    
-    converged = False
+    if max_hops is not None and max_hops < 0:
+        raise ValueError("max_hops must be nonnegative.")
+    weighted = _lift_edges(edges, lift_spec)
+    zero, one = semiring.zero(), semiring.one()
+    limit = max_hops if max_hops is not None else max_iterations
+    if limit is None:
+        limit = max(0, len(nodes) - 1)
+    distances = dict.fromkeys(nodes, zero)
+    distances[source] = one
+    frontier = {source: one}
+    frontier_paths = {source: (source,)}
+    witnesses = frontier_paths.copy()
     iterations = 0
-    
-    for i in range(max_iterations):
-        iterations = i + 1
-        changed = False
-        
-        for src, dst, edge_weight in edge_list:
-            # Compute new distance
-            new_dist = semiring.mul(distances[src], edge_weight)
-            
-            # Update if better
-            old_dist = distances[dst]
-            combined = semiring.add(old_dist, new_dist)
-            
-            if combined != old_dist:
-                distances[dst] = combined
-                predecessors[dst] = src
-                changed = True
-        
-        if not changed:
-            converged = True
+    for _ in range(limit):
+        next_frontier = {}
+        next_paths = {}
+        for u, v, weight in weighted:
+            if u not in frontier:
+                continue
+            candidate = semiring.mul(frontier[u], weight)
+            previous = next_frontier.get(v, zero)
+            combined = semiring.add(previous, candidate)
+            if combined != previous:
+                next_frontier[v] = combined
+                next_paths[v] = frontier_paths[u] + (v,)
+        iterations += 1
+        if not next_frontier:
             break
-    
-    if not converged:
-        converged = (iterations >= max_iterations)
-    
-    return PathResult(
-        distances=distances,
-        predecessors=predecessors,
-        source=source,
-        target=target,
-        semiring_name=semiring.name,
-        algorithm="bellman_ford",
-        converged=converged,
-        iterations=iterations,
-    )
+        for v, value in next_frontier.items():
+            combined = semiring.add(distances[v], value)
+            if combined != distances[v]:
+                distances[v] = combined
+                witnesses[v] = next_paths[v]
+        frontier, frontier_paths = next_frontier, next_paths
+
+    converged = True
+    if max_hops is None:
+        converged = all(
+            semiring.add(distances[v], semiring.mul(distances[u], weight)) == distances[v]
+            for u, v, weight in weighted if distances[u] != zero
+        )
+        if not converged and max_iterations is None:
+            raise Py3plexException("Unbounded semiring paths have a reachable improving cycle.")
+
+    return PathResult(distances, source=source, target=target, semiring_name=semiring.name,
+                      algorithm="bellman_ford", converged=converged,
+                      iterations=iterations, witnesses=witnesses)
 
 
 def sssp(
@@ -300,32 +253,13 @@ def sssp(
     Returns:
         PathResult with distances and predecessors
     """
-    # Auto-select algorithm based on semiring properties
     if algorithm is None:
-        props = getattr(semiring, 'props', {})
-        if props.get('idempotent_add') and props.get('monotone'):
-            algorithm = "dijkstra"
-        else:
-            algorithm = "bellman_ford"
-    
+        weighted = _lift_edges(edges, lift_spec) if max_hops is None else []
+        algorithm = "dijkstra" if max_hops is None and _greedy_safe(semiring, weighted) else "bellman_ford"
+
     if algorithm == "dijkstra":
         return sssp_dijkstra(nodes, edges, source, semiring, lift_spec, target, max_hops)
     elif algorithm == "bellman_ford":
         return sssp_bellman_ford(nodes, edges, source, semiring, lift_spec, target, max_hops)
     else:
         raise Py3plexException(f"Unknown algorithm: {algorithm}")
-
-
-def _value_as_float(value: Any) -> float:
-    """Convert semiring value to float for priority queue ordering."""
-    if isinstance(value, bool):
-        return 1.0 if value else 0.0
-    elif isinstance(value, (int, float)):
-        return float(value)
-    else:
-        # For custom semiring values, try to convert
-        try:
-            return float(value)
-        except (TypeError, ValueError, OverflowError):
-            # Fallback: use hash for ordering (not ideal but deterministic)
-            return float(hash(value) % 10000)
