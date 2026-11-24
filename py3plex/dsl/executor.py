@@ -2589,8 +2589,10 @@ def _execute_select(
     # Optimization: Early LIMIT when ORDER BY uses existing attributes
     # This reduces the number of items before expensive compute operations
     early_limit_applied = False
+    explain_attribution = select.explain_spec is not None and "attribution" in select.explain_spec.include
     if (
-        select.limit is not None
+        not explain_attribution
+        and select.limit is not None
         and select.order_by
         and not select.group_by  # Only works for non-grouped queries
         and select.compute
@@ -2886,6 +2888,8 @@ def _execute_select(
         )
     _record_timing("group_aggregate", (time.monotonic() - stage_start) * 1000)
 
+    # Keep eligible items for measuring the rank cutoff after LIMIT.
+    ranking_items = items
     # Step 6: Apply global LIMIT (if not already applied early)
     if select.limit is not None and not early_limit_applied:
         if progress:
@@ -2901,8 +2905,9 @@ def _execute_select(
             network=network,
             items=items,
             attributes=attributes,
-            explain_spec=select.explain_spec,
-            target=select.target,
+            select=select,
+            graph=G,
+            ranking_items=ranking_items,
         )
 
     # Create result
@@ -4052,8 +4057,9 @@ def _apply_explanations(
     network: Any,
     items: List[Any],
     attributes: Dict[str, Dict],
-    explain_spec: "ExplainSpec",
-    target: Target,
+    select: SelectStmt,
+    graph: nx.Graph,
+    ranking_items: List[Any],
 ) -> Tuple[List[Any], Dict[str, Dict]]:
     """Apply explanations to result items.
 
@@ -4061,8 +4067,9 @@ def _apply_explanations(
         network: Multilayer network instance
         items: Result items (nodes or edges)
         attributes: Computed attributes
-        explain_spec: Explanation specification
-        target: Query target (nodes or edges)
+        select: Query specification
+        graph: Query input graph
+        ranking_items: Eligible nodes before applying LIMIT
 
     Returns:
         Tuple of (items, enhanced_attributes) with explanation data
@@ -4071,8 +4078,11 @@ def _apply_explanations(
     
     logger = logging.getLogger(__name__)
 
-    # Only support node explanations in Phase 1
-    if target != Target.NODES:
+    explain_spec = select.explain_spec
+    has_attribution = "attribution" in explain_spec.include
+    if select.target != Target.NODES:
+        if has_attribution:
+            raise ValueError("Attribution is available for node queries.")
         logger.warning("Explanations are currently only supported for node queries")
         return items, attributes
 
@@ -4091,6 +4101,33 @@ def _apply_explanations(
             row["layer"] = None
         rows.append(row)
 
+    context = {}
+    metric_values = {}
+    if has_attribution:
+        measure_graphs = {}
+        for compute_item in select.compute or ():
+            name = compute_item.result_name
+            if name not in attributes:
+                continue
+            metric_values[name] = attributes[name]
+            if (
+                compute_item.approx is None
+                and get_operator(compute_item.name) is None
+                and compute_item.name not in {"community", "communities"}
+            ):
+                metric = CENTRALITY_ALIASES.get(compute_item.name, compute_item.name)
+                topology = _resolve_measure_topology(network, graph, select, metric, compute_item.kind)
+                measure_graphs[name] = (topology, measure_registry.get(compute_item.name))
+
+        context = {
+            "ranking_items": ranking_items,
+            "limit": select.limit,
+            "measure_graphs": measure_graphs,
+        }
+        if select.order_by:
+            order = select.order_by[0]
+            context.update(order_by=order.key, ascending=not order.desc)
+
     # Call explanation engine
     try:
         enriched_rows, explanation_schema = explain_rows(
@@ -4102,9 +4139,13 @@ def _apply_explanations(
             community_cfg=explain_spec.community_cfg,
             layer_footprint_cfg=explain_spec.layer_footprint_cfg,
             attribution_cfg=explain_spec.attribution_cfg,
+            metric_values=metric_values,
+            context=context,
             cache=explain_spec.cache,
         )
     except Exception as e:
+        if has_attribution:
+            raise
         logger.warning(f"Failed to generate explanations: {e}")
         return items, attributes
 

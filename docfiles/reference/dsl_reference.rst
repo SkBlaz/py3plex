@@ -553,11 +553,9 @@ Default blocks: ``["community", "top_neighbors", "layer_footprint"]``
 Attribution Block
 ~~~~~~~~~~~~~~~~~
 
-The ``"attribution"`` block provides Shapley value-based explanations for why nodes/edges have high metric values or rankings.
-
-**Purpose**: Decompose metric contributions across layers and/or edges using game-theoretic attribution.
-
-**Basic Example**:
+Use the ``"attribution"`` block to explain node scores or ranks with Shapley values.
+The engine recomputes the metric for each graph formed by a coalition of layers
+or incident edges.
 
 .. code-block:: python
 
@@ -589,7 +587,7 @@ The ``"attribution"`` block provides Shapley value-based explanations for why no
    * - ``metric``
      - str | None
      - Auto-infer
-     - Which computed metric to explain (required if multiple metrics)
+     - Computed metric to explain. Inferred from the first sort key or the only computed metric.
    * - ``objective``
      - str
      - "value"
@@ -601,15 +599,15 @@ The ``"attribution"`` block provides Shapley value-based explanations for why no
    * - ``method``
      - str
      - "shapley_mc"
-     - ``"shapley"`` (exact), ``"shapley_mc"`` (Monte Carlo), ``"influence"`` (approx)
+     - ``"shapley"`` (exact) or ``"shapley_mc"`` (Monte Carlo)
    * - ``feature_space``
      - str
      - "layers"
-     - ``"layers"``, ``"layer_pairs"``, or ``"coupling_types"``
+     - Layer attribution uses ``"layers"``
    * - ``n_permutations``
      - int
      - 128
-     - Monte Carlo sample count (≥16)
+     - Positive number of sampled feature permutations
    * - ``max_exact_features``
      - int
      - 8
@@ -621,11 +619,7 @@ The ``"attribution"`` block provides Shapley value-based explanations for why no
    * - ``edge_scope``
      - str
      - "incident"
-     - ``"incident"``, ``"ego_k_hop"``, ``"shortest_path_sample"``, ``"global_top_m"``
-   * - ``k_hop``
-     - int
-     - 2
-     - Ego network radius (for ``edge_scope="ego_k_hop"``)
+     - Edge attribution uses ``"incident"``
    * - ``max_edges``
      - int
      - 40
@@ -649,11 +643,7 @@ The ``"attribution"`` block provides Shapley value-based explanations for why no
    * - ``uq``
      - str
      - "off"
-     - ``"off"``, ``"propagate"`` (compute per UQ replicate), ``"summarize_only"``
-   * - ``ci_level``
-     - float
-     - 0.95
-     - Confidence interval level for UQ propagation
+     - Use deterministic measures with ``uq="off"``
 
 **Output Structure**:
 
@@ -662,18 +652,18 @@ The ``"attribution"`` block provides Shapley value-based explanations for why no
     {
         "metric": "pagerank",
         "objective": "value",
-        "utility_def": None,  # or "margin_to_cutoff(k=10)" for rank
+        "utility_def": None,  # or "margin_to_cutoff(limit=10)" for rank
         "levels": ["layer"],
         "method": "shapley_mc",
         "seed": 42,
         "n_permutations": 128,
         "feature_space": "layers",
         "full_value": 0.1186,
-        "baseline_value": 0.0500,
-        "delta": 0.0686,
+        "baseline_value": 0.0,
+        "delta": 0.1186,
         "residual": 1e-12,  # sum(phi) ≈ delta
         "layer_contrib": [
-            {"layer": "social", "phi": 0.0401},
+            {"layer": "social", "phi": 0.0901},
             {"layer": "work", "phi": 0.0285}
         ],
         "edge_contrib": [],  # populated if levels includes "edge"
@@ -696,8 +686,6 @@ The ``"attribution"`` block provides Shapley value-based explanations for why no
              attribution={
                  "objective": "rank",  # Explain ranking position
                  "levels": ["layer", "edge"],
-                 "edge_scope": "ego_k_hop",
-                 "k_hop": 2,
                  "max_edges": 40,
                  "n_permutations": 128,
                  "seed": 42
@@ -706,41 +694,20 @@ The ``"attribution"`` block provides Shapley value-based explanations for why no
          .execute(network)
     )
     
-    # With UQ propagation
-    result = (
-        Q.nodes()
-         .uq(method="perturbation", n_samples=30, seed=42)
-         .compute("pagerank")
-         .explain(
-             include=["attribution"],
-             attribution={
-                 "metric": "pagerank",
-                 "uq": "propagate",  # Compute attribution per UQ replicate
-                 "levels": ["layer"],
-                 "seed": 42
-             }
-         )
-         .execute(network)
-    )
+Layer coalitions retain replicas and edges from the selected layers and start from
+an empty graph. Edge coalitions keep all replicas and all edges outside the
+candidate set. For multigraphs each edge contribution includes the edge key.
+When both levels are requested, the result includes each level's baseline and
+residual. The top-level baseline and residual refer to the layer game.
 
-**Determinism**:
+Rank attribution recomputes the margin to the cutoff or median on each
+coalition using the eligible nodes before the query limit. A node missing from
+the coalition has score zero. Rank attribution uses the explained metric as
+the primary sort key when the query specifies an ordering.
 
-- Setting ``seed`` ensures reproducible Shapley values across runs
-- Same seed produces identical attributions regardless of parallel execution settings
-- Different seeds produce statistically different but valid attributions
-
-**Performance Notes**:
-
-- **Exact Shapley**: Only feasible for ≤ ``max_exact_features`` layers (default 8)
-- **Monte Carlo Shapley**: Scales to larger feature sets via sampling
-- **Edge Attribution**: More expensive than layer attribution; bounded by ``max_edges``
-- **Caching**: Enabled by default to reuse subset metric computations
-
-**UQ Integration**:
-
-- ``uq="off"``: No UQ (default), deterministic scalar Shapley values
-- ``uq="propagate"``: Compute attribution per UQ replicate, aggregate mean/std/CI
-- ``uq="summarize_only"``: Compute once on base network, wrap in UQ-like structure
+Use a seed to reproduce sampled permutations. Exact attribution switches to
+Monte Carlo above ``max_exact_features``. Edge attribution considers at most
+``max_edges`` candidates.
 
 **Export**:
 

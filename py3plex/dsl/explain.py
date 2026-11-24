@@ -121,7 +121,7 @@ def explain_rows(
         
         # Attribution explanation
         if "attribution" in include and attribution_data is not None:
-            key = (node_id, layer) if layer else node_id
+            key = (node_id, layer)
             if key in attribution_data:
                 explanations["attribution"] = attribution_data[key]
         
@@ -511,39 +511,8 @@ def _precompute_attribution(
     """
     from py3plex.dsl.attribution import AttributionConfig, compute_attribution_for_rows
     
-    # Skip if no configuration provided
-    if not attribution_cfg:
-        return {}
-    
-    # Skip if no metric values available
-    if not metric_values:
-        logger.warning("No metric values available for attribution")
-        return {}
-    
-    # Build AttributionConfig from dict
     config = AttributionConfig(**attribution_cfg)
-    
-    # Prepare context with query metadata
-    if context is None:
-        context = {}
-    
-    # Compute attributions for all rows
-    try:
-        enriched_rows, metadata = compute_attribution_for_rows(
-            network, rows, metric_values, config, context
-        )
-        
-        # Extract attribution results into a map
-        attribution_map = {}
-        for row in enriched_rows:
-            if "attribution" in row:
-                # Key by node identifier
-                node_id = row.get("id")
-                layer = row.get("layer")
-                key = (node_id, layer) if layer else node_id
-                attribution_map[key] = row["attribution"]
-        
-        return attribution_map
-    except Exception as e:
-        logger.error(f"Failed to compute attributions: {e}")
-        return {}
+    enriched_rows, _ = compute_attribution_for_rows(
+        network, rows, metric_values or {}, config, context or {}
+    )
+    return {(row["id"], row["layer"]): row["attribution"] for row in enriched_rows}

@@ -14,6 +14,7 @@ _QUANTILE_TOLERANCE = 0.01
 
 # Explanation attribute names that contain complex data structures
 _EXPLANATION_ATTRS = {
+    "attribution",  # Shapley result dictionary
     "top_neighbors",  # List of dicts
     "layers_present",  # List of strings
 }
@@ -116,7 +117,7 @@ def _expand_explanation_value(attr_name: str, value: Any) -> Dict[str, Any]:
         return {attr_name: json.dumps(value)}
     elif isinstance(value, dict):
         # Convert dict to JSON string
-        return {attr_name: json.dumps(value)}
+        return {attr_name: json.dumps(_json_safe(value))}
     else:
         # Fallback: convert to string
         return {attr_name: str(value)}

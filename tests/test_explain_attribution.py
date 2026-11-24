@@ -357,7 +357,8 @@ class TestDeterminism:
         assert attr1["full_value"] == attr2["full_value"]
 
     def test_attribution_changes_with_different_seed(self, sample_network):
-        """Test that different seeds produce different MC outcomes."""
+        """Interacting layers produce seed-dependent Monte Carlo allocations."""
+        sample_network.core_network.add_edge(("A", "social"), ("B", "work"))
         result1 = (
             Q.nodes()
             .compute("degree")
@@ -813,3 +814,46 @@ def test_property_attribution_negative_contributions(include_negative):
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+
+def test_exact_pagerank_recomputes_layer_coalitions(sample_network):
+    import networkx as nx
+
+    graph = sample_network.core_network
+    node = ("A", "social")
+    graph.add_edge(node, ("B", "work"), weight=4.0)
+    full_value = nx.pagerank(graph)[node]
+    social_value = nx.pagerank(graph.subgraph(n for n in graph if n[1] == "social"))[node]
+    result = (
+        Q.nodes().compute("pagerank").explain(
+            include=["attribution"], attribution={"method": "shapley"},
+        ).execute(sample_network)
+    )
+
+    attribution = result.attributes["attribution"][node]
+    contributions = {row["layer"]: row["phi"] for row in attribution["layer_contrib"]}
+    assert contributions == pytest.approx({
+        "social": (social_value + full_value) / 2,
+        "work": (full_value - social_value) / 2,
+    })
+    assert attribution["residual"] == pytest.approx(0.0)
+
+
+def test_incident_edges_keep_parallel_keys_and_incoming_arcs(sample_network):
+    graph = sample_network.core_network.to_directed()
+    sample_network.core_network = graph
+    node = ("A", "social")
+    graph.add_edge(("B", "work"), node, key="extra")
+    graph.add_edge(("B", "work"), node, key="other")
+    result = Q.nodes().compute("degree").explain(
+        include=["attribution"],
+        attribution={"method": "shapley", "levels": ["layer", "edge"]},
+    ).execute(sample_network)
+
+    attribution = result.attributes["attribution"][node]
+    edges = {tuple(row["edge"]): row["phi"] for row in attribution["edge_contrib"]}
+    assert edges[("B", "A", "work", "social", "extra")] == pytest.approx(1.0)
+    assert edges[("B", "A", "work", "social", "other")] == pytest.approx(1.0)
+    assert attribution["edge_residual"] == pytest.approx(0.0)
+    assert attribution["layer_residual"] == pytest.approx(0.0)
