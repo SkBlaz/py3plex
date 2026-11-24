@@ -347,9 +347,13 @@ class PartitionUQ:
         vi_reducer = PartitionDistanceReducer(metric="vi", store_samples=True)
         nmi_reducer = PartitionDistanceReducer(metric="nmi", store_samples=True)
         
-        # Process samples
+        from .partition_metrics import _align_integer_labels
+
+        reference = dict(enumerate(np.asarray(partitions[0], dtype=int)))
+        # Anchor community labels to the first sample before voting.
         for partition, weight in zip(partitions, weights):
-            partition = np.asarray(partition, dtype=int)
+            aligned = _align_integer_labels(reference, dict(enumerate(np.asarray(partition, dtype=int))))
+            partition = np.asarray(list(aligned.values()), dtype=int)
             
             entropy_reducer.update(partition, weight)
             consensus_reducer.update(partition, weight)

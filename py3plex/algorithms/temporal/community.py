@@ -155,17 +155,13 @@ def _compute_community_change(
         return 1.0 - similarity
     
     elif metric == "node_moves":
-        # Fraction of nodes that changed communities
-        # Map community IDs to canonical form (largest community gets ID 0, etc.)
-        prev_canonical = _canonicalize_communities(prev)
-        current_canonical = _canonicalize_communities(current)
-        
-        # Count nodes that changed
-        changed = sum(1 for node in common_nodes 
-                     if prev_canonical.get(node) != current_canonical.get(node))
-        
-        return changed / len(common_nodes)
-    
+        from py3plex.uncertainty.partition_metrics import match_partition_labels
+
+        mapping = match_partition_labels(prev, current)
+        matched = sum(current[node] in mapping and mapping[current[node]] == prev[node]
+                      for node in common_nodes)
+        return 1 - matched / len(common_nodes)
+
     elif metric == "nmi":
         # Normalized mutual information
         try:
@@ -186,32 +182,6 @@ def _compute_community_change(
     
     else:
         raise ValueError(f"Unknown change metric: {metric}")
-
-
-def _canonicalize_communities(communities: Dict[Any, Any]) -> Dict[Any, int]:
-    """Map community IDs to canonical form (0, 1, 2, ...).
-    
-    Largest community gets ID 0, second largest gets ID 1, etc.
-    
-    Args:
-        communities: Node -> community_id mapping
-        
-    Returns:
-        Node -> canonical_community_id mapping
-    """
-    from collections import Counter
-    
-    # Count community sizes
-    comm_sizes = Counter(communities.values())
-    
-    # Sort communities by size (descending)
-    sorted_comms = [comm_id for comm_id, _ in comm_sizes.most_common()]
-    
-    # Create mapping from original ID to canonical ID
-    id_map = {comm_id: i for i, comm_id in enumerate(sorted_comms)}
-    
-    # Apply mapping
-    return {node: id_map[comm_id] for node, comm_id in communities.items()}
 
 
 def detect_community_events(

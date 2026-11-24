@@ -175,22 +175,13 @@ class StabilityReducer(SelectionReducer):
         Number of samples
     item_counts : dict
         Count of appearances per item
-    jaccard_sum : float
-        Sum of Jaccard similarities
-    jaccard_sq_sum : float
-        Sum of squared Jaccard similarities
-    jaccards : list, optional
-        Raw Jaccard values if storing samples
     """
     
     def __init__(self, consensus_threshold: float = 0.5, store_samples: bool = False):
         self.n_samples = 0
         self.item_counts = defaultdict(int)
         self.consensus_threshold = consensus_threshold
-        self.jaccard_sum = 0.0
-        self.jaccard_sq_sum = 0.0
         self.store_samples = store_samples
-        self.jaccards = [] if store_samples else None
         self._selections_cache = []  # Store selections for deferred Jaccard computation
     
     def update(self, selection: SelectionOutput) -> None:
@@ -232,38 +223,19 @@ class StabilityReducer(SelectionReducer):
         # Compute consensus selection
         consensus = self._compute_consensus()
         
-        # Compute Jaccard with each selection vs consensus
-        jaccards = []
-        for selection_set in self._selections_cache:
-            if len(consensus) == 0 and len(selection_set) == 0:
-                jaccard = 1.0
-            elif len(consensus) == 0 or len(selection_set) == 0:
-                jaccard = 0.0
-            else:
-                intersection = len(consensus & selection_set)
-                union = len(consensus | selection_set)
-                jaccard = intersection / union if union > 0 else 0.0
-            
-            jaccards.append(jaccard)
-            self.jaccard_sum += jaccard
-            self.jaccard_sq_sum += jaccard ** 2
-            if self.store_samples:
-                self.jaccards.append(jaccard)
-        
-        mean = self.jaccard_sum / self.n_samples
-        variance = (self.jaccard_sq_sum / self.n_samples) - mean ** 2
-        std = np.sqrt(max(0, variance))
-        
+        jaccards = [
+            len(consensus & selection) / len(consensus | selection)
+            if consensus or selection else 1.0
+            for selection in self._selections_cache
+        ]
         result = {
-            "jaccard_mean": float(mean),
-            "jaccard_std": float(std),
+            "jaccard_mean": float(np.mean(jaccards)),
+            "jaccard_std": float(np.std(jaccards)),
             "consensus_size": len(consensus),
         }
-        
-        if self.store_samples and self.jaccards:
-            result["q05"] = float(np.quantile(self.jaccards, 0.05))
-            result["q95"] = float(np.quantile(self.jaccards, 0.95))
-        
+        if self.store_samples:
+            result["q05"] = float(np.quantile(jaccards, 0.05))
+            result["q95"] = float(np.quantile(jaccards, 0.95))
         return result
 
 

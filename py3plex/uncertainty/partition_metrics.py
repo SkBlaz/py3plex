@@ -24,6 +24,32 @@ from __future__ import annotations
 import warnings
 
 import numpy as np
+from scipy.optimize import linear_sum_assignment
+
+
+def match_partition_labels(reference, sample):
+    """Map sample labels to reference labels by maximum shared-node overlap."""
+    left = dict.fromkeys(reference.values())
+    right = dict.fromkeys(sample.values())
+    left = {label: i for i, label in enumerate(left)}
+    right = {label: i for i, label in enumerate(right)}
+    counts = np.zeros((len(right), len(left)), dtype=int)
+    for node in reference.keys() & sample.keys():
+        counts[right[sample[node]], left[reference[node]]] += 1
+    row, col = linear_sum_assignment(counts, maximize=True)
+    reference_labels, sample_labels = list(left), list(right)
+    return {sample_labels[i]: reference_labels[j] for i, j in zip(row, col)
+            if counts[i, j] > 0}
+
+
+def _align_integer_labels(reference, sample):
+    mapping = match_partition_labels(reference, sample)
+    new_label = max(reference.values(), default=-1) + 1
+    for label in sample.values():
+        if label not in mapping:
+            mapping[label] = new_label
+            new_label += 1
+    return {node: mapping[label] for node, label in sample.items()}
 
 
 def _contingency_table(partition1: np.ndarray, partition2: np.ndarray) -> np.ndarray:
@@ -185,8 +211,8 @@ def normalized_mutual_information(
     h2 = -np.sum(p_j[p_j > 0] * np.log(p_j[p_j > 0]))
     
     # Handle edge case: if both partitions are trivial (all same label)
-    if h1 == 0 and h2 == 0:
-        return 1.0
+    if h1 == 0 or h2 == 0:
+        return float(h1 == h2)
     
     # Compute mutual information
     mi = 0.0
