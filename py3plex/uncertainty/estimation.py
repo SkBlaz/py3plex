@@ -8,6 +8,9 @@ from __future__ import annotations
 
 from typing import Any, Callable, Dict, List, Optional, Union
 
+import inspect
+import random
+from threading import RLock
 import numpy as np
 
 from py3plex.core import multinet
@@ -18,6 +21,9 @@ from .types import ResamplingStrategy, StatSeries
 from .context import get_uncertainty_config
 
 
+_LEGACY_SEED_LOCK = RLock()
+
+
 def estimate_uncertainty(
     network: multinet.multi_layer_network,
     metric_fn: Callable[[multinet.multi_layer_network], Union[Dict[Any, float], float, np.ndarray]],
@@ -26,6 +32,7 @@ def estimate_uncertainty(
     resampling: Optional[ResamplingStrategy] = None,
     random_seed: Optional[int] = None,
     perturbation_params: Optional[Dict[str, Any]] = None,
+    ci: float = 0.95,
 ) -> Union[StatSeries, float]:
     """Estimate uncertainty for a network statistic.
     
@@ -107,19 +114,22 @@ def estimate_uncertainty(
     if n_runs <= 0:
         raise ValueError("n_runs must be positive")
     
+    if not 0 < ci < 1:
+        raise ValueError("ci must be between 0 and 1")
+
     # Initialize RNG
     rng = np.random.default_rng(random_seed)
     
     # Choose strategy
     if resampling == ResamplingStrategy.SEED:
-        return _estimate_via_seeds(network, metric_fn, n_runs, rng)
+        return _estimate_via_seeds(network, metric_fn, n_runs, rng, ci)
     elif resampling == ResamplingStrategy.PERTURBATION:
         return _estimate_via_perturbation(
-            network, metric_fn, n_runs, rng, perturbation_params
+            network, metric_fn, n_runs, rng, perturbation_params, ci
         )
     elif resampling == ResamplingStrategy.STRATIFIED_PERTURBATION:
         return _estimate_via_stratified_perturbation(
-            network, metric_fn, n_runs, rng, perturbation_params
+            network, metric_fn, n_runs, rng, perturbation_params, ci
         )
     elif resampling == ResamplingStrategy.BOOTSTRAP:
         raise NotImplementedError("Bootstrap resampling not yet implemented")
@@ -134,25 +144,40 @@ def _estimate_via_seeds(
     metric_fn: Callable,
     n_runs: int,
     rng: np.random.Generator,
+    ci: float = 0.95,
 ) -> Union[StatSeries, float]:
-    """Estimate uncertainty by running with different random seeds.
-    
-    This strategy runs the metric function multiple times on the same network,
-    but with different random seeds if the algorithm is stochastic.
-    """
-    samples: List[Union[Dict, float, np.ndarray]] = []
-    
-    for _ in range(n_runs):
-        # Generate a random seed for this run
-        int(rng.integers(0, 2**31))
-        
-        # For now, we can't easily inject seed into arbitrary functions
-        # So we just run the function multiple times
-        # If the function is deterministic, std will be 0
-        result = metric_fn(network)
-        samples.append(result)
-    
-    return _aggregate_samples(samples)
+    """Run a metric with independently derived seeds."""
+    samples = [
+        _call_with_seed(metric_fn, (network,), int(rng.integers(0, 2**32)))
+        for _ in range(n_runs)
+    ]
+    return _aggregate_samples(samples, ci)
+
+
+def _call_with_seed(metric_fn, args, seed):
+    try:
+        parameters = inspect.signature(metric_fn).parameters
+    except (TypeError, ValueError):
+        parameters = {}
+
+    for key in ("rng", "seed", "random_state"):
+        parameter = parameters.get(key)
+        if parameter is not None and parameter.kind in (
+            inspect.Parameter.KEYWORD_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD
+        ):
+            value = np.random.default_rng(seed) if key == "rng" else seed
+            return metric_fn(*args, **{key: value})
+
+    # Restore legacy module-level streams even when a metric fails.
+    with _LEGACY_SEED_LOCK:
+        python_state, numpy_state = random.getstate(), np.random.get_state()
+        try:
+            random.seed(seed)
+            np.random.seed(seed)
+            return metric_fn(*args)
+        finally:
+            random.setstate(python_state)
+            np.random.set_state(numpy_state)
 
 
 def _estimate_via_perturbation(
@@ -161,6 +186,7 @@ def _estimate_via_perturbation(
     n_runs: int,
     rng: np.random.Generator,
     perturbation_params: Optional[Dict[str, Any]] = None,
+    ci: float = 0.95,
 ) -> Union[StatSeries, float]:
     """Estimate uncertainty via network perturbations.
     
@@ -184,7 +210,7 @@ def _estimate_via_perturbation(
     
     if not perturbations:
         # No perturbation, fall back to seed strategy
-        return _estimate_via_seeds(network, metric_fn, n_runs, rng)
+        return _estimate_via_seeds(network, metric_fn, n_runs, rng, ci)
     
     if len(perturbations) == 1:
         perturbation = perturbations[0]
@@ -202,11 +228,11 @@ def _estimate_via_perturbation(
     
     # Convert to StatSeries or float
     samples = result["samples"]
-    return _aggregate_samples(samples)
+    return _aggregate_samples(samples, ci)
 
 
 def _aggregate_samples(
-    samples: List[Union[Dict, float, np.ndarray]]
+    samples: List[Union[Dict, float, np.ndarray]], ci: float = 0.95
 ) -> Union[StatSeries, float]:
     """Aggregate samples into StatSeries or scalar with uncertainty info.
     
@@ -228,6 +254,7 @@ def _aggregate_samples(
     
     # Check the type of the first sample
     first = samples[0]
+    tail = round((1 - ci) / 2, 15)
     
     if isinstance(first, dict):
         # Per-node statistics - return StatSeries
@@ -251,15 +278,13 @@ def _aggregate_samples(
         mean = np.mean(values, axis=0)
         std = np.std(values, axis=0)
         
-        # Compute 95% CI (2.5th and 97.5th percentiles)
-        q025 = np.percentile(values, 2.5, axis=0)
-        q975 = np.percentile(values, 97.5, axis=0)
+        lower, upper = np.quantile(values, [tail, 1 - tail], axis=0)
         
         return StatSeries(
             index=index,
             mean=mean,
             std=std,
-            quantiles={0.025: q025, 0.975: q975},
+            quantiles={tail: lower, 1 - tail: upper},
             meta={"n_samples": len(samples)},
         )
     
@@ -278,14 +303,13 @@ def _aggregate_samples(
         
         mean = np.mean(values, axis=0)
         std = np.std(values, axis=0)
-        q025 = np.percentile(values, 2.5, axis=0)
-        q975 = np.percentile(values, 97.5, axis=0)
+        lower, upper = np.quantile(values, [tail, 1 - tail], axis=0)
         
         return StatSeries(
             index=index,
             mean=mean,
             std=std,
-            quantiles={0.025: q025, 0.975: q975},
+            quantiles={tail: lower, 1 - tail: upper},
             meta={"n_samples": len(samples)},
         )
     
@@ -302,6 +326,7 @@ def _estimate_via_stratified_perturbation(
     n_runs: int,
     rng: np.random.Generator,
     perturbation_params: Optional[Dict[str, Any]] = None,
+    ci: float = 0.95,
 ) -> Union[StatSeries, float]:
     """Estimate uncertainty via stratified network perturbations.
     
@@ -369,7 +394,7 @@ def _estimate_via_stratified_perturbation(
     if params["edge_drop_p"] == 0 and params["node_drop_p"] == 0:
         # No perturbation, fall back to seed strategy
         return _with_stratification_meta(
-            _estimate_via_seeds(network, metric_fn, n_runs, _fallback_rng()),
+            _estimate_via_seeds(network, metric_fn, n_runs, _fallback_rng(), ci),
             StratificationSpec(strata=params["strata"] or []),
             0,
         )
@@ -405,7 +430,7 @@ def _estimate_via_stratified_perturbation(
             _estimate_via_perturbation(network, metric_fn, n_runs, _fallback_rng(), {
                 "edge_drop_p": params["edge_drop_p"],
                 "node_drop_p": params["node_drop_p"],
-            }),
+            }, ci),
             strata_spec,
             0,
         )
@@ -419,7 +444,7 @@ def _estimate_via_stratified_perturbation(
             _estimate_via_perturbation(network, metric_fn, n_runs, _fallback_rng(), {
                 "edge_drop_p": params["edge_drop_p"],
                 "node_drop_p": params["node_drop_p"],
-            }),
+            }, ci),
             strata_spec,
             len(strata),
         )
@@ -436,7 +461,7 @@ def _estimate_via_stratified_perturbation(
     if not perturbations:
         # No perturbation, fall back to seed strategy
         return _with_stratification_meta(
-            _estimate_via_seeds(network, metric_fn, n_runs, _fallback_rng()),
+            _estimate_via_seeds(network, metric_fn, n_runs, _fallback_rng(), ci),
             strata_spec,
             len(strata),
         )
@@ -529,7 +554,7 @@ def _estimate_via_stratified_perturbation(
         else:
             return float(baseline_result)
     
-    result = _aggregate_samples(all_samples)
+    result = _aggregate_samples(all_samples, ci)
     
     # Add stratification metadata
     if isinstance(result, StatSeries):

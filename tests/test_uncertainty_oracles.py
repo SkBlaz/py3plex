@@ -119,3 +119,37 @@ def test_configuration_null_does_not_create_nested_tuple_nodes():
         assert all(isinstance(n[0], str) for n in nodes)
         assert all(isinstance(n[1], str) for n in nodes)
 
+
+
+def test_seed_uncertainty_uses_independent_reproducible_child_seeds():
+    from py3plex.uncertainty import ResamplingStrategy, estimate_uncertainty
+
+    seen = []
+
+    def metric(_graph, seed):
+        seen.append(seed)
+        return {"draw": float(seed)}
+
+    def run():
+        return estimate_uncertainty(
+            _tiny_single_layer_net(), metric, n_runs=5,
+            resampling=ResamplingStrategy.SEED, random_seed=42,
+        ).to_dict()
+
+    assert run() == run()
+    assert len(set(seen[:5])) == 5
+    assert seen[:5] == seen[5:]
+
+
+def test_dsl_confidence_level_survives_perturbation_and_pandas_export():
+    from py3plex.dsl import Q
+
+    graph = _tiny_single_layer_net()
+    for method in ("bootstrap", "perturbation", "seed"):
+        result = Q.nodes().compute("degree").uq(
+            method=method, n_samples=5, ci=0.80, seed=42,
+        ).execute(graph)
+        frame = result.to_pandas(expand_uncertainty=True)
+        assert frame["degree_ci80_low"].notna().all()
+        assert frame["degree_ci80_high"].notna().all()
+        assert "degree_ci95_low" not in frame

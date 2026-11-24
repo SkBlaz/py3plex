@@ -142,6 +142,7 @@ def _expand_uncertainty_value(
 
     # Always include the point estimate
     if isinstance(value, dict) and "mean" in value:
+        ci_level = value.get("ci_level", ci_level)
         result[attr_name] = value["mean"]
 
         # Add std if available
@@ -158,8 +159,8 @@ def _expand_uncertainty_value(
             upper_q = 1 - (1 - ci_level) / 2
 
             # Find closest available quantiles
-            ci_low = quantiles.get(lower_q)
-            ci_high = quantiles.get(upper_q)
+            ci_low = value.get("ci_low", quantiles.get(lower_q))
+            ci_high = value.get("ci_high", quantiles.get(upper_q))
 
             # If exact quantiles not found, try to find closest
             if ci_low is None or ci_high is None:
@@ -180,7 +181,7 @@ def _expand_uncertainty_value(
                         ci_high = quantiles[upper_candidates[0]]
 
             # Convert CI level to percentage for column names (e.g., 0.95 -> ci95)
-            ci_pct = int(ci_level * 100)
+            ci_pct = f"{ci_level * 100:.12g}"
 
             result[f"{attr_name}_ci{ci_pct}_low"] = ci_low
             result[f"{attr_name}_ci{ci_pct}_high"] = ci_high
@@ -192,7 +193,7 @@ def _expand_uncertainty_value(
                 result[f"{attr_name}_ci{ci_pct}_width"] = None
         else:
             # No quantiles - set CI columns to None
-            ci_pct = int(ci_level * 100)
+            ci_pct = f"{ci_level * 100:.12g}"
             result[f"{attr_name}_ci{ci_pct}_low"] = None
             result[f"{attr_name}_ci{ci_pct}_high"] = None
             result[f"{attr_name}_ci{ci_pct}_width"] = None
@@ -207,7 +208,7 @@ def _expand_uncertainty_value(
         # Deterministic value - just use as-is
         result[attr_name] = value
         # Set uncertainty columns to None or 0
-        ci_pct = int(ci_level * 100)
+        ci_pct = f"{ci_level * 100:.12g}"
         result[f"{attr_name}_std"] = 0.0 if value is not None else None
         result[f"{attr_name}_ci{ci_pct}_low"] = value
         result[f"{attr_name}_ci{ci_pct}_high"] = value
