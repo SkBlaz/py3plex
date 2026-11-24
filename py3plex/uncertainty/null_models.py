@@ -348,63 +348,27 @@ def _generate_erdos_renyi_null(
     multi_layer_network
         Null model with random edges at same density.
     """
-    # Build node sets per layer from existing node-layer identifiers.
-    nodes_by_layer: Dict[str, List[Any]] = {}
-    for node in graph.get_nodes():
-        if isinstance(node, tuple) and len(node) == 2:
-            node_id, layer = node
-            nodes_by_layer.setdefault(str(layer), []).append(node_id)
-        else:
-            nodes_by_layer.setdefault("default", []).append(node)
+    from py3plex.nullmodels.models import _copy_network, _with_graph
 
-    # Deduplicate node IDs per layer (preserve stable iteration order).
-    for layer, ids in list(nodes_by_layer.items()):
-        seen = set()
-        unique_ids = []
-        for node_id in ids:
-            if node_id in seen:
-                continue
-            seen.add(node_id)
-            unique_ids.append(node_id)
-        nodes_by_layer[layer] = unique_ids
-
-    # Compute density using intra-layer edges only (this null model generates intra-layer edges).
-    intra_edges = 0
-    for edge in graph.get_edges(data=False):
-        u, v = edge[:2]
-        if isinstance(u, tuple) and isinstance(v, tuple) and len(u) == 2 and len(v) == 2:
-            if u[1] == v[1]:
-                intra_edges += 1
-
-    total_max_edges = 0
-    for layer, ids in nodes_by_layer.items():
-        n = len(ids)
-        if graph.directed:
-            total_max_edges += n * (n - 1)
-        else:
-            total_max_edges += n * (n - 1) // 2
-
-    if total_max_edges <= 0:
-        return multinet.multi_layer_network(directed=graph.directed, verbose=False)
-
-    p = intra_edges / total_max_edges
-    p = float(np.clip(p, 0.0, 1.0))
-
-    null_graph = multinet.multi_layer_network(directed=graph.directed, verbose=False)
-
-    edges = []
-    for layer, ids in nodes_by_layer.items():
-        for i, u in enumerate(ids):
-            start_j = i + 1 if not graph.directed else 0
-            for j in range(start_j, len(ids)):
-                v = ids[j]
-                if u != v and rng.random() < p:
-                    edges.append([u, layer, v, layer, 1.0])
-
-    if edges:
-        null_graph.add_edges(edges, input_type="list")
-
-    return null_graph
+    original = graph.core_network
+    if original is None:
+        return _copy_network(graph)
+    layers = {}
+    for node in original:
+        layers.setdefault(node[1], []).append(node)
+    sample = nx.create_empty_copy(original, with_data=True)
+    directed = sample.is_directed()
+    for nodes in layers.values():
+        layer = original.subgraph(nodes)
+        unique = nx.DiGraph(layer) if directed else nx.Graph(layer)
+        unique.remove_edges_from(nx.selfloop_edges(unique))
+        capacity = len(nodes) * (len(nodes) - 1) / (1 if directed else 2)
+        probability = unique.number_of_edges() / capacity if capacity else 0
+        draw = nx.gnp_random_graph(
+            len(nodes), probability, seed=int(rng.integers(0, 2**32)), directed=directed,
+        )
+        sample.add_edges_from((nodes[u], nodes[v], {"weight": 1.0}) for u, v in draw.edges())
+    return _with_graph(graph, sample)
 
 
 def _generate_configuration_null(
@@ -430,69 +394,6 @@ def _generate_configuration_null(
     This is a simplified version that uses NetworkX's configuration model
     on the core network, then maps back to multilayer structure.
     """
-    # Get the core network
-    if not hasattr(graph, 'core_network') or graph.core_network is None:
-        return multinet.multi_layer_network(
-            directed=graph.directed,
-            verbose=False
-        )
-    
-    G = graph.core_network
-    
-    # Get degree sequence
-    if graph.directed:
-        [d for n, d in G.in_degree()]
-        [d for n, d in G.out_degree()]
-        # For simplicity, use degree-preserving rewiring
-        return _generate_degree_preserving_null(graph, rng)
-    else:
-        degrees = [d for n, d in G.degree()]
-        
-        # Use NetworkX configuration model
-        try:
-            config_graph = nx.configuration_model(degrees, seed=int(rng.integers(0, 2**31)))
-            # Remove self-loops and parallel edges
-            config_graph = nx.Graph(config_graph)
-            config_graph.remove_edges_from(nx.selfloop_edges(config_graph))
-        except Exception:
-            # Fall back to degree-preserving rewiring
-            return _generate_degree_preserving_null(graph, rng)
-        
-        # Map back to multilayer network
-        null_graph = multinet.multi_layer_network(
-            directed=graph.directed,
-            verbose=False
-        )
-        
-        # Get original layer information
-        try:
-            layers_info = graph.get_layers()
-            if isinstance(layers_info, tuple) and len(layers_info) >= 1:
-                layer_names = layers_info[0]
-                default_layer = layer_names[0] if layer_names else "L0"
-            else:
-                default_layer = "L0"
-        except Exception:
-            default_layer = "L0"
-        
-        # Add edges from configuration model
-        edges = []
-        node_list = list(G.nodes())
-        for u, v in config_graph.edges():
-            if u < len(node_list) and v < len(node_list):
-                source = node_list[u]
-                target = node_list[v]
-                if isinstance(source, tuple) and len(source) == 2:
-                    source_id, source_layer = source
-                else:
-                    source_id, source_layer = source, default_layer
-                if isinstance(target, tuple) and len(target) == 2:
-                    target_id, target_layer = target
-                else:
-                    target_id, target_layer = target, default_layer
-                edges.append([source_id, source_layer, target_id, target_layer, 1.0])
-        
-        if edges:
-            null_graph.add_edges(edges, input_type="list")
-        
-        return null_graph
+    from py3plex.nullmodels.models import configuration_model
+
+    return configuration_model(graph, seed=int(rng.integers(0, 2**32)))

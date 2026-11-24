@@ -70,52 +70,27 @@ model_registry = ModelRegistry()
 
 
 def _copy_network(network: Any) -> Any:
-    """Create a copy of a multilayer network.
-    
-    Args:
-        network: Multilayer network to copy
-        
-    Returns:
-        Copy of the network
-    """
-    if hasattr(network, 'copy'):
+    """Copy the graph and network representation without sharing mutable edges."""
+    if not hasattr(network, "core_network"):
         return network.copy()
-    
-    # Manual copy for py3plex networks
-    new_network = multinet.multi_layer_network(
-        directed=network.directed if hasattr(network, 'directed') else False
+    sample = multinet.multi_layer_network(
+        network_type=network.network_type, directed=network.directed,
+        coupling_weight=network.coupling_weight, verbose=network.verbose,
     )
-    
-    # Check if network has core_network initialized
-    if not hasattr(network, 'core_network') or network.core_network is None:
-        return new_network
-    
-    # Copy nodes
-    if hasattr(network, 'get_nodes'):
-        try:
-            nodes = list(network.get_nodes())
-            for node in nodes:
-                if isinstance(node, tuple) and len(node) >= 2:
-                    new_network.add_nodes([{'source': node[0], 'type': node[1]}])
-        except (AttributeError, TypeError):
-            # Network may not have nodes yet
-            pass
-    
-    # Copy edges
-    if hasattr(network, 'core_network') and network.core_network:
-        for u, v, data in network.core_network.edges(data=True):
-            if isinstance(u, tuple) and isinstance(v, tuple):
-                edge = {
-                    'source': u[0],
-                    'target': v[0],
-                    'source_type': u[1],
-                    'target_type': v[1],
-                }
-                if 'weight' in data:
-                    edge['weight'] = data['weight']
-                new_network.add_edges([edge])
-    
-    return new_network
+    if network.core_network is not None:
+        sample.core_network = network.core_network.copy()
+    return sample
+
+
+def _with_graph(network, graph):
+    sample = multinet.multi_layer_network(
+        network_type=getattr(network, "network_type", "multilayer"),
+        directed=graph.is_directed(),
+        coupling_weight=getattr(network, "coupling_weight", 1),
+        verbose=getattr(network, "verbose", True),
+    )
+    sample.core_network = graph
+    return sample
 
 
 @model_registry.register("configuration",
@@ -141,58 +116,21 @@ def configuration_model(
     Returns:
         Randomized network
     """
-    if seed is not None:
-        random.seed(seed)
-    
-    G = network.core_network if hasattr(network, 'core_network') else network
-    
-    if G is None or len(G.nodes()) == 0:
+    graph = network.core_network if hasattr(network, "core_network") else network
+    if graph is None or not graph:
         return _copy_network(network)
-    
-    nodes = list(G.nodes())
-    directed = G.is_directed()
-    
-    # Create configuration model graph
-    try:
-        if directed:
-            # Keep both sequences; retain parallel arcs/loops to preserve degrees.
-            random_G = nx.directed_configuration_model(
-                [G.in_degree(node) for node in nodes],
-                [G.out_degree(node) for node in nodes],
-                seed=seed,
-            )
-        else:
-            # A simple undirected realization preserves the exact degree sequence.
-            degree_sequence = [G.degree(node) for node in nodes]
-            random_G = nx.random_degree_sequence_graph(degree_sequence, seed=seed)
-    except Exception:
-        # Fallback: return copy of original
-        return _copy_network(network)
-    
-    # Map back to original node labels
-    mapping = {i: nodes[i] for i in range(len(nodes))}
-    random_G = nx.relabel_nodes(random_G, mapping)
-    
-    # Create new py3plex network
-    new_network = multinet.multi_layer_network(directed=directed)
-    
-    # Add nodes
-    for node in nodes:
-        if isinstance(node, tuple) and len(node) >= 2:
-            new_network.add_nodes([{'source': node[0], 'type': node[1]}])
-    
-    # Add edges from random graph
-    for u, v in random_G.edges():
-        if isinstance(u, tuple) and isinstance(v, tuple):
-            edge = {
-                'source': u[0],
-                'target': v[0],
-                'source_type': u[1],
-                'target_type': v[1],
-            }
-            new_network.add_edges([edge])
-    
-    return new_network
+
+    nodes = list(graph)
+    if graph.is_directed():
+        sampled = nx.directed_configuration_model(
+            [graph.in_degree(node) for node in nodes],
+            [graph.out_degree(node) for node in nodes], seed=seed,
+        )
+    else:
+        sampled = nx.configuration_model([graph.degree(node) for node in nodes], seed=seed)
+    sampled = nx.relabel_nodes(sampled, dict(enumerate(nodes)))
+    sampled.add_nodes_from(graph.nodes(data=True))
+    return _with_graph(network, sampled)
 
 
 @model_registry.register("erdos_renyi",
@@ -216,50 +154,22 @@ def erdos_renyi_model(
     Returns:
         Randomized network
     """
-    if seed is not None:
-        random.seed(seed)
-    
-    G = network.core_network if hasattr(network, 'core_network') else network
-    
-    if G is None or len(G.nodes()) == 0:
+    graph = network.core_network if hasattr(network, "core_network") else network
+    if graph is None or not graph:
         return _copy_network(network)
-    
-    n = len(G.nodes())
-    m = len(G.edges())
-    
-    # Directed graphs sample ordered pairs, including reciprocal arcs.
-    directed = G.is_directed()
-    max_edges = n * (n - 1) if directed else n * (n - 1) / 2
-    p = m / max_edges if max_edges > 0 else 0
-    
-    # Create ER graph
-    random_G = nx.gnp_random_graph(n, p, seed=seed, directed=directed)
-    
-    # Map to original node labels
-    nodes = list(G.nodes())
-    mapping = {i: nodes[i] for i in range(len(nodes))}
-    random_G = nx.relabel_nodes(random_G, mapping)
-    
-    # Create new py3plex network
-    new_network = multinet.multi_layer_network(directed=directed)
-    
-    # Add nodes
-    for node in nodes:
-        if isinstance(node, tuple) and len(node) >= 2:
-            new_network.add_nodes([{'source': node[0], 'type': node[1]}])
-    
-    # Add edges from random graph
-    for u, v in random_G.edges():
-        if isinstance(u, tuple) and isinstance(v, tuple):
-            edge = {
-                'source': u[0],
-                'target': v[0],
-                'source_type': u[1],
-                'target_type': v[1],
-            }
-            new_network.add_edges([edge])
-    
-    return new_network
+    directed = graph.is_directed()
+    nodes = list(graph)
+    n = len(nodes)
+    capacity = n * (n - 1) / (1 if directed else 2)
+    unique = nx.DiGraph(graph) if directed else nx.Graph(graph)
+    unique.remove_edges_from(nx.selfloop_edges(unique))
+    probability = unique.number_of_edges() / capacity if capacity else 0
+    sample = nx.gnp_random_graph(n, probability, seed=seed, directed=directed)
+    sample = nx.relabel_nodes(sample, dict(enumerate(nodes)))
+    if graph.is_multigraph():
+        sample = nx.MultiDiGraph(sample) if directed else nx.MultiGraph(sample)
+    sample.add_nodes_from(graph.nodes(data=True))
+    return _with_graph(network, sample)
 
 
 @model_registry.register("layer_shuffle",
@@ -271,7 +181,8 @@ def layer_shuffle_model(
 ) -> Any:
     """Generate a randomized network by shuffling layer assignments.
     
-    Preserves the edge structure but randomly reassigns nodes to layers.
+    Preserves edge incidence, layer sizes, and each physical node's replica count.
+    A seeded swap chain changes individual replica assignments.
     
     Args:
         network: Multilayer network to randomize
@@ -281,55 +192,30 @@ def layer_shuffle_model(
     Returns:
         Randomized network
     """
-    if seed is not None:
-        random.seed(seed)
-    
-    G = network.core_network if hasattr(network, 'core_network') else network
-    
-    if G is None or len(G.nodes()) == 0:
+    graph = network.core_network if hasattr(network, "core_network") else network
+    if graph is None or len(graph) < 2:
         return _copy_network(network)
-    
-    # Preserve first occurrence so hash randomization cannot change seeded draws.
-    layers = list(
-        dict.fromkeys(
-            node[1]
-            for node in G.nodes()
-            if isinstance(node, tuple) and len(node) >= 2
-        )
-    )
-    
-    # Create shuffled layer mapping
-    shuffled_layers = layers.copy()
-    random.shuffle(shuffled_layers)
-    layer_mapping = dict(zip(layers, shuffled_layers))
-    
-    # Create new py3plex network
-    new_network = multinet.multi_layer_network(
-        directed=network.directed if hasattr(network, 'directed') else False
-    )
-    
-    # Add nodes with shuffled layers
-    for node in G.nodes():
-        if isinstance(node, tuple) and len(node) >= 2:
-            new_layer = layer_mapping.get(node[1], node[1])
-            new_network.add_nodes([{'source': node[0], 'type': new_layer}])
-    
-    # Add edges with shuffled layers
-    for u, v, data in G.edges(data=True):
-        if isinstance(u, tuple) and isinstance(v, tuple):
-            new_u_layer = layer_mapping.get(u[1], u[1])
-            new_v_layer = layer_mapping.get(v[1], v[1])
-            edge = {
-                'source': u[0],
-                'target': v[0],
-                'source_type': new_u_layer,
-                'target_type': new_v_layer,
-            }
-            if 'weight' in data:
-                edge['weight'] = data['weight']
-            new_network.add_edges([edge])
-    
-    return new_network
+    if any(not isinstance(node, tuple) or len(node) != 2 for node in graph):
+        raise ValueError("Layer shuffling requires (node, layer) replicas.")
+
+    nodes = list(graph)
+    occupied = set(nodes)
+    assignment = nodes.copy()
+    rng = random.Random(seed)
+    for _ in range(10 * len(nodes)):
+        i, j = rng.sample(range(len(nodes)), 2)
+        a, layer_a = assignment[i]
+        b, layer_b = assignment[j]
+        first, second = (a, layer_b), (b, layer_a)
+        old = {assignment[i], assignment[j]}
+        if first == second or ({first, second} - old) & occupied:
+            continue
+        occupied.difference_update(old)
+        occupied.update((first, second))
+        assignment[i], assignment[j] = first, second
+
+    sampled = nx.relabel_nodes(graph, dict(zip(nodes, assignment)), copy=True)
+    return _with_graph(network, sampled)
 
 
 def _swap_directed_edges(graph, num_swaps, seed, preserve_coupling):

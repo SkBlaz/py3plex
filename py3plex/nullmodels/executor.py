@@ -5,7 +5,7 @@ This module provides the main execution function for generating null models.
 
 from typing import Any, List, Optional
 
-from .models import model_registry
+from .models import _with_graph, model_registry
 from .result import NullModelResult
 from py3plex._parallel import parallel_map, spawn_seeds
 from py3plex import config
@@ -57,6 +57,17 @@ def generate_null_model(
     Raises:
         ValueError: If model is not registered
     """
+    if num_samples <= 0:
+        raise ValueError("num_samples must be positive.")
+    if layers is not None:
+        graph = network.core_network if hasattr(network, "core_network") else network
+        allowed = set(layers)
+        if graph is not None:
+            scope = [node for node in graph if isinstance(node, tuple)
+                     and len(node) == 2 and node[1] in allowed]
+            scoped_graph = graph.subgraph(scope).copy()
+            network = _with_graph(network, scoped_graph) if hasattr(network, "core_network") else scoped_graph
+
     # Get the model function
     model_fn = model_registry.get(model)
     
@@ -114,7 +125,9 @@ def execute_nullmodel_stmt(
     # Get layers from layer expression
     layers = None
     if stmt.layer_expr:
-        layers = stmt.layer_expr.get_layer_names()
+        from py3plex.dsl.executor import _evaluate_layer_expr
+        requested = _evaluate_layer_expr(stmt.layer_expr, network)
+        layers = [layer for layer in network.layers if str(layer) in requested]
     
     return generate_null_model(
         network=network,

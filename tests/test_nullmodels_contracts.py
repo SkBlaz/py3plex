@@ -145,12 +145,14 @@ def test_generate_null_model_uses_per_sample_seeds_consistently():
 
     result = generate_null_model(net, model="erdos_renyi", num_samples=3, seed=10)
 
-    for i, sample in enumerate(result.samples):
-        reference = erdos_renyi_model(net, seed=10 + i)
+    from py3plex._parallel import spawn_seeds
+
+    for seed, sample in zip(spawn_seeds(10, 3), result.samples):
+        reference = erdos_renyi_model(net, seed=seed)
         assert set(sample.core_network.edges()) == set(reference.core_network.edges())
 
 
-def test_layer_shuffle_keeps_layer_groups_intact():
+def test_layer_shuffle_changes_membership_and_preserves_group_sizes():
     net = multinet.multi_layer_network(directed=False, verbose=False)
     net.add_edges(
         [
@@ -175,9 +177,9 @@ def test_layer_shuffle_keeps_layer_groups_intact():
         layer for _, layer in original_nodes
     )
 
-    for sources in original_layer_sources.values():
-        matches = [layer for layer, vals in new_layer_sources.items() if vals == sources]
-        assert len(matches) == 1
+    assert set(map(frozenset, new_layer_sources.values())) != set(
+        map(frozenset, original_layer_sources.values())
+    )
 
 
 try:
@@ -226,3 +228,13 @@ def test_configuration_model_preserves_degrees_property(n, edge_indices):
 
     assert set(randomized.get_nodes()) == set(net.get_nodes())
     assert dict(randomized.core_network.degree()) == original_degrees
+
+
+def test_null_sampling_honors_layer_scope_and_preserves_typed_isolates():
+    from py3plex.nullmodels import generate_null_model
+
+    net = multinet.multi_layer_network(directed=False)
+    net.add_edges([["a", 0, "b", 0, 1], ["a", "0", "b", "0", 1]], input_type="list")
+    net.add_nodes([{"source": "isolated", "type": 0}])
+    draw = generate_null_model(net, model="erdos_renyi", layers=[0], seed=42).samples[0]
+    assert set(draw.get_nodes()) == {("a", 0), ("b", 0), ("isolated", 0)}

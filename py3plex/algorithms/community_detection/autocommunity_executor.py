@@ -88,6 +88,7 @@ def execute_autocommunity(
             evaluation_matrix=evaluation_matrix,
             null_config=null_config,
             seed=seed,
+            uq_config=uq_config,
         )
         
         # Filter algorithms with weak null separation
@@ -605,108 +606,37 @@ def _compute_null_model_scores(
     evaluation_matrix: pd.DataFrame,
     null_config: Dict[str, Any],
     seed: int,
+    uq_config: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Compute null model Z-scores for each algorithm.
-    
-    Args:
-        network: Multilayer network
-        algorithm_results: Algorithm results
-        evaluation_matrix: Evaluation matrix
-        null_config: Null model configuration
-        seed: Random seed
-    
-    Returns:
-        Dictionary with null model results
-    """
+    """Score the same candidate procedure on every requested null draw."""
     from py3plex.nullmodels import generate_null_model
-    
-    try:
-        # Generate null models
-        null_result = generate_null_model(
-            network,
-            model=null_config['type'],
-            samples=null_config['samples'],
-            seed=seed,
-        )
-        
-        # For each algorithm, compute Z-scores
-        z_scores = {}
-        null_distributions = {}
-        
-        for algo_id, result in algorithm_results.items():
-            algo_name = result['algorithm']
-            
-            # Run algorithm on null models
-            null_metrics = []
-            
-            for null_network in null_result.samples[:10]:  # Sample subset for speed
-                try:
-                    # Run same algorithm on null
-                    if algo_name == "louvain":
-                        from py3plex.algorithms.community_detection import multilayer_louvain
-                        null_partition, _ = multilayer_louvain(
-                            null_network,
-                            random_state=seed,
-                        )
-                    elif algo_name == "leiden":
-                        from py3plex.algorithms.community_detection import leiden_multilayer
-                        null_leiden = leiden_multilayer(
-                            null_network,
-                            seed=seed,
-                        )
-                        null_partition = null_leiden.partition
-                    elif algo_name == "infomap":
-                        from py3plex.algorithms.community_detection.community_wrapper import infomap_communities
-                        try:
-                            null_partition = infomap_communities(
-                                null_network,
-                                multiplex=True,
-                                verbose=False,
-                                seed=seed,
-                            )
-                        except Exception:
-                            # Skip if infomap fails on null model
-                            continue
-                    else:
-                        continue
-                    
-                    # Compute modularity on null
-                    from py3plex.algorithms.community_detection import multilayer_modularity
-                    null_mod = multilayer_modularity(
-                        network=null_network,
-                        communities=null_partition,
-                    )
-                    null_metrics.append(null_mod)
-                
-                except Exception:
-                    continue
-            
-            if null_metrics:
-                # Compute Z-score
-                observed_mod = evaluation_matrix[
-                    evaluation_matrix['algorithm_id'] == algo_id
-                ]['modularity'].values[0]
-                
-                null_mean = np.mean(null_metrics)
-                null_std = np.std(null_metrics)
-                
-                if null_std > 0:
-                    z_score = (observed_mod - null_mean) / null_std
-                else:
-                    z_score = 0.0
-                
-                z_scores[algo_id] = float(z_score)
-                null_distributions[algo_id] = null_metrics
-        
-        return {
-            'z_scores': z_scores,
-            'null_distributions': null_distributions,
-            'null_config': null_config,
-        }
-    
-    except Exception as e:
-        warnings.warn(f"Null model computation failed: {e}", stacklevel=2)
-        return {}
+    from py3plex.algorithms.community_detection import multilayer_modularity
+
+    null_result = generate_null_model(
+        network, model=null_config["type"], num_samples=null_config["samples"], seed=seed
+    )
+    distributions = {candidate: [] for candidate in algorithm_results}
+    names = list(dict.fromkeys(result["algorithm"] for result in algorithm_results.values()))
+    for sample in null_result.samples:
+        fitted = _run_candidate_algorithms(sample, names, seed, uq_config)
+        for candidate, result in fitted.items():
+            score = multilayer_modularity(sample, result["partition"])
+            if np.isfinite(score):
+                distributions[candidate].append(score)
+
+    scores = {}
+    for candidate, observed in algorithm_results.items():
+        values = distributions[candidate]
+        if len(values) != len(null_result.samples) or len(values) < 2:
+            warnings.warn(f"Insufficient null fits for {candidate}.", stacklevel=2)
+            continue
+        deviation = np.std(values, ddof=1)
+        if deviation <= 0:
+            warnings.warn(f"Null modularity has zero variance for {candidate}.", stacklevel=2)
+            continue
+        observed_score = multilayer_modularity(network, observed["partition"])
+        scores[candidate] = float((observed_score - np.mean(values)) / deviation)
+    return {"z_scores": scores, "null_distributions": distributions, "null_config": null_config}
 
 
 def _filter_by_null_scores(
