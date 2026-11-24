@@ -139,7 +139,7 @@ def fixed_effect_meta(
 
     # I² and H
     if df > 0:
-        I2 = max(0.0, (Q - df) / Q) * 100.0 if Q > 0 else 0.0
+        I2 = (1.0 - df / Q) * 100.0 if Q > df else 0.0
         H = np.sqrt(Q / df)
     else:
         I2 = 0.0
@@ -259,7 +259,7 @@ def random_effects_meta(
 
     # Heterogeneity metrics
     if df > 0:
-        I2 = max(0.0, (Q - df) / Q) * 100.0 if Q > 0 else 0.0
+        I2 = (1.0 - df / Q) * 100.0 if Q > df else 0.0
         H = np.sqrt(Q / df)
     else:
         I2 = 0.0

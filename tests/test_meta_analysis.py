@@ -323,4 +323,6 @@ def test_equal_weights_use_the_arithmetic_mean_near_underflow():
     ses = np.full(2, 0.109375)
 
     for pool in (fixed_effect_meta, random_effects_meta):
-        assert pool(effects, ses).pooled_effect == effects.mean()
+        with np.errstate(over='raise'):
+            assert pool(effects, ses).pooled_effect == effects.mean()
+            assert pool(np.array([0.0, 1e-161]), ses).I2 == 0.0
