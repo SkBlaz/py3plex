@@ -37,6 +37,7 @@ Example usage:
 from dataclasses import dataclass, field, asdict
 from typing import Any, Callable, Dict, List, Literal, Optional, Tuple
 from functools import wraps
+from inspect import signature
 
 # Import diagnostic infrastructure
 from py3plex.diagnostics.core import (
@@ -669,6 +670,8 @@ def requires(requirements: AlgoRequirements, register: bool = True):
                 # Registry not available yet during early imports
                 pass
         
+        call_signature = signature(func)
+
         @wraps(func)
         def wrapper(network, *args, **kwargs):
             # Get network capabilities
@@ -680,7 +683,11 @@ def requires(requirements: AlgoRequirements, register: bool = True):
                 return func(network, *args, **kwargs)
             
             # Extract relevant kwargs
-            seed = kwargs.get('seed') or kwargs.get('random_state')
+            arguments = call_signature.bind(network, *args, **kwargs)
+            arguments.apply_defaults()
+            seed = arguments.arguments.get("seed", kwargs.get("seed"))
+            if seed is None:
+                seed = arguments.arguments.get("random_state", kwargs.get("random_state"))
             uq_requested = kwargs.get('uq', False) or kwargs.get('uncertainty', False)
             uq_method = kwargs.get('uq_method')
             

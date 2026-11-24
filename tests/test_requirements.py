@@ -296,6 +296,24 @@ class TestRequiresDecorator:
         result = my_algorithm(net)
         assert result["result"] == "success"
     
+    def test_decorator_accepts_zero_seed_in_each_call_style(self):
+        reqs = AlgoRequirements(uses_randomness=True, requires_seed_for_repro=True)
+
+        @requires(reqs, register=False)
+        def my_algorithm(network, seed=0):
+            return seed
+
+        net = multinet.multi_layer_network(directed=False)
+        net.add_edges([
+            {"source": "A", "target": "B", "source_type": "L", "target_type": "L"},
+        ])
+
+        assert my_algorithm(net) == 0
+        assert my_algorithm(net, 0) == 0
+        assert my_algorithm(net, seed=0) == 0
+        with pytest.raises(AlgorithmCompatibilityError):
+            my_algorithm(net, seed=None)
+
     def test_decorator_fallback_no_capabilities(self):
         """Test that decorator falls back gracefully for networks without capabilities()."""
         reqs = AlgoRequirements(
