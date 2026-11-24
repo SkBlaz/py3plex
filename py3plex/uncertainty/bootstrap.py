@@ -13,6 +13,7 @@ import numpy as np
 from py3plex.core import multinet
 from py3plex._parallel import parallel_map, spawn_seeds
 from py3plex import config
+from .resampling_graph import _add_sample_edge, _bootstrap_edges, _bootstrap_units, _edge_sample_base
 
 
 def _bootstrap_single_replicate(args):
@@ -45,16 +46,8 @@ def _bootstrap_single_replicate(args):
     else:
         raise ValueError(f"Unknown unit: {unit}")
     
-    # Compute metric on bootstrap sample
-    try:
-        boot_result = metric_fn(boot_graph)
-    except Exception:
-        # If metric fails on this bootstrap sample, use zeros
-        boot_result = {item: 0.0 for item in index}
-    
-    # Convert to array (use 0 for missing items)
-    result_array = np.array([boot_result.get(item, 0.0) for item in index])
-    return result_array
+    result = metric_fn(boot_graph)
+    return np.asarray([result.get(item, np.nan) for item in index], dtype=float)
 
 
 def bootstrap_metric(
@@ -136,8 +129,17 @@ def bootstrap_metric(
     - For "edges" unit: resamples edges with replacement
     - For "nodes" unit: resamples nodes with replacement
     - For "layers" unit: resamples layers with replacement
-    - The metric_fn must be able to handle graphs with different structure
+    - Replicate metric failures propagate. Missing items are summarized only
+      over draws where they exist, with counts reported in sample_counts.
+    - With permute, topology and attributes are preserved; only edge insertion
+      order changes.
     """
+    if unit not in {"edges", "nodes", "layers"}:
+        raise ValueError(f"Unknown unit: {unit}")
+    if mode not in {"resample", "permute"}:
+        raise ValueError(f"Unknown mode: {mode}")
+    if not 0 < ci < 1:
+        raise ValueError("ci must be between 0 and 1")
     if n_boot <= 0:
         raise ValueError("n_boot must be positive")
 
@@ -157,6 +159,7 @@ def bootstrap_metric(
             "ci_low": np.array([]),
             "ci_high": np.array([]),
             "index": [],
+            "sample_counts": np.array([], dtype=int),
             "n_boot": n_boot,
             "method": f"bootstrap_{mode}_{unit}",
         }
@@ -189,243 +192,46 @@ def bootstrap_metric(
     # Stack results into array: (n_boot, n_items)
     samples = np.array(samples_list)
     
-    # Compute statistics
-    mean = np.mean(samples, axis=0)
-    # For a single replicate, ddof=1 yields NaNs; treat as 0 variability.
-    ddof = 1 if n_boot > 1 else 0
-    std = np.std(samples, axis=0, ddof=ddof)
-    
-    # Compute confidence intervals using percentile method
-    alpha = 1 - ci
-    lower_percentile = (alpha / 2) * 100
-    upper_percentile = (1 - alpha / 2) * 100
-    ci_low = np.percentile(samples, lower_percentile, axis=0)
-    ci_high = np.percentile(samples, upper_percentile, axis=0)
-    
+    # Missing items are summarized conditionally on presence.
+    alpha = (1 - ci) / 2
+    mean, std, ci_low, ci_high = np.full((4, len(index)), np.nan)
+    sample_counts = np.zeros(len(index), dtype=int)
+    for i, values in enumerate(samples.T):
+        present = values[np.isfinite(values)]
+        sample_counts[i] = len(present)
+        if present.size:
+            mean[i] = present.mean()
+            std[i] = present.std(ddof=int(present.size > 1))
+            ci_low[i], ci_high[i] = np.quantile(present, [alpha, 1 - alpha])
+
     return {
         "mean": mean,
         "std": std,
         "ci_low": ci_low,
         "ci_high": ci_high,
         "index": index,
+        "sample_counts": sample_counts,
         "n_boot": n_boot,
         "method": f"bootstrap_{mode}_{unit}",
     }
 
 
-def _resample_edges(
-    graph: multinet.multi_layer_network,
-    mode: str,
-    rng: np.random.Generator,
-) -> multinet.multi_layer_network:
-    """Resample edges from a multilayer network.
-    
-    Parameters
-    ----------
-    graph : multi_layer_network
-        Original network.
-    mode : str
-        "resample" for sampling with replacement, "permute" for shuffling.
-    rng : np.random.Generator
-        Random number generator.
-    
-    Returns
-    -------
-    multi_layer_network
-        New network with resampled edges.
-    """
-    # Get all edges
-    edges = list(graph.get_edges(data=True))
-    n_edges = len(edges)
-    
-    if n_edges == 0:
-        # Return empty network
-        return multinet.multi_layer_network(
-            directed=graph.directed,
-            verbose=False
-        )
-    
-    # Resample or permute
+def _resample_edges(graph, mode, rng):
     if mode == "resample":
-        # Sample with replacement
-        indices = rng.choice(n_edges, size=n_edges, replace=True)
-        resampled_edges = [edges[i] for i in indices]
-    elif mode == "permute":
-        # Shuffle edges
-        indices = np.arange(n_edges)
-        rng.shuffle(indices)
-        resampled_edges = [edges[i] for i in indices]
-    else:
-        raise ValueError(f"Unknown mode: {mode}")
-    
-    # Create new network
-    new_graph = multinet.multi_layer_network(
-        directed=graph.directed,
-        verbose=False
-    )
-    
-    # Add resampled edges
-    for edge_data in resampled_edges:
-        if len(edge_data) == 3:
-            u, v, data = edge_data
-            # Extract layer information from node tuples
-            if isinstance(u, tuple) and isinstance(v, tuple):
-                source, source_layer = u
-                target, target_layer = v
-                weight = data.get('weight', 1.0)
-                new_graph.add_edges([
-                    [source, source_layer, target, target_layer, weight]
-                ], input_type="list")
-    
-    return new_graph
+        return _bootstrap_edges(graph, rng)
+    sample, edges = _edge_sample_base(graph)
+    for index in rng.permutation(len(edges)):
+        _add_sample_edge(sample.core_network, *edges[index])
+    return sample
 
 
-def _resample_nodes(
-    graph: multinet.multi_layer_network,
-    mode: str,
-    rng: np.random.Generator,
-) -> multinet.multi_layer_network:
-    """Resample nodes from a multilayer network.
-    
-    Parameters
-    ----------
-    graph : multi_layer_network
-        Original network.
-    mode : str
-        "resample" for sampling with replacement, "permute" for shuffling.
-    rng : np.random.Generator
-        Random number generator.
-    
-    Returns
-    -------
-    multi_layer_network
-        New network with subgraph induced by resampled nodes.
-    """
-    # Get all nodes
-    nodes = list(graph.get_nodes())
-    n_nodes = len(nodes)
-    
-    if n_nodes == 0:
-        return multinet.multi_layer_network(
-            directed=graph.directed,
-            verbose=False
-        )
-    
-    # Resample or permute
+def _resample_nodes(graph, mode, rng):
     if mode == "resample":
-        # Sample with replacement
-        indices = rng.choice(n_nodes, size=n_nodes, replace=True)
-        resampled_nodes = [nodes[i] for i in indices]
-    elif mode == "permute":
-        # Shuffle nodes
-        indices = np.arange(n_nodes)
-        rng.shuffle(indices)
-        resampled_nodes = [nodes[i] for i in indices]
-    else:
-        raise ValueError(f"Unknown mode: {mode}")
-    
-    # Get unique nodes (in case of duplicates from resampling)
-    unique_nodes = list(set(resampled_nodes))
-    
-    # Create subgraph with these nodes
-    # Get edges that connect the resampled nodes
-    new_graph = multinet.multi_layer_network(
-        directed=graph.directed,
-        verbose=False
-    )
-    
-    edges = []
-    for edge_data in graph.get_edges(data=True):
-        if len(edge_data) == 3:
-            u, v, data = edge_data
-            # Check if both nodes are in resampled set
-            if isinstance(u, tuple) and isinstance(v, tuple):
-                source, source_layer = u
-                target, target_layer = v
-                if u in unique_nodes and v in unique_nodes:
-                    weight = data.get('weight', 1.0)
-                    edges.append([source, source_layer, target, target_layer, weight])
-    
-    if edges:
-        new_graph.add_edges(edges, input_type="list")
-    
-    return new_graph
+        return _bootstrap_units(graph, "nodes", rng)
+    return _resample_edges(graph, mode, rng)
 
 
-def _resample_layers(
-    graph: multinet.multi_layer_network,
-    mode: str,
-    rng: np.random.Generator,
-) -> multinet.multi_layer_network:
-    """Resample layers from a multilayer network.
-    
-    Parameters
-    ----------
-    graph : multi_layer_network
-        Original network.
-    mode : str
-        "resample" for sampling with replacement, "permute" for shuffling.
-    rng : np.random.Generator
-        Random number generator.
-    
-    Returns
-    -------
-    multi_layer_network
-        New network with resampled layers.
-    """
-    # Get all layer names
-    try:
-        layers_info = graph.get_layers()
-        if isinstance(layers_info, tuple) and len(layers_info) >= 1:
-            layer_names = layers_info[0]
-        else:
-            layer_names = []
-    except Exception:
-        layer_names = []
-    
-    n_layers = len(layer_names)
-    
-    if n_layers == 0:
-        return multinet.multi_layer_network(
-            directed=graph.directed,
-            verbose=False
-        )
-    
-    # Resample or permute
+def _resample_layers(graph, mode, rng):
     if mode == "resample":
-        # Sample with replacement
-        indices = rng.choice(n_layers, size=n_layers, replace=True)
-        resampled_layers = [layer_names[i] for i in indices]
-    elif mode == "permute":
-        # Shuffle layers
-        indices = np.arange(n_layers)
-        rng.shuffle(indices)
-        resampled_layers = [layer_names[i] for i in indices]
-    else:
-        raise ValueError(f"Unknown mode: {mode}")
-    
-    # Get unique layers
-    unique_layers = list(set(resampled_layers))
-    
-    # Create new network with edges from selected layers only
-    new_graph = multinet.multi_layer_network(
-        directed=graph.directed,
-        verbose=False
-    )
-    
-    edges = []
-    for edge_data in graph.get_edges(data=True):
-        if len(edge_data) == 3:
-            u, v, data = edge_data
-            if isinstance(u, tuple) and isinstance(v, tuple):
-                source, source_layer = u
-                target, target_layer = v
-                # Keep edge if both layers are in resampled set
-                if source_layer in unique_layers and target_layer in unique_layers:
-                    weight = data.get('weight', 1.0)
-                    edges.append([source, source_layer, target, target_layer, weight])
-    
-    if edges:
-        new_graph.add_edges(edges, input_type="list")
-    
-    return new_graph
+        return _bootstrap_units(graph, "layers", rng)
+    return _resample_edges(graph, mode, rng)

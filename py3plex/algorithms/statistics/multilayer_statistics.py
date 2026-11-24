@@ -94,31 +94,13 @@ def layer_density(network: Any, layer: str) -> float:
         - Postcondition: result is in [0, 1] (fundamental property of density)
         - Postcondition: result is not NaN
     """
-    # Get nodes and edges in the specified layer
-    layer_nodes = set()
-    layer_edges = 0
-
-    for edge in network.get_edges(data=True):
-        (n1, l1), (n2, l2) = edge[0], edge[1]
-        if l1 == layer and l2 == layer:
-            layer_nodes.add(n1)
-            layer_nodes.add(n2)
-            if n1 != n2:  # Don't count self-loops for density
-                layer_edges += 1
-
-    num_nodes = len(layer_nodes)
-    if num_nodes < 2:
+    replicas = [node for node in network.get_nodes() if node[1] == layer]
+    if len(replicas) < 2:
         return 0.0
-
-    # For undirected networks, each edge is counted once
-    if not network.directed:
-        max_edges = num_nodes * (num_nodes - 1) / 2
-        density = layer_edges / max_edges
-    else:
-        max_edges = num_nodes * (num_nodes - 1)
-        density = layer_edges / max_edges
-
-    return float(density)
+    layer_graph = network.core_network.subgraph(replicas)
+    simple = nx.DiGraph(layer_graph) if layer_graph.is_directed() else nx.Graph(layer_graph)
+    simple.remove_edges_from(nx.selfloop_edges(simple))
+    return float(nx.density(simple))
 
 
 @require(lambda network: network is not None, "network must not be None")
@@ -168,19 +150,23 @@ def inter_layer_coupling_strength(network: Any, layer_i: str, layer_j: str) -> f
         - Postcondition: result is non-negative (weights are non-negative)
         - Postcondition: result is not NaN
     """
-    coupling_weights = []
-
-    for edge in network.get_edges(data=True):
-        (_, l1), (_, l2) = edge[0], edge[1]
-        # Inter-layer edge between the two specified layers
-        if (l1 == layer_i and l2 == layer_j) or (l1 == layer_j and l2 == layer_i):
-            weight = edge[2].get("weight", 1.0) if len(edge) > 2 else 1.0
-            coupling_weights.append(weight)
-
-    if not coupling_weights:
+    if layer_i == layer_j or network.core_network is None:
+        return 0.0
+    graph = network.core_network
+    left = {node for node, layer in graph if layer == layer_i}
+    right = {node for node, layer in graph if layer == layer_j}
+    common = left & right
+    if not common:
         return 0.0
 
-    return float(np.mean(coupling_weights))
+    total = 0.0
+    for node in common:
+        edges = graph.get_edge_data((node, layer_i), (node, layer_j), default={})
+        if graph.is_multigraph():
+            total += sum(attrs.get("weight", 1.0) for attrs in edges.values())
+        elif graph.has_edge((node, layer_i), (node, layer_j)):
+            total += edges.get("weight", 1.0)
+    return float(total / len(common))
 
 
 @require(lambda network: network is not None, "network must not be None")
@@ -863,49 +849,22 @@ def supra_laplacian_spectrum(network: Any, k: int = 10) -> np.ndarray:
         - Falls back to dense computation for small matrices (n < 100) or when k is large relative to n
         - Laplacian is always symmetric for undirected graphs (PSD with smallest eigenvalue = 0)
     """
-    # Get supra-adjacency matrix
-    supra_adj = network.get_supra_adjacency_matrix()
-    n = supra_adj.shape[0]
+    if network.core_network is None:
+        return np.array([])
+    if network.directed:
+        raise ValueError("The symmetric supra-Laplacian requires an undirected network.")
 
-    # Determine if we should use sparse or dense computation
-    # Sparse is beneficial when: matrix is sparse, n is large, and k is much smaller than n
-    # Threshold k < n//2 chosen empirically: eigsh() overhead worth it when computing < half eigenvalues
-    use_sparse = sp.issparse(supra_adj) and n >= 100 and k < n // 2
-
-    # Calculate degree matrix and Laplacian
-    if use_sparse:
-        # Keep as sparse
-        degrees = np.array(supra_adj.sum(axis=1)).flatten()
-        degree_matrix = sp.diags(degrees, format='csr')
-        laplacian = degree_matrix - supra_adj
-    else:
-        # Convert to dense
-        if sp.issparse(supra_adj):
-            supra_adj = supra_adj.toarray()
-        degrees = np.sum(supra_adj, axis=1)
-        degree_matrix = np.diag(degrees)
-        laplacian = degree_matrix - supra_adj
-
-    # Adjust k to be valid
-    k = min(k, n - 2)
-
+    adjacency = network.get_supra_adjacency_matrix().astype(float)
+    n = adjacency.shape[0]
+    k = min(k, n)
     if k < 1:
         return np.array([])
-
-    try:
-        if use_sparse:
-            # Use sparse eigenvalue solver (eigsh for symmetric matrices)
-            eigenvalues, _ = eigsh(laplacian, k=k, which="SM", tol=1e-10)
-            # Sort eigenvalues (eigsh may not return them sorted)
-            eigenvalues = np.sort(eigenvalues)
-        else:
-            # Dense computation - get all eigenvalues then select smallest k
-            all_eigenvalues = np.linalg.eigvalsh(laplacian)
-            eigenvalues = np.sort(all_eigenvalues)[:k]
-
-        return eigenvalues
-    except Exception:
-        return np.array([])
+    degrees = np.asarray(adjacency.sum(axis=1)).ravel()
+    if sp.issparse(adjacency) and n >= 100 and k < n // 2:
+        laplacian = sp.diags(degrees, format="csr") - adjacency
+        return np.sort(eigsh(laplacian, k=k, which="SA", return_eigenvectors=False))
+    dense = adjacency.toarray() if sp.issparse(adjacency) else adjacency
+    return np.linalg.eigvalsh(np.diag(degrees) - dense)[:k]
 
 
 def algebraic_connectivity(network: Any) -> float:
@@ -1565,7 +1524,8 @@ def multiplex_rich_club_coefficient(
     Args:
         network: py3plex multi_layer_network object
         k: Degree threshold
-        normalized: Whether to normalize by random expectation
+        normalized: Divide the physical rich-club edge count by its expected
+            count under the configuration model of the simple physical projection
 
     Returns:
         Rich-club coefficient value
@@ -1578,37 +1538,33 @@ def multiplex_rich_club_coefficient(
         Alstott et al. (2014), "powerlaw: A Python Package for Analysis of Heavy-Tailed Distributions"
         Extended to multiplex networks
     """
-    # Calculate overlapping degree for each node
-    node_degrees = {}
-    for node_layer in network.get_nodes():
-        node = node_layer[0]
-        degree = network.core_network.degree(node_layer)
-        node_degrees[node] = node_degrees.get(node, 0) + degree
-
-    # Find nodes with degree > k
-    rich_nodes = {node for node, deg in node_degrees.items() if deg > k}
-
-    if len(rich_nodes) < 2:
+    if network.core_network is None:
         return 0.0
-
-    # Count edges among rich nodes
-    rich_edges = 0
-    for edge in network.get_edges():
-        if len(edge) >= 3:
-            source, target = edge[0], edge[1]
-            if source in rich_nodes and target in rich_nodes:
-                rich_edges += 1
-
-    # Calculate coefficient
-    num_rich = len(rich_nodes)
-    max_possible_edges = num_rich * (num_rich - 1) / 2
-
-    if max_possible_edges == 0:
+    # Count each physical pair once across all layers.
+    projection = nx.Graph()
+    projection.add_nodes_from(node for node, _ in network.get_nodes())
+    projection.add_edges_from(
+        (u[0], v[0]) for u, v in network.get_edges() if u[0] != v[0]
+    )
+    degree = {}
+    for replica, value in network.core_network.degree():
+        node = replica[0]
+        degree[node] = degree.get(node, 0) + value
+    rich = [node for node, value in degree.items() if value > k]
+    if len(rich) < 2:
         return 0.0
+    observed = projection.subgraph(rich).number_of_edges()
+    if not normalized:
+        return observed / (len(rich) * (len(rich) - 1) / 2)
 
-    phi = rich_edges / max_possible_edges
-
-    return phi
+    # Under the physical projection's configuration model, distinct vertices
+    # i and j have expected edge multiplicity d_i d_j / (2m - 1).
+    total = 2 * projection.number_of_edges()
+    if total == 0:
+        return 0.0
+    stubs = [projection.degree(node) for node in rich]
+    expected = (sum(stubs)**2 - sum(d*d for d in stubs)) / (2 * (total - 1))
+    return observed / expected if expected > 0 else 0.0
 
 
 def percolation_threshold(

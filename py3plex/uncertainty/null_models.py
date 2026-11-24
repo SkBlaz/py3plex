@@ -49,16 +49,18 @@ def _generate_and_compute_null(args):
             "Must be 'degree_preserving', 'erdos_renyi', or 'configuration'"
         )
     
-    # Compute metric on null model
-    try:
-        null_result = metric_fn(null_graph)
-    except Exception:
-        # If metric fails on this null model, use zeros
-        null_result = {item: 0.0 for item in index}
-    
-    # Convert to array (use 0 for missing items)
-    result_array = np.array([null_result.get(item, 0.0) for item in index])
-    return result_array
+    if graph.core_network is not None:
+        if null_graph.core_network is None:
+            null_graph._initiate_network()
+        null_graph.core_network.add_nodes_from(graph.core_network.nodes(data=True))
+    result = metric_fn(null_graph)
+    missing = [item for item in index if item not in result]
+    if missing:
+        raise ValueError(f"Null model metric omitted {len(missing)} observed item(s).")
+    values = np.asarray([result[item] for item in index], dtype=float)
+    if not np.all(np.isfinite(values)):
+        raise ValueError("Null model metric returned a non-finite replicate value.")
+    return values
 
 
 def null_model_metric(
