@@ -67,6 +67,12 @@ def _safe_divide(numerator: float, denominator: float, default: float = 0.0) -> 
     return numerator / denominator
 
 
+def _weighted_mean(effects: np.ndarray, weights: np.ndarray, weight_sum: float) -> float:
+    if np.all(weights == weights[0]):
+        return np.mean(effects)
+    return np.sum(weights * effects) / weight_sum
+
+
 def fixed_effect_meta(
     effects: np.ndarray, ses: np.ndarray, ci_level: float = 0.95
 ) -> PooledEffect:
@@ -119,7 +125,7 @@ def fixed_effect_meta(
         raise ValueError("Sum of weights is non-positive.")
 
     # Pooled effect
-    pooled_effect = np.sum(weights * effects) / sum_w
+    pooled_effect = _weighted_mean(effects, weights, sum_w)
     pooled_se = np.sqrt(1.0 / sum_w)
 
     # Confidence interval
@@ -220,7 +226,7 @@ def random_effects_meta(
     if sum_w <= 0:
         raise ValueError("Sum of weights is non-positive.")
 
-    pooled_fixed = np.sum(weights_fixed * effects) / sum_w
+    pooled_fixed = _weighted_mean(effects, weights_fixed, sum_w)
 
     # Step 2: Cochran's Q
     Q = np.sum(weights_fixed * (effects - pooled_fixed) ** 2)
@@ -243,7 +249,7 @@ def random_effects_meta(
         raise ValueError("Sum of random-effects weights is non-positive.")
 
     # Step 5: Pooled effect and SE
-    pooled_effect = np.sum(weights_random * effects) / sum_w_random
+    pooled_effect = _weighted_mean(effects, weights_random, sum_w_random)
     pooled_se = np.sqrt(1.0 / sum_w_random)
 
     # Confidence interval

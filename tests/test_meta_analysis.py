@@ -316,3 +316,11 @@ def test_meta_regression_retains_small_tail_probability():
     _, _, score, p = weighted_least_squares([10], [[1]], [1])
     assert score[0] == 10
     assert p[0] == pytest.approx(2 * norm.sf(10), abs=0)
+
+
+def test_equal_weights_use_the_arithmetic_mean_near_underflow():
+    effects = np.array([0.0, np.nextafter(0.0, 1.0)])
+    ses = np.full(2, 0.109375)
+
+    for pool in (fixed_effect_meta, random_effects_meta):
+        assert pool(effects, ses).pooled_effect == effects.mean()
