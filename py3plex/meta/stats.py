@@ -17,6 +17,7 @@ Heterogeneity metrics:
 import numpy as np
 from typing import Tuple
 from dataclasses import dataclass
+from scipy.stats import norm, t
 
 
 @dataclass
@@ -66,6 +67,12 @@ def _safe_divide(numerator: float, denominator: float, default: float = 0.0) -> 
     return numerator / denominator
 
 
+def _weighted_mean(effects: np.ndarray, weights: np.ndarray, weight_sum: float) -> float:
+    if np.all(weights == weights[0]):
+        return np.mean(effects)
+    return np.sum(weights * effects) / weight_sum
+
+
 def fixed_effect_meta(
     effects: np.ndarray, ses: np.ndarray, ci_level: float = 0.95
 ) -> PooledEffect:
@@ -91,7 +98,7 @@ def fixed_effect_meta(
 
     # Handle k=1 edge case
     if k == 1:
-        z = 1.96 if ci_level == 0.95 else np.abs(np.percentile(np.random.randn(10000), [(1 - ci_level) / 2 * 100]))
+        z = norm.isf((1 - ci_level) / 2)
         return PooledEffect(
             pooled_effect=float(effects[0]),
             pooled_se=float(ses[0]),
@@ -118,11 +125,11 @@ def fixed_effect_meta(
         raise ValueError("Sum of weights is non-positive.")
 
     # Pooled effect
-    pooled_effect = np.sum(weights * effects) / sum_w
+    pooled_effect = _weighted_mean(effects, weights, sum_w)
     pooled_se = np.sqrt(1.0 / sum_w)
 
     # Confidence interval
-    z = 1.96 if ci_level == 0.95 else np.abs(np.percentile(np.random.randn(10000), [(1 - ci_level) / 2 * 100]))
+    z = norm.isf((1 - ci_level) / 2)
     ci_low = pooled_effect - z * pooled_se
     ci_high = pooled_effect + z * pooled_se
 
@@ -132,7 +139,7 @@ def fixed_effect_meta(
 
     # I² and H
     if df > 0:
-        I2 = max(0.0, (Q - df) / Q) * 100.0
+        I2 = (1.0 - df / Q) * 100.0 if Q > df else 0.0
         H = np.sqrt(Q / df)
     else:
         I2 = 0.0
@@ -194,7 +201,7 @@ def random_effects_meta(
 
     # Handle k=1 edge case
     if k == 1:
-        z = 1.96 if ci_level == 0.95 else np.abs(np.percentile(np.random.randn(10000), [(1 - ci_level) / 2 * 100]))
+        z = norm.isf((1 - ci_level) / 2)
         return PooledEffect(
             pooled_effect=float(effects[0]),
             pooled_se=float(ses[0]),
@@ -219,7 +226,7 @@ def random_effects_meta(
     if sum_w <= 0:
         raise ValueError("Sum of weights is non-positive.")
 
-    pooled_fixed = np.sum(weights_fixed * effects) / sum_w
+    pooled_fixed = _weighted_mean(effects, weights_fixed, sum_w)
 
     # Step 2: Cochran's Q
     Q = np.sum(weights_fixed * (effects - pooled_fixed) ** 2)
@@ -242,17 +249,17 @@ def random_effects_meta(
         raise ValueError("Sum of random-effects weights is non-positive.")
 
     # Step 5: Pooled effect and SE
-    pooled_effect = np.sum(weights_random * effects) / sum_w_random
+    pooled_effect = _weighted_mean(effects, weights_random, sum_w_random)
     pooled_se = np.sqrt(1.0 / sum_w_random)
 
     # Confidence interval
-    z = 1.96 if ci_level == 0.95 else np.abs(np.percentile(np.random.randn(10000), [(1 - ci_level) / 2 * 100]))
+    z = norm.isf((1 - ci_level) / 2)
     ci_low = pooled_effect - z * pooled_se
     ci_high = pooled_effect + z * pooled_se
 
     # Heterogeneity metrics
     if df > 0:
-        I2 = max(0.0, (Q - df) / Q) * 100.0
+        I2 = (1.0 - df / Q) * 100.0 if Q > df else 0.0
         H = np.sqrt(Q / df)
     else:
         I2 = 0.0
@@ -304,7 +311,7 @@ def meta_analysis(
 
 
 def weighted_least_squares(
-    y: np.ndarray, X: np.ndarray, weights: np.ndarray
+    y: np.ndarray, X: np.ndarray, weights: np.ndarray, *, absolute_weights: bool = True
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Weighted least squares regression.
 
@@ -315,6 +322,8 @@ def weighted_least_squares(
         y: Outcome vector (length n)
         X: Design matrix (n x p)
         weights: Weight vector (length n)
+        absolute_weights: Treat weights as inverse known variances. Otherwise
+            estimate the residual scale and use Student t tail probabilities.
 
     Returns:
         Tuple of (coef, se, z_scores, p_values)
@@ -323,33 +332,27 @@ def weighted_least_squares(
     X = np.asarray(X, dtype=np.float64)
     weights = np.asarray(weights, dtype=np.float64)
 
-    # Weight matrices
-    W = np.diag(weights)
-
-    # Weighted normal equations
-    XtWX = X.T @ W @ X
-    XtWy = X.T @ W @ y
-
-    # Solve for coefficients
-    try:
-        coef = np.linalg.solve(XtWX, XtWy)
-    except np.linalg.LinAlgError:
+    if not np.isfinite(weights).all() or np.any(weights <= 0):
+        raise ValueError("Regression weights must be finite and positive.")
+    root_weights = np.sqrt(weights)
+    design = X * root_weights[:, None]
+    outcome = y * root_weights
+    coef, _, rank, _ = np.linalg.lstsq(design, outcome, rcond=None)
+    if rank < X.shape[1]:
         raise ValueError("Singular matrix in weighted least squares. Check for collinearity.")
 
-    # Standard errors
-    # Variance-covariance matrix: (X'WX)^(-1)
-    try:
-        vcov = np.linalg.inv(XtWX)
-    except np.linalg.LinAlgError:
-        raise ValueError("Cannot invert X'WX matrix.")
+    _, triangular = np.linalg.qr(design, mode="reduced")
+    inverse = np.linalg.solve(triangular, np.eye(X.shape[1]))
+    variance = np.sum(inverse**2, axis=1)
+    if not absolute_weights:
+        df = len(y) - rank
+        if df <= 0:
+            raise ValueError("Residual variance requires positive residual degrees of freedom.")
+        residuals = outcome - design @ coef
+        variance *= residuals @ residuals / df
 
-    se = np.sqrt(np.diag(vcov))
-
-    # Z-scores and p-values (normal approximation)
-    z_scores = coef / se
-    # Two-tailed p-values
-    from scipy.stats import norm
-
-    p_values = 2 * (1 - norm.cdf(np.abs(z_scores)))
-
-    return coef, se, z_scores, p_values
+    se = np.sqrt(variance)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        scores = coef / se
+    p_values = 2 * (norm.sf(np.abs(scores)) if absolute_weights else t.sf(np.abs(scores), df))
+    return coef, se, scores, p_values

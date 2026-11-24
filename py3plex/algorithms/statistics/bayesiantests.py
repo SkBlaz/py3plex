@@ -23,7 +23,7 @@ def correlated_ttest_MC(x, rope, runs=1, nsamples=50000):
     # Nadeau's and Bengio's corrected variance
     var = np.var(diff, ddof=1) * (1 / n + 1 / (nfolds - 1))
     if var == 0:
-        return int(x < rope), int(-rope <= x <= rope), int(rope < x)
+        return int(x < -rope), int(-rope <= x <= rope), int(rope < x)
 
     return x + np.sqrt(var) * np.random.standard_t(n - 1, nsamples)
 
@@ -68,7 +68,7 @@ def correlated_ttest(x, rope, runs=1, verbose=False, names=("C1", "C2")):
     # Nadeau's and Bengio's corrected variance
     var = np.var(diff, ddof=1) * (1 / n + 1 / (nfolds - 1))
     if var == 0:
-        return int(x < rope), int(-rope <= x <= rope), int(rope < x)
+        return int(x < -rope), int(-rope <= x <= rope), int(rope < x)
     pr = 1 - stats.t.cdf(rope, n - 1, x, np.sqrt(var))
     pl = stats.t.cdf(-rope, n - 1, x, np.sqrt(var))
     pe = 1 - pl - pr

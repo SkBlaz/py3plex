@@ -5,7 +5,7 @@
 # this is to calculate enrichment scores
 
 import logging
-from collections import defaultdict
+from collections import Counter, defaultdict
 from typing import Any, Dict, List, Tuple
 
 import pandas as pd
@@ -61,13 +61,12 @@ def calculate_pval(term: Tuple[str, int], alternative: str = "two-sided") -> flo
             query_term_count_population / _number_of_communities
         )
 
-    # EASE correction.
-    if inside_local > 1:
-        query_counts = [inside_local - 1, query_term_count_population]
-    else:
-        query_counts = [inside_local, query_term_count_population]
-    pop_counts = [outside_local, _number_of_all_annotated - query_term_count_population]
-    p_value = fisher_exact([query_counts, pop_counts], alternative=alternative)[1]
+    outside_hits = query_term_count_population - inside_local
+    outside_misses = _number_of_all_annotated - query_term_count_population - outside_local
+    p_value = fisher_exact(
+        [[inside_local, outside_local], [outside_hits, outside_misses]],
+        alternative=alternative,
+    )[1]
     return float(p_value)
 
 
@@ -140,86 +139,55 @@ def compute_enrichment(
     intra_community=False,
 ):
     """
-    The main method for computing the enrichment of a subnetwork. This work in parallel and also offers methods for multiple test correction.
+    Test partition membership and annotation on disjoint sets of unique entities.
+
+    The term database specifies which terms to test. Background counts are
+    computed from term_dataset; all_counts is retained for callers that pass
+    a count of annotation rows. With intra_community, the background is
+    restricted to annotated entities in the union of the partitions.
     """
-    _require_statsmodels()
+    if multitest_method != "raw":
+        _require_statsmodels()
 
-    if whole_term_list:
-        tvals = set.union(*topology_map.values())
-        topology_map = {}
-        topology_map["1_community"] = tvals
-
-    global _partition_name
-    global _alternative
-    global _partition_entries
-    global _term_database
-    global _map_term_database
-    global _number_of_all_annotated
-    global _number_of_communities
-    global _normalize_by_comsize
-
-    _alternative = alternative
-    _number_of_all_annotated = all_counts
-    _term_database = dict(
-        enumerate(term_database.items())
-    )  # database of all annotations
-
-    _map_term_database = term_dataset  # entry to acc mappings
-    _number_of_communities = len(topology_map)
-    _normalize_by_comsize = intra_community
-
+    population = set(term_dataset)
     if intra_community:
-        _number_of_all_annotated = int(
-            _number_of_all_annotated / _number_of_communities
-        )
+        population &= {item for part in topology_map.values() for item in part}
+    if whole_term_list:
+        topology_map = {"1_community": {item for part in topology_map.values() for item in part}}
 
-    finalFrame = pd.DataFrame()
-    all_results = []
-
-    for k, v in topology_map.items():
-
-        logging.info(f"Computing enrichment for partition {k}")
-        # reassign for parallel usage
-        _partition_name = k
-        _partition_entries = v
-
-        # computational pool instantiation
-        ncpu = 2  # mp.cpu_count()
-
-        # compute the results
-        n = len(term_database)
-        step = ncpu  # number of parallel processes
-        [range(n)[i : i + step] for i in range(0, n, step)]  # generate jobs
-
-        # result container
-        results = [parallel_enrichment(x) for x in range(n)]
-
-        # for batch in jobs:
-        tmpframe = pd.DataFrame(results)
-
-        # multitest corrections on partition level
-        if multitest_method == "raw":
-            tmpframe = tmpframe[tmpframe["pval"] < pvalue]
-        else:
-            significant, p_adjusted, sidak, bonf = multipletests(
-                tmpframe["pval"],
-                method=multitest_method,
-                is_sorted=False,
-                returnsorted=False,
-                alpha=pvalue,
+    # The observations are unique annotated entities, not annotation rows.
+    background = Counter(term for item in population for term in set(term_dataset[item]))
+    results = []
+    for name, items in topology_map.items():
+        selected = set(items) & population
+        selected_terms = Counter(term for item in selected for term in set(term_dataset[item]))
+        rows = []
+        for term in term_database:
+            hits = selected_terms[term]
+            misses = len(selected) - hits
+            outside_hits = background[term] - hits
+            outside_misses = len(population) - len(selected) - outside_hits
+            _, p = fisher_exact(
+                [[hits, misses], [outside_hits, outside_misses]], alternative=alternative
             )
-            tmpframe["corrected_pval" + "_" + multitest_method] = pd.Series(p_adjusted)
-            tmpframe["significant"] = pd.Series(significant)
-            tmpframe = tmpframe[tmpframe["significant"]]
+            rows.append({"observation": name, "term": term, "pval": float(p)})
+        if not rows:
+            continue
+        frame = pd.DataFrame(rows)
+        if multitest_method == "raw":
+            frame = frame[frame["pval"] < pvalue]
+        else:
+            significant, adjusted, _, _ = multipletests(
+                frame["pval"], method=multitest_method, alpha=pvalue
+            )
+            frame["corrected_pval" + "_" + multitest_method] = adjusted
+            frame["significant"] = significant
+            frame = frame[significant]
+        results.append(frame)
 
-        all_results.append(tmpframe)
-
-    if all_results:
-        finalFrame = pd.concat(all_results, ignore_index=True)
-    else:
-        finalFrame = pd.DataFrame()
-
-    return finalFrame
+    return pd.concat(results, ignore_index=True) if results else pd.DataFrame(
+        columns=["observation", "term", "pval"]
+    )
 
 
 # specifiy how this is formatted..

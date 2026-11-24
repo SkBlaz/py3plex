@@ -8,12 +8,7 @@ import scipy.stats as st
 
 
 def is_redundant(rule, new_rule):
-    """
-    Computes the redundancy coefficient of a new rule compared to its
-    immediate generalization.
-
-    Rules with a coeff > 1 are deemed non-redundant.
-    """
+    """Return whether the new rule has weaker one-sided Fisher significance."""
     return _fisher(new_rule, "greater") > _fisher(rule, "greater")
 
 
@@ -31,16 +26,17 @@ def _fisher(rule, alternative):
         fisher.left_tail  ==> alternative = 'less'
         fisher.right_tail ==> alternative = 'greater'
     """
-    N = float(len(rule.kb.examples))
-    nX = float(rule.coverage)
+    N = len(rule.kb.examples)
+    nX = rule.coverage
     nY = rule.kb.distribution[rule.target]
     nXY = rule.distribution[rule.target]
     nXnotY = nX - nXY
     nnotXY = nY - nXY
-    nnotXnotY = N - nXnotY - nnotXY
-    return st.fisher_exact(
+    nnotXnotY = N - nX - nY + nXY
+    _, p_value = st.fisher_exact(
         [[nXY, nXnotY], [nnotXY, nnotXnotY]], alternative=alternative
-    )[1]
+    )
+    return float(p_value)
 
 
 def apply_fisher(ruleset):
