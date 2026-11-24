@@ -80,7 +80,7 @@ class PartitionUQ:
     store_mode : str
         Storage mode: "none", "samples", or "sketch"
     samples : list of np.ndarray, optional
-        Raw partition samples (only if store_mode="samples")
+        Partition samples aligned to the first sample (only if store_mode="samples")
     meta : dict
         Additional metadata (algorithm, parameters, provenance)
         
@@ -276,7 +276,7 @@ class PartitionUQ:
         store : str, default="sketch"
             Storage mode:
             - "none": Only summary statistics
-            - "samples": Store all samples
+            - "samples": Store all samples with aligned community labels
             - "sketch": Store sparse co-assignment
         sparse_topk : int, default=50
             Top-k neighbors to keep in sparse co-assignment
@@ -350,10 +350,13 @@ class PartitionUQ:
         from .partition_metrics import _align_integer_labels
 
         reference = dict(enumerate(np.asarray(partitions[0], dtype=int)))
+        samples_to_store = [] if store == "samples" else None
         # Anchor community labels to the first sample before voting.
         for partition, weight in zip(partitions, weights):
             aligned = _align_integer_labels(reference, dict(enumerate(np.asarray(partition, dtype=int))))
             partition = np.asarray(list(aligned.values()), dtype=int)
+            if samples_to_store is not None:
+                samples_to_store.append(partition)
             
             entropy_reducer.update(partition, weight)
             consensus_reducer.update(partition, weight)
@@ -375,11 +378,6 @@ class PartitionUQ:
         
         vi_stats = vi_reducer.finalize()
         nmi_stats = nmi_reducer.finalize()
-        
-        # Determine what to store
-        samples_to_store = None
-        if store == "samples":
-            samples_to_store = [p.copy() for p in partitions]
         
         # Create PartitionUQ
         return cls(
