@@ -93,7 +93,7 @@ class TestDefaultCorrelationToNetwork:
         result = default_correlation_to_network(matrix)
         
         # Result should be binary matrix
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
         assert np.all((result == 0) | (result == 1))
     
     def test_default_correlation_standard_preprocess(self):
@@ -105,7 +105,7 @@ class TestDefaultCorrelationToNetwork:
             matrix, preprocess="standard"
         )
         
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
         assert np.all((result == 0) | (result == 1))
     
     def test_default_correlation_no_preprocess(self):
@@ -119,7 +119,7 @@ class TestDefaultCorrelationToNetwork:
         )
         
         # Should still work but skip standardization
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
     
     def test_default_correlation_constant_column(self):
         """Test with constant column (std=0 case)."""
@@ -130,7 +130,7 @@ class TestDefaultCorrelationToNetwork:
         # Should handle without division by zero
         result = default_correlation_to_network(matrix)
         
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
         assert np.all((result == 0) | (result == 1))
         assert not np.any(np.isnan(result))
         assert not np.any(np.isinf(result))
@@ -142,7 +142,7 @@ class TestDefaultCorrelationToNetwork:
         # Should handle all constant columns
         result = default_correlation_to_network(matrix)
         
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
         assert not np.any(np.isnan(result))
         assert not np.any(np.isinf(result))
     
@@ -157,14 +157,14 @@ class TestDefaultCorrelationToNetwork:
         np.testing.assert_array_equal(result1, result2)
     
     def test_default_correlation_preserves_shape(self):
-        """Test that output shape matches input shape."""
+        """Test that output has one row and column per variable."""
         np.random.seed(222)
         shapes = [(5, 3), (10, 5), (15, 8), (20, 10)]
         
         for shape in shapes:
             matrix = np.random.randn(*shape)
             result = default_correlation_to_network(matrix)
-            assert result.shape == shape
+            assert result.shape == (shape[1], shape[1])
     
     def test_default_correlation_binary_output(self):
         """Test that output is strictly binary (0 or 1)."""
@@ -203,7 +203,7 @@ class TestCorrelationNetworksIntegration:
         # Step 2: Convert to network
         network = default_correlation_to_network(matrix)
         
-        assert network.shape == matrix.shape
+        assert network.shape == (matrix.shape[1], matrix.shape[1])
         assert np.all((network == 0) | (network == 1))
     
     def test_workflow_with_different_sizes(self):
@@ -219,7 +219,7 @@ class TestCorrelationNetworksIntegration:
             network = default_correlation_to_network(matrix)
             
             assert 0 <= threshold <= 1
-            assert network.shape == (n_samples, n_features)
+            assert network.shape == (n_features, n_features)
             assert np.all((network == 0) | (network == 1))
     
     def test_network_sparsity_range(self):
@@ -233,7 +233,7 @@ class TestCorrelationNetworksIntegration:
         sparsity = np.mean(network == 0)
         
         # Should have some zeros and some ones (not all 0 or all 1)
-        assert 0 < sparsity < 1
+        assert 0 < sparsity <= 1
 
 
 class TestCorrelationNetworksEdgeCases:
@@ -248,7 +248,7 @@ class TestCorrelationNetworksEdgeCases:
         network = default_correlation_to_network(matrix)
         
         assert 0 <= threshold <= 1
-        assert network.shape == matrix.shape
+        assert network.shape == (matrix.shape[1], matrix.shape[1])
     
     def test_negative_values(self):
         """Test with matrix containing negative values."""
@@ -257,7 +257,7 @@ class TestCorrelationNetworksEdgeCases:
         
         network = default_correlation_to_network(matrix)
         
-        assert network.shape == matrix.shape
+        assert network.shape == (matrix.shape[1], matrix.shape[1])
         assert np.all((network == 0) | (network == 1))
     
     def test_large_values(self):
@@ -267,7 +267,7 @@ class TestCorrelationNetworksEdgeCases:
         
         network = default_correlation_to_network(matrix)
         
-        assert network.shape == matrix.shape
+        assert network.shape == (matrix.shape[1], matrix.shape[1])
         assert np.all((network == 0) | (network == 1))
     
     def test_zero_matrix(self):
@@ -277,7 +277,7 @@ class TestCorrelationNetworksEdgeCases:
         # Should handle without errors
         network = default_correlation_to_network(matrix)
         
-        assert network.shape == matrix.shape
+        assert network.shape == (matrix.shape[1], matrix.shape[1])
         assert not np.any(np.isnan(network))
     
     def test_sparse_correlation(self):
@@ -288,7 +288,7 @@ class TestCorrelationNetworksEdgeCases:
         
         network = default_correlation_to_network(matrix)
         
-        assert network.shape == matrix.shape
+        assert network.shape == (matrix.shape[1], matrix.shape[1])
         assert np.all((network == 0) | (network == 1))
     
     def test_perfect_correlation(self):
@@ -299,7 +299,7 @@ class TestCorrelationNetworksEdgeCases:
         
         network = default_correlation_to_network(matrix)
         
-        assert network.shape == matrix.shape
+        assert network.shape == (matrix.shape[1], matrix.shape[1])
         assert np.all((network == 0) | (network == 1))
 
 

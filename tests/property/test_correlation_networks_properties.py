@@ -117,16 +117,16 @@ def test_correlation_to_network_binary(n_samples, n_features, seed):
     seed=st.integers(min_value=0, max_value=10000)
 )
 def test_correlation_to_network_shape_preserved(n_samples, n_features, seed):
-    """Test that output shape matches input matrix shape."""
+    """Test that output shape matches the number of input variables."""
     np.random.seed(seed)
     matrix = np.random.randn(n_samples, n_features)
     
     result = default_correlation_to_network(matrix)
     
     # The function operates on the matrix in place and returns it
-    # Shape should match input
-    assert result.shape == matrix.shape, \
-        f"Result shape {result.shape} should match input shape {matrix.shape}"
+    # Adjacency must be square over variables
+    assert result.shape == (matrix.shape[1], matrix.shape[1]), \
+        "Result should have one row and column per variable"
 
 
 @pytest.mark.property
@@ -164,7 +164,7 @@ def test_correlation_standard_preprocessing_handles_varied_data(n_samples, n_fea
     result = default_correlation_to_network(matrix, preprocess="standard")
     
     # Result should still be valid
-    assert result.shape == matrix.shape, "Shape should be preserved"
+    assert result.shape == (matrix.shape[1], matrix.shape[1]), "Adjacency must be square over variables"
     assert np.isfinite(result).all(), "Result should not contain inf or nan"
 
 
@@ -184,7 +184,7 @@ def test_correlation_to_network_no_preprocessing_option(n_samples, n_features, s
     result = default_correlation_to_network(matrix, preprocess="none")
     
     # Should still return a valid binary matrix
-    assert result.shape == matrix.shape, "Shape should match input"
+    assert result.shape == (matrix.shape[1], matrix.shape[1]), "Adjacency must be square over variables"
     unique_values = np.unique(result)
     assert all(val in [0, 1] for val in unique_values), \
         "Result should be binary even without standard preprocessing"
@@ -211,7 +211,7 @@ def test_correlation_identical_features(n_samples, seed):
     result = default_correlation_to_network(matrix, preprocess="standard")
     
     # Should be all ones (perfect correlation) or all zeros depending on threshold
-    assert result.shape == matrix.shape, "Shape should match input"
+    assert result.shape == (matrix.shape[1], matrix.shape[1]), "Adjacency must be square over variables"
     assert np.isfinite(result).all(), "Result should not contain inf or nan"
 
 

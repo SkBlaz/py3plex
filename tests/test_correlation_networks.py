@@ -87,24 +87,24 @@ class TestDefaultCorrelationToNetwork:
         assert all(val in [0.0, 1.0] or np.isnan(val) for val in unique_values)
 
     def test_preserves_shape(self):
-        """Test that output preserves input shape."""
+        """Test that output is square over the input variables."""
         matrix = np.random.rand(10, 5)
         result = default_correlation_to_network(matrix)
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
 
     def test_standard_preprocessing(self):
         """Test with standard preprocessing (default)."""
         matrix = np.random.rand(10, 5)
         result = default_correlation_to_network(matrix, preprocess="standard")
         assert isinstance(result, np.ndarray)
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
 
     def test_no_preprocessing(self):
         """Test with no preprocessing."""
         matrix = np.random.rand(10, 5)
         result = default_correlation_to_network(matrix, preprocess="none")
         assert isinstance(result, np.ndarray)
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
 
     def test_with_constant_column(self):
         """Test that constant columns (std=0) are handled without error."""
@@ -114,7 +114,7 @@ class TestDefaultCorrelationToNetwork:
         # Should not raise ZeroDivisionError
         result = default_correlation_to_network(matrix, preprocess="standard")
         assert isinstance(result, np.ndarray)
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
 
     def test_input_type_parameter(self):
         """Test that input_type parameter is accepted."""
@@ -134,8 +134,8 @@ class TestDefaultCorrelationToNetwork:
         
         assert np.array_equal(result1, result2)
 
-    @patch('py3plex.algorithms.statistics.correlation_networks.pick_threshold')
-    def test_uses_pick_threshold(self, mock_pick_threshold):
+    @patch('py3plex.algorithms.statistics.correlation_networks._threshold_from_correlation')
+    def test_applies_selected_correlation_threshold(self, mock_pick_threshold):
         """Test that pick_threshold is called internally."""
         mock_pick_threshold.return_value = 0.5
         
@@ -144,6 +144,8 @@ class TestDefaultCorrelationToNetwork:
         
         # Verify pick_threshold was called
         assert mock_pick_threshold.called
+        assert np.array_equal(result, result.T)
+        assert not np.any(result.diagonal())
 
     def test_with_all_zeros(self):
         """Test with matrix of all zeros."""
@@ -151,11 +153,29 @@ class TestDefaultCorrelationToNetwork:
         # Should handle gracefully
         result = default_correlation_to_network(matrix)
         assert isinstance(result, np.ndarray)
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
 
     def test_with_small_values(self):
         """Test with very small values."""
         matrix = np.random.rand(10, 5) * 0.001
         result = default_correlation_to_network(matrix)
         assert isinstance(result, np.ndarray)
-        assert result.shape == matrix.shape
+        assert result.shape == (matrix.shape[1], matrix.shape[1])
+
+
+def test_correlation_adjacency_uses_variables_and_excludes_self_loops():
+    increasing = np.arange(5)
+    mat = np.column_stack([increasing, increasing * 2, -increasing])
+    np.testing.assert_array_equal(
+        default_correlation_to_network(mat),
+        [[0, 1, 0], [1, 0, 0], [0, 0, 0]],
+    )
+
+
+def test_oracle_f1_predicts_no_labels_for_empty_ground_truth():
+    from py3plex.algorithms.general.benchmark_classification import evaluate_oracle_F1
+
+    probabilities = np.array([[0.8, 0.2], [0.6, 0.4]])
+    actual = np.array([[1, 0], [0, 0]])
+    micro, _ = evaluate_oracle_F1(probabilities, actual)
+    assert micro == 1

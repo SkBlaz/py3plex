@@ -11,79 +11,75 @@ from ...logging_config import get_logger
 logger = get_logger(__name__)
 
 
+def _spearman_matrix(observations: np.ndarray) -> np.ndarray:
+    data = np.asarray(observations, dtype=float)
+    if data.ndim != 2:
+        raise ValueError("Expected a matrix of observations by variables.")
+    n_features = data.shape[1]
+    if data.shape[0] < 2:
+        return np.zeros((n_features, n_features))
+    if not np.isfinite(data).all():
+        raise ValueError("Correlation observations must be finite.")
+    ranks = stats.rankdata(data, axis=0)
+    centered = ranks - ranks.mean(axis=0)
+    norms = np.linalg.norm(centered, axis=0)
+    normalized = centered / np.where(norms > 0, norms, 1)
+    return np.clip(normalized.T @ normalized, -1, 1)
+
+
 def pick_threshold(matrix: np.ndarray) -> float:
-    """
-    Pick optimal threshold for correlation network construction.
-
-    Args:
-        matrix: Input data matrix
-
-    Returns:
-        Optimal threshold value
-    """
-    matrix = np.asarray(matrix)
-    if matrix.ndim < 2 or matrix.shape[1] < 2:
+    """Select a positive correlation threshold from a matrix of observations."""
+    data = np.asarray(matrix)
+    if data.ndim != 2 or data.shape[1] < 2:
         return 0.0
+    return _threshold_from_correlation(_spearman_matrix(data))
 
-    current_r_opt = 0
-    rho, pval = stats.spearmanr(matrix)
-    rho = np.asarray(rho, dtype=float)
-    if rho.ndim < 2 or rho.shape[0] < 2 or rho.shape[1] < 2:
-        return 0.0
-    rho = np.nan_to_num(rho, nan=0.0, posinf=1.0, neginf=-1.0)
 
-    for j in np.linspace(0, 1, 50):
-        tmp_array = rho.copy()
-        tmp_array[tmp_array > j] = 1
-        tmp_array[tmp_array < j] = 0
-        np.fill_diagonal(tmp_array, 0)  # self loops
-        rw_sum = np.sum(tmp_array, axis=0)
-        count_dict = Counter(rw_sum)
-        if len(count_dict) < 2:
+def _threshold_from_correlation(correlation):
+    best_threshold, best_score = 0.0, 0.0
+    for threshold in np.linspace(0, 1, 50, endpoint=False):
+        adjacency = correlation > threshold
+        np.fill_diagonal(adjacency, False)
+        frequencies = Counter(degree for degree in adjacency.sum(axis=0) if degree > 0)
+        if len(frequencies) < 2:
             continue
-        key_counts = np.log(np.fromiter(count_dict.keys(), dtype=float))
-        counts = np.log(np.fromiter(count_dict.values(), dtype=float))
-        valid = np.isfinite(key_counts) & np.isfinite(counts)
-        if np.count_nonzero(valid) < 2:
-            continue
-        slope, intercept, r_value, p_value, std_err = stats.linregress(
-            key_counts[valid], counts[valid]
+        fit = stats.linregress(
+            np.log(list(frequencies)), np.log(list(frequencies.values()))
         )
-        if not np.isfinite(r_value):
-            continue
-        if r_value > current_r_opt:
-            logger.debug("Updating R^2: %s", r_value)
-            current_r_opt = r_value
-        if r_value > 0.80:
-            return float(j)
-    return float(current_r_opt)
+        score = fit.rvalue**2 if fit.slope < 0 else 0.0
+        if score > best_score:
+            best_threshold, best_score = float(threshold), score
+        if score > 0.8:
+            return float(threshold)
+    return best_threshold
 
 
 def default_correlation_to_network(
     matrix: np.ndarray, input_type: str = "matrix", preprocess: str = "standard"
 ) -> np.ndarray:
+    """Return a binary symmetric adjacency over the input variables.
+
+    A matrix of observations has shape (observations, variables). For
+    input_type="correlation", pass a symmetric precomputed correlation matrix.
+    Standardizing variables does not change Spearman ranks.
     """
-    Convert correlation matrix to network using optimal thresholding.
-
-    Args:
-        matrix: Input data matrix
-        input_type: Type of input (default: "matrix")
-        preprocess: Preprocessing method (default: "standard")
-
-    Returns:
-        Binary adjacency matrix
-    """
-    if preprocess == "standard":
-        std = np.std(matrix, axis=0)
-        # Avoid division by zero for columns with constant values
-        std = np.where(std == 0, 1, std)
-        matrix = (matrix - np.mean(matrix, axis=0)) / std
-
-    optimal_threshold = pick_threshold(matrix)
-    logger.info("Rsq threshold %s", optimal_threshold)
-    matrix[matrix > optimal_threshold] = 1
-    matrix[matrix < optimal_threshold] = 0
-    return matrix
+    if preprocess not in {"standard", "none"}:
+        raise ValueError(f"Unknown preprocess mode: {preprocess}")
+    if input_type == "matrix":
+        correlation = _spearman_matrix(matrix)
+        threshold = _threshold_from_correlation(correlation)
+    elif input_type == "correlation":
+        correlation = np.asarray(matrix, dtype=float)
+        if (correlation.ndim != 2 or correlation.shape[0] != correlation.shape[1]
+                or not np.isfinite(correlation).all() or not np.allclose(correlation, correlation.T)
+                or np.any(np.abs(correlation) > 1)):
+            raise ValueError("Expected a symmetric finite correlation matrix with values in [-1, 1].")
+        threshold = _threshold_from_correlation(correlation)
+    else:
+        raise ValueError(f"Unknown input type: {input_type}")
+    adjacency = (correlation > threshold).astype(np.int8)
+    np.fill_diagonal(adjacency, 0)
+    return adjacency
 
 
 if __name__ == "__main__":
