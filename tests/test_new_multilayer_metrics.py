@@ -136,12 +136,17 @@ class TestRichClub:
         )
         assert isinstance(result, float)
     
-    def test_range_valid(self, simple_multiplex):
-        """Test that rich-club coefficient is in valid range."""
-        result = multilayer_statistics.multiplex_rich_club_coefficient(
+    def test_raw_and_configuration_normalized_coefficients(self, simple_multiplex):
+        raw = multilayer_statistics.multiplex_rich_club_coefficient(
+            simple_multiplex, k=1, normalized=False
+        )
+        normalized = multilayer_statistics.multiplex_rich_club_coefficient(
             simple_multiplex, k=1
         )
-        assert 0 <= result <= 1
+        assert raw == 1.0
+        # Three observed edges among A, B, C. Their stub counts are 3, 2, 2
+        # and there are eight stubs in the projected graph.
+        assert normalized == pytest.approx(3 / ((3*2 + 3*2 + 2*2) / 7))
 
 
 class TestPercolation:
