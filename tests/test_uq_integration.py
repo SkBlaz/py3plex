@@ -97,34 +97,27 @@ class TestUQResolutionIntegration:
         assert hub_clustering["n_samples"] == 20
         assert hub_clustering["seed"] == 999
     
-    def test_global_defaults_work(self):
-        """Test that global defaults are applied when using .uq() with defaults.
-        
-        Note: Currently, the builder's compute() method applies its own defaults
-        when uncertainty=True is used, which take metric-level priority.
-        To use global defaults, call .uq() without .compute(uncertainty=True).
-        """
+    @pytest.mark.parametrize("uq_before_compute", [True, False])
+    def test_global_defaults_work(self, uq_before_compute):
+        """Calling .uq() enables the configured global uncertainty defaults."""
         set_global_uq_defaults(method="bootstrap", n_samples=15, seed=777)
         
         network = create_test_network()
         
-        # Use .uq() without parameters to trigger resolution
-        result = (
-            Q.nodes()
-             .uq()  # Enable UQ, should use global defaults
-             .compute("degree")
-             .execute(network)
-        )
-        
+        query = Q.nodes()
+        if uq_before_compute:
+            query.uq().compute("degree")
+        else:
+            query.compute("degree").uq()
+        result = query.execute(network)
+
         degree_values = result.attributes["degree"]
         hub_value = degree_values[('hub', 'layer1')]
         
         # Should use global defaults for method and seed
         assert hub_value["method"] == "bootstrap"
         assert hub_value["seed"] == 777
-        # Note: n_samples currently comes from library default (50)
-        # due to builder applying defaults. This is a known limitation.
-        assert hub_value["n_samples"] >= 15  # At least the requested amount
+        assert hub_value["n_samples"] == 15
     
     def test_library_defaults_as_fallback(self):
         """Test that library defaults are used when nothing else specified."""

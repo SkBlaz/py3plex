@@ -1685,8 +1685,9 @@ def _compute_measure_with_uncertainty(
         network, select, metric_name, kind=compute_item.kind
     )
 
-    # Create metric function that works with uncertainty engines
-    def metric_fn_wrapper(net):
+    from py3plex.uncertainty.estimation import _call_with_seed
+
+    def metric_fn_wrapper(net, seed=None):
         """Wrapper that computes the measure on the network."""
         # Get the subgraph for the current network state
         if hasattr(net, "core_network"):
@@ -1700,7 +1701,8 @@ def _compute_measure_with_uncertainty(
             return {}
 
         sub = _apply_layer_scope(g, layer_scope)
-        result = measure_fn(sub, valid_items)
+        result = (measure_fn(sub, valid_items) if seed is None
+                  else _call_with_seed(measure_fn, (sub, valid_items), seed))
         # Handle tuple return from approximate methods
         if isinstance(result, tuple) and len(result) == 2:
             return result[0]  # Return only values for UQ, ignore diagnostics
@@ -1733,6 +1735,7 @@ def _compute_measure_with_uncertainty(
                 "std": float(result["std"][i]),
                 "ci_low": float(result["ci_low"][i]),
                 "ci_high": float(result["ci_high"][i]),
+                "ci_level": resolved_config.ci,
                 "quantiles": {
                     (1 - resolved_config.ci) / 2: float(result["ci_low"][i]),
                     1 - (1 - resolved_config.ci) / 2: float(result["ci_high"][i]),
@@ -1757,7 +1760,7 @@ def _compute_measure_with_uncertainty(
     
     elif method == "null_model":
         # Use null model engine
-        n_null = resolved_config.kwargs.get("n_null", 200)
+        n_null = resolved_config.kwargs.get("n_null", resolved_config.n_samples)
         null_model = resolved_config.kwargs.get("null_model")
         
         if not null_model:
@@ -1783,7 +1786,7 @@ def _compute_measure_with_uncertainty(
                 "ci_low": None,  # Null model doesn't provide CI directly
                 "ci_high": None,
                 "quantiles": {},
-                "n_samples": resolved_config.n_samples,  # Use resolved config
+                "n_samples": result["n_null"],
                 "method": "null_model",
                 "seed": resolved_config.seed,
                 "null_model": result["model"],
@@ -1817,6 +1820,8 @@ def _compute_measure_with_uncertainty(
             n_runs=resolved_config.n_samples,
             resampling=resampling,
             random_seed=resolved_config.seed,
+            ci=resolved_config.ci,
+            perturbation_params=resolved_config.kwargs,
         )
         
         # If result is a StatSeries, convert to dict format
@@ -1826,6 +1831,7 @@ def _compute_measure_with_uncertainty(
             # Ensure all items conform to canonical schema
             for item, item_result in result_dict.items():
                 if isinstance(item_result, dict):
+                    item_result["ci_level"] = resolved_config.ci
                     # Add missing required fields
                     if "method" not in item_result:
                         item_result["method"] = method
