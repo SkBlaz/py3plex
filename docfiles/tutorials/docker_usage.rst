@@ -54,7 +54,7 @@ Using Docker
     docker build -t py3plex:latest .
 
     # Build with a specific tag
-    docker build -t py3plex:2.0.93 .
+    docker build -t py3plex:2.0.94 .
 
     # Build without cache (if needed)
     docker build --no-cache -t py3plex:latest .
@@ -434,7 +434,7 @@ Best Practices
 
 1. **Use Volume Mounts**: Always mount volumes for input/output files
 2. **Use --rm Flag**: Remove containers after execution with ``--rm`` to save space
-3. **Tag Images**: Use specific tags (e.g., ``py3plex:2.0.93``) for reproducibility
+3. **Tag Images**: Use specific tags (e.g., ``py3plex:2.0.94``) for reproducibility
 4. **Keep Data Separate**: Store network files in the mounted ``data`` directory
 5. **Use Docker Compose**: For repeated operations, Docker Compose simplifies commands
 6. **Regular Updates**: Rebuild the image periodically to get latest py3plex updates

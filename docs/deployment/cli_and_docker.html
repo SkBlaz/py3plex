@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Docker Usage Guide &mdash; py3plex 2.0.93 documentation</title>
+  <title>Docker Usage Guide &mdash; py3plex 2.0.94 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=536c50fe" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c94df887" />
@@ -340,7 +340,7 @@ docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
 
 <span class="c1"># Build with a specific tag</span>
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:2.0.93<span class="w"> </span>.
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py3plex:2.0.94<span class="w"> </span>.
 
 <span class="c1"># Build without cache (if needed)</span>
 docker<span class="w"> </span>build<span class="w"> </span>--no-cache<span class="w"> </span>-t<span class="w"> </span>py3plex:latest<span class="w"> </span>.
@@ -687,7 +687,7 @@ docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"
 <ol class="arabic simple">
 <li><p><strong>Use Volume Mounts:</strong> Always mount volumes for input/output files.</p></li>
 <li><p><strong>Use –rm Flag:</strong> Remove containers after execution with <code class="docutils literal notranslate"><span class="pre">--rm</span></code> to save space.</p></li>
-<li><p><strong>Tag Images:</strong> Use specific tags (e.g., <code class="docutils literal notranslate"><span class="pre">py3plex:2.0.93</span></code>) for reproducibility.</p></li>
+<li><p><strong>Tag Images:</strong> Use specific tags (e.g., <code class="docutils literal notranslate"><span class="pre">py3plex:2.0.94</span></code>) for reproducibility.</p></li>
 <li><p><strong>Keep Data Separate:</strong> Store network files in the mounted <code class="docutils literal notranslate"><span class="pre">data</span></code> directory.</p></li>
 <li><p><strong>Use Docker Compose:</strong> For repeated operations, Docker Compose simplifies commands.</p></li>
 <li><p><strong>Regular Updates:</strong> Rebuild after pulling new commits or dependency changes to keep images current.</p></li>
