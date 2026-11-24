@@ -10,6 +10,39 @@ import pandas as pd
 from scipy import stats
 
 
+_EDGE_COLUMNS = ("source", "target", "source_layer", "target_layer")
+
+
+def _identity_columns(frame):
+    if "id" in frame:
+        return [column for column in ("id", "layer") if column in frame]
+    if {"source", "target"} <= set(frame):
+        return [column for column in (*_EDGE_COLUMNS, "key") if column in frame]
+    if "community_id" in frame:
+        return ["community_id"]
+    return []
+
+
+def _by_identity(frame):
+    columns = _identity_columns(frame)
+    if not columns:
+        return frame
+    indexed = frame.set_index(columns, drop=False)
+    if not indexed.index.is_unique:
+        raise ValueError("Counterfactual rows require unique item identities.")
+    return indexed
+
+
+def _lookup_item(frame, item):
+    indexed = _by_identity(frame)
+    matches = indexed[indexed.index == item]
+    if matches.empty and "id" in frame:
+        matches = indexed[indexed["id"] == item]
+        if len(matches) > 1:
+            raise ValueError("Multiple replicas share this ID. Pass (id, layer).")
+    return matches
+
+
 def compute_delta_stats(baseline: pd.DataFrame,
                        counterfactuals: List[pd.DataFrame],
                        metric: str) -> Dict[str, float]:
@@ -34,12 +67,12 @@ def compute_delta_stats(baseline: pd.DataFrame,
     for cf_df in counterfactuals:
         if metric in cf_df.columns:
             # Align by index/id
-            merged = baseline.merge(cf_df, left_index=True, right_index=True, 
+            merged = _by_identity(baseline).merge(_by_identity(cf_df), left_index=True, right_index=True,
                                    suffixes=('_base', '_cf'))
             delta = merged[f"{metric}_cf"] - merged[f"{metric}_base"]
             deltas.append(delta.values)
     
-    if not deltas:
+    if not deltas or not any(delta.size for delta in deltas):
         return {}
     
     # Aggregate deltas
@@ -72,11 +105,8 @@ def compute_empirical_pvalue(baseline: pd.DataFrame,
         Empirical p-value (0 to 1)
     """
     # Get baseline value
-    if "id" in baseline.columns:
-        baseline_row = baseline[baseline["id"] == item_id]
-    else:
-        baseline_row = baseline[baseline.index == item_id]
-    
+    baseline_row = _lookup_item(baseline, item_id)
+
     if len(baseline_row) == 0 or metric not in baseline_row.columns:
         return np.nan
     
@@ -85,11 +115,8 @@ def compute_empirical_pvalue(baseline: pd.DataFrame,
     # Collect counterfactual values
     cf_vals = []
     for cf_df in counterfactuals:
-        if "id" in cf_df.columns:
-            cf_row = cf_df[cf_df["id"] == item_id]
-        else:
-            cf_row = cf_df[cf_df.index == item_id]
-        
+        cf_row = _lookup_item(cf_df, item_id)
+
         if len(cf_row) > 0 and metric in cf_row.columns:
             cf_vals.append(cf_row.iloc[0][metric])
     
@@ -123,7 +150,7 @@ def compute_rank_correlation(baseline: pd.DataFrame,
         return np.nan
     
     # Merge on index
-    merged = baseline.merge(counterfactual, left_index=True, right_index=True,
+    merged = _by_identity(baseline).merge(_by_identity(counterfactual), left_index=True, right_index=True,
                            suffixes=('_base', '_cf'))
     
     base_vals = merged[f"{metric}_base"].values
@@ -166,10 +193,10 @@ def compute_topk_overlap(baseline: pd.DataFrame,
         return np.nan
     
     # Get top-k from baseline
-    baseline_topk = set(baseline.nlargest(k, metric).index)
+    baseline_topk = set(_by_identity(baseline).nlargest(k, metric).index)
     
     # Get top-k from counterfactual
-    cf_topk = set(counterfactual.nlargest(k, metric).index)
+    cf_topk = set(_by_identity(counterfactual).nlargest(k, metric).index)
     
     # Compute Jaccard
     intersection = len(baseline_topk & cf_topk)
@@ -200,7 +227,7 @@ def compute_community_stability(baseline: pd.DataFrame,
         return np.nan
     
     # Merge on index
-    merged = baseline.merge(counterfactual, left_index=True, right_index=True,
+    merged = _by_identity(baseline).merge(_by_identity(counterfactual), left_index=True, right_index=True,
                            suffixes=('_base', '_cf'))
     
     base_communities = merged[f"{community_col}_base"].values
@@ -248,7 +275,7 @@ def stable_top_k(baseline: pd.DataFrame,
         return []
     
     # Get baseline top-k
-    baseline_topk = set(baseline.nlargest(k, metric).index)
+    baseline_topk = set(_by_identity(baseline).nlargest(k, metric).index)
     
     # Count appearances in counterfactual top-k
     appearances = {item: 0 for item in baseline_topk}
@@ -257,7 +284,7 @@ def stable_top_k(baseline: pd.DataFrame,
         if metric not in cf_df.columns:
             continue
         
-        cf_topk = set(cf_df.nlargest(k, metric).index)
+        cf_topk = set(_by_identity(cf_df).nlargest(k, metric).index)
         
         for item in baseline_topk:
             if item in cf_topk:
@@ -290,19 +317,18 @@ def fragile_nodes(baseline: pd.DataFrame,
         return []
     
     # Get all item IDs
+    baseline = _by_identity(baseline)
+    counterfactuals = [_by_identity(frame) for frame in counterfactuals]
     item_ids = baseline.index.tolist()
     
     # Compute CV for each item
     cv_scores = []
     for item_id in item_ids:
-        # Get baseline value
-        baseline.loc[item_id, metric]
-        
         # Collect counterfactual values
         cf_vals = []
         for cf_df in counterfactuals:
             if item_id in cf_df.index and metric in cf_df.columns:
-                cf_vals.append(cf_df.loc[item_id, metric])
+                cf_vals.append(cf_df.at[item_id, metric])
         
         if cf_vals:
             cf_array = np.array(cf_vals)
@@ -339,6 +365,8 @@ def layer_sensitivity(baseline: pd.DataFrame,
     if layer_col not in baseline.columns or metric not in baseline.columns:
         return pd.DataFrame()
     
+    baseline = _by_identity(baseline)
+    counterfactuals = [_by_identity(frame) for frame in counterfactuals]
     layers = baseline[layer_col].unique()
     
     layer_stats = []

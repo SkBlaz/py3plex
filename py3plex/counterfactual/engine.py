@@ -7,6 +7,7 @@ analysis, with deterministic seeding and optional streaming mode.
 from typing import Any, Dict, List, Optional
 import numpy as np
 import pandas as pd
+from .comparator import _by_identity, _identity_columns
 from .spec import InterventionSpec
 from .result import CounterfactualResult
 
@@ -67,9 +68,9 @@ class CounterfactualEngine:
         # Generate child seeds deterministically
         child_seeds = self.seed_seq.spawn(self.repeats)
         
-        for i, child_seed in enumerate(child_seeds):
+        for child_seed in child_seeds:
             # Apply intervention to create modified network
-            seed_int = child_seed.entropy  # Get integer seed
+            seed_int = int(child_seed.generate_state(1, dtype=np.uint64)[0])
             modified_network = self.spec.apply(self.network, seed_int)
             
             # Execute query on modified network
@@ -79,7 +80,7 @@ class CounterfactualEngine:
                 cf_results.append(cf_result)
             
             # Convert to DataFrame for aggregation
-            cf_df = cf_result.to_pandas()
+            cf_df = cf_result.to_pandas(expand_uncertainty=True)
             cf_dataframes.append(cf_df)
         
         # Aggregate results
@@ -145,59 +146,27 @@ class CounterfactualEngine:
         if not cf_dataframes:
             return pd.DataFrame()
         
-        # Get baseline DataFrame
-        baseline_df = baseline.to_pandas()
-        
-        # Identify metric columns (exclude id, layer, etc.)
-        exclude_cols = {"id", "layer", "type"}
-        metric_cols = [c for c in baseline_df.columns 
-                      if c not in exclude_cols and not c.startswith("_")]
-        
-        # Build summary DataFrame
+        baseline_df = _by_identity(baseline.to_pandas(expand_uncertainty=True))
+        samples = [_by_identity(frame) for frame in cf_dataframes]
+        identity_columns = _identity_columns(baseline_df)
+        metric_columns = [
+            column for column in baseline_df.select_dtypes(include="number")
+            if column not in identity_columns and not column.startswith("_")
+        ]
         summary_data = []
-        
-        # Get unique items (using id column or index)
-        if "id" in baseline_df.columns:
-            items = baseline_df["id"].unique()
-            id_col = "id"
-        else:
-            items = baseline_df.index.unique()
-            id_col = "index"
-        
-        for item in items:
-            row = {id_col: item}
-            
-            # Get baseline values
-            if "id" in baseline_df.columns:
-                baseline_row = baseline_df[baseline_df["id"] == item]
-            else:
-                baseline_row = baseline_df[baseline_df.index == item]
-            
-            if len(baseline_row) == 0:
-                continue
-            
-            baseline_row = baseline_row.iloc[0]
-            
-            # Add layer if present
-            if "layer" in baseline_row:
-                row["layer"] = baseline_row["layer"]
-            
-            # Collect counterfactual values for each metric
-            for metric in metric_cols:
-                baseline_val = baseline_row.get(metric)
+        for item, baseline_row in baseline_df.iterrows():
+            row = {column: baseline_row[column] for column in identity_columns}
+            if not identity_columns:
+                row["index"] = item
+            for metric in metric_columns:
+                baseline_val = baseline_row[metric]
                 row[f"{metric}_baseline"] = baseline_val
-                
-                # Collect CF values
-                cf_values = []
-                for cf_df in cf_dataframes:
-                    if "id" in cf_df.columns:
-                        cf_row = cf_df[cf_df["id"] == item]
-                    else:
-                        cf_row = cf_df[cf_df.index == item]
-                    
-                    if len(cf_row) > 0 and metric in cf_row.columns:
-                        cf_values.append(cf_row.iloc[0][metric])
-                
+                cf_values = [
+                    sample.at[item, metric] for sample in samples
+                    if item in sample.index and metric in sample
+                    and pd.notna(sample.at[item, metric])
+                ]
+
                 if cf_values:
                     cf_array = np.array(cf_values)
                     row[f"{metric}_mean"] = float(np.mean(cf_array))
@@ -228,13 +197,17 @@ class CounterfactualEngine:
             summary_data.append(row)
         
         summary_df = pd.DataFrame(summary_data)
-        
-        # Set index
-        if id_col == "id":
-            summary_df = summary_df.set_index("id", drop=False)
-        
+        if summary_df.empty:
+            return summary_df
+        if "id" in summary_df and summary_df["id"].is_unique:
+            return summary_df.set_index("id", drop=False)
+        if identity_columns:
+            # Keep identity columns as values for export and layer grouping.
+            summary_df.index = baseline_df.index.rename(
+                [None] * baseline_df.index.nlevels if isinstance(baseline_df.index, pd.MultiIndex) else None
+            )
         return summary_df
-    
+
     def _build_metadata(self, baseline: Any) -> Dict[str, Any]:
         """Build provenance metadata.
         

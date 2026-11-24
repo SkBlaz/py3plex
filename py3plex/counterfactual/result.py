@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 import pandas as pd
 
+from .comparator import _identity_columns, _lookup_item, stable_top_k
+
 
 @dataclass
 class CounterfactualResult:
@@ -131,42 +133,20 @@ class RobustnessReport:
         # Filter by threshold
         df = self.result.summary
         stable = df[df[stability_col] >= threshold]
-        return stable["id"].tolist() if "id" in stable.columns else stable.index.tolist()
+        return stable.index.tolist()
     
     def _compute_stable_topk(self, k: int, threshold: float, metric: str) -> List[Any]:
         """Compute stable top-k on the fly."""
-        # Get baseline top-k
-        baseline_df = self.result.baseline.to_pandas()
-        if metric not in baseline_df.columns:
+        if not self.result.counterfactuals:
             return []
-        
-        baseline_topk = set(baseline_df.nlargest(k, metric)["id"].tolist() 
-                           if "id" in baseline_df.columns 
-                           else baseline_df.nlargest(k, metric).index.tolist())
-        
-        # Count appearances in counterfactual top-k
-        appearances = {item: 0 for item in baseline_topk}
-        
-        for cf_result in self.result.counterfactuals:
-            cf_df = cf_result.to_pandas()
-            if metric not in cf_df.columns:
-                continue
-            
-            cf_topk = set(cf_df.nlargest(k, metric)["id"].tolist()
-                         if "id" in cf_df.columns
-                         else cf_df.nlargest(k, metric).index.tolist())
-            
-            for item in baseline_topk:
-                if item in cf_topk:
-                    appearances[item] += 1
-        
-        # Filter by threshold
-        n_runs = len(self.result.counterfactuals)
-        stable_items = [item for item, count in appearances.items() 
-                       if count / n_runs >= threshold]
-        
-        return stable_items
-    
+        baseline = self.result.baseline.to_pandas(expand_uncertainty=True)
+        samples = [result.to_pandas(expand_uncertainty=True)
+                   for result in self.result.counterfactuals]
+        stable = stable_top_k(baseline, samples, metric, k, threshold)
+        if "id" in baseline and baseline["id"].is_unique and "layer" in baseline:
+            return [item[0] for item in stable]
+        return stable
+
     def fragile(self, n: int = 5, metric: Optional[str] = None) -> List[Any]:
         """Find the n most fragile items (highest variability across runs).
         
@@ -191,7 +171,7 @@ class RobustnessReport:
         cv_col = f"{metric}_cv"
         if cv_col in self.result.summary.columns:
             df = self.result.summary.nlargest(n, cv_col)
-            return df["id"].tolist() if "id" in df.columns else df.index.tolist()
+            return df.index.tolist()
         
         # Compute CV on the fly
         mean_col = f"{metric}_mean"
@@ -203,7 +183,7 @@ class RobustnessReport:
         df = self.result.summary.copy()
         df["_cv"] = df[std_col] / (df[mean_col] + 1e-10)  # Avoid division by zero
         df = df.nlargest(n, "_cv")
-        return df["id"].tolist() if "id" in df.columns else df.index.tolist()
+        return df.index.tolist()
     
     def layer_sensitivity(self) -> Optional[pd.DataFrame]:
         """Analyze sensitivity by layer (if layer information is available).
@@ -273,32 +253,27 @@ class RobustnessReport:
             Dictionary with baseline value, counterfactual distribution, and statistics
         """
         # Get baseline value
-        baseline_df = self.result.baseline.to_pandas()
+        baseline_df = self.result.baseline.to_pandas(expand_uncertainty=True)
         
-        if "id" in baseline_df.columns:
-            baseline_row = baseline_df[baseline_df["id"] == item_id]
-        else:
-            baseline_row = baseline_df[baseline_df.index == item_id]
-        
+        baseline_row = _lookup_item(baseline_df, item_id)
+
         if len(baseline_row) == 0:
             return {"error": f"Item {item_id} not found in baseline"}
         
+        baseline_identity = baseline_row.index[0]
         baseline_row = baseline_row.iloc[0]
         
         # Get counterfactual values
         cf_values = {}
         for cf_result in self.result.counterfactuals:
-            cf_df = cf_result.to_pandas()
+            cf_df = cf_result.to_pandas(expand_uncertainty=True)
             
-            if "id" in cf_df.columns:
-                cf_row = cf_df[cf_df["id"] == item_id]
-            else:
-                cf_row = cf_df[cf_df.index == item_id]
-            
+            cf_row = _lookup_item(cf_df, baseline_identity)
+
             if len(cf_row) > 0:
                 cf_row = cf_row.iloc[0]
                 for col in cf_df.columns:
-                    if col not in ("id", "layer") and not col.startswith("_"):
+                    if col not in _identity_columns(baseline_df) and not col.startswith("_"):
                         if col not in cf_values:
                             cf_values[col] = []
                         cf_values[col].append(cf_row[col])
@@ -311,7 +286,7 @@ class RobustnessReport:
         }
         
         for col in baseline_row.index:
-            if col not in ("id", "layer") and not col.startswith("_"):
+            if col not in _identity_columns(baseline_df) and not col.startswith("_"):
                 comparison["baseline"][col] = baseline_row[col]
                 
                 if col in cf_values:
