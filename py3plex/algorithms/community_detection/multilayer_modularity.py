@@ -15,6 +15,13 @@ import numpy as np
 import scipy.sparse as sp
 
 
+def _supra_replica_order(network):
+    """Return replica IDs in the order of the already-built supra matrix."""
+    if network.network_type == "multiplex":
+        return list(network.node_order_in_matrix)
+    return list(network.get_nodes())
+
+
 def multilayer_modularity(
     network: Any,
     communities: Dict[Tuple[Any, Any], int],
@@ -82,11 +89,11 @@ def multilayer_modularity(
         supra_matrix = supra_matrix.toarray()
 
     # Get node-layer mapping
-    node_layer_list = list(network.get_nodes())
+    node_layer_list = _supra_replica_order(network)
     node_layer_to_idx = {nl: i for i, nl in enumerate(node_layer_list)}
 
     # Extract layers
-    layers = list({nl[1] for nl in node_layer_list})
+    layers = list(network.layers)
     n_layers = len(layers)
 
     # Convert gamma to dict if single value
@@ -250,11 +257,11 @@ def build_supra_modularity_matrix(
         supra_matrix = supra_matrix.toarray()
 
     # Get node-layer mapping
-    node_layer_list = list(network.get_nodes())
+    node_layer_list = _supra_replica_order(network)
     n_total = len(node_layer_list)
 
     # Extract layers
-    layers = list({nl[1] for nl in node_layer_list})
+    layers = list(network.layers)
     layer_to_idx = {layer: i for i, layer in enumerate(layers)}
     n_layers = len(layers)
 
@@ -386,17 +393,13 @@ def louvain_multilayer(
     if random_state is not None:
         np.random.seed(random_state)
 
-    # Get node-layer list
-    node_layer_list = list(network.get_nodes())
-    n_total = len(node_layer_list)
-
-    # Initialize each node-layer in its own community
-    communities = {nl: i for i, nl in enumerate(node_layer_list)}
-
-    # Build modularity calculation cache
     supra_matrix = network.get_supra_adjacency_matrix()
     if sp.issparse(supra_matrix):
         supra_matrix = supra_matrix.toarray()
+
+    node_layer_list = _supra_replica_order(network)
+    n_total = len(node_layer_list)
+    communities = {nl: i for i, nl in enumerate(node_layer_list)}
 
     improved = True
     iteration = 0
