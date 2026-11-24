@@ -37,7 +37,8 @@ class TestFisherSignificance:
         
         # Result should be a p-value (float between 0 and 1)
         assert isinstance(result, float)
-        assert 0 <= result <= 1
+        expected = st.fisher_exact([[25, 25], [5, 45]])[1]
+        assert result == pytest.approx(expected, rel=1e-12)
 
     def test_apply_fisher_updates_pval(self):
         """Test that apply_fisher sets pval attribute on rules."""
