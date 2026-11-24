@@ -7,7 +7,7 @@ Usage:
     pip install py3plex[mcp]
     py3plex-mcp
 
-Version: 2.0.93
+Version: 2.0.94
 """
 
 from py3plex._version import __version__
