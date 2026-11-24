@@ -228,27 +228,25 @@ def community_flip_probability(
         ...     {'a': 1, 'b': 0, 'c': 1},
         ... ]
         >>> community_flip_probability(partitions, 'a')
-        0.67  # 'a' changes community in 2 out of 3 perturbations
+        0.0
     """
     if len(partitions) == 0:
         return 0.0
 
-    # Get baseline assignment (first partition)
-    if node not in partitions[0]:
+    from py3plex.uncertainty.partition_metrics import match_partition_labels
+
+    baseline = partitions[0]
+    if node not in baseline:
         return 0.0
-
-    baseline_comm = partitions[0][node]
-
-    # Count flips
-    flips = 0
+    flips = observed = 0
     for partition in partitions[1:]:
-        if node in partition and partition[node] != baseline_comm:
-            flips += 1
-
-    if len(partitions) == 1:
-        return 0.0
-
-    return flips / (len(partitions) - 1)
+        if node not in partition:
+            continue
+        observed += 1
+        mapping = match_partition_labels(baseline, partition)
+        label = partition[node]
+        flips += label not in mapping or mapping[label] != baseline[node]
+    return flips / observed if observed else 0.0
 
 
 def parse_metric_spec(metric_spec: str) -> Tuple[str, Dict[str, Any]]:

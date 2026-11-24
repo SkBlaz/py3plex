@@ -595,6 +595,7 @@ class NodeMarginalReducer(PartitionReducer):
             defaultdict(float) for _ in range(n_nodes)
         ]
         self.total_weight = 0.0
+        self._reference = None
     
     def update(self, sample_output: Any, weight: float = 1.0):
         """Update with partition sample.
@@ -607,28 +608,25 @@ class NodeMarginalReducer(PartitionReducer):
         weight : float
             Sample weight
         """
-        # Handle PartitionOutput
-        if hasattr(sample_output, 'labels') and isinstance(sample_output.labels, dict):
-            labels_dict = sample_output.labels
-            for node_id, community_id in labels_dict.items():
-                if node_id in self.node_to_idx:
-                    idx = self.node_to_idx[node_id]
-                    self.counts[idx][int(community_id)] += weight
-        # Handle raw numpy array
+        from .partition_metrics import _align_integer_labels
+
+        if hasattr(sample_output, "labels") and isinstance(sample_output.labels, dict):
+            labels = {self.node_to_idx[node]: int(label)
+                      for node, label in sample_output.labels.items() if node in self.node_to_idx}
         elif isinstance(sample_output, np.ndarray):
-            partition = sample_output
-            if len(partition) != self.n_nodes:
-                raise ValueError(
-                    f"Partition length {len(partition)} != n_nodes {self.n_nodes}"
-                )
-            for i in range(self.n_nodes):
-                label = int(partition[i])
-                self.counts[i][label] += weight
+            if len(sample_output) != self.n_nodes:
+                raise ValueError(f"Partition length {len(sample_output)} != n_nodes {self.n_nodes}")
+            labels = dict(enumerate(map(int, sample_output)))
         else:
-            raise TypeError(
-                f"Expected PartitionOutput or np.ndarray, got {type(sample_output)}"
-            )
-        
+            raise TypeError(f"Expected PartitionOutput or np.ndarray, got {type(sample_output)}")
+
+        if self._reference is None:
+            self._reference = labels
+        else:
+            labels = _align_integer_labels(self._reference, labels)
+        for idx, label in labels.items():
+            self.counts[idx][label] += weight
+
         self.total_weight += weight
     
     def finalize(self) -> Dict[str, np.ndarray]:
@@ -683,6 +681,7 @@ class NodeMarginalReducer(PartitionReducer):
         """Reset reducer."""
         self.counts = [defaultdict(float) for _ in range(self.n_nodes)]
         self.total_weight = 0.0
+        self._reference = None
 
 
 class ConsensusPartitionReducer(PartitionReducer):

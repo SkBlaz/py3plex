@@ -598,3 +598,12 @@ class TestPartitionUQProperties:
             # Consensus should be the most frequent label
             most_frequent = max(label_counts, key=label_counts.get)
             assert consensus_label == most_frequent
+
+
+def test_label_permutation_preserves_partition_membership_certainty():
+    uq = PartitionUQ.from_samples(
+        [np.array([0, 0, 1, 1]), np.array([1, 1, 0, 0])],
+        node_ids=list("abcd"),
+    )
+    np.testing.assert_array_equal(uq.membership_entropy, np.zeros(4))
+    np.testing.assert_array_equal(uq.p_max_membership, np.ones(4))
