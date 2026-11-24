@@ -77,7 +77,7 @@ def compute_icl(
     """
     Compute Integrated Classification Likelihood (ICL).
     
-    ICL = BIC - entropy(q)
+    ICL = BIC + 2 * entropy(q)
     
     ICL penalizes fuzzy cluster assignments, preferring clear separation.
     
@@ -102,8 +102,7 @@ def compute_icl(
     q_safe = np.maximum(q, 1e-10)
     entropy = -np.sum(q * np.log(q_safe))
     
-    # ICL = BIC - entropy
-    icl = bic - entropy
+    icl = bic + 2 * entropy
     
     return icl
 

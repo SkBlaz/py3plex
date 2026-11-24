@@ -9,7 +9,7 @@ import numpy as np
 import scipy.sparse as sp
 
 from .utils import safe_log, log_sum_exp, sparse_degree
-from .objectives import compute_elbo
+from .objectives import compute_elbo, _block_edges, _dyad_exposure
 
 
 class VariationalInference:
@@ -53,6 +53,8 @@ class VariationalInference:
             coupling_strength: Coupling penalty for "coupled" mode (default: 1.0)
             verbose: Whether to print progress
         """
+        if model == "dc_sbm" and likelihood == "bernoulli":
+            raise ValueError("Degree correction requires a Poisson likelihood.")
         self.model = model
         self.likelihood = likelihood
         self.directed = directed
@@ -91,6 +93,18 @@ class VariationalInference:
             - elbo_history: List of ELBO values per iteration
             - converged: Whether algorithm converged
         """
+        matrices = []
+        for matrix in A_layers:
+            matrix = sp.csr_matrix(matrix, dtype=float, copy=True)
+            matrix.sum_duplicates()
+            matrix.setdiag(0)
+            matrix.eliminate_zeros()
+            if not np.isfinite(matrix.data).all() or np.any(matrix.data < 0):
+                raise ValueError("SBM adjacency values must be finite and nonnegative.")
+            if self.likelihood == "bernoulli":
+                matrix.data.fill(1)
+            matrices.append(matrix)
+        A_layers = matrices
         rng = np.random.RandomState(seed)
         
         n_nodes = A_layers[0].shape[0]
@@ -157,7 +171,7 @@ class VariationalInference:
             
             # M-step: Update theta (DC-SBM only)
             if self.model == "dc_sbm":
-                theta = self._update_theta(A_layers, q, B_layers)
+                theta = self._update_theta(A_layers, q, B_layers, theta)
             
             # Compute ELBO
             elbo = compute_elbo(
@@ -199,201 +213,73 @@ class VariationalInference:
         """Initialize block affinity matrix."""
         # Simple initialization: uniform + noise
         B = np.ones((K, K)) * 0.1 + rng.rand(K, K) * 0.1
-        B = (B + B.T) / 2  # Symmetrize for undirected
-        B = np.maximum(B, 1e-10)
-        return B
-    
-    def _update_q(
-        self,
-        A_layers: List[sp.spmatrix],
-        q: np.ndarray,
-        B_layers: List[np.ndarray],
-        theta: Optional[np.ndarray],
-        K: int
-    ) -> np.ndarray:
-        """
-        Update soft membership q (E-step).
-        
-        For each node i, compute log-responsibility:
-        log q_ik ∝ E[log p(A_i | z_i=k, z_{-i}, theta, B)]
-        """
-        n_nodes = A_layers[0].shape[0]
-        log_q = np.zeros((n_nodes, K))
-        
-        # Aggregate contributions from all layers
-        for l, A_l in enumerate(A_layers):
-            B_l = B_layers[l] if len(B_layers) > 1 else B_layers[0]
-            
-            # For each node i and block k, compute expected log-likelihood
-            # This involves summing over neighbors
-            A_csr = A_l.tocsr()
-            
-            for i in range(n_nodes):
-                # Get neighbors of node i
-                neighbors = A_csr.getrow(i)
-                neighbor_indices = neighbors.indices
-                neighbor_weights = neighbors.data
-                
-                for k in range(K):
-                    # Compute contribution from edges to neighbors
-                    # sum_j A_ij E[log p(A_ij | z_i=k, z_j)]
-                    
-                    for idx, j in enumerate(neighbor_indices):
-                        if i == j:
-                            continue
-                        
-                        a_ij = neighbor_weights[idx]
-                        
-                        # E[log p(A_ij | z_i=k, z_j)] = sum_l q_jl log(lambda_ijkl)
-                        if self.model == "dc_sbm" and theta is not None:
-                            lambda_vec = theta[i] * theta[j] * B_l[k, :]
-                        else:
-                            lambda_vec = B_l[k, :]
-                        
-                        lambda_vec = np.maximum(lambda_vec, 1e-10)
-                        
-                        if self.likelihood == "poisson":
-                            log_contrib = np.sum(
-                                q[j] * (a_ij * safe_log(lambda_vec) - lambda_vec)
-                            )
-                        else:  # bernoulli
-                            log_contrib = np.sum(
-                                q[j] * safe_log(lambda_vec)
-                            )
-                        
-                        log_q[i, k] += log_contrib
-        
-        # Add prior: log p(z_i = k) = log(alpha / K)
-        log_q += np.log(self.alpha / K)
-        
-        # Normalize using log-sum-exp
-        log_q_normalized = log_q - log_sum_exp(log_q, axis=1)[:, None]
-        q_new = np.exp(log_q_normalized)
-        
-        # Ensure numerical stability
-        q_new = np.maximum(q_new, 1e-10)
-        q_new = q_new / q_new.sum(axis=1, keepdims=True)
-        
-        return q_new
-    
-    def _update_B_layer(
-        self,
-        A: sp.spmatrix,
-        q: np.ndarray,
-        theta: Optional[np.ndarray]
-    ) -> np.ndarray:
-        """
-        Update block affinity matrix B for a single layer (M-step).
-        
-        For Poisson: B_kl = sum_{ij} q_ik q_jl A_ij / sum_{ij} q_ik q_jl (theta_i theta_j)
-        """
-        n_nodes, K = q.shape
-        
-        B = np.zeros((K, K))
-        counts = np.zeros((K, K))
-        
-        # Iterate over edges
-        A_coo = A.tocoo()
-        for i, j, a_ij in zip(A_coo.row, A_coo.col, A_coo.data):
-            if i == j:
-                continue
-            
-            # Add contribution to all block pairs
-            outer = q[i][:, None] * q[j][None, :]
-            B += outer * a_ij
-            
-            if self.model == "dc_sbm" and theta is not None:
-                counts += outer * (theta[i] * theta[j])
-            else:
-                counts += outer
-        
-        # Normalize
-        B = B / np.maximum(counts, 1e-10)
-        
-        # Symmetrize for undirected
         if not self.directed:
             B = (B + B.T) / 2
-        
         B = np.maximum(B, 1e-10)
-        
         return B
     
-    def _update_B_shared(
-        self,
-        A_layers: List[sp.spmatrix],
-        q: np.ndarray,
-        theta: Optional[np.ndarray]
-    ) -> np.ndarray:
-        """Update shared block affinity across all layers."""
-        # Aggregate across layers
-        n_nodes, K = q.shape
-        
-        B = np.zeros((K, K))
-        counts = np.zeros((K, K))
-        
-        for A_l in A_layers:
-            A_coo = A_l.tocoo()
-            for i, j, a_ij in zip(A_coo.row, A_coo.col, A_coo.data):
-                if i == j:
-                    continue
-                
-                outer = q[i][:, None] * q[j][None, :]
-                B += outer * a_ij
-                
-                if self.model == "dc_sbm" and theta is not None:
-                    counts += outer * (theta[i] * theta[j])
+    def _update_q(self, A_layers, q, B_layers, theta, K):
+        """Perform one coordinate sweep on the mean-field memberships."""
+        q = q.copy()
+        propensities = np.ones(len(q)) if theta is None else theta
+        mass = q.T @ propensities
+        contributions = []
+        for layer, matrix in enumerate(A_layers):
+            affinity = B_layers[layer] if len(B_layers) > 1 else B_layers[0]
+            orientations = [(matrix, affinity)]
+            if self.directed:
+                orientations.append((matrix.T.tocsr(), affinity.T))
+            for adjacency, rate in orientations:
+                if self.likelihood == "bernoulli":
+                    p = np.clip(rate, 1e-10, 1 - 1e-10)
+                    absent = np.log1p(-p)
+                    present = np.log(p) - absent
                 else:
-                    counts += outer
-        
-        B = B / np.maximum(counts, 1e-10)
-        
+                    absent = -rate
+                    present = safe_log(rate)
+                contributions.append((adjacency, present, absent))
+
+        for i, propensity in enumerate(propensities):
+            mass -= propensity * q[i]
+            score = np.zeros(K)
+            for matrix, present, absent in contributions:
+                start, stop = matrix.indptr[i:i + 2]
+                neighbor_mass = matrix.data[start:stop] @ q[matrix.indices[start:stop]]
+                score += present @ neighbor_mass + propensity * (absent @ mass)
+            q[i] = np.exp(score - log_sum_exp(score))
+            mass += propensity * q[i]
+        return q
+
+    def _update_B_layer(self, A, q, theta):
+        return self._update_B_shared([A], q, theta)
+
+    def _update_B_shared(self, A_layers, q, theta):
+        weighted_q = q if theta is None else q * theta[:, None]
+        exposure = len(A_layers) * _dyad_exposure(weighted_q)
+        edges = sum(_block_edges(matrix, q) for matrix in A_layers)
+        affinity = edges / np.maximum(exposure, 1e-10)
         if not self.directed:
-            B = (B + B.T) / 2
-        
-        B = np.maximum(B, 1e-10)
-        
-        return B
-    
-    def _update_theta(
-        self,
-        A_layers: List[sp.spmatrix],
-        q: np.ndarray,
-        B_layers: List[np.ndarray]
-    ) -> np.ndarray:
-        """
-        Update node propensities theta for DC-SBM (M-step).
-        
-        For Poisson DC-SBM:
-        theta_i ∝ (degree_i + gamma_shape - 1) / (sum_j theta_j B_{z_i z_j} + gamma_rate)
-        """
-        n_nodes, K = q.shape
-        
-        # Compute total degree across layers
-        degrees = np.zeros(n_nodes)
-        for A_l in A_layers:
-            degrees += sparse_degree(A_l, self.directed)
-        
-        # Compute denominator: sum_j theta_j E[B_{z_i z_j}]
-        denom = np.zeros(n_nodes)
-        
-        for l, A_l in enumerate(A_layers):
-            B_layers[l] if len(B_layers) > 1 else B_layers[0]
-            
-            # For each node i: sum_j theta_j sum_kl q_ik q_jl B_kl
-            # = sum_kl q_ik B_kl sum_j q_jl theta_j
-            
-            theta_q = np.zeros(K)  # Will store sum_j q_jl theta_j
-            for k in range(K):
-                theta_q[k] = 1.0  # Placeholder; actual update is iterative
-            
-            # Simplified: use current degrees as proxy
-            denom += degrees / len(A_layers)
-        
-        # Update theta
-        theta = (degrees + self.gamma_shape - 1) / (denom + self.gamma_rate)
-        theta = np.maximum(theta, 1e-10)
-        
-        # Normalize to have mean 1 for identifiability
-        theta = theta / np.mean(theta)
-        
+            affinity = (affinity + affinity.T) / 2
+        upper = 1 - 1e-10 if self.likelihood == "bernoulli" else np.inf
+        return np.clip(affinity, 1e-10, upper)
+
+    def _update_theta(self, A_layers, q, B_layers, theta):
+        """Coordinate MAP update for a shared per-node Poisson propensity."""
+        theta = theta.copy()
+        degrees = np.zeros(len(q))
+        for matrix in A_layers:
+            degrees += np.asarray(matrix.sum(axis=1)).ravel()
+            if self.directed:
+                degrees += np.asarray(matrix.sum(axis=0)).ravel()
+        affinity = sum(B_layers) if len(B_layers) > 1 else len(A_layers) * B_layers[0]
+        if self.directed:
+            affinity = affinity + affinity.T
+
+        mass = q.T @ theta
+        for i in range(len(theta)):
+            mass -= theta[i] * q[i]
+            exposure = max(0.0, q[i] @ affinity @ mass)
+            theta[i] = max(1e-10, (degrees[i] + self.gamma_shape - 1) /
+                           (exposure + self.gamma_rate))
+            mass += theta[i] * q[i]
         return theta
