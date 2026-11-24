@@ -20,7 +20,8 @@ def approximate_pagerank_power_iteration(
     tol: float = 1e-6,
     max_iter: int = 100,
     personalization: Optional[Dict[Any, float]] = None,
-    diagnostics: bool = False
+    diagnostics: bool = False,
+    weight: Optional[str] = "weight",
 ) -> Tuple[Dict[Any, float], Optional[Dict[str, Any]]]:
     """Compute PageRank using power iteration with explicit convergence.
     
@@ -36,6 +37,7 @@ def approximate_pagerank_power_iteration(
         max_iter: Maximum number of iterations (default: 100)
         personalization: Optional personalization vector (dict mapping nodes to values)
         diagnostics: Whether to return convergence diagnostics (default: False)
+        weight: Edge weight attribute, or None for unit weights
         
     Returns:
         Tuple of (pagerank_dict, convergence_info) where:
@@ -57,57 +59,40 @@ def approximate_pagerank_power_iteration(
     # Build node index for efficient array operations
     idx = {v: i for i, v in enumerate(nodes)}
     
-    # Build out-degree and adjacency structure
-    out_deg = [0] * n
-    nbrs = [[] for _ in range(n)]
-    
-    if G.is_directed():
-        for u in nodes:
-            ui = idx[u]
-            for v in G.successors(u):
-                vi = idx[v]
-                nbrs[ui].append(vi)
-            out_deg[ui] = len(nbrs[ui])
-    else:
-        for u in nodes:
-            ui = idx[u]
-            for v in G.neighbors(u):
-                vi = idx[v]
-                nbrs[ui].append(vi)
-            out_deg[ui] = len(nbrs[ui])
-    
-    # Initialize PageRank vector
+    # Build weighted transitions, summing parallel arcs.
+    transitions = [[] for _ in nodes]
+    dangling = []
+    for u, neighbors in G.adjacency():
+        source = idx[u]
+        outgoing = []
+        for v, attrs in neighbors.items():
+            edges = attrs.values() if G.is_multigraph() else (attrs,)
+            strength = sum(edge.get(weight, 1.0) if weight is not None else 1.0 for edge in edges)
+            outgoing.append((idx[v], strength))
+        total = sum(strength for _, strength in outgoing)
+        if total:
+            transitions[source] = [(target, strength / total) for target, strength in outgoing]
+        else:
+            dangling.append(source)
+
     x = [1.0 / n] * n
-    
-    # Handle personalization
-    if personalization:
-        # Normalize personalization vector
-        pers_sum = sum(personalization.values())
-        if pers_sum == 0:
-            pers_sum = 1.0
-        teleport = [(1.0 - alpha) * personalization.get(nodes[i], 0.0) / pers_sum for i in range(n)]
-    else:
-        # Uniform teleportation
-        teleport_value = (1.0 - alpha) / n
-        teleport = [teleport_value] * n
-    
+    preference = ([personalization.get(node, 0.0) for node in nodes]
+                  if personalization is not None else x)
+    total = sum(preference)
+    if total == 0:
+        raise ZeroDivisionError("Personalization has zero mass on the graph.")
+    preference = [value / total for value in preference]
+    if max_iter < 1:
+        raise ValueError("max_iter must be positive")
+
     # Power iteration
     for it in range(1, max_iter + 1):
-        x_new = list(teleport)  # Start with teleport values
-        
-        # Handle dangling nodes (no outgoing edges)
-        dangling_mass = alpha * sum(x[i] for i in range(n) if out_deg[i] == 0) / n
-        for i in range(n):
-            x_new[i] += dangling_mass
-        
-        # Distribute rank from each node to its neighbors
-        for i in range(n):
-            if out_deg[i] == 0:
-                continue
-            share = alpha * x[i] / out_deg[i]
-            for j in nbrs[i]:
-                x_new[j] += share
-        
+        dangling_mass = alpha * sum(x[i] for i in dangling)
+        x_new = [(1.0 - alpha + dangling_mass) * value for value in preference]
+        for i, outgoing in enumerate(transitions):
+            for j, probability in outgoing:
+                x_new[j] += alpha * x[i] * probability
+
         # Compute L1 residual
         residual = sum(abs(x_new[i] - x[i]) for i in range(n))
         

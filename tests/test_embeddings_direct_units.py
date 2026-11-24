@@ -229,3 +229,15 @@ def test_global_cache_get_put_clear_and_stats() -> None:
 
     clear_cache()
     assert cache_stats() == {"hits": 0, "misses": 0}
+
+
+def test_netmf_on_unequal_degrees_matches_reference_singular_values():
+    from scipy.sparse import csr_matrix
+    from py3plex.embeddings.netmf import _netmf_embed
+
+    adjacency = csr_matrix([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=float)
+    for solver in ("eigsh", "randomized_svd"):
+        embedding = _netmf_embed(
+            adjacency, dim=1, window=1, negative=1, approx=solver, seed=42
+        )
+        assert np.sum(embedding ** 2) == pytest.approx(np.sqrt(2) * np.log(2))

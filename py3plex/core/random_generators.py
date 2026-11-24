@@ -308,7 +308,7 @@ def random_multilayer_ER(
 
     This generator creates a general multilayer network where each base node is
     assigned to exactly one layer. As a result, the number of node-layer pairs
-    is typically ``n`` rather than ``n * l``.
+    is ``n``, spread across ``min(n, l)`` nonempty layers.
 
     Args:
         n: Number of nodes (must be positive)

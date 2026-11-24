@@ -9,7 +9,6 @@ import pytest
 
 from py3plex.core import multinet
 from py3plex.centrality import robustness_centrality
-from py3plex.exceptions import Py3plexException
 
 
 def build_chain_network() -> multinet.multi_layer_network:
@@ -63,15 +62,15 @@ class TestRobustnessCentralityBasic:
     """Basic tests for robustness_centrality function."""
 
     def test_invalid_target(self):
-        """Test that invalid target raises Py3plexException."""
+        """Test that invalid target raises ValueError."""
         net = build_chain_network()
-        with pytest.raises(Py3plexException, match="Invalid target type"):
+        with pytest.raises(ValueError, match="target must be one of"):
             robustness_centrality(net, target="invalid")
 
     def test_invalid_metric(self):
-        """Test that invalid metric raises Py3plexException."""
+        """Test that invalid metric raises ValueError."""
         net = build_chain_network()
-        with pytest.raises(Py3plexException, match="Unknown robustness metric"):
+        with pytest.raises(ValueError, match="metric must be one of"):
             robustness_centrality(net, metric="invalid_metric")
 
     def test_returns_dict(self):
