@@ -84,8 +84,8 @@ def fwer(ruleset, alpha=0.05):
     """
     The Holm-Bonferroni direct adjustment method to control the FWER.
     """
-    m = float(len(list(ruleset)))
     ruleset = sorted(ruleset, key=lambda r: r.pval)
+    m = len(ruleset)
     for k, rule in enumerate(ruleset):
         if rule.pval > alpha / (m + 1 - (k + 1)):
             ruleset = ruleset[:k]
@@ -95,18 +95,16 @@ def fwer(ruleset, alpha=0.05):
 
 
 def fdr(ruleset, q=0.05):
-    """
-    The Benjamini-Hochberg-Yekutieli direct adjustment
-    method to control the FDR.
-    """
-    m = float(len(list(ruleset)))
-    ruleset = sorted(ruleset, key=lambda r: r.pval)
-    for k, rule in enumerate(ruleset):
-        if rule.pval > ((k + 1) * q) / m:
-            ruleset = ruleset[:k]
-            break
-
-    return ruleset
+    """Control FDR under arbitrary dependence with the Benjamini–Yekutieli rule."""
+    ordered = sorted(ruleset, key=lambda rule: rule.pval)
+    m = len(ordered)
+    harmonic = sum(1 / rank for rank in range(1, m + 1))
+    cutoff = max(
+        (rank for rank, rule in enumerate(ordered, 1)
+         if rule.pval <= rank * q / (m * harmonic)),
+        default=0,
+    )
+    return ordered[:cutoff]
 
 
 def none(ruleset):

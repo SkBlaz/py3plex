@@ -297,3 +297,22 @@ class TestMetaRegression:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def test_nondefault_interval_uses_exact_normal_quantile():
+    from scipy.stats import norm
+    from py3plex.meta.stats import fixed_effect_meta, random_effects_meta
+
+    for pool in (fixed_effect_meta, random_effects_meta):
+        result = pool(np.array([1.0]), np.array([0.5]), ci_level=0.90)
+        assert result.ci_high == pytest.approx(1 + 0.5 * norm.isf(0.05))
+        assert result.ci_low == pytest.approx(1 - 0.5 * norm.isf(0.05))
+
+
+def test_meta_regression_retains_small_tail_probability():
+    from scipy.stats import norm
+    from py3plex.meta.stats import weighted_least_squares
+
+    _, _, score, p = weighted_least_squares([10], [[1]], [1])
+    assert score[0] == 10
+    assert p[0] == pytest.approx(2 * norm.sf(10), abs=0)

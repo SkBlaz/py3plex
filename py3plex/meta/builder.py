@@ -22,6 +22,7 @@ Example:
 import warnings
 import pandas as pd
 import numpy as np
+from scipy.stats import norm
 from typing import Any, Dict, List, Optional, Union
 from py3plex.exceptions import MetaAnalysisError
 
@@ -377,7 +378,7 @@ class MetaBuilder:
                 # Unweighted: arithmetic mean and sample SD
                 pooled_effect = float(np.mean(effects))
                 se_pooled = float(np.std(effects, ddof=1) / np.sqrt(len(effects)))
-                z = 1.96
+                z = norm.isf((1 - self._ci_level) / 2)
                 ci_low = pooled_effect - z * se_pooled
                 ci_high = pooled_effect + z * se_pooled
 
@@ -515,7 +516,7 @@ class MetaBuilder:
                     # Unweighted
                     pooled_effect = float(np.mean(effects))
                     se_pooled = float(np.std(effects, ddof=1) / np.sqrt(len(effects)))
-                    z = 1.96
+                    z = norm.isf((1 - self._ci_level) / 2)
                     ci_low = pooled_effect - z * se_pooled
                     ci_high = pooled_effect + z * se_pooled
 
@@ -589,7 +590,7 @@ class MetaBuilder:
         if ses is None:
             pooled_effect = float(np.mean(effects))
             se_pooled = float(np.std(effects, ddof=1) / np.sqrt(len(effects)))
-            z = 1.96
+            z = norm.isf((1 - self._ci_level) / 2)
             ci_low = pooled_effect - z * se_pooled
             ci_high = pooled_effect + z * se_pooled
 
@@ -714,7 +715,7 @@ class MetaBuilder:
                 weights = 1.0 / (ses**2 + tau2)
 
         # Weighted least squares
-        coef, se_coef, z_scores, p_values = weighted_least_squares(y, X, weights)
+        coef, se_coef, z_scores, p_values = weighted_least_squares(y, X, weights, absolute_weights=ses is not None)
 
         # Create results table
         coef_names = ["Intercept"] + predictors

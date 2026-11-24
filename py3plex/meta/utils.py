@@ -75,6 +75,10 @@ def extract_effect_from_result(
             hint=f"Available columns: {available}",
         )
 
+    df[effect] = df[effect].map(
+        lambda value: value.get("mean", value.get("value")) if isinstance(value, dict) else value
+    )
+
     # Check cardinality
     if group_by is None:
         # No grouping: expect exactly 1 row
@@ -143,16 +147,13 @@ def resolve_standard_error(
             if std_col in df.columns:
                 return df[std_col]
 
-    # Priority 3: Auto-infer from UQ
-    if hasattr(result, "meta") and result.meta:
-        provenance = result.meta.get("provenance", {})
-        randomness = provenance.get("randomness", {})
-
-        if randomness.get("n_samples") is not None:
-            # Query used UQ, try to find std column
-            std_col = f"{effect}_std"
-            if std_col in df.columns:
-                return df[std_col]
+    # Use the per-row uncertainty payload. Deterministic rows have no SE.
+    if se is None and effect in df:
+        inferred = df[effect].map(
+            lambda value: value.get("std") if isinstance(value, dict) else None
+        )
+        if inferred.notna().any():
+            return inferred
 
     # Priority 4: Error or allow unweighted
     if allow_unweighted:
