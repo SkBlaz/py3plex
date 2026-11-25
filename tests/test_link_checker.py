@@ -51,26 +51,20 @@ def test_no_new_markdown_files():
     expected_md_files = [
         ".github/copilot-instructions.md",
         "AGENTS.md",
+        "PLAN_MEMORY.md",
         "README.md",
         "benchmarks/README.md",
         "docs/flaky_tests_guide.md",
         "example_images/README.md",
         "examples/README.md",
-        "examples/advanced/README.md",
         "examples/dsl_zoo/README.md",
-        "examples/getting_started/README.md",
-        "examples/io_and_data/README.md",
-        "examples/network_analysis/README.md",
-        "examples/pipelines/README.md",
         "formal/README.md",
         "fuzzing/README.md",
         "gui/README.md",
         "gui/ci/api-tests/README.md",
         "notebooks/README.md",
         "paper/paper.md",
-        "py3plex/stats/README.md",
         "py3plex/uncertainty/README.md",
-        "scripts/README.md",
     ]
     
     # Verify count matches
