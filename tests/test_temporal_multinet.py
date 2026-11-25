@@ -407,3 +407,21 @@ class TestFactoryMethods:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def test_narrow_temporal_range_preserves_writes_and_order():
+    from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+
+    net = TemporalMultiLayerNetwork()
+    for i, t in enumerate([90, 3, 2, 3, 0, 50, 60, 70, 80, 100]):
+        net.add_edge(i, "L", "v", "L", t)
+    def ids():
+        return [edge["source"] for edge in net.edges_between(2, 3)]
+    assert ids() == [1, 2, 3]
+    net.add_edge(10, "L", "v", "L", 2)
+    assert ids() == [1, 2, 3, 10]
+    external = net.temporal_edges
+    assert ids() == [1, 2, 3, 10]
+    external[0][1].start = 1
+    external.reverse()
+    assert ids() == [10, 3, 2, 1, 0]

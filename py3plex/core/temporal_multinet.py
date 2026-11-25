@@ -76,11 +76,31 @@ class TemporalMultiLayerNetwork:
         self.time_attribute = time_attribute
         
         # Storage for temporal edges: list of (edge_dict, EdgeTimeInterval)
-        self.temporal_edges: List[Tuple[Dict[str, Any], EdgeTimeInterval]] = []
+        self._events: List[Tuple[Dict[str, Any], EdgeTimeInterval]] = []
+        self._indexable = True
+        self._point_index: Optional[List[Tuple[float, int]]] = None
         
         # Sorted list of timestamps for efficient range queries
         self.time_index: List[float] = []
     
+    @property
+    def temporal_edges(self):
+        """Live records. Access permits external edits to intervals or list order."""
+        self._indexable = False
+        self._point_index = None
+        return self._events
+
+    @temporal_edges.setter
+    def temporal_edges(self, records):
+        self._events = records
+        self._indexable = False
+        self._point_index = None
+
+    def __setstate__(self, state):
+        if "temporal_edges" in state:
+            self.temporal_edges = state.pop("temporal_edges")
+        self.__dict__.update(state)
+
     def add_edge(
         self,
         u: Any,
@@ -118,7 +138,10 @@ class TemporalMultiLayerNetwork:
         
         # Store temporal edge
         time_interval = EdgeTimeInterval(start=t_parsed, end=t_parsed)
-        self.temporal_edges.append((edge_dict, time_interval))
+        self._events.append((edge_dict, time_interval))
+        self._point_index = None
+        if math.isnan(t_parsed):
+            self._indexable = False
         
         # Update time index
         bisect.insort(self.time_index, t_parsed)
@@ -195,7 +218,22 @@ class TemporalMultiLayerNetwork:
         # Convert layers to set for faster lookup
         layer_set = set(layers) if layers is not None else None
         
-        for edge_dict, time_interval in self.temporal_edges:
+        records = self._events
+        if self._indexable and (t0 is not None or t1 is not None):
+            if self._point_index is None:
+                self._point_index = sorted(
+                    (interval.start, i) for i, (_, interval) in enumerate(records)
+                )
+            index = self._point_index
+            lo = bisect.bisect_left(index, (t0,)) if t0 is not None else 0
+            hi = bisect.bisect_right(index, (t1, len(records))) if t1 is not None else len(index)
+            # Broad windows benefit from a sequential scan. Narrow windows must
+            # yield records in their original insertion order, including ties.
+            if hi - lo < len(records) // 2:
+                positions = sorted(i for _, i in index[lo:hi])
+                records = (self._events[i] for i in positions)
+
+        for edge_dict, time_interval in records:
             # Check time overlap
             if not time_interval.overlaps(t0, t1):
                 continue
@@ -383,7 +421,7 @@ class TemporalMultiLayerNetwork:
     
     def number_of_edges(self) -> int:
         """Return the total number of temporal edges."""
-        return len(self.temporal_edges)
+        return len(self._events)
     
     def number_of_nodes(self) -> int:
         """Return the total number of nodes in the base network."""
@@ -535,7 +573,7 @@ class TemporalMultiLayerNetwork:
                 node_replica_count=base_caps.node_replica_count,
                 has_self_loops=base_caps.has_self_loops,
                 has_parallel_edges=base_caps.has_parallel_edges,
-                total_edges=len(self.temporal_edges),
+                total_edges=len(self._events),
             )
         else:
             # Empty temporal network
