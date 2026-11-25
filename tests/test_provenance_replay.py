@@ -288,3 +288,12 @@ def test_compressed_snapshot_preserves_json_bytes():
 
     snapshot = {"label": "é\n", "nodes": [(1, date(2020, 1, 3))] * 4000}
     assert gzip.decompress(compress_snapshot(snapshot)) == json.dumps(snapshot, default=str).encode()
+
+
+def test_snapshot_compressor_preserves_dictionary_key_and_empty_list_encoding():
+    import gzip
+    import json
+    from py3plex.provenance.capture import compress_snapshot
+
+    for snapshot in ({3: "legacy", "edges": []}, {"edges": [], "nodes": [], "é": None}):
+        assert gzip.decompress(compress_snapshot(snapshot)) == json.dumps(snapshot).encode()
