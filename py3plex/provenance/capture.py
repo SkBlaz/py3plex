@@ -200,9 +200,13 @@ def compress_snapshot(snapshot_dict: Dict[str, Any]) -> bytes:
         Compressed bytes
     """
     import gzip
-    json_str = json.dumps(snapshot_dict, default=str)
-    json_bytes = json_str.encode('utf-8')
-    return gzip.compress(json_bytes)
+    import io
+
+    compressed = io.BytesIO()
+    with gzip.GzipFile(fileobj=compressed, mode="wb", mtime=0) as archive:
+        with io.TextIOWrapper(archive, encoding="utf-8", newline="") as text:
+            json.dump(snapshot_dict, text, default=str)
+    return compressed.getvalue()
 
 
 def decompress_snapshot(compressed_bytes: bytes) -> Dict[str, Any]:

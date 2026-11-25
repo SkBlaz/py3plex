@@ -278,3 +278,13 @@ class TestBackwardCompatibility:
         
         # Should be replayable
         assert result.is_replayable
+
+
+def test_compressed_snapshot_preserves_json_bytes():
+    import gzip
+    import json
+    from datetime import date
+    from py3plex.provenance.capture import compress_snapshot
+
+    snapshot = {"label": "é\n", "nodes": [(1, date(2020, 1, 3))] * 4000}
+    assert gzip.decompress(compress_snapshot(snapshot)) == json.dumps(snapshot, default=str).encode()
