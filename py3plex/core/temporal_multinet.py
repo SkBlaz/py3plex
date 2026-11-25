@@ -30,12 +30,12 @@ Example:
 
 from __future__ import annotations
 
-from array import array
 import bisect
 import math
 from datetime import timedelta
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple, Union
 
+import numpy as np
 import pandas as pd
 
 from py3plex.temporal_utils import EdgeTimeInterval, TimeLike, _parse_time
@@ -79,7 +79,7 @@ class TemporalMultiLayerNetwork:
         # Storage for temporal edges: list of (edge_dict, EdgeTimeInterval)
         self._events: List[Tuple[Dict[str, Any], EdgeTimeInterval]] = []
         self._indexable = True
-        self._point_index: Optional[Tuple[array, array]] = None
+        self._point_index: Optional[Tuple[np.ndarray, np.ndarray]] = None
         
         # Sorted list of timestamps for efficient range queries
         self.time_index: List[float] = []
@@ -224,18 +224,18 @@ class TemporalMultiLayerNetwork:
         records = self._events
         if self._indexable and (t0 is not None or t1 is not None):
             if self._point_index is None:
-                order = sorted(range(len(records)), key=lambda i: records[i][1].start)
-                self._point_index = (
-                    array("d", (records[i][1].start for i in order)),
-                    array("Q", order),
+                timestamps = np.fromiter(
+                    (interval.start for _, interval in records), dtype=np.float64, count=len(records)
                 )
+                order = np.argsort(timestamps, kind="stable")
+                self._point_index = timestamps[order], order
             times, order = self._point_index
             lo = bisect.bisect_left(times, t0) if t0 is not None else 0
             hi = bisect.bisect_right(times, t1) if t1 is not None else len(times)
             # Broad windows benefit from a sequential scan. Narrow windows must
             # yield records in their original insertion order, including ties.
             if hi - lo < len(records) // 2:
-                positions = sorted(order[lo:hi])
+                positions = np.sort(order[lo:hi])
                 records = (self._events[i] for i in positions)
 
         for edge_dict, time_interval in records:
