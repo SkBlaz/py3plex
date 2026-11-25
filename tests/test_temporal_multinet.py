@@ -425,3 +425,15 @@ def test_narrow_temporal_range_preserves_writes_and_order():
     external[0][1].start = 1
     external.reverse()
     assert ids() == [10, 3, 2, 1, 0]
+
+
+def test_legacy_cached_point_index_is_rebuilt_on_restore():
+    from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+
+    net = TemporalMultiLayerNetwork()
+    for t in (8, 2, 4, 2, 1):
+        net.add_edge(str(t), "L", "other", "L", t)
+    state = dict(vars(net), _point_index=[(1., 4), (2., 1), (2., 3), (4., 2), (8., 0)])
+    restored = TemporalMultiLayerNetwork.__new__(TemporalMultiLayerNetwork)
+    restored.__setstate__(state)
+    assert list(restored.edges_between(2, 2)) == list(net.edges_between(2, 2))
