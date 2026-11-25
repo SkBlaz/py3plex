@@ -281,6 +281,8 @@ def worker(case, n, mode, directory):
 
     cache = get_global_cache()
     cache.clear()
+    if case == "cache_churn_bounded":
+        cache.max_entries = 2
     if case not in ("noop", "build") and not case.startswith(
         ("ooc_", "temporal", "mlking")
     ):
@@ -320,7 +322,7 @@ def worker(case, n, mode, directory):
         pd.DataFrame({"x": [1]})
     if case in ("gzip", "gzip_stream"):
         snapshot = capture_network(net).to_dict()
-    if case in ("cache_hit", "cache_stream", "cache_churn"):
+    if case in ("cache_hit", "cache_stream", "cache_churn", "cache_churn_bounded"):
         program = Q.nodes().compute("degree").compile()
         if case in ("cache_hit", "cache_stream"):
             if case == "cache_stream":
@@ -399,6 +401,7 @@ def worker(case, n, mode, directory):
         .uq(method="bootstrap", n_samples=8, seed=42)
         .execute(net, progress=False),
         "cache_churn": churn,
+        "cache_churn_bounded": churn,
         "ooc_file_coverage": file_coverage,
         "netmf": lambda: _netmf_embed(
             adj, dim=8, window=2, negative=1.0, approx="randomized_svd", seed=42
@@ -566,8 +569,8 @@ def worker(case, n, mode, directory):
         assert value.number_of_edges() == 16 * n
     elif case in ("pandas", "arrow"):
         assert len(value) == 4 * n
-    elif case == "cache_churn":
-        assert value == 8
+    elif case in ("cache_churn", "cache_churn_bounded"):
+        assert value == (2 if case == "cache_churn_bounded" else 8)
     if case in ("cache_hit", "cache_stream"):
         assert cache.statistics()["hits"] == 1
     if case in ("ooc_file_coverage", "mlking_file"):
@@ -576,7 +579,7 @@ def worker(case, n, mode, directory):
     gc.collect()
     row["after_gc_bytes"] = tracemalloc.get_traced_memory()[0]
     row["after_gc_delta_kib"] = rss_kib() - baseline
-    if case == "cache_churn":
+    if case in ("cache_churn", "cache_churn_bounded"):
         cache.clear()
         gc.collect()
         row["after_clear_bytes"] = tracemalloc.get_traced_memory()[0]
@@ -590,7 +593,14 @@ if __name__ == "__main__":
         "--cases",
         nargs="+",
         choices=CASES
-        + ("mlking", "mlking_file", "import_package", "import_core", "import_dsl"),
+        + (
+            "mlking",
+            "mlking_file",
+            "import_package",
+            "import_core",
+            "import_dsl",
+            "cache_churn_bounded",
+        ),
         default=list(CASES),
     )
     parser.add_argument("--sizes", nargs="+", type=int, default=[512, 2048])

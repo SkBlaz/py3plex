@@ -127,3 +127,22 @@ The [raw measurements](benchmarks/memory-845c9dec.tsv) contain the 212 memory wo
 For eight serial edge resamples on the large graph, the original path reached 54,430,326 traced bytes during construction of the fourth sampled graph. The first sample alone grew traced live memory from 4,617,093 to 18,583,328 bytes. The first degree calculation on that sample added 510,008 bytes at its peak. The final quantile call added 1,256,912 bytes at its peak. These numbers come from a separate instrumented process. Each measurement includes allocations still live at phase entry. To reproduce on the baseline checkout, run the harness with `--worker bootstrap 2048 phases`.
 
 For the built-in, full-topology, unweighted degree metric, a sampled edge contributes one count to each endpoint, including both endpoints of a loop. Count the endpoints of exactly the same seeded edge draws and add fixed multiplex coupling degrees. This uses the existing quantile and sample-count code. The production change reduced median incremental RSS from **54,728 KiB to 11,144 KiB** on the eight-draw fixture. The branch's traced peak was **9,772,425 bytes**. Comparisons against materialized draws cover directed and undirected graphs, parallel edges, loops, restricted output nodes, isolates and fixed coupling.
+
+## Implemented changes
+
+The following production branches were measured independently against the scan baseline. Rows use the same fixtures as the survey. The warm cache budget comparison retains two entries across eight seeds. Each PR records traced bytes and correctness checks.
+
+| Workload and PR | Baseline incremental RSS (KiB) | Production incremental RSS (KiB) |
+|---|---:|---:|
+| [Bare package import (#1735)](https://github.com/SkBlaz/py3plex/pull/1735) | 205,952 | 76 |
+| [NetMF factorization (#1736)](https://github.com/SkBlaz/py3plex/pull/1736) | 98,876 | 2,908 |
+| [Warm cache fingerprint (#1737)](https://github.com/SkBlaz/py3plex/pull/1737) | 77,332 | 288 |
+| [All-edge CSV read (#1738)](https://github.com/SkBlaz/py3plex/pull/1738) | 13,824 | 7,424 |
+| [MLKing coverage (#1739)](https://github.com/SkBlaz/py3plex/pull/1739) | 21,952 | 3,348 |
+| [Sparse supra-adjacency (#1740)](https://github.com/SkBlaz/py3plex/pull/1740) | 21,156 | 3,816 |
+| [Snapshot compression (#1741)](https://github.com/SkBlaz/py3plex/pull/1741) | 15,952 | 696 |
+| [Temporal point index (#1742)](https://github.com/SkBlaz/py3plex/pull/1742) | 3,344 | 832 |
+| [Eight seeded cache entries (#1743)](https://github.com/SkBlaz/py3plex/pull/1743) | 85,664 | 85,124 |
+| [Degree bootstrap (#1746)](https://github.com/SkBlaz/py3plex/pull/1746) | 54,728 | 11,144 |
+
+The cache capacity change reduced retained allocations after GC from 3,719,156 to 2,145,747 bytes with a two-entry budget. The temporal index retained 525,312 bytes after GC. The snapshot writer batches 128 records at a time. Its median compression time was 825.090 ms versus 853.329 ms for the original writer in the same three-run comparison.
