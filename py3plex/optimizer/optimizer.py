@@ -186,6 +186,7 @@ def optimize_query(
     max_iter: int = 10,
     include_trace: bool = False,
     rules: Optional[Sequence[OptimizationRule]] = None,
+    stats: Optional[NetworkStats] = None,
 ) -> Tuple[PhysicalPlan, Dict[str, Any]]:
     """One-shot helper: build logical plan → optimise → return physical plan.
 
@@ -215,8 +216,7 @@ def optimize_query(
     logical_plan = builder.build()
 
     # Extract network stats if a network was provided
-    stats: Optional[NetworkStats] = None
-    if network is not None:
+    if stats is None and network is not None:
         stats = NetworkStats.from_network(network)
 
     optimizer = Optimizer(

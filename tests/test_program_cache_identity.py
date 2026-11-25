@@ -60,3 +60,24 @@ def test_parameterized_seeded_programs_do_not_reuse_other_bindings():
     assert len(low_threshold.items) == 2
     assert len(high_threshold.items) == 1
     assert get_global_cache().size() == 2
+
+
+def test_plain_degree_recomputes_on_auto_and_honors_explicit_cache(monkeypatch):
+    from py3plex.core.multinet import multi_layer_network
+    from py3plex.dsl import Q
+    from py3plex.dsl.program.cache import ProgramCache
+
+    cache = ProgramCache()
+    monkeypatch.setattr("py3plex.dsl.program.cache._global_cache", cache)
+    net = multi_layer_network(directed=False)
+    net.add_edges([["a", "L", "b", "L", 1]], input_type="list")
+    program = Q.nodes().compute("degree").compile()
+    def run(policy):
+        return program.execute(net, seed=42, progress=False, cache_policy=policy)
+    assert run("auto").attributes == run("auto").attributes
+    assert cache.size() == 0
+    first = run("enabled")
+    assert run("enabled").attributes == first.attributes
+    assert cache.statistics()["hits"] == 1
+    net.core_network.add_edge(("a", "L"), ("b", "L"))
+    assert run("enabled").attributes["degree"][("a", "L")] == 2
