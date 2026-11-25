@@ -230,12 +230,12 @@ class TemporalMultiLayerNetwork:
                 order = np.argsort(timestamps, kind="stable")
                 self._point_index = timestamps[order], order
             times, order = self._point_index
-            lo = bisect.bisect_left(times, t0) if t0 is not None else 0
-            hi = bisect.bisect_right(times, t1) if t1 is not None else len(times)
+            lo = times.searchsorted(t0) if t0 is not None else 0
+            hi = times.searchsorted(t1, side="right") if t1 is not None else len(times)
             # Broad windows benefit from a sequential scan. Narrow windows must
             # yield records in their original insertion order, including ties.
             if hi - lo < len(records) // 2:
-                positions = np.sort(order[lo:hi])
+                positions = sorted(order[lo:hi].tolist())
                 records = (self._events[i] for i in positions)
 
         for edge_dict, time_interval in records:
