@@ -39,6 +39,9 @@ jobs:
         python "$GITHUB_WORKSPACE/scripts/check_troubleshooting_examples.py"
 
   test:
+    # uv pip already resolved and installed dependencies for this runner.
+    env:
+      UV_NO_SYNC: "1"
     runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || matrix.os }}
     permissions:
       contents: read
