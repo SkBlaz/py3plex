@@ -81,3 +81,17 @@ def test_plain_degree_recomputes_on_auto_and_honors_explicit_cache(monkeypatch):
     assert cache.statistics()["hits"] == 1
     net.core_network.add_edge(("a", "L"), ("b", "L"))
     assert run("enabled").attributes["degree"][("a", "L")] == 2
+
+
+def test_streamed_fingerprint_matches_tagged_graph_tuple():
+    import networkx as nx
+    from py3plex.dsl.program.cache import _fingerprint_value, graph_fingerprint
+
+    for kind in (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph):
+        graph = kind()
+        graph.add_edge("ä", 2, details={"nested": [True, None, 3]})
+        graph.add_edge("ä", 2, weight=2.3)
+        edges = graph.edges(keys=True, data=True) if graph.is_multigraph() else graph.edges(data=True)
+        reference = (kind.__name__, graph.is_directed(), None, None, None, None,
+                     None, graph.graph, list(graph.nodes(data=True)), list(edges), [])
+        assert graph_fingerprint(graph) == _fingerprint_value(reference)
