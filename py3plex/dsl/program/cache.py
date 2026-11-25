@@ -4,7 +4,9 @@ This module implements deterministic caching keyed by graph fingerprint,
 program hash, and execution context.
 """
 
+from collections import OrderedDict
 from dataclasses import dataclass
+from threading import RLock
 from typing import Any, Dict, Optional, Tuple
 import hashlib
 import json
@@ -230,11 +232,40 @@ class ProgramCache:
         True
     """
     
-    def __init__(self):
-        self._cache: Dict[str, Tuple[CacheKey, Any]] = {}
-        self._hits = 0
-        self._misses = 0
-    
+    def __init__(self, max_entries: Optional[int] = 128):
+        """Retain the most recently used entries; None opts into unlimited storage."""
+        self._lock = RLock()
+        self._cache = OrderedDict()
+        self._evictions = self._hits = self._misses = 0
+        self.max_entries = max_entries
+
+    @property
+    def max_entries(self) -> Optional[int]:
+        """Capacity of this cache, including the one returned by get_global_cache()."""
+        return self._max_entries
+
+    @max_entries.setter
+    def max_entries(self, limit: Optional[int]) -> None:
+        if limit is not None and (not isinstance(limit, int) or limit < 0):
+            raise ValueError("max_entries must be a nonnegative integer or None")
+        with self._lock:
+            self._max_entries = limit
+            while limit is not None and len(self._cache) > limit:
+                self._cache.popitem(last=False)
+                self._evictions += 1
+
+    def __getstate__(self):
+        with self._lock:
+            return {key: (value.copy() if key == "_cache" else value)
+                    for key, value in vars(self).items() if key != "_lock"}
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._lock = RLock()
+        self._cache = OrderedDict(self._cache)
+        self._evictions = state.get("_evictions", 0)
+        self.max_entries = state.get("_max_entries", None)
+
     def get(self, key: CacheKey) -> Optional[Any]:
         """Get cached result.
         
@@ -245,13 +276,14 @@ class ProgramCache:
             Cached result or None if not found
         """
         key_str = key.to_string()
-        if key_str in self._cache:
-            self._hits += 1
-            return self._cache[key_str][1]
-        else:
+        with self._lock:
+            if key_str in self._cache:
+                self._hits += 1
+                self._cache.move_to_end(key_str)
+                return self._cache[key_str][1]
             self._misses += 1
             return None
-    
+
     def put(self, key: CacheKey, result: Any) -> None:
         """Store result in cache.
         
@@ -260,13 +292,18 @@ class ProgramCache:
             result: Result to cache
         """
         key_str = key.to_string()
-        self._cache[key_str] = (key, result)
+        with self._lock:
+            self._cache[key_str] = (key, result)
+            self._cache.move_to_end(key_str)
+            if self._max_entries is not None and len(self._cache) > self._max_entries:
+                self._cache.popitem(last=False)
+                self._evictions += 1
     
     def clear(self) -> None:
         """Clear all cache entries."""
-        self._cache.clear()
-        self._hits = 0
-        self._misses = 0
+        with self._lock:
+            self._cache.clear()
+            self._hits = self._misses = self._evictions = 0
     
     def size(self) -> int:
         """Get number of cached entries."""
@@ -274,14 +311,17 @@ class ProgramCache:
     
     def statistics(self) -> Dict[str, Any]:
         """Get cache statistics."""
-        total = self._hits + self._misses
-        hit_rate = self._hits / total if total > 0 else 0.0
-        return {
-            "size": len(self._cache),
-            "hits": self._hits,
-            "misses": self._misses,
-            "hit_rate": hit_rate,
-        }
+        with self._lock:
+            total = self._hits + self._misses
+            hit_rate = self._hits / total if total > 0 else 0.0
+            return {
+                "size": len(self._cache),
+                "evictions": self._evictions,
+                "max_entries": self._max_entries,
+                "hits": self._hits,
+                "misses": self._misses,
+                "hit_rate": hit_rate,
+            }
 
 
 # Global cache instance
