@@ -220,12 +220,8 @@ def aggregate_layers(
     if reducer == "sum":
         # sum_duplicates() merges duplicate (i,j) entries by summing
         mat.sum_duplicates()
-    elif reducer == "max":
-        # For max, need to handle duplicates manually
-        mat = _aggregate_max(rows, cols, data, n)
-    elif reducer == "mean":
-        # For mean, sum then divide by count of duplicates
-        mat = _aggregate_mean(rows, cols, data, n)
+    else:
+        mat = _aggregate_groups(rows, cols, data, n, reducer)
 
     # Convert to requested format
     if to_sparse:
@@ -244,86 +240,22 @@ def aggregate_layers(
         return result
 
 
-def _aggregate_max(
-    rows: np.ndarray, cols: np.ndarray, data: np.ndarray, n: int
-) -> sp.coo_matrix:
-    """
-    Aggregate duplicate edges by taking maximum weight.
-
-    Uses vectorized groupby-like operations for efficiency.
-
-    Complexity: O(E log E) due to sorting
-    Memory: O(E)
-    """
-    # Create compound index for (row, col) pairs
-    # Use a stable approach that works for large indices
-    edge_ids = rows * n + cols
-
-    # Sort by edge ID to group duplicates together
-    sort_idx = np.argsort(edge_ids)
-    sorted_ids = edge_ids[sort_idx]
-    sorted_data = data[sort_idx]
-
-    # Find boundaries where edge ID changes
-    unique_mask = np.concatenate([[True], sorted_ids[1:] != sorted_ids[:-1]])
-
-    # Split data into groups and take max of each
-    split_indices = np.where(unique_mask)[0]
-
-    # Compute max for each group
-    max_data_list = []
-    for i, start in enumerate(split_indices):
-        end = split_indices[i + 1] if i + 1 < len(split_indices) else len(sorted_data)
-        max_data_list.append(sorted_data[start:end].max())
-
-    max_data = np.array(max_data_list)
-
-    # Get unique edge coordinates
-    unique_ids = sorted_ids[unique_mask]
-    unique_rows = unique_ids // n
-    unique_cols = unique_ids % n
-
-    return sp.coo_matrix((max_data, (unique_rows, unique_cols)), shape=(n, n))
-
-
-def _aggregate_mean(
-    rows: np.ndarray, cols: np.ndarray, data: np.ndarray, n: int
-) -> sp.coo_matrix:
-    """
-    Aggregate duplicate edges by computing mean weight.
-
-    Uses vectorized operations to compute sum and count, then divide.
-
-    Complexity: O(E log E) due to sorting
-    Memory: O(E)
-    """
-    # Create compound index for (row, col) pairs
-    edge_ids = rows * n + cols
-
-    # Sort by edge ID to group duplicates together
-    sort_idx = np.argsort(edge_ids)
-    sorted_ids = edge_ids[sort_idx]
-    sorted_data = data[sort_idx]
-
-    # Find boundaries where edge ID changes
-    unique_mask = np.concatenate([[True], sorted_ids[1:] != sorted_ids[:-1]])
-
-    # Split data into groups and compute mean for each
-    split_indices = np.where(unique_mask)[0]
-
-    mean_data_list = []
-    for i, start in enumerate(split_indices):
-        end = split_indices[i + 1] if i + 1 < len(split_indices) else len(sorted_data)
-        mean_data_list.append(sorted_data[start:end].mean())
-
-    mean_data = np.array(mean_data_list)
-
-    # Get unique edge coordinates
-    unique_ids = sorted_ids[unique_mask]
-    unique_rows = unique_ids // n
-    unique_cols = unique_ids % n
-
-    return sp.coo_matrix((mean_data, (unique_rows, unique_cols)), shape=(n, n))
+def _aggregate_groups(rows, cols, data, n, reducer):
+    """Reduce contiguous runs of equal coordinates after one sort."""
+    keys = rows.astype(np.int64) * int(n) + cols
+    order = np.argsort(keys)
+    keys = keys[order]
+    starts = np.r_[0, np.flatnonzero(keys[1:] != keys[:-1]) + 1]
+    weights = data[order]
+    if reducer == "max":
+        values = np.maximum.reduceat(weights, starts)
+    else:
+        counts = np.diff(np.r_[starts, len(keys)])
+        values = np.add.reduceat(weights, starts) / counts
+    coordinates = keys[starts]
+    return sp.coo_matrix(
+        (values, (coordinates // n, coordinates % n)), shape=(n, n)
+    )
 
 
 # Helper functions for contract validation
