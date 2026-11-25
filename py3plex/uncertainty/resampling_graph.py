@@ -160,8 +160,8 @@ def bootstrap_network_edges(
     return _bootstrap_edges(network, np.random.default_rng(seed))
 
 
-def _bootstrap_edges(network, rng):
-    sample, edges = _edge_sample_base(network, bootstrap=True)
+def _bootstrap_edges(network, rng, pool=None):
+    sample, edges = _edge_sample_base(network, bootstrap=True, pool=pool)
     if not edges:
         return sample
 
@@ -188,7 +188,7 @@ def _add_sample_edge(graph, source, target, key, attrs):
         graph.edges[source, target].update(attrs)
 
 
-def _edge_sample_base(network, bootstrap=False):
+def _edge_sample_base(network, bootstrap=False, pool=None):
     """Copy all nodes and retain multiplex coupling outside the sampling pool."""
     graph = network.core_network
     sample = multinet.multi_layer_network(
@@ -208,17 +208,30 @@ def _edge_sample_base(network, bootstrap=False):
         graph_type = nx.MultiDiGraph if graph.is_directed() else nx.MultiGraph
         sample.core_network = graph_type(sample.core_network)
 
+    edges, coupling = _edge_pool(network) if pool is None else pool
+    for record in coupling:
+        _add_sample_edge(sample.core_network, *record)
+    return sample, edges
+
+
+def _edge_pool(network):
+    """Separate fixed coupling edges from interactions once per serial run."""
+    graph = network.core_network
+    if graph is None:
+        return [], []
     if graph.is_multigraph():
         records = graph.edges(keys=True, data=True)
     else:
         records = ((u, v, None, attrs) for u, v, attrs in graph.edges(data=True))
-    edges = []
-    for source, target, key, attrs in records:
-        if network.network_type == "multiplex" and attrs.get("type") == "coupling":
-            _add_sample_edge(sample.core_network, source, target, key, attrs)
+    if network.network_type != "multiplex":
+        return list(records), []
+    edges, coupling = [], []
+    for record in records:
+        if record[3].get("type") == "coupling":
+            coupling.append(record)
         else:
-            edges.append((source, target, key, attrs))
-    return sample, edges
+            edges.append(record)
+    return edges, coupling
 
 
 def resample_network_nodes(

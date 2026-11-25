@@ -507,3 +507,29 @@ class TestNullModelIntegration:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def test_bootstrap_column_summaries_match_individual_draws():
+    import numpy as np
+    from py3plex.core.multinet import multi_layer_network
+    from py3plex.uncertainty.bootstrap import bootstrap_metric
+
+    net = multi_layer_network(directed=True)
+    net.add_edges([["a", "L", "b", "L", 1], ["a", "L", "c", "L", 1]], input_type="list")
+    draws = []
+    def metric(sample):
+        d = sample.core_network.in_degree(("b", "L"))
+        row = {"complete": d, "sometimes": d if d else np.nan, "missing": np.inf}
+        draws.append(row)
+        return row
+    result = bootstrap_metric(net, metric, n_boot=8, random_state=42, n_jobs=1)
+    for i, item in enumerate(result["index"]):
+        values = [row[item] for row in draws[1:] if np.isfinite(row[item])]
+        assert result["sample_counts"][i] == len(values)
+        if values:
+            np.testing.assert_allclose(result["mean"][i], np.mean(values))
+            np.testing.assert_allclose(result["std"][i], np.std(values, ddof=int(len(values) > 1)))
+            np.testing.assert_allclose([result["ci_low"][i], result["ci_high"][i]],
+                                       np.quantile(values, [.025, .975]))
+        else:
+            assert np.isnan(result["mean"][i]) and np.isnan(result["ci_low"][i])

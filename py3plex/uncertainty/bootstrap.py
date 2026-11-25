@@ -13,7 +13,7 @@ import numpy as np
 from py3plex.core import multinet
 from py3plex._parallel import parallel_map, spawn_seeds
 from py3plex import config
-from .resampling_graph import _add_sample_edge, _bootstrap_edges, _bootstrap_units, _edge_sample_base
+from .resampling_graph import _add_sample_edge, _bootstrap_edges, _bootstrap_units, _edge_sample_base, _edge_pool
 
 
 def _bootstrap_single_replicate(args):
@@ -31,14 +31,14 @@ def _bootstrap_single_replicate(args):
     np.ndarray
         Metric values for this replicate, indexed by the index list
     """
-    graph, metric_fn, unit, mode, seed, index = args
+    graph, metric_fn, unit, mode, seed, index, pool = args
     
     # Create RNG for this replicate
     rng = np.random.default_rng(seed)
     
     # Create bootstrap sample
     if unit == "edges":
-        boot_graph = _resample_edges(graph, mode, rng)
+        boot_graph = _resample_edges(graph, mode, rng, pool)
     elif unit == "nodes":
         boot_graph = _resample_nodes(graph, mode, rng)
     elif unit == "layers":
@@ -176,8 +176,9 @@ def bootstrap_metric(
     child_seeds = spawn_seeds(random_state, n_boot)
     
     # Prepare arguments for each bootstrap replicate
+    pool = _edge_pool(graph) if n_jobs == 1 and unit == "edges" else None
     replicate_args = [
-        (graph, metric_fn, unit, mode, child_seed, index)
+        (graph, metric_fn, unit, mode, child_seed, index, pool)
         for child_seed in child_seeds
     ]
     
@@ -195,10 +196,16 @@ def bootstrap_metric(
     # Missing items are summarized conditionally on presence.
     alpha = (1 - ci) / 2
     mean, std, ci_low, ci_high = np.full((4, len(index)), np.nan)
-    sample_counts = np.zeros(len(index), dtype=int)
-    for i, values in enumerate(samples.T):
-        present = values[np.isfinite(values)]
-        sample_counts[i] = len(present)
+    finite = np.isfinite(samples)
+    sample_counts = finite.sum(axis=0)
+    complete = sample_counts == n_boot
+    if complete.any():
+        dense = samples if complete.all() else samples[:, complete]
+        mean[complete] = dense.mean(axis=0)
+        std[complete] = dense.std(axis=0, ddof=int(n_boot > 1))
+        ci_low[complete], ci_high[complete] = np.quantile(dense, [alpha, 1 - alpha], axis=0)
+    for i in np.flatnonzero(~complete):
+        present = samples[finite[:, i], i]
         if present.size:
             mean[i] = present.mean()
             std[i] = present.std(ddof=int(present.size > 1))
@@ -216,10 +223,10 @@ def bootstrap_metric(
     }
 
 
-def _resample_edges(graph, mode, rng):
+def _resample_edges(graph, mode, rng, pool=None):
     if mode == "resample":
-        return _bootstrap_edges(graph, rng)
-    sample, edges = _edge_sample_base(graph)
+        return _bootstrap_edges(graph, rng, pool)
+    sample, edges = _edge_sample_base(graph, pool=pool)
     for index in rng.permutation(len(edges)):
         _add_sample_edge(sample.core_network, *edges[index])
     return sample
