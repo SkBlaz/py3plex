@@ -228,3 +228,13 @@ def test_mean_and_max_properties_match_reference_random_edges(reducer, random_ed
     result = aggregate_layers(edges, reducer=reducer, to_sparse=False)
 
     assert np.allclose(result, ref_dense)
+
+
+def test_grouped_sparse_reducers_keep_wide_coordinates_and_duplicates():
+    edges = np.array([[0, 70000, 1, 2], [1, 70000, 1, 8], [0, 2, 1, 3]])
+    for reducer, expected in [("mean", 5), ("max", 8)]:
+        result = aggregate_layers(edges, reducer=reducer)
+        assert result.shape == (70001, 70001)
+        assert result.nnz == 2
+        assert result[70000, 1] == expected
+        assert result[2, 1] == 3
