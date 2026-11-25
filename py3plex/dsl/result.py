@@ -949,7 +949,7 @@ class QueryResult:
 
         # Create subgraph with result items
         if self.target == "nodes":
-            if len(self.items) == len(G) and set(self.items) == G.nodes:
+            if len(self.items) == len(G) and set(self.items) == set(G):
                 subgraph = G.copy()
             else:
                 subgraph = G.subgraph(self.items).copy()
