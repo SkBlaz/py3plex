@@ -200,9 +200,33 @@ def compress_snapshot(snapshot_dict: Dict[str, Any]) -> bytes:
         Compressed bytes
     """
     import gzip
-    json_str = json.dumps(snapshot_dict, default=str)
-    json_bytes = json_str.encode('utf-8')
-    return gzip.compress(json_bytes)
+    import io
+
+    compressed = io.BytesIO()
+    with gzip.GzipFile(fileobj=compressed, mode="wb", mtime=0) as archive:
+        with io.TextIOWrapper(archive, encoding="utf-8", newline="") as text:
+            if type(snapshot_dict) is dict and all(type(k) is str for k in snapshot_dict):
+                text.write("{")
+                for field, (key, value) in enumerate(snapshot_dict.items()):
+                    if field:
+                        text.write(", ")
+                    text.write(json.dumps(key) + ": ")
+                    if key in ("nodes", "edges") and type(value) is list:
+                        # Encode records in batches to use the C JSON encoder
+                        # without allocating the entire serialized capture.
+                        text.write("[")
+                        for start in range(0, len(value), 128):
+                            if start:
+                                text.write(", ")
+                            batch = json.dumps(value[start:start + 128], default=str)
+                            text.write(batch[1:-1])
+                        text.write("]")
+                    else:
+                        json.dump(value, text, default=str)
+                text.write("}")
+            else:
+                json.dump(snapshot_dict, text, default=str)
+    return compressed.getvalue()
 
 
 def decompress_snapshot(compressed_bytes: bytes) -> Dict[str, Any]:
