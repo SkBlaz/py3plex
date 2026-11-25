@@ -64,7 +64,7 @@ class NetworkStats:
             layer_count = max(len(layers), 1)
             avg_degree = (2 * edge_count / node_count) if node_count > 0 else 0.0
 
-            counts = Counter(n[1] for n in nodes if len(n) > 1)
+            counts = Counter(n[1] for n in nodes if isinstance(n, tuple) and len(n) > 1)
             layer_sizes = {str(layer): counts[layer] for layer in layers}
 
             density = (

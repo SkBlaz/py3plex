@@ -504,7 +504,7 @@ def execute_ast(
         from py3plex.core.multinet import multi_layer_network
         from py3plex.optimizer.cost_model import NetworkStats
         stats = None
-        if type(network) is multi_layer_network and network.core_network is not None:
+        if type(network) is multi_layer_network and isinstance(network.core_network, nx.Graph):
             stats = NetworkStats.from_network(network)
             counts = (stats.node_count, stats.edge_count)
         from py3plex.optimizer import optimize_query as _optimize_query
