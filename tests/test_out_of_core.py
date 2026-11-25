@@ -1239,3 +1239,12 @@ class TestPublicAPI:
             build_predicates,
             make_edge_reader,
         )
+
+
+def test_edge_result_consumes_iterators_and_aligns_late_weights():
+    from py3plex.out_of_core.executor import OutOfCoreBackend
+    rows = iter([{"source": "first", "color": "red"},
+                 {"source": "second", "weight": 0, "late": 3}, {}])
+    result = OutOfCoreBackend._rows_to_edge_result(rows, {})
+    assert result.attributes == {"weight": [None, 0, None], "color": ["red", None, None]}
+    assert [item[0] for item in result.items] == ["first", "second", ""]
