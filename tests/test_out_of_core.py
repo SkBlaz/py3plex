@@ -1239,3 +1239,14 @@ class TestPublicAPI:
             build_predicates,
             make_edge_reader,
         )
+
+
+def test_coverage_limit_and_spill_cleanup(coverage_edge_csv, tmp_path):
+    from py3plex.out_of_core.network import OutOfCoreNetwork
+    scratch = tmp_path / "scratch"
+    scratch.mkdir()
+    network = OutOfCoreNetwork.from_edges_csv(coverage_edge_csv, workdir=str(scratch))
+    all_rows = network.query_edges(coverage_k=2)
+    head = network.query_edges(coverage_k=2, limit=1)
+    assert head.items == all_rows.items[:1]
+    assert not list(scratch.iterdir())
