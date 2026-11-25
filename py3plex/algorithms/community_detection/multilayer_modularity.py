@@ -81,148 +81,47 @@ def multilayer_modularity(
         >>> Q = multilayer_modularity(network, communities, gamma=1.0, omega=1.0)
         >>> print(f"Modularity: {Q:.3f}")
     """
-    # Get supra-adjacency matrix
-    supra_matrix = network.get_supra_adjacency_matrix()
-
-    # Convert to dense if sparse
-    if sp.issparse(supra_matrix):
-        supra_matrix = supra_matrix.toarray()
-
-    # Get node-layer mapping
-    node_layer_list = _supra_replica_order(network)
-    node_layer_to_idx = {nl: i for i, nl in enumerate(node_layer_list)}
-
-    # Extract layers
+    adjacency = sp.csr_matrix(network.get_supra_adjacency_matrix())
+    replicas = _supra_replica_order(network)
     layers = list(network.layers)
-    n_layers = len(layers)
+    indices = {layer: [] for layer in layers}
+    membership = {layer: {} for layer in layers}
+    for index, (node, layer) in enumerate(replicas):
+        indices[layer].append(index)
+        membership[layer][node] = communities.get((node, layer), -1)
 
-    # Convert gamma to dict if single value
-    if isinstance(gamma, (int, float)):
-        gamma_dict = {layer: float(gamma) for layer in layers}
-    else:
-        gamma_dict = gamma
+    score = 0.0
+    total = 0.0
+    for i, layer in enumerate(layers):
+        rows = indices[layer]
+        block = adjacency[rows, :][:, rows].tocoo()
+        mass = float(block.data.sum())
+        total += mass
+        groups = np.asarray(list(membership[layer].values()))
+        assigned = groups != -1
+        within = assigned[block.row] & (groups[block.row] == groups[block.col])
+        score += block.data[within].sum()
+        if mass > 0 and assigned.any():
+            degree = np.bincount(block.row, weights=block.data, minlength=len(rows))
+            _, labels = np.unique(groups[assigned], return_inverse=True)
+            volumes = np.bincount(labels, weights=degree[assigned])
+            resolution = gamma.get(layer, 1.0) if isinstance(gamma, dict) else gamma
+            score -= resolution * np.dot(volumes, volumes) / mass
 
-    # Convert omega to matrix if single value
-    if isinstance(omega, (int, float)):
-        omega_matrix = np.full((n_layers, n_layers), float(omega))
-        np.fill_diagonal(omega_matrix, 0)  # No self-coupling within same layer
-    else:
-        omega_matrix = omega
+        for j, other in enumerate(layers):
+            if i == j:
+                continue
+            coupling = omega[i, j] if isinstance(omega, np.ndarray) else omega
+            common = membership[layer].keys() & membership[other].keys()
+            total += coupling * len(common)
+            if coupling > 0:
+                score += coupling * sum(
+                    membership[layer][node] != -1
+                    and membership[layer][node] == membership[other][node]
+                    for node in common
+                )
 
-    # Calculate total edge weight (2μ)
-    total_weight = 0.0
-
-    # Compute layer-specific statistics
-    layer_stats = {}
-    for layer in layers:
-        layer_nodes = [(node, lyr) for node, lyr in node_layer_list if lyr == layer]
-        layer_indices = [node_layer_to_idx[nl] for nl in layer_nodes]
-
-        # Extract layer adjacency matrix
-        layer_adj = supra_matrix[np.ix_(layer_indices, layer_indices)]
-
-        # Calculate layer total weight and degrees
-        layer_weight: float = np.sum(layer_adj)
-        degrees = np.sum(layer_adj, axis=1)
-
-        # Store statistics
-        node_to_layer_idx = {nl[0]: i for i, nl in enumerate(layer_nodes)}
-        layer_stats[layer] = {
-            "weight": layer_weight,
-            "degrees": degrees,
-            "nodes": layer_nodes,
-            "node_to_idx": node_to_layer_idx,
-            "indices": layer_indices,
-        }
-
-        # Add to total weight
-        total_weight += layer_weight
-
-    # Add inter-layer coupling to total weight
-    for i, layer_i in enumerate(layers):
-        for j, layer_j in enumerate(layers):
-            if i != j:
-                # Count nodes present in both layers
-                nodes_i = {nl[0] for nl in layer_stats[layer_i]["nodes"]}
-                nodes_j = {nl[0] for nl in layer_stats[layer_j]["nodes"]}
-                common_nodes = nodes_i & nodes_j
-                total_weight += omega_matrix[i, j] * len(common_nodes)
-
-    if total_weight == 0:
-        return 0.0
-
-    # Calculate modularity using vectorized operations for better performance
-    # Complexity: O(N*C + E) instead of O(N²) where C is #communities
-    Q = 0.0
-
-    # Intra-layer contributions - vectorized computation per layer
-    for layer in layers:
-        stats = layer_stats[layer]
-        layer_weight = stats["weight"]
-        degrees = stats["degrees"]
-        nodes = stats["nodes"]
-        layer_idx = stats["indices"]
-        n_nodes = len(nodes)
-
-        gamma_layer = gamma_dict.get(layer, 1.0)
-
-        # Build community membership vector for this layer
-        community_vec = np.array([communities.get((node, lyr), -1) for node, lyr in nodes])
-
-        # Skip if no valid community assignments
-        if np.all(community_vec == -1):
-            continue
-
-        # Extract layer adjacency matrix
-        layer_adj = supra_matrix[np.ix_(layer_idx, layer_idx)]
-
-        # Compute null model matrix: P_ij = (k_i * k_j) / (2m)
-        if layer_weight > 0:
-            # Vectorized outer product: degrees[i] * degrees[j] for all i,j
-            null_model = np.outer(degrees, degrees) / layer_weight
-        else:
-            null_model = np.zeros((n_nodes, n_nodes))
-
-        # Modularity matrix: B = A - gamma * P
-        B = layer_adj - gamma_layer * null_model
-
-        # Compute sum of B_ij for all pairs in same community
-        # Use broadcasting: create boolean matrix where entry (i,j) is True if same community
-        unique_communities = np.unique(community_vec[community_vec != -1])
-        for community in unique_communities:
-            # Mask for nodes in this community
-            in_community = (community_vec == community)
-
-            # Sum B_ij for all i,j in this community using boolean indexing
-            # This is equivalent to: sum_{i,j in C} B_ij
-            community_indices = np.where(in_community)[0]
-            community_B = B[np.ix_(community_indices, community_indices)]
-            Q += np.sum(community_B)
-
-    # Inter-layer coupling contributions
-    for i, layer_i in enumerate(layers):
-        for j, layer_j in enumerate(layers):
-            if i != j and omega_matrix[i, j] > 0:
-                stats_i = layer_stats[layer_i]
-                stats_j = layer_stats[layer_j]
-
-                # Find common nodes
-                nodes_i_set = {nl[0] for nl in stats_i["nodes"]}
-                nodes_j_set = {nl[0] for nl in stats_j["nodes"]}
-                common_nodes = nodes_i_set & nodes_j_set
-
-                # Add coupling contribution for nodes in same community
-                for node in common_nodes:
-                    com_i = communities.get((node, layer_i), -1)
-                    com_j = communities.get((node, layer_j), -1)
-
-                    if com_i != -1 and com_j != -1 and com_i == com_j:
-                        Q += omega_matrix[i, j]
-
-    # Normalize by total weight
-    Q /= total_weight
-
-    return Q
+    return float(score / total) if total else 0.0
 
 
 def build_supra_modularity_matrix(
