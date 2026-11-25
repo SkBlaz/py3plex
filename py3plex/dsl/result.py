@@ -949,7 +949,10 @@ class QueryResult:
 
         # Create subgraph with result items
         if self.target == "nodes":
-            subgraph = G.subgraph(self.items).copy()
+            if len(self.items) == len(G) and set(self.items) == G.nodes:
+                subgraph = G.copy()
+            else:
+                subgraph = G.subgraph(self.items).copy()
 
             # Attach computed attributes to nodes
             for attr_name, values in self.attributes.items():
