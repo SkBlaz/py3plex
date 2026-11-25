@@ -14,7 +14,7 @@ import sqlite3
 import tempfile
 import os
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 from .errors import UnsupportedOutOfCoreOperation
 from .network import OutOfCoreNetwork
@@ -305,13 +305,11 @@ class OutOfCoreBackend:
         elif order_spec:
             key = order_spec.get("key", "source")
             asc = order_spec.get("asc", True)
-            result_rows = list(
-                external_sort(rows, key_fields=[key], asc=asc, workdir=self.network.workdir)
-            )
+            result_rows = external_sort(rows, key_fields=[key], asc=asc, workdir=self.network.workdir)
         elif limit_n:
-            result_rows = list(op_limit(rows, limit_n))
+            result_rows = op_limit(rows, limit_n)
         else:
-            result_rows = list(rows)
+            result_rows = rows
 
         return self._rows_to_edge_result(result_rows, plan)
 
@@ -659,35 +657,26 @@ class OutOfCoreBackend:
 
     @staticmethod
     def _rows_to_edge_result(
-        rows: List[dict],
+        rows: Iterable[dict],
         plan: Dict[str, Any],
     ) -> QueryResultOutOfCore:
-        """Convert a list of edge row dicts to a QueryResultOutOfCore."""
+        """Materialize result columns while consuming the input once."""
         items = []
-        weight_vals = []
-        has_weight = any("weight" in r for r in rows)
-        extra_keys: List[str] = []
-        if rows:
-            extra_keys = [
-                k for k in rows[0]
-                if k not in ("source", "target", "source_layer", "target_layer", "weight")
-            ]
-
-        for row in rows:
+        attrs: Dict[str, List] = {}
+        identity = ("source", "target", "source_layer", "target_layer")
+        for index, row in enumerate(rows):
+            if index == 0:
+                attrs = {key: [] for key in row if key not in (*identity, "weight")}
+            if "weight" in row and "weight" not in attrs:
+                attrs = {"weight": [None] * index, **attrs}
             items.append((
                 row.get("source", ""),
                 row.get("target", ""),
                 row.get("source_layer", ""),
                 row.get("target_layer", ""),
             ))
-            if has_weight:
-                weight_vals.append(row.get("weight"))
-
-        attrs: Dict[str, List] = {}
-        if has_weight:
-            attrs["weight"] = weight_vals
-        for k in extra_keys:
-            attrs[k] = [r.get(k) for r in rows]
+            for key, values in attrs.items():
+                values.append(row.get(key))
 
         return QueryResultOutOfCore(
             items=items,
