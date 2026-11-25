@@ -9,6 +9,7 @@ References:
     Networks", Science 328:876-878 (2010)
 """
 
+from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -360,7 +361,7 @@ def louvain_multilayer(
             - k = number of communities
         - Typical: O(n × L) iterations until convergence
         - Worst case: O((n×L)²) for dense networks
-        - Space: O((n×L)²) for supra-adjacency matrix (use sparse for large networks)
+        - Space: O(R + E + C) for replicas, stored edges and replica coupling pairs.
 
     Args:
         network: py3plex multi_layer_network object
@@ -393,71 +394,81 @@ def louvain_multilayer(
     if random_state is not None:
         np.random.seed(random_state)
 
-    supra_matrix = network.get_supra_adjacency_matrix()
-    if sp.issparse(supra_matrix):
-        supra_matrix = supra_matrix.toarray()
+    matrix = sp.csr_matrix(network.get_supra_adjacency_matrix())
+    replicas = _supra_replica_order(network)
+    layers = list(network.layers)
+    layer_index = {layer: index for index, layer in enumerate(layers)}
+    labels = [layer_index[layer] for _, layer in replicas]
+    by_node = defaultdict(list)
+    for idx, (node, _) in enumerate(replicas):
+        by_node[node].append(idx)
 
-    node_layer_list = _supra_replica_order(network)
-    n_total = len(node_layer_list)
-    communities = {nl: i for i, nl in enumerate(node_layer_list)}
+    # B has a directed observed term but uses row degrees for both factors
+    # of the null model. A move changes both incident rows and columns.
+    incident = [defaultdict(float) for _ in replicas]
+    neighbors = [set() for _ in replicas]
+    degree = np.zeros(len(replicas))
+    mass = np.zeros(len(layers))
+    entries = matrix.tocoo()
+    for u, v, value in zip(entries.row, entries.col, entries.data):
+        if value > 0:
+            neighbors[u].add(replicas[v])
+        if labels[u] == labels[v]:
+            degree[u] += value
+            mass[labels[u]] += value
+            if u != v:
+                incident[u][v] += value
+                incident[v][u] += value
 
-    improved = True
-    iteration = 0
+    total = mass.sum()
+    for indices in by_node.values():
+        for u in indices:
+            for v in indices:
+                if u == v:
+                    continue
+                neighbors[u].add(replicas[v])
+                coupling = omega[labels[u], labels[v]] if isinstance(omega, np.ndarray) else omega
+                total += coupling
+                if coupling > 0:
+                    incident[u][v] += coupling
+                    incident[v][u] += coupling
 
-    while improved and iteration < max_iter:
+    assignment = list(range(len(replicas)))
+    volumes = [defaultdict(float) for _ in layers]
+    for u, community in enumerate(assignment):
+        volumes[labels[u]][community] = degree[u]
+    lookup = {replica: i for i, replica in enumerate(replicas)}
+    resolutions = [gamma.get(layer, 1.0) if isinstance(gamma, dict) else gamma for layer in layers]
+
+    for _ in range(max_iter if total else 0):
         improved = False
-        iteration += 1
-
-        # Randomize order of node-layer pairs
-        order = np.random.permutation(n_total)
-
-        # Try moving each node-layer to neighboring communities
-        for idx in order:
-            node_layer = node_layer_list[idx]
-            current_com = communities[node_layer]
-
-            # Get neighbors (both intra-layer and inter-layer)
-            neighbors = set()
-            for j, nl_j in enumerate(node_layer_list):
-                if supra_matrix[idx, j] > 0:
-                    neighbors.add(nl_j)
-
-            # Also consider inter-layer connections (same node, different layer)
-            node, layer = node_layer
-            for nl in node_layer_list:
-                if nl[0] == node and nl[1] != layer:
-                    neighbors.add(nl)
-
-            # Try moving to each neighbor's community
-            neighbor_communities = {communities[nl] for nl in neighbors}
-            neighbor_communities.discard(current_com)
-
-            if not neighbor_communities:
+        for u in np.random.permutation(len(replicas)):
+            current = assignment[u]
+            candidates = {assignment[lookup[v]] for v in neighbors[u]}
+            candidates.discard(current)
+            if not candidates:
                 continue
-
-            # Calculate current modularity contribution
-            current_Q = multilayer_modularity(
-                network, communities, gamma, omega, weight
-            )
-
-            best_com = current_com
-            best_Q = current_Q
-
-            # Try each neighbor community
-            for test_com in neighbor_communities:
-                # Temporarily move to test community
-                communities[node_layer] = test_com
-                test_Q = multilayer_modularity(
-                    network, communities, gamma, omega, weight
-                )
-
-                if test_Q > best_Q:
-                    best_Q = test_Q
-                    best_com = test_com
-                    improved = True
-
-            # Keep best assignment
-            communities[node_layer] = best_com
+            weights = defaultdict(float)
+            for v, weight_uv in incident[u].items():
+                weights[assignment[v]] += weight_uv
+            layer = labels[u]
+            volume = volumes[layer]
+            penalty = 2 * resolutions[layer] * degree[u] / mass[layer] if mass[layer] > 0 else 0
+            best, best_gain = current, 0.0
+            for candidate in candidates:
+                observed = weights[candidate] - weights[current]
+                expected = penalty * (volume[candidate] - volume[current] + degree[u])
+                gain = (observed - expected) / total
+                if gain > best_gain:
+                    best, best_gain = candidate, gain
+            if best != current:
+                volume[current] -= degree[u]
+                volume[best] += degree[u]
+                assignment[u] = best
+                improved = True
+        if not improved:
+            break
+    communities = dict(zip(replicas, assignment))
 
     # Renumber communities to be contiguous
     unique_coms = sorted(set(communities.values()))
