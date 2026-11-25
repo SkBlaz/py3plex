@@ -287,9 +287,9 @@ End-to-End Pipeline: CSV → Analysis → Visualization
     # Step 6: Visualization
     fig, ax = plt.subplots(1, 1, figsize=(10, 8))
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         display=False,
-        axis=ax,
+        ax=ax,
         labels=True,
         background_shape="circle"
     )

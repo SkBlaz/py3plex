@@ -138,7 +138,7 @@ Quick Example in Code
     
     # Analyze (counts are for node-layer pairs)
     stats = network.basic_stats()
-    print(f"Layers: {len(network.get_layers())}")
+    print(f"Layers: {len(network.layers)}")
     print(f"Nodes: {stats['nodes']}")
     print(f"Edges: {stats['edges']}")
 

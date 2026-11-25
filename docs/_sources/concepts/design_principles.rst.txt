@@ -125,7 +125,7 @@ Flexibility
     # Multiple ways to access nodes
     nodes1 = network.get_nodes()
     nodes2 = list(network.core_network.nodes())
-    nodes3 = network.get_nodes(layer='L1')
+    nodes3 = [replica for replica in network.get_nodes() if replica[1] == 'L1']
 
 **Rationale:** Different users have different preferences and workflows. Flexibility ensures py3plex adapts to the user's needs, not vice versa.
 
@@ -216,10 +216,10 @@ Sparse Representations
 .. code-block:: python
 
     # Sparse matrix by default (efficient for large networks)
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
     
     # Dense only for small networks or specific algorithms
-    supra_adj_dense = network.get_supra_adjacency_matrix(sparse=False)
+    supra_adj_dense = network.get_supra_adjacency_matrix(mtype="dense")
 
 **Rationale:** Real-world networks are typically sparse (few edges relative to potential edges). The supra-adjacency matrix indexes (node, layer) pairs, so sparsity keeps it tractable. Sparse representations:
 

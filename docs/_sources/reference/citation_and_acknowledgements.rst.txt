@@ -74,7 +74,7 @@ Use this for multilayer modularity-based community detection (:mod:`py3plex.algo
 Node2Vec
 ~~~~~~~~
 
-Random-walk-based node embedding used by :mod:`py3plex.wrappers.node2vec_embedding` and related utilities.
+Random-walk-based node embedding used by :mod:`py3plex.wrappers.train_node2vec_embedding` and related utilities.
 
 .. code-block:: bibtex
 

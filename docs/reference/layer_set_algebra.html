@@ -294,7 +294,7 @@ complex layer selections.</p>
 <section id="intersection-a-b">
 <h3>Intersection: A &amp; B<a class="headerlink" href="#intersection-a-b" title="Link to this heading"></a></h3>
 <p>The intersection operation selects only layers present in both sets.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes that appear in both layer A AND layer B</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Intersect the layer sets; distinct single-layer sets have no common layer</span>
 <span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">"layerA &amp; layerB"</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -596,7 +596,7 @@ with loops and conditionals.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LayerSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents an unevaluated layer expression."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name_or_expr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">LayerExpr</span><span class="p">])</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name_or_expr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">LayerExpr</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">"""Create from layer name or expression AST."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">LayerSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LayerSet</span><span class="p">:</span>
@@ -662,19 +662,19 @@ with loops and conditionals.</p>
 <section id="common-issues">
 <h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
 <p><strong>1. Empty Layer Set Warning</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">"nonexistent"</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">"nonexistent"</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="c1"># UserWarning: Layer expression resolved to empty set</span>
 </pre></div>
 </div>
 <p><strong>Solution</strong>: Check layer names, use <code class="docutils literal notranslate"><span class="pre">warn_empty=False</span></code> to suppress, or use <code class="docutils literal notranslate"><span class="pre">strict=True</span></code> to raise an error instead.</p>
 <p><strong>2. Unknown Layer Error</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">"typo_layer"</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">LayerSet</span><span class="p">(</span><span class="s2">"typo_layer"</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># UnknownLayerError: Layer 'typo_layer' not found</span>
 </pre></div>
 </div>
-<p><strong>Solution</strong>: Verify layer names with <code class="docutils literal notranslate"><span class="pre">network.layers</span></code> or <code class="docutils literal notranslate"><span class="pre">network.get_layers()</span></code>.</p>
+<p><strong>Solution</strong>: Verify layer identifiers with <code class="docutils literal notranslate"><span class="pre">network.layers</span></code>.</p>
 <p><strong>3. Syntax Error in Expression</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="s2">"social &amp;"</span><span class="p">]</span>  <span class="c1"># Missing right operand</span>
 <span class="c1"># DslSyntaxError: Unexpected end of expression</span>

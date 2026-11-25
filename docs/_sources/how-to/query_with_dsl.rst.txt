@@ -1500,7 +1500,7 @@ Compute summary statistics for each layer to understand layer-specific dynamics:
 
 .. code-block:: python
 
-    layers = network.get_layers()
+    layers = network.layers
     
     layer_stats = []
     for layer in layers:

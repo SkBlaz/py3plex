@@ -442,7 +442,7 @@ Nodes per layer:
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
 <span class="c1"># Layer information</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
@@ -489,7 +489,7 @@ Unique nodes: 120
 <span class="p">)</span>
 
 <span class="c1"># Analyze each layer</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 <span class="n">layer_stats</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
@@ -537,7 +537,7 @@ Unique nodes: 120
     <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
 <span class="p">)</span>
 
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 
 <span class="c1"># === Layer-Level Statistics ===</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"=== Layer Statistics ==="</span><span class="p">)</span>
@@ -594,7 +594,7 @@ Unique nodes: 120
 <span class="p">)</span>
 
 <span class="c1"># Select a layer</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 <span class="n">target_layer</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
 <span class="n">layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">(</span><span class="n">target_layer</span><span class="p">,</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
 
@@ -885,7 +885,7 @@ Unique nodes: 120
 
 <span class="c1"># === 2. Compute Statistics ===</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Computing Multilayer Statistics ==="</span><span class="p">)</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 
 <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">'num_layers'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">),</span>
@@ -960,7 +960,7 @@ Unique nodes: 120
     <span class="p">)</span>
 
     <span class="c1"># Compute metrics</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
     <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">())</span>
 
@@ -1087,7 +1087,7 @@ Unique nodes: 120
 <span class="c1"># (This is a conceptual example - actual implementation may vary)</span>
 
 <span class="c1"># === 2. Process layers independently ===</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 
 <span class="n">layer_results</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
@@ -1112,7 +1112,7 @@ Unique nodes: 120
 
 <span class="c1"># === 3. Use sparse representations ===</span>
 <span class="c1"># When computing supra-adjacency matrix</span>
-<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"sparse"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Supra-adjacency matrix: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (sparse)"</span><span class="p">)</span>
 
 <span class="c1"># === 4. Sample for exploratory analysis ===</span>

@@ -115,7 +115,7 @@ The intersection operation selects only layers present in both sets.
 
 .. code-block:: python
 
-   # Nodes that appear in both layer A AND layer B
+   # Intersect the layer sets; distinct single-layer sets have no common layer
    layers = L["layerA & layerB"]
 
 **ASCII Venn Diagram:**
@@ -451,7 +451,7 @@ LayerSet Class
    class LayerSet:
        """Represents an unevaluated layer expression."""
        
-       def __init__(self, name_or_expr: Union[str, LayerExpr])
+       def __init__(self, name_or_expr: Union[str, LayerExpr]):
            """Create from layer name or expression AST."""
        
        def __or__(self, other: LayerSet) -> LayerSet:
@@ -521,7 +521,7 @@ Common Issues
 
 .. code-block:: python
 
-   layers = L["nonexistent"]
+   layers = LayerSet("nonexistent")
    result = layers.resolve(network)
    # UserWarning: Layer expression resolved to empty set
 
@@ -531,11 +531,11 @@ Common Issues
 
 .. code-block:: python
 
-   layers = L["typo_layer"]
+   layers = LayerSet("typo_layer")
    result = layers.resolve(network, strict=True)
    # UnknownLayerError: Layer 'typo_layer' not found
 
-**Solution**: Verify layer names with ``network.layers`` or ``network.get_layers()``.
+**Solution**: Verify layer identifiers with ``network.layers``.
 
 **3. Syntax Error in Expression**
 

@@ -85,15 +85,13 @@ For large datasets, prefer columnar formats over CSV:
 Parallel Processing
 ~~~~~~~~~~~~~~~~~~~
 
-For Node2Vec and other CPU-intensive algorithms:
+Set a seed when comparing Node2Vec runs:
 
 .. code-block:: python
 
-    from py3plex.wrappers import train_node2vec
-    
-    embeddings = train_node2vec(
-        network,
-        workers=8  # Use multiple CPU cores
+    embeddings = network.embed(
+        method="node2vec",
+        seed=42
     )
 
 Benchmark Results

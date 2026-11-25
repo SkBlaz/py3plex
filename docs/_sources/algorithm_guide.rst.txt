@@ -478,7 +478,7 @@ Basic Statistics
 .. code-block:: python
 
     network.basic_stats()
-    layers = network.get_layers()
+    layers = network.layers
     num_nodes = network.node_count
 
 Multilayer Statistics
@@ -551,9 +551,8 @@ Node2Vec
 
 .. code-block:: python
 
-    from py3plex.wrappers import node2vec_embedding
-    embeddings = node2vec_embedding.generate_embeddings(
-        network.core_network,
+    embeddings = network.embed(
+        method="node2vec",
         dimensions=128,
         walk_length=80,
         num_walks=10,
@@ -565,8 +564,8 @@ Node2Vec
 
 * Low ``p`` (<1): Encourages backtracking (local exploration)
 * High ``p`` (>1): Discourages backtracking
-* Low ``q`` (<1): Encourages outward exploration (BFS-like)
-* High ``q`` (>1): Encourages staying local (DFS-like)
+* Low ``q`` (<1): Encourages outward exploration (DFS-like)
+* High ``q`` (>1): Encourages staying local (BFS-like)
 
 DeepWalk
 ~~~~~~~~
@@ -582,12 +581,7 @@ DeepWalk
 
 .. code-block:: python
 
-    # DeepWalk is Node2Vec with p=1, q=1
-    embeddings = node2vec_embedding.generate_embeddings(
-        network.core_network,
-        p=1.0,
-        q=1.0
-    )
+    embeddings = network.embed(method="deepwalk", seed=42)
 
 Visualization
 -------------
@@ -692,7 +686,7 @@ Memory Considerations
 .. code-block:: python
 
     # Ensure sparse representation
-    supra_adj = network.get_supra_adjacency_matrix(sparse=True)
+    supra_adj = network.get_supra_adjacency_matrix(mtype="sparse")
 
 Algorithm Comparison Table
 --------------------------

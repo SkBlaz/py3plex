@@ -547,7 +547,7 @@
 <li><p>Density: <span class="math notranslate nohighlight">\(O(1)\)</span> if counts are known</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 <span class="n">num_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">node_count</span>
 </pre></div>
 </div>
@@ -606,9 +606,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">q</span></code>: In-out parameter (default: 1.0)</p></li>
 </ul>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">node2vec_embedding</span>
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"node2vec"</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
     <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
     <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
@@ -621,8 +620,8 @@
 <ul class="simple">
 <li><p>Low <code class="docutils literal notranslate"><span class="pre">p</span></code> (&lt;1): Encourages backtracking (local exploration)</p></li>
 <li><p>High <code class="docutils literal notranslate"><span class="pre">p</span></code> (&gt;1): Discourages backtracking</p></li>
-<li><p>Low <code class="docutils literal notranslate"><span class="pre">q</span></code> (&lt;1): Encourages outward exploration (BFS-like)</p></li>
-<li><p>High <code class="docutils literal notranslate"><span class="pre">q</span></code> (&gt;1): Encourages staying local (DFS-like)</p></li>
+<li><p>Low <code class="docutils literal notranslate"><span class="pre">q</span></code> (&lt;1): Encourages outward exploration (DFS-like)</p></li>
+<li><p>High <code class="docutils literal notranslate"><span class="pre">q</span></code> (&gt;1): Encourages staying local (BFS-like)</p></li>
 </ul>
 </section>
 <section id="deepwalk">
@@ -634,12 +633,7 @@
 </ul>
 <p><strong>Complexity:</strong> <span class="math notranslate nohighlight">\(O(r \times l \times n)\)</span> on the aggregated graph</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># DeepWalk is Node2Vec with p=1, q=1</span>
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
-    <span class="n">p</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span>
-<span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">"deepwalk"</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -737,7 +731,7 @@
 </ul>
 <p><strong>Always use sparse matrices for networks with &gt;1,000 state nodes</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure sparse representation</span>
-<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"sparse"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

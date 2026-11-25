@@ -158,7 +158,7 @@ Visualization Not Showing
 
 **Solution 1:** For Jupyter notebooks, enable inline plots:
 
-.. code-block:: ipython
+.. code-block:: text
 
     %matplotlib inline
 

@@ -263,12 +263,10 @@
 </section>
 <section id="parallel-processing">
 <h3>Parallel Processing<a class="headerlink" href="#parallel-processing" title="Link to this heading"></a></h3>
-<p>For Node2Vec and other CPU-intensive algorithms:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_node2vec</span>
-
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">train_node2vec</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="n">workers</span><span class="o">=</span><span class="mi">8</span>  <span class="c1"># Use multiple CPU cores</span>
+<p>Set a seed when comparing Node2Vec runs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"node2vec"</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>
 </pre></div>
 </div>

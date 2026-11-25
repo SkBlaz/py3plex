@@ -215,7 +215,7 @@
 <p>py3plex uses a <strong>modular, layered architecture</strong> with explicit boundaries. Higher layers depend on lower ones, never the reverse; data flows downward for computation and back upward for presentation:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────┐
 │          High-Level Interfaces (Wrappers)           │
-│  node2vec_embedding, benchmark_nodes                │
+│  train_node2vec_embedding, benchmark_nodes          │
 └─────────────────────────────────────────────────────┘
                         ↓
 ┌─────────────────────────────────────────────────────┐
@@ -324,7 +324,7 @@
 <p><strong>Purpose:</strong> High-level interfaces for common workflows so users can run end-to-end tasks without touching internals. Wrappers compose algorithms and visualization, but defer state changes to the core.</p>
 <p><strong>Key Components:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">node2vec_embedding.py</span></code> - Node2Vec embedding generation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">train_node2vec_embedding.py</span></code> - Node2Vec embedding generation</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">benchmark_nodes.py</span></code> - Node classification benchmarking</p></li>
 </ul>
 <p><strong>Responsibilities:</strong></p>
@@ -425,11 +425,11 @@
 <p><strong>Used in:</strong> Configuration, algorithm parameters</p>
 <p><strong>Purpose:</strong> Inject dependencies rather than hard-coding so testing and theming stay configurable.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration injected rather than hard-coded</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_COLORS</span><span class="p">,</span> <span class="n">LAYOUT_PARAMS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORCE_LAYOUT_ITERATIONS</span><span class="p">,</span> <span class="n">get_color_palette</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">draw_network</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layout_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">colors</span> <span class="o">=</span> <span class="n">colors</span> <span class="ow">or</span> <span class="n">DEFAULT_COLORS</span>
-    <span class="n">layout_params</span> <span class="o">=</span> <span class="n">layout_params</span> <span class="ow">or</span> <span class="n">LAYOUT_PARAMS</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">get_color_palette</span><span class="p">()</span> <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">colors</span>
+    <span class="n">layout_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"iterations"</span><span class="p">:</span> <span class="n">FORCE_LAYOUT_ITERATIONS</span><span class="p">}</span> <span class="k">if</span> <span class="n">layout_params</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">layout_params</span>
     <span class="c1"># Use injected configuration without touching global state</span>
 </pre></div>
 </div>
@@ -599,10 +599,10 @@
 </pre></div>
 </div>
 <p>Usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_COLORS</span><span class="p">,</span> <span class="n">LAYOUT_PARAMS</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORCE_LAYOUT_ITERATIONS</span><span class="p">,</span> <span class="n">get_color_palette</span>
 
-<span class="n">colors</span> <span class="o">=</span> <span class="n">DEFAULT_COLORS</span>
-<span class="n">iterations</span> <span class="o">=</span> <span class="n">LAYOUT_PARAMS</span><span class="p">[</span><span class="s1">'force'</span><span class="p">][</span><span class="s1">'iterations'</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">get_color_palette</span><span class="p">()</span>
+<span class="n">iterations</span> <span class="o">=</span> <span class="n">FORCE_LAYOUT_ITERATIONS</span>
 </pre></div>
 </div>
 <p>Prefer importing needed values rather than mutating module globals. For per-run overrides, pass parameters explicitly into drawing or layout helpers.</p>
@@ -665,11 +665,10 @@
 </section>
 <section id="sparse-matrices">
 <h3>Sparse Matrices<a class="headerlink" href="#sparse-matrices" title="Link to this heading"></a></h3>
-<p>Use sparse representations for large networks; the threshold is configurable in <code class="docutils literal notranslate"><span class="pre">config.py</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_supra_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">sparse</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span> <span class="o">&gt;</span> <span class="n">SPARSE_THRESHOLD</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+<p>The supra-adjacency matrix defaults to a sparse representation. Request a
+dense matrix only when it fits comfortably in memory.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sparse_adjacency</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">()</span>
+<span class="n">dense_adjacency</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"dense"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Keep the chosen representation consistent downstream to avoid repeated dense↔sparse conversions.</p>
@@ -733,12 +732,11 @@
 </pre></div>
 </div>
 <p>Usage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayerNotFoundError</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">LayerSet</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_name_map</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">LayerNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer '</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">' not found"</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_name_map</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">require_layer</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
+    <span class="c1"># strict=True raises py3plex.dsl.errors.UnknownLayerError.</span>
+    <span class="k">return</span> <span class="n">LayerSet</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Prefer raising domain-specific exceptions for recoverable errors so callers can distinguish parsing failures, missing layers, or invalid formats.</p>

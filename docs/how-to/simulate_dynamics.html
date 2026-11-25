@@ -284,7 +284,7 @@
 <ul class="simple">
 <li><p><strong>py3plex multilayer networks</strong>: Full support for inter-layer and intra-layer edges</p></li>
 <li><p><strong>NetworkX graphs</strong>: Single-layer networks (directed or undirected)</p></li>
-<li><p><strong>Edge weights</strong>: Epidemic models currently treat edges as unweighted contacts. <code class="docutils literal notranslate"><span class="pre">RandomWalkDynamics</span></code> samples neighbors uniformly, so weights are ignored unless you implement a weighted variant.</p></li>
+<li><p><strong>Edge weights</strong>: The epidemic models sum incoming infectious contact weights. Missing weights default to one, and parallel edges each contribute their weight. <code class="docutils literal notranslate"><span class="pre">RandomWalkDynamics</span></code> samples neighbors uniformly.</p></li>
 </ul>
 </section>
 <section id="common-base-interface">
@@ -323,17 +323,17 @@ Time series returned by <code class="docutils literal notranslate"><span class="
 <p><strong>Discrete-Time Update Rules</strong> (synchronous):</p>
 <ol class="arabic">
 <li><p><strong>Recovery</strong>: Each infected node recovers (I → R) with probability <span class="math notranslate nohighlight">\(\gamma \in (0, 1)\)</span> per time step</p></li>
-<li><p><strong>Infection</strong>: Each susceptible node with k infected neighbors becomes infected (S → I) with probability</p>
+<li><p><strong>Infection</strong>: Each susceptible node becomes infected (S → I) with probability</p>
 <div class="math notranslate nohighlight">
 \[p_{\text{infect}} = 1 - (1 - \beta)^k\]</div>
-<p>where <span class="math notranslate nohighlight">\(\beta \in (0, 1)\)</span> is the per-contact infection probability under independent transmission attempts from each infected neighbor</p>
+<p>where <span class="math notranslate nohighlight">\(\beta \in (0, 1)\)</span> is the infection probability per unit contact weight, and <span class="math notranslate nohighlight">\(k\)</span> is the total incoming contact weight from infected nodes.</p>
 </li>
 <li><p><strong>Absorption</strong>: Recovered nodes remain recovered (R → R) forever</p></li>
 </ol>
 <p><strong>Multilayer Extension</strong></p>
 <p>On multilayer networks, the infection pressure on a node aggregates across all layers:</p>
 <ul class="simple">
-<li><p>A susceptible node <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">layer_A)</span></code> counts infected neighbors from both intra-layer edges (within <code class="docutils literal notranslate"><span class="pre">layer_A</span></code>) and inter-layer edges (to other layers)</p></li>
+<li><p>A susceptible node <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">layer_A)</span></code> sums incoming contact weights from infected neighbors across both intra-layer edges (within <code class="docutils literal notranslate"><span class="pre">layer_A</span></code>) and inter-layer edges (to other layers)</p></li>
 <li><p>The built-in <code class="docutils literal notranslate"><span class="pre">SIRDynamics</span></code> uses a single <span class="math notranslate nohighlight">\(\beta\)</span> value across all layers; to model heterogeneous layers, see <a class="reference internal" href="#layer-specific-params"><span class="std std-ref">Layer-Specific and Time-Varying Parameters</span></a> for a small customization pattern</p></li>
 </ul>
 <p>This means epidemics can spread within layers and jump between layers via inter-layer connections, mimicking real-world scenarios like workplace and household transmission.</p>
@@ -390,7 +390,7 @@ Time series returned by <code class="docutils literal notranslate"><span class="
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final susceptible: </span><span class="si">{</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">'S'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final infected: </span><span class="si">{</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">'I'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final recovered: </span><span class="si">{</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attack rate: </span><span class="si">{</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attack rate: </span><span class="si">{</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">state_counts</span><span class="p">[</span><span class="s1">'S'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">())</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected Output</strong></p>
@@ -442,20 +442,20 @@ Attack rate: 100.00%
 <p><strong>Discrete-Time Update Rules</strong> (synchronous):</p>
 <ol class="arabic">
 <li><p><strong>Recovery</strong>: Each infected node recovers (I → S) with probability <span class="math notranslate nohighlight">\(\gamma\)</span> (or <span class="math notranslate nohighlight">\(\mu\)</span>) per time step</p></li>
-<li><p><strong>Infection</strong>: Each susceptible node with k infected neighbors becomes infected (S → I) with probability</p>
+<li><p><strong>Infection</strong>: Each susceptible node becomes infected (S → I) with probability</p>
 <div class="math notranslate nohighlight">
 \[p_{\text{infect}} = 1 - (1 - \beta)^k\]</div>
-<p>where <span class="math notranslate nohighlight">\(\beta \in (0, 1)\)</span> is the transmission probability per contact</p>
+<p>where <span class="math notranslate nohighlight">\(\beta \in (0, 1)\)</span> is the infection probability per unit contact weight and <span class="math notranslate nohighlight">\(k\)</span> is the incoming infectious contact weight.</p>
 </li>
 <li><p><strong>No absorption</strong>: Recovered nodes immediately return to susceptible state, allowing reinfection</p></li>
 </ol>
-<p><strong>Endemic Equilibrium</strong></p>
-<p>Unlike SIR (which eventually dies out), SIS can reach an <strong>endemic equilibrium</strong> where a steady fraction of nodes remain infected. The basic reproduction number is:</p>
+<p><strong>Mean-Field Endemic Equilibrium</strong></p>
+<p>An SIS outbreak can persist for a long time through reinfection. The all-susceptible state is absorbing in the finite stochastic model. A homogeneous mean-field approximation gives:</p>
 <div class="math notranslate nohighlight">
 \[R_0 = \frac{\beta}{\gamma} \langle k \rangle\]</div>
 <p>where ⟨k⟩ is the average degree in a homogeneous-network, small-<span class="math notranslate nohighlight">\(\beta\)</span> approximation (using <span class="math notranslate nohighlight">\(1 - (1 - \beta)^k \approx \beta k\)</span>). If R₀ &gt; 1, endemicity is possible; if R₀ ≤ 1, the epidemic dies out in this mean-field view (heterogeneous networks can shift the threshold).</p>
 <p><strong>Multilayer Extension</strong></p>
-<p>On multilayer networks, SIS infection pressure aggregates across all layers, similar to SIR. The endemic prevalence can differ across layers if you use layer-specific transmission rates.</p>
+<p>On multilayer networks, SIS infection pressure aggregates across all layers, similar to SIR. Prevalence during an outbreak can differ across layers, including when layers use the same transmission probability.</p>
 </section>
 <section id="id2">
 <h3>Code Example<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
@@ -487,36 +487,36 @@ Attack rate: 100.00%
 <span class="n">sis</span> <span class="o">=</span> <span class="n">SISDynamics</span><span class="p">(</span>
     <span class="n">network</span><span class="p">,</span>
     <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>    <span class="c1"># Infection probability per contact</span>
-    <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>      <span class="c1"># Recovery probability (also accepts 'gamma')</span>
-    <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.05</span>
+    <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>      <span class="c1"># Recovery probability</span>
+    <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>
 
-<span class="c1"># Run for longer to reach equilibrium</span>
-<span class="n">sis</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="c1"># Run for longer to observe sustained transmission</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">sis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 
 <span class="c1"># Extract prevalence time series</span>
 <span class="n">prevalence</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">"prevalence"</span><span class="p">)</span>
 
-<span class="c1"># Compute endemic prevalence (mean of last 50 steps)</span>
+<span class="c1"># Compute mean prevalence over the last 50 steps</span>
 <span class="n">endemic_prevalence</span> <span class="o">=</span> <span class="n">prevalence</span><span class="p">[</span><span class="o">-</span><span class="mi">50</span><span class="p">:]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Endemic prevalence: </span><span class="si">{</span><span class="n">endemic_prevalence</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean prevalence (last 50 steps): </span><span class="si">{</span><span class="n">endemic_prevalence</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Std (last 50 steps): </span><span class="si">{</span><span class="n">prevalence</span><span class="p">[</span><span class="o">-</span><span class="mi">50</span><span class="p">:]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Check if epidemic persisted</span>
 <span class="k">if</span> <span class="n">endemic_prevalence</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Status: Endemic state reached"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Status: Transmission persisted in the final window"</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"Status: Epidemic died out"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected Output</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Endemic prevalence: 0.00%
-Std (last 50 steps): 0.000
-Status: Epidemic died out
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Mean prevalence (last 50 steps): 83.15%
+Std (last 50 steps): 0.058
+Status: Transmission persisted in the final window
 </pre></div>
 </div>
-<p><em>Note: On sparse chain-like networks with moderate β/γ, the epidemic often dies out due to low R₀. Try denser networks or higher β to observe endemic states.</em></p>
+<p>These values summarize the final 50 steps of this run. The finite SIS simulation can still reach the all-susceptible state.</p>
 </section>
 <section id="comparison-with-sir">
 <h3>Comparison with SIR<a class="headerlink" href="#comparison-with-sir" title="Link to this heading"></a></h3>
@@ -533,8 +533,7 @@ Status: Epidemic died out
 <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">watts_strogatz_graph</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 
 <span class="c1"># Run SIS</span>
-<span class="n">sis</span> <span class="o">=</span> <span class="n">SISDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">sis</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">sis</span> <span class="o">=</span> <span class="n">SISDynamics</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">initial_infected</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">sis_results</span> <span class="o">=</span> <span class="n">sis</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 <span class="n">sis_prev</span> <span class="o">=</span> <span class="n">sis_results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">"prevalence"</span><span class="p">)</span>
 
@@ -636,7 +635,7 @@ Status: Epidemic died out
 <span class="n">sorted_visits</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">visit_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total unique nodes visited: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">visit_counts</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\\</span><span class="s2">nTop 10 most visited nodes:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Top 10 most visited nodes:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">sorted_visits</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> visits (</span><span class="si">{</span><span class="n">count</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 </pre></div>
@@ -645,16 +644,10 @@ Status: Epidemic died out
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Total unique nodes visited: 30
 
 Top 10 most visited nodes:
-  (0, 'star'): 87 visits (8.69%)
-  (0, 'ring'): 64 visits (6.39%)
-  (1, 'ring'): 42 visits (4.20%)
-  (14, 'ring'): 39 visits (3.90%)
-  (1, 'star'): 37 visits (3.70%)
-  (2, 'ring'): 36 visits (3.60%)
-  (13, 'ring'): 35 visits (3.50%)
-  (2, 'star'): 34 visits (3.40%)
-  (3, 'star'): 32 visits (3.20%)
-  (14, 'star'): 31 visits (3.10%)
+  (0, 'star'): 153 visits (15.28%)
+  (6, 'ring'): 57 visits (5.69%)
+  (7, 'ring'): 54 visits (5.39%)
+  ...
 </pre></div>
 </div>
 <p><em>Note: The hub node in the star layer receives disproportionately high visits due to its high degree.</em></p>
@@ -853,7 +846,7 @@ Top 10 most visited nodes:
 
 <span class="c1"># Compute attack rate (fraction ever infected)</span>
 <span class="n">total_nodes</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">state_counts</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">state_counts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>  <span class="c1"># Total at t=0</span>
-<span class="n">attack_rate</span> <span class="o">=</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">total_nodes</span>
+<span class="n">attack_rate</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">'S'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">total_nodes</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Attack rate: </span><span class="si">{</span><span class="n">attack_rate</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -919,7 +912,7 @@ Top 10 most visited nodes:
 
         <span class="n">state_counts</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">"state_counts"</span><span class="p">)</span>
         <span class="n">total</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
-        <span class="n">attack_rates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state_counts</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span>
+        <span class="n">attack_rates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">'S'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span>
         <span class="s1">'peak_prevalence_mean'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">peak_prevalences</span><span class="p">),</span>
@@ -935,8 +928,8 @@ Top 10 most visited nodes:
 </pre></div>
 </div>
 <p><strong>Expected Output</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Peak prevalence: 34.85% ± 2.13%
-Attack rate: 98.60% ± 3.42%
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Peak prevalence: 60.07% ± 17.67%
+Attack rate: 92.20% ± 19.24%
 </pre></div>
 </div>
 <p><em>Note: Mean and std quantify variability across stochastic realizations.</em></p>
@@ -972,7 +965,7 @@ Attack rate: 98.60% ± 3.42%
             <span class="s1">'R0_approx'</span><span class="p">:</span> <span class="n">beta</span> <span class="o">/</span> <span class="n">gamma</span> <span class="o">*</span> <span class="mf">4.6</span><span class="p">,</span>  <span class="c1"># Mean-field R0 ≈ (β/γ)&lt;k&gt;; &lt;k&gt; ≈ 4.6 here (small-β assumption)</span>
             <span class="s1">'peak_prevalence'</span><span class="p">:</span> <span class="n">prevalence</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
             <span class="s1">'peak_time'</span><span class="p">:</span> <span class="n">prevalence</span><span class="o">.</span><span class="n">argmax</span><span class="p">(),</span>
-            <span class="s1">'attack_rate'</span><span class="p">:</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span>
+            <span class="s1">'attack_rate'</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">state_counts</span><span class="p">[</span><span class="s1">'S'</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span>
         <span class="p">})</span>
 
 <span class="c1"># Convert to DataFrame</span>
@@ -1081,8 +1074,8 @@ Attack rate: 98.60% ± 3.42%
 </pre></div>
 </div>
 <p><strong>Expected Output</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Initial adopters: 4
-Final adopters: 40
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Initial adopters: 3
+Final adopters: 30
 Adoption rate: 100.00%
 </pre></div>
 </div>
@@ -1090,36 +1083,16 @@ Adoption rate: 100.00%
 </section>
 <section id="adding-custom-measures">
 <h3>Adding Custom Measures<a class="headerlink" href="#adding-custom-measures" title="Link to this heading"></a></h3>
-<p>To expose custom measures through <code class="docutils literal notranslate"><span class="pre">.get_measure()</span></code>, override the <code class="docutils literal notranslate"><span class="pre">compute_measure</span></code> method:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ThresholdDynamics</span><span class="p">(</span><span class="n">DynamicsProcess</span><span class="p">):</span>
-    <span class="c1"># ... (same as above) ...</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measure_name</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Compute custom measures for threshold model."""</span>
-        <span class="k">if</span> <span class="n">measure_name</span> <span class="o">==</span> <span class="s2">"adoption_fraction"</span><span class="p">:</span>
-            <span class="c1"># Fraction of nodes in state 1 over time</span>
-            <span class="n">fractions</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">:</span>
-                <span class="n">fractions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fractions</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="n">measure_name</span> <span class="o">==</span> <span class="s2">"cascade_size"</span><span class="p">:</span>
-            <span class="c1"># Final number of adopters</span>
-            <span class="n">final_state</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">final_state</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown measure: </span><span class="si">{</span><span class="n">measure_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-
-<span class="c1"># Now you can use:</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">threshold</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<span class="n">adoption_frac</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">"adoption_fraction"</span><span class="p">)</span>
-<span class="n">cascade_size</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">"cascade_size"</span><span class="p">)</span>
-
+<p>Compute model-specific measures from the recorded trajectory. The
+threshold model uses state 1 for adopters and 0 for non-adopters.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">threshold</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">adoption_fraction</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="nb">sum</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">trajectory</span>
+<span class="p">]</span>
+<span class="n">cascade_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cascade size: </span><span class="si">{</span><span class="n">cascade_size</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This pattern makes your custom dynamics consistent with built-in models.</p>
 </section>
 </section>
 <section id="query-dynamics-results-with-dsl">
@@ -1134,16 +1107,11 @@ Adoption rate: 100.00%
 <section id="attaching-dynamics-state-as-node-attributes">
 <h3>Attaching Dynamics State as Node Attributes<a class="headerlink" href="#attaching-dynamics-state-as-node-attributes" title="Link to this heading"></a></h3>
 <p>To use DSL for querying simulation results, first attach the dynamics state to the network as node attributes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_synthetic_multilayer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIRDynamics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
 
-<span class="c1"># Load network</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">network</span><span class="o">.</span><span class="n">load_network</span><span class="p">(</span>
-    <span class="s2">"py3plex/datasets/_data/synthetic_multilayer.edges"</span><span class="p">,</span>
-    <span class="n">input_type</span><span class="o">=</span><span class="s2">"multiedgelist"</span>
-<span class="p">)</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">load_synthetic_multilayer</span><span class="p">()</span>
 
 <span class="c1"># Run SIR simulation</span>
 <span class="n">sir</span> <span class="o">=</span> <span class="n">SIRDynamics</span><span class="p">(</span>
@@ -1155,9 +1123,10 @@ Adoption rate: 100.00%
 <span class="n">sir</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">sir</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
-<span class="c1"># Attach final state to network as node attributes</span>
-<span class="n">final_state</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">final_state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="c1"># Attach the state at peak prevalence to query an active outbreak</span>
+<span class="n">peak_step</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_measure</span><span class="p">(</span><span class="s2">"prevalence"</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+<span class="n">peak_state</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">peak_step</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">peak_state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">'sir_state'</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
     <span class="c1"># Also add a numeric version for filtering</span>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">'is_infected'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="s1">'I'</span><span class="p">)</span>
@@ -1178,18 +1147,8 @@ Adoption rate: 100.00%
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Infected nodes: </span><span class="si">{</span><span class="n">infected</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sample infected:"</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">infected_nodes</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">infected</span><span class="o">.</span><span class="n">items</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Infected nodes: 12
-Sample infected:
-  ('node7', 'layer1')
-  ('node12', 'layer2')
-  ('node3', 'layer3')
-  ('node15', 'layer1')
-  ('node8', 'layer2')
 </pre></div>
 </div>
 <p><strong>Using builder API for complex queries:</strong></p>
@@ -1201,29 +1160,19 @@ Sample infected:
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s1">'I'</span><span class="p">)</span>
      <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"High-degree infected nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">high_degree_infected</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">high_degree_infected</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">5</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: degree=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">'degree'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>High-degree infected nodes: 7
-  ('node7', 'layer1'): degree=12
-  ('node12', 'layer2'): degree=10
-  ('node3', 'layer1'): degree=9
-  ('node15', 'layer3'): degree=8
-  ('node8', 'layer2'): degree=7
+<span class="nb">print</span><span class="p">(</span><span class="n">high_degree_infected</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
 <section id="layer-specific-dynamics-queries">
 <h3>Layer-Specific Dynamics Queries<a class="headerlink" href="#layer-specific-dynamics-queries" title="Link to this heading"></a></h3>
 <p><strong>Compare infection levels across layers:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Infection by layer:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
@@ -1234,7 +1183,7 @@ Sample infected:
     <span class="p">)</span>
 
     <span class="n">infected_in_layer</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
-        <span class="mi">1</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layer_nodes</span>
+        <span class="mi">1</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layer_nodes</span><span class="o">.</span><span class="n">items</span>
         <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'sir_state'</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'I'</span>
     <span class="p">)</span>
 
@@ -1242,36 +1191,19 @@ Sample infected:
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">infected_in_layer</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">prevalence</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Infection by layer:
-  layer1: 5/40 (12.50%)
-  layer2: 4/40 (10.00%)
-  layer3: 3/40 (7.50%)
-</pre></div>
-</div>
-<p><strong>Find susceptible nodes in high-risk layers:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Identify high-risk layers (high infection prevalence)</span>
-<span class="n">high_risk_layer</span> <span class="o">=</span> <span class="s1">'layer1'</span>  <span class="c1"># From analysis above</span>
+<p><strong>Find high-degree susceptible replicas in one layer:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">selected_layer</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<span class="c1"># Find susceptible nodes in high-risk layer</span>
-<span class="n">at_risk_nodes</span> <span class="o">=</span> <span class="p">(</span>
+<span class="c1"># Find susceptible replicas and sort by degree</span>
+<span class="n">susceptible</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">high_risk_layer</span><span class="p">])</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s1">'S'</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">selected_layer</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s2">"S"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"intra"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
-
-<span class="c1"># Sort by degree (higher degree = more neighbors, higher risk)</span>
-<span class="n">at_risk_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-    <span class="n">at_risk_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
-    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">'degree'</span><span class="p">],</span>
-    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"High-risk susceptible nodes in </span><span class="si">{</span><span class="n">high_risk_layer</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">at_risk_list</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: degree=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">'degree'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">susceptible</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
@@ -1279,11 +1211,7 @@ Sample infected:
 <h3>Temporal Queries Across Simulation Steps<a class="headerlink" href="#temporal-queries-across-simulation-steps" title="Link to this heading"></a></h3>
 <p><strong>Track state changes over time:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select a few nodes to track</span>
-<span class="n">tracked_nodes</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">'node7'</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">'node12'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">),</span>
-    <span class="p">(</span><span class="s1">'node3'</span><span class="p">,</span> <span class="s1">'layer3'</span><span class="p">)</span>
-<span class="p">]</span>
+<span class="n">tracked_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())[:</span><span class="mi">3</span><span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Temporal evolution:"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Time  "</span> <span class="o">+</span> <span class="s2">"  "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">8</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tracked_nodes</span><span class="p">))</span>
@@ -1301,18 +1229,6 @@ Sample infected:
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">4</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">states_str</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Temporal evolution:
-Time  node7     node12    node3
---------------------------------------------------
-   0  S         S         S
-  20  I         S         S
-  40  R         I         I
-  60  R         R         I
-  80  R         R         R
- 100  R         R         R
-</pre></div>
-</div>
 <p><strong>Query state transitions:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find nodes that became infected between t=20 and t=40</span>
 <span class="n">state_20</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span>
@@ -1320,7 +1236,7 @@ Time  node7     node12    node3
 
 <span class="n">newly_infected</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">state_20</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">state_20</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'S'</span> <span class="ow">and</span> <span class="n">state_40</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'I'</span>
+    <span class="k">if</span> <span class="n">state_20</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'S'</span> <span class="ow">and</span> <span class="n">state_40</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">'I'</span><span class="p">,</span> <span class="s1">'R'</span><span class="p">}</span>
 <span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Newly infected between t=20 and t=40: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">newly_infected</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -1347,13 +1263,6 @@ Time  node7     node12    node3
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Nodes: </span><span class="si">{</span><span class="n">recovered_subgraph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Edges: </span><span class="si">{</span><span class="n">recovered_subgraph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Layers: </span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">recovered_matches</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Recovered subnetwork:
-  Nodes: 38
-  Edges: 145
-  Layers: {'layer1', 'layer2', 'layer3'}
 </pre></div>
 </div>
 <p><strong>Analyze connectivity within susceptible population:</strong></p>
@@ -1383,43 +1292,30 @@ Time  node7     node12    node3
 </section>
 <section id="combine-with-dynamics-measures">
 <h3>Combine with Dynamics Measures<a class="headerlink" href="#combine-with-dynamics-measures" title="Link to this heading"></a></h3>
-<p><strong>Identify superspreaders (high-degree infected nodes):</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span>
-
-<span class="c1"># Find infected nodes with highest degree</span>
-<span class="n">superspreaders</span> <span class="o">=</span> <span class="p">(</span>
+<p><strong>Rank infected replicas by centrality:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">infected_hubs</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s1">'I'</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">sir_state</span><span class="o">=</span><span class="s2">"I"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Potential superspreaders: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">superspreaders</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">superspreaders</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">5</span><span class="p">]:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: deg=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">'degree'</span><span class="p">]</span><span class="si">}</span><span class="s2">, betw=</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">'betweenness_centrality'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Potential superspreaders: 4
-  ('node7', 'layer1'): deg=12, betw=0.0456
-  ('node12', 'layer2'): deg=10, betw=0.0345
-  ('node15', 'layer3'): deg=9, betw=0.0234
-  ('node3', 'layer1'): deg=8, betw=0.0198
+<span class="nb">print</span><span class="p">(</span><span class="n">infected_hubs</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
 <p><strong>Compute attack rate by layer using DSL:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Attack rate (recovered / total) by layer:"</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">final_state</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Attack rate (ever infected / total) by layer:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 
-    <span class="n">recovered</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
-        <span class="mi">1</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layer_nodes</span>
-        <span class="k">if</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'sir_state'</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'R'</span>
+    <span class="n">ever_infected</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+        <span class="mi">1</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layer_nodes</span><span class="o">.</span><span class="n">items</span>
+        <span class="k">if</span> <span class="n">final_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">'I'</span><span class="p">,</span> <span class="s1">'R'</span><span class="p">}</span>
     <span class="p">)</span>
 
-    <span class="n">attack_rate</span> <span class="o">=</span> <span class="n">recovered</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">attack_rate</span> <span class="o">=</span> <span class="n">ever_infected</span> <span class="o">/</span> <span class="n">layer_nodes</span><span class="o">.</span><span class="n">count</span> <span class="k">if</span> <span class="n">layer_nodes</span><span class="o">.</span><span class="n">count</span> <span class="k">else</span> <span class="mi">0</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">attack_rate</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1437,17 +1333,8 @@ Time  node7     node12    node3
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="c1"># Convert to DataFrame</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
-    <span class="p">{</span>
-        <span class="s1">'node'</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="s1">'layer'</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-        <span class="s1">'sir_state'</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'sir_state'</span><span class="p">,</span> <span class="s1">'unknown'</span><span class="p">),</span>
-        <span class="s1">'degree'</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">'degree'</span><span class="p">],</span>
-        <span class="s1">'betweenness'</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">'betweenness_centrality'</span><span class="p">]</span>
-    <span class="p">}</span>
-    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-<span class="p">])</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">"betweenness_centrality"</span><span class="p">:</span> <span class="s2">"betweenness"</span><span class="p">})</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"sir_state"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">peak_state</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">]</span>
 
 <span class="c1"># Group by state and compute statistics</span>
 <span class="n">state_stats</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'sir_state'</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>

@@ -528,8 +528,8 @@
     <span class="n">graphs</span><span class="p">,</span>                   <span class="c1"># List of layer subgraphs</span>
 
     <span class="c1"># Display control</span>
-    <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>             <span class="c1"># Show plot immediately</span>
-    <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># Matplotlib axis (None = create new)</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>            <span class="c1"># Show plot immediately</span>
+    <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># Matplotlib axis (None = create new)</span>
 
     <span class="c1"># Node appearance</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>             <span class="c1"># Base node size</span>
@@ -552,7 +552,7 @@
     <span class="n">background_color</span><span class="o">=</span><span class="s2">"rainbow"</span><span class="p">,</span>  <span class="c1"># Background color scheme</span>
 
     <span class="c1"># Labels</span>
-    <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Show layer labels?</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>             <span class="c1"># Show layer labels?</span>
     <span class="n">label_position</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>       <span class="c1"># Label distance from center</span>
 
     <span class="c1"># Cleanup</span>
@@ -624,7 +624,7 @@
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
     <span class="n">graphs</span><span class="p">,</span>
     <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">labels</span><span class="o">=</span><span class="n">labels</span>
 <span class="p">)</span>
 
@@ -655,7 +655,7 @@
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
     <span class="n">graphs</span><span class="p">,</span>
     <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
     <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
     <span class="n">alphalevel</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>

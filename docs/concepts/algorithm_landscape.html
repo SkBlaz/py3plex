@@ -583,7 +583,7 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Pass <code class="docutils literal notranslate"><span class="pre">random_seed</span></code> to <code class="docutils literal notranslate"><span class="pre">generate_walks</span></code> for reproducible samples.</p>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">seed</span></code> to <code class="docutils literal notranslate"><span class="pre">generate_walks</span></code> for reproducible samples.</p>
 <p><strong>Embedding Methods</strong></p>
 <p><em>Examples:</em></p>
 <ul class="simple">
@@ -599,11 +599,9 @@
 <li><p>Clustering</p></li>
 <li><p>Similarity computation</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">node2vec_embedding</span>
-
-<span class="c1"># Generate embeddings</span>
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">node2vec_embedding</span><span class="o">.</span><span class="n">generate_embeddings</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate embeddings</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">"node2vec"</span><span class="p">,</span>
     <span class="n">dimensions</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
     <span class="n">walk_length</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>
     <span class="n">num_walks</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
@@ -612,7 +610,7 @@
 <span class="p">)</span>
 
 <span class="c1"># Use embeddings for ML</span>
-<span class="c1"># embeddings is a numpy array: (num_nodes, dimensions)</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>  <span class="c1"># one row per replica</span>
 </pre></div>
 </div>
 </section>

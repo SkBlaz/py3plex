@@ -242,7 +242,7 @@ Nodes per layer:
 <span class="n">network</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="s1">'family'</span><span class="p">)</span>
 
 <span class="c1"># Check layers</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Layers:"</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Layers:"</span><span class="p">,</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
 
 <span class="c1"># Add edges (nodes created automatically)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
@@ -427,7 +427,7 @@ Nodes per layer:
 </div>
 <p><strong>Get nodes in a specific layer:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filter by layer</span>
-<span class="n">friends_nodes</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">'friends'</span><span class="p">)</span>
+<span class="n">friends_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">replica</span> <span class="k">for</span> <span class="n">replica</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">replica</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'friends'</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Friends layer nodes:"</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">friends_nodes</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -449,7 +449,7 @@ Nodes per layer:
 </pre></div>
 </div>
 <p><strong>Get layers:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layers: </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of layers: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
@@ -507,7 +507,7 @@ Nodes per layer:
 </pre></div>
 </div>
 <p><strong>Iterate over layers:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer_name</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
     <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
     <span class="n">num_edges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
@@ -612,7 +612,7 @@ Nodes per layer:
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Count elements manually</span>
 <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span>
 <span class="n">num_edges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()))</span>
-<span class="n">num_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+<span class="n">num_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Nodes: </span><span class="si">{</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2">, Edges: </span><span class="si">{</span><span class="n">num_edges</span><span class="si">}</span><span class="s2">, Layers: </span><span class="si">{</span><span class="n">num_layers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
@@ -656,12 +656,12 @@ Nodes per layer:
 <section id="matrix-representations">
 <h3>Matrix Representations<a class="headerlink" href="#matrix-representations" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get supra-adjacency matrix</span>
-<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"sparse"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Supra-adjacency shape: </span><span class="si">{</span><span class="n">supra_adj</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># For small networks, get dense version</span>
 <span class="k">if</span> <span class="n">num_nodes</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
-    <span class="n">supra_adj_dense</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">supra_adj_dense</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"dense"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="../concepts/py3plex_core_model.html"><span class="doc">The py3plex Core Model</span></a> for details on supra-adjacency matrices.</p>
@@ -970,7 +970,7 @@ After additions: 6 nodes, 4 edges
 <span class="n">network</span><span class="o">.</span><span class="n">basic_stats</span><span class="p">()</span>
 
 <span class="c1"># Verify it matches expectations</span>
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"Expected 3 layers"</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"Expected 3 layers"</span>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"Network is empty!"</span>
 </pre></div>
 </div>
@@ -978,10 +978,10 @@ After additions: 6 nodes, 4 edges
 <section id="use-appropriate-data-structures">
 <h3>Use Appropriate Data Structures<a class="headerlink" href="#use-appropriate-data-structures" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For large networks, use sparse matrices</span>
-<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Good</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"sparse"</span><span class="p">)</span>  <span class="c1"># Good</span>
 
 <span class="c1"># Avoid dense matrices for large networks</span>
-<span class="c1"># supra_adj = network.get_supra_adjacency_matrix(sparse=False)  # Bad for n &gt; 1000</span>
+<span class="c1"># supra_adj = network.get_supra_adjacency_matrix(mtype="dense")  # Bad for n &gt; 1000</span>
 </pre></div>
 </div>
 </section>
@@ -1029,7 +1029,7 @@ After additions: 6 nodes, 4 edges
 <section id="pattern-3-layer-by-layer-analysis">
 <h3>Pattern 3: Layer-by-Layer Analysis<a class="headerlink" href="#pattern-3-layer-by-layer-analysis" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Analyze each layer separately</span>
-<span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Layer: </span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2"> ==="</span><span class="p">)</span>
 
     <span class="c1"># Extract layer</span>

@@ -202,7 +202,7 @@
 <p>Examples in this guide use:</p>
 <ul class="simple">
 <li><p><strong>Programmatically created networks</strong> (recommended for self-contained examples)</p></li>
-<li><p><strong>Built-in generators</strong>: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.algorithms</span> <span class="pre">import</span> <span class="pre">random_generators</span></code></p></li>
+<li><p><strong>Built-in generators</strong>: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">py3plex.core</span> <span class="pre">import</span> <span class="pre">random_generators</span></code></p></li>
 <li><p><strong>Example files</strong>: <code class="docutils literal notranslate"><span class="pre">datasets/multiedgelist.txt</span></code> in the repository</p></li>
 </ul>
 <p>For reproducibility, we’ll create networks from scratch in most examples.</p>
@@ -213,7 +213,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">multinet</span>
 
 <span class="c1"># Create a multilayer network</span>
-<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
+<span class="n">network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">(</span><span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">network</span><span class="o">.</span><span class="n">add_edges</span><span class="p">([</span>
     <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
     <span class="p">[</span><span class="s1">'B'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
@@ -226,8 +226,7 @@
 </pre></div>
 </div>
 <p><strong>Example output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of nodes: 6
-Number of edges: 4
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Number of unique nodes (as node-layer tuples): 6
 Number of unique node IDs (across all layers): 4
 Nodes per layer:
   Layer '1': 3 nodes
@@ -240,34 +239,24 @@ Nodes per layer:
 <p>Understand how structure varies per layer before aggregating the network.</p>
 <section id="compute-per-layer-density">
 <h3>Compute Per-Layer Density<a class="headerlink" href="#compute-per-layer-density" title="Link to this heading"></a></h3>
-<p>Density compares observed edges <code class="docutils literal notranslate"><span class="pre">m</span></code> to the maximum possible edges among <code class="docutils literal notranslate"><span class="pre">n</span></code> nodes in one layer.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<p>Density is the fraction of possible within-layer connections present.
+The statistic includes isolated replicas and counts each non-loop connection once.
+Directed layers count ordered pairs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.multilayer_statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">layer_density</span>
 
-<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-    <span class="c1"># Get nodes and edges in this layer</span>
-    <span class="n">nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="n">edges</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
-
-    <span class="c1"># Density = actual edges / possible edges</span>
-    <span class="n">max_edges</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># undirected</span>
-    <span class="n">density</span> <span class="o">=</span> <span class="n">m</span> <span class="o">/</span> <span class="n">max_edges</span> <span class="k">if</span> <span class="n">max_edges</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: density = </span><span class="si">{</span><span class="n">density</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Layer </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">: density = </span><span class="si">{</span><span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For directed layers, use <code class="docutils literal notranslate"><span class="pre">max_edges</span> <span class="pre">=</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">(n</span> <span class="pre">-</span> <span class="pre">1)</span></code> instead (ordered pairs).</p>
 </section>
 <section id="compare-layers">
 <h3>Compare Layers<a class="headerlink" href="#compare-layers" title="Link to this heading"></a></h3>
 <p>Use the DSL for efficient comparison:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
          <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"intra"</span><span class="p">)</span>
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
@@ -287,26 +276,17 @@ layer3: avg degree = 4.12
 <p>Once you know layer-level trends, drill down to node importance and activity.</p>
 <section id="node-activity-layer-count">
 <h3>Node Activity (Layer Count)<a class="headerlink" href="#node-activity-layer-count" title="Link to this heading"></a></h3>
-<p>How many layers does each node participate in? <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> counts unique layers where the node appears.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get nodes present in multiple layers</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">layer_count</span></code> operator reports how many selected layers contain each
+physical node. The query returns one row per replica. Drop repeated physical
+IDs for a one-row-per-entity summary.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"layer_count"</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="n">active_nodes</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"layer_count"</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">layer_count__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-layer_count"</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"layer_count"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"layer_count"</span><span class="p">]]</span>
+    <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">"id"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"layer_count"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="p">)</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">active_nodes</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
-</pre></div>
-</div>
-<p><strong>Example output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>     node  layer_count
-0   Alice           3
-1     Bob           3
-2   Carol           2
-3    Dave           1
+<span class="nb">print</span><span class="p">(</span><span class="n">active_nodes</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -366,10 +346,10 @@ layer3: avg degree = 4.12
 <p>Use these measures when the interaction between layers matters, not just within-layer structure.</p>
 <section id="node-versatility">
 <h3>Node Versatility<a class="headerlink" href="#node-versatility" title="Link to this heading"></a></h3>
-<p>Versatility measures how evenly a node distributes its connections across layers; higher values mean more balanced participation across layers.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_versatility</span>
+<p>Versatility centrality combines a physical node’s centrality scores across layers. By default, each layer receives the same weight.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.multilayer_statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">versatility_centrality</span>
 
-<span class="n">versatility_scores</span> <span class="o">=</span> <span class="n">calculate_versatility</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="n">versatility_scores</span> <span class="o">=</span> <span class="n">versatility_centrality</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">centrality_type</span><span class="o">=</span><span class="s2">"degree"</span><span class="p">)</span>
 
 <span class="c1"># Sort by versatility</span>
 <span class="n">sorted_scores</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
@@ -387,53 +367,49 @@ layer3: avg degree = 4.12
 <section id="edge-overlap-between-layers">
 <h3>Edge Overlap Between Layers<a class="headerlink" href="#edge-overlap-between-layers" title="Link to this heading"></a></h3>
 <p>How many connections exist in multiple layers?</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_edge_overlap</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.multilayer_statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">edge_overlap</span>
 
-<span class="n">overlap</span> <span class="o">=</span> <span class="n">calculate_edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s1">'layer1'</span><span class="p">,</span> <span class="s1">'layer2'</span><span class="p">)</span>
+<span class="n">overlap</span> <span class="o">=</span> <span class="n">edge_overlap</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edge overlap between layer1 and layer2: </span><span class="si">{</span><span class="n">overlap</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edge overlap between layers 1 and 2: </span><span class="si">{</span><span class="n">overlap</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">overlap</span></code> is a ratio (0–1) of edges shared by both layers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">overlap</span></code> is the size of the intersection divided by the size of the union of physical-node edge sets.</p>
 </section>
 <section id="inter-layer-degree-correlation">
 <h3>Inter-Layer Degree Correlation<a class="headerlink" href="#inter-layer-degree-correlation" title="Link to this heading"></a></h3>
 <p>Are high-degree nodes in layer 1 also high-degree in layer 2?</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">inter_layer_correlation</span>
-
-<span class="n">correlation</span> <span class="o">=</span> <span class="n">inter_layer_correlation</span><span class="p">(</span>
-    <span class="n">network</span><span class="p">,</span>
-    <span class="s1">'layer1'</span><span class="p">,</span>
-    <span class="s1">'layer2'</span><span class="p">,</span>
-    <span class="n">metric</span><span class="o">=</span><span class="s1">'degree'</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics.multilayer_statistics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">inter_layer_degree_correlation</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="n">correlation</span> <span class="o">=</span> <span class="n">inter_layer_degree_correlation</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Degree correlation: </span><span class="si">{</span><span class="n">correlation</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="c1"># Values near 1.0 indicate that high-degree nodes stay high across layers.</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="network-wide-statistics">
 <h2>Network-Wide Statistics<a class="headerlink" href="#network-wide-statistics" title="Link to this heading"></a></h2>
-<p>Aggregate everything into a single view of the whole multilayer graph.</p>
+<p>These examples measure the simple undirected graph of node replicas. The
+projection retains layer IDs on the nodes and includes interlayer edges.</p>
 <section id="global-clustering-coefficient">
 <h3>Global Clustering Coefficient<a class="headerlink" href="#global-clustering-coefficient" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">global_clustering_coefficient</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
-<span class="n">gcc</span> <span class="o">=</span> <span class="n">global_clustering_coefficient</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Global clustering: </span><span class="si">{</span><span class="n">gcc</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">remove_edges_from</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">selfloop_edges</span><span class="p">(</span><span class="n">graph</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Global clustering (transitivity): </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">transitivity</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="average-path-length">
 <h3>Average Path Length<a class="headerlink" href="#average-path-length" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.algorithms.statistics</span><span class="w"> </span><span class="kn">import</span> <span class="n">average_path_length</span>
-
-<span class="c1"># Note: computationally expensive for large networks; ensure the graph</span>
-<span class="c1"># is connected or run on the largest connected component.</span>
-<span class="n">apl</span> <span class="o">=</span> <span class="n">average_path_length</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average path length: </span><span class="si">{</span><span class="n">apl</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">largest_component</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">graph</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">set</span><span class="p">())</span>
+<span class="k">if</span> <span class="n">largest_component</span><span class="p">:</span>
+    <span class="n">connected</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">largest_component</span><span class="p">)</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">average_shortest_path_length</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average path length of the largest component: </span><span class="si">{</span><span class="n">length</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -459,24 +435,16 @@ layer3: avg degree = 4.12
 <section id="save-to-json">
 <h3>Save to JSON<a class="headerlink" href="#save-to-json" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.dsl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">L</span>
 
 <span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'num_nodes'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())),</span>
-    <span class="s1">'num_edges'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_edges</span><span class="p">())),</span>
-    <span class="s1">'num_layers'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()),</span>
-    <span class="s1">'density_by_layer'</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="s2">"num_replicas"</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span>
+    <span class="s2">"num_edges"</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">(),</span>
+    <span class="s2">"num_layers"</span><span class="p">:</span> <span class="n">network</span><span class="o">.</span><span class="n">layer_count</span><span class="p">,</span>
+    <span class="s2">"density_by_layer"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">layer</span><span class="p">:</span> <span class="n">layer_density</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
+    <span class="p">},</span>
 <span class="p">}</span>
-
-<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
-    <span class="n">layer_nodes</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="n">layer_edges</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span><span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_nodes</span><span class="p">)</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_edges</span><span class="p">)</span>
-    <span class="n">max_edges</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># undirected density</span>
-    <span class="n">stats</span><span class="p">[</span><span class="s1">'density_by_layer'</span><span class="p">][</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span> <span class="o">/</span> <span class="n">max_edges</span> <span class="k">if</span> <span class="n">max_edges</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
-
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'stats.json'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"stats.json"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -488,14 +456,15 @@ layer3: avg degree = 4.12
 <h3>Pattern: Compare Node Importance Across Layers<a class="headerlink" href="#pattern-compare-node-importance-across-layers" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 <span class="n">all_stats</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
          <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"betweenness_centrality"</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"intra"</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"betweenness_centrality"</span><span class="p">)</span>
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
@@ -507,7 +476,7 @@ layer3: avg degree = 4.12
 <span class="c1"># Find nodes that are important in all layers</span>
 <span class="n">pivot</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
     <span class="n">values</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">,</span>
-    <span class="n">index</span><span class="o">=</span><span class="s1">'node'</span><span class="p">,</span>
+    <span class="n">index</span><span class="o">=</span><span class="s1">'id'</span><span class="p">,</span>
     <span class="n">columns</span><span class="o">=</span><span class="s1">'layer'</span><span class="p">,</span>
     <span class="n">aggfunc</span><span class="o">=</span><span class="s1">'mean'</span>
 <span class="p">)</span>
@@ -518,11 +487,11 @@ layer3: avg degree = 4.12
 </section>
 <section id="pattern-identify-layer-specific-hubs">
 <h3>Pattern: Identify Layer-Specific Hubs<a class="headerlink" href="#pattern-identify-layer-specific-hubs" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
          <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
-         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
+         <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"intra"</span><span class="p">)</span>
          <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"-degree"</span><span class="p">)</span>
          <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
          <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>

@@ -145,8 +145,8 @@ where:
     )
     
     print("Network structure:")
-    print(f"  Layers: {network.get_layers()}")
-    print(f"  Nodes: {len(network.get_nodes())}")
+    print(f"  Layers: {network.layers}")
+    print(f"  Nodes: {len(list(network.get_nodes()))}")
     print(f"  Edges (total): {network.number_of_edges()}")
     
     # Run multilayer Louvain with different coupling strengths
@@ -477,7 +477,7 @@ For multilayer networks, you can implement layer-aware label propagation:
         
         # Get layer-specific edges
         layer_edges = {}
-        for layer in network.get_layers():
+        for layer in network.layers:
             layer_edges[layer] = [
                 (e[0], e[1]) for e in network.core_network.edges()
                 if e[0][1] == layer and e[1][1] == layer
@@ -732,7 +732,7 @@ For multilayer networks, visualize community composition across layers:
     import seaborn as sns
     
     # Build matrix: communities × layers
-    layers = network.get_layers()
+    layers = network.layers
     comm_ids = sorted(set(communities.values()))
     
     matrix = np.zeros((len(comm_ids), len(layers)))
@@ -829,7 +829,7 @@ Export Communities
     output = {
         'num_communities': len(community_dict),
         'num_nodes': len(set(node for node, _ in communities.keys())),
-        'num_layers': len(network.get_layers()),
+        'num_layers': len(network.layers),
         'communities': dict(community_dict)
     }
     
@@ -944,7 +944,7 @@ DSL Basics for Communities
          .where(community=0)
          .compute("degree")
          .where(degree__gt=5)
-         .order_by("degree", reverse=True)
+         .order_by("degree", desc=True)
          .execute(network)
     )
     
@@ -1066,7 +1066,7 @@ Layer-Specific Community Queries
 
 .. code-block:: python
 
-    layers = network.get_layers()
+    layers = network.layers
     
     for layer in layers:
         # Count communities present in this layer
@@ -1119,7 +1119,7 @@ Extract Community Subnetworks
     print(f"Community 0 subnetwork:")
     print(f"  Nodes: {community_network.number_of_nodes()}")
     print(f"  Edges: {community_network.number_of_edges()}")
-    print(f"  Layers: {community_network.get_layers()}")
+    print(f"  Layers: {community_network.layers}")
 
 **Expected output:**
 
@@ -1563,7 +1563,7 @@ In multilayer networks, you may want to detect communities **within individual l
     layer_communities = {}
     layer_stats = {}
     
-    for layer in network.get_layers():
+    for layer in network.layers:
         print(f"\n--- Layer: {layer} ---")
         
         # Extract layer-specific edges
@@ -1827,7 +1827,7 @@ After detecting communities in the full multilayer network, you want to understa
     print("=" * 70)
     
     # Build composition matrix: community × layer
-    layers = network.get_layers()
+    layers = network.layers
     comm_ids = sorted(set(communities.values()))
     
     composition = defaultdict(lambda: defaultdict(int))
@@ -2625,7 +2625,7 @@ py3plex provides command-line tools for quick community detection without writin
 
 The CLI outputs JSON files with structure:
 
-.. code-block:: json
+.. code-block:: text
 
     {
       "algorithm": "louvain",

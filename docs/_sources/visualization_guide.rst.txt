@@ -31,7 +31,7 @@ Basic Multilayer Visualization
     
     # Visualize with defaults
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         display=True,
         labels=True
     )
@@ -59,7 +59,7 @@ Optimized for networks with many nodes where detail isn't critical.
     
     # Minimal preset for large networks
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         # Node settings
         node_size=5,              # Small nodes
         labels=False,             # No node labels (too cluttered)
@@ -105,7 +105,7 @@ Default settings that work well for most networks. Good balance between detail a
 
     # Balanced preset (this is the default)
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         # Node settings
         node_size=10,             # Medium nodes
         labels=True,              # Show layer labels
@@ -144,7 +144,7 @@ Maximum detail for small networks where every node and edge matters.
 
     # Dense preset for small, detailed networks
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         # Node settings
         node_size=20,             # Large nodes
         labels=True,              # Show all labels
@@ -197,7 +197,7 @@ Arranges layers in a circle. Good for showing inter-layer connections.
 .. code-block:: python
 
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         background_shape="circle",
         rectanglex=1.0,  # Circle radius x
         rectangley=1.0   # Circle radius y
@@ -216,7 +216,7 @@ Arranges layers in a grid. Good for many layers or hierarchical structures.
 .. code-block:: python
 
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         background_shape="rectangle",
         rectanglex=2.0,  # Width of layout
         rectangley=1.0   # Height of layout
@@ -314,7 +314,7 @@ Scale node sizes by degree (number of connections):
 .. code-block:: python
 
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         scale_by_size=True,    # Enable auto-scaling
         node_size=10           # Base size (scaled up/down by degree)
     )
@@ -334,13 +334,13 @@ Py3plex uses colorblind-safe palettes by default:
 
     # Rainbow colors (automatic assignment)
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         networks_color="rainbow"  # Auto-assign distinct colors
     )
     
     # Custom palette
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         networks_color=["#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A"]
     )
 
@@ -361,12 +361,12 @@ Layout parameters auto-adjust to network size:
     # For small networks, layout is compact
     small_network = multinet.multi_layer_network()
     # ... load 50-node network ...
-    draw_multilayer_default(small_network.get_layers())  # Compact layout
+    draw_multilayer_default(small_network.get_layers()[1])  # Compact layout
     
     # For large networks, layout expands
     large_network = multinet.multi_layer_network()
     # ... load 1000-node network ...
-    draw_multilayer_default(large_network.get_layers())  # Expanded layout
+    draw_multilayer_default(large_network.get_layers()[1])  # Expanded layout
 
 Customization Options
 ---------------------
@@ -380,8 +380,8 @@ Complete Parameter Reference
         network_list,             # List of layer subgraphs
         
         # Display control
-        display=True,             # Show plot immediately
-        axis=None,                # Matplotlib axis (None = create new)
+        display=False,            # Show plot immediately
+        ax=None,                # Matplotlib axis (None = create new)
         
         # Node appearance
         node_size=10,             # Base node size
@@ -404,7 +404,7 @@ Complete Parameter Reference
         background_color="rainbow",  # Background color scheme
         
         # Labels
-        labels=True,              # Show layer labels?
+        labels=False,             # Show layer labels?
         label_position=1.0,       # Label distance from center
         
         # Cleanup
@@ -425,7 +425,7 @@ Customize individual layers:
     from py3plex.visualization.multilayer import draw_multilayer_default
     
     # Get layers
-    layers = network.get_layers()
+    _, layers, _ = network.get_layers()
     
     # Modify specific layer (e.g., highlight layer 0)
     for node in layers[0].nodes():
@@ -458,7 +458,7 @@ Color nodes by community membership:
         network.core_network.nodes[node]['color'] = colors[comm_id]
     
     # Visualize
-    draw_multilayer_default(network.get_layers(), display=True)
+    draw_multilayer_default(network.get_layers()[1], display=True)
 
 **Example output (community-colored network):**
 
@@ -482,9 +482,9 @@ Save to File
     
     # Draw network
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         display=False,
-        axis=ax
+        ax=ax
     )
     
     # Customize and save
@@ -510,9 +510,9 @@ High-Quality Publications
     
     # Dense mode for publications
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         display=False,
-        axis=ax,
+        ax=ax,
         node_size=15,
         labels=True,
         alphalevel=0.5,
@@ -848,7 +848,7 @@ Jupyter Notebook Integration
     
     # Visualize
     from py3plex.visualization.multilayer import draw_multilayer_default
-    draw_multilayer_default(network.get_layers(), display=True)
+    draw_multilayer_default(network.get_layers()[1], display=True)
 
 Performance Tips
 ----------------
@@ -871,14 +871,14 @@ For Large Networks
     subnetwork = network.get_subnetwork(sample_nodes)
     
     # Visualize sample
-    draw_multilayer_default(subnetwork.get_layers(), display=True)
+    draw_multilayer_default(subnetwork.get_layers()[1], display=True)
 
 3. **Remove isolated nodes**:
 
 .. code-block:: python
 
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         remove_isolated_nodes=True  # Faster rendering
     )
 
@@ -904,7 +904,7 @@ Visualization Not Showing
     %matplotlib inline
     
     # Python script: Add plt.show()
-    draw_multilayer_default(network.get_layers(), display=False)
+    draw_multilayer_default(network.get_layers()[1], display=False)
     plt.show()
     
     # Headless server: Save to file
@@ -921,11 +921,11 @@ Nodes Overlapping
 .. code-block:: python
 
     # 1. Use smaller node size
-    draw_multilayer_default(network.get_layers(), node_size=5)
+    draw_multilayer_default(network.get_layers()[1], node_size=5)
     
     # 2. Increase layout area
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         rectanglex=2.0,  # Wider layout
         rectangley=2.0   # Taller layout
     )
@@ -943,18 +943,18 @@ Labels Too Crowded
 .. code-block:: python
 
     # 1. Disable labels for large networks
-    draw_multilayer_default(network.get_layers(), labels=False)
+    draw_multilayer_default(network.get_layers()[1], labels=False)
     
     # 2. Adjust label position
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         labels=True,
         label_position=1.2  # Move labels outward
     )
     
     # 3. Use smaller font
     draw_multilayer_default(
-        network.get_layers(),
+        network.get_layers()[1],
         node_font_size=3  # Smaller font
     )
 

@@ -322,7 +322,7 @@
 
 <span class="c1"># Get edges from each layer</span>
 <span class="n">edges_by_layer</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">layer</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
     <span class="c1"># Extract edge pairs (ignoring layer info)</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -501,7 +501,7 @@
 
 <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unique_users</span><span class="p">):</span>
     <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
-    <span class="n">platforms</span> <span class="o">=</span> <span class="n">activity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+    <span class="n">platforms</span> <span class="o">=</span> <span class="n">activity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">activity</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">: present on ALL platforms"</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">activity</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
@@ -510,7 +510,7 @@
 <span class="c1"># === 4. Platform-specific centrality ===</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Centrality by Platform ==="</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">platform</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">platform</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">platform</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">core_network</span>
 
@@ -532,7 +532,7 @@
 
 <span class="c1"># === 6. Layer similarity ===</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Platform Similarity ==="</span><span class="p">)</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)):</span>
         <span class="n">layer1</span><span class="p">,</span> <span class="n">layer2</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
@@ -681,13 +681,13 @@
 <span class="n">station_modes</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">unique_stations</span><span class="p">:</span>
     <span class="n">activity</span> <span class="o">=</span> <span class="n">mls</span><span class="o">.</span><span class="n">node_activity</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">)</span>
-    <span class="n">num_modes</span> <span class="o">=</span> <span class="n">activity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+    <span class="n">num_modes</span> <span class="o">=</span> <span class="n">activity</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
     <span class="n">station_modes</span><span class="p">[</span><span class="n">station</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_modes</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Stations by number of transport modes:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">station</span><span class="p">,</span> <span class="n">modes</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">station_modes</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">mode_names</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
         <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">mode</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
         <span class="n">layer_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()]</span>
         <span class="k">if</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">layer_nodes</span><span class="p">:</span>
@@ -699,7 +699,7 @@
 <span class="c1"># === 4. Mode-specific analysis ===</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Transport Mode Characteristics ==="</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="n">layer_subnet</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">subnetwork</span><span class="p">([</span><span class="n">mode</span><span class="p">],</span> <span class="n">subset_by</span><span class="o">=</span><span class="s2">"layers"</span><span class="p">)</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">layer_subnet</span><span class="o">.</span><span class="n">core_network</span>
 

@@ -304,8 +304,8 @@ Average size: 22.8
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Network structure:"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Layers: </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">())</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Layers: </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Nodes: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Edges (total): </span><span class="si">{</span><span class="n">network</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Run multilayer Louvain with different coupling strengths</span>
@@ -608,7 +608,7 @@ Stability check (5 runs with same seed):
 
     <span class="c1"># Get layer-specific edges</span>
     <span class="n">layer_edges</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
         <span class="n">layer_edges</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">layer</span> <span class="ow">and</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">layer</span>
@@ -844,7 +844,7 @@ Community 2 (total: 22 node-layers):
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 
 <span class="c1"># Build matrix: communities × layers</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 <span class="n">comm_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
 <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">comm_ids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)))</span>
@@ -935,7 +935,7 @@ First few rows:
 <span class="n">output</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">'num_communities'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">community_dict</span><span class="p">),</span>
     <span class="s1">'num_nodes'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">communities</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
-    <span class="s1">'num_layers'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()),</span>
+    <span class="s1">'num_layers'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">),</span>
     <span class="s1">'communities'</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">community_dict</span><span class="p">)</span>
 <span class="p">}</span>
 
@@ -1039,7 +1039,7 @@ First few rows:
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">community</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
      <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">degree__gt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
      <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -1149,7 +1149,7 @@ Ratio: 0.159
 </pre></div>
 </div>
 <p><strong>Compare community structure across layers:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 
 <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
     <span class="c1"># Count communities present in this layer</span>
@@ -1198,7 +1198,7 @@ layer3: 3 communities, 40 nodes
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Community 0 subnetwork:"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Nodes: </span><span class="si">{</span><span class="n">community_network</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Edges: </span><span class="si">{</span><span class="n">community_network</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Layers: </span><span class="si">{</span><span class="n">community_network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Layers: </span><span class="si">{</span><span class="n">community_network</span><span class="o">.</span><span class="n">layers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
@@ -1622,7 +1622,7 @@ Louvain (multilayer) vs Label Propagation     0.2789
 <span class="n">layer_communities</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">layer_stats</span> <span class="o">=</span> <span class="p">{}</span>
 
-<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- Layer: </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2"> ---"</span><span class="p">)</span>
 
     <span class="c1"># Extract layer-specific edges</span>
@@ -1872,7 +1872,7 @@ Node-level stability:
 <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
 
 <span class="c1"># Build composition matrix: community × layer</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">layers</span>
 <span class="n">comm_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
 <span class="n">composition</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
@@ -2591,21 +2591,21 @@ py3plex<span class="w"> </span>community<span class="w"> </span>datasets/network
 </ul>
 <p><strong>Output format:</strong></p>
 <p>The CLI outputs JSON files with structure:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">"algorithm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"louvain"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"num_communities"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"communities"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"node1"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"node2"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"node3"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="err">...</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">"community_sizes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"0"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">"1"</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span>
-<span class="w">    </span><span class="err">...</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+  "algorithm": "louvain",
+  "num_communities": 5,
+  "communities": {
+    "node1": 0,
+    "node2": 0,
+    "node3": 1,
+    ...
+  },
+  "community_sizes": {
+    "0": 42,
+    "1": 27,
+    ...
+  }
+}
 </pre></div>
 </div>
 <p><strong>Note on multilayer networks:</strong></p>

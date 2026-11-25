@@ -249,7 +249,7 @@ customization options, and best practices for different network scales.</p>
 
 <span class="c1"># Visualize with defaults</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">labels</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
@@ -270,7 +270,7 @@ customization options, and best practices for different network scales.</p>
 
 <span class="c1"># Minimal preset for large networks</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="c1"># Node settings</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>              <span class="c1"># Small nodes</span>
     <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>             <span class="c1"># No node labels (too cluttered)</span>
@@ -308,7 +308,7 @@ customization options, and best practices for different network scales.</p>
 <p>Default settings that work well for most networks. Good balance between detail and clarity.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Balanced preset (this is the default)</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="c1"># Node settings</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>             <span class="c1"># Medium nodes</span>
     <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Show layer labels</span>
@@ -343,7 +343,7 @@ customization options, and best practices for different network scales.</p>
 <p>Maximum detail for small networks where every node and edge matters.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dense preset for small, detailed networks</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="c1"># Node settings</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>             <span class="c1"># Large nodes</span>
     <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Show all labels</span>
@@ -387,7 +387,7 @@ customization options, and best practices for different network scales.</p>
 <h3><a class="toc-backref" href="#id9" role="doc-backlink">Circular Layout (Default)</a><a class="headerlink" href="#circular-layout-default" title="Link to this heading"></a></h3>
 <p>Arranges layers in a circle. Good for showing inter-layer connections.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">background_shape</span><span class="o">=</span><span class="s2">"circle"</span><span class="p">,</span>
     <span class="n">rectanglex</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Circle radius x</span>
     <span class="n">rectangley</span><span class="o">=</span><span class="mf">1.0</span>   <span class="c1"># Circle radius y</span>
@@ -403,7 +403,7 @@ customization options, and best practices for different network scales.</p>
 <h3><a class="toc-backref" href="#id10" role="doc-backlink">Rectangular Layout</a><a class="headerlink" href="#rectangular-layout" title="Link to this heading"></a></h3>
 <p>Arranges layers in a grid. Good for many layers or hierarchical structures.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">background_shape</span><span class="o">=</span><span class="s2">"rectangle"</span><span class="p">,</span>
     <span class="n">rectanglex</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>  <span class="c1"># Width of layout</span>
     <span class="n">rectangley</span><span class="o">=</span><span class="mf">1.0</span>   <span class="c1"># Height of layout</span>
@@ -492,7 +492,7 @@ Journal of complex networks, 2(3), 203-271.</p>
 <h3><a class="toc-backref" href="#id13" role="doc-backlink">Automatic Node Sizing</a><a class="headerlink" href="#automatic-node-sizing" title="Link to this heading"></a></h3>
 <p>Scale node sizes by degree (number of connections):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">scale_by_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>    <span class="c1"># Enable auto-scaling</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">10</span>           <span class="c1"># Base size (scaled up/down by degree)</span>
 <span class="p">)</span>
@@ -510,13 +510,13 @@ Journal of complex networks, 2(3), 203-271.</p>
 <p>Py3plex uses colorblind-safe palettes by default:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rainbow colors (automatic assignment)</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">networks_color</span><span class="o">=</span><span class="s2">"rainbow"</span>  <span class="c1"># Auto-assign distinct colors</span>
 <span class="p">)</span>
 
 <span class="c1"># Custom palette</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">networks_color</span><span class="o">=</span><span class="p">[</span><span class="s2">"#FF6B6B"</span><span class="p">,</span> <span class="s2">"#4ECDC4"</span><span class="p">,</span> <span class="s2">"#45B7D1"</span><span class="p">,</span> <span class="s2">"#FFA07A"</span><span class="p">]</span>
 <span class="p">)</span>
 </pre></div>
@@ -535,12 +535,12 @@ Journal of complex networks, 2(3), 203-271.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># For small networks, layout is compact</span>
 <span class="n">small_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="c1"># ... load 50-node network ...</span>
-<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">small_network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>  <span class="c1"># Compact layout</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">small_network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># Compact layout</span>
 
 <span class="c1"># For large networks, layout expands</span>
 <span class="n">large_network</span> <span class="o">=</span> <span class="n">multinet</span><span class="o">.</span><span class="n">multi_layer_network</span><span class="p">()</span>
 <span class="c1"># ... load 1000-node network ...</span>
-<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">large_network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>  <span class="c1"># Expanded layout</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">large_network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># Expanded layout</span>
 </pre></div>
 </div>
 </section>
@@ -553,8 +553,8 @@ Journal of complex networks, 2(3), 203-271.</p>
     <span class="n">network_list</span><span class="p">,</span>             <span class="c1"># List of layer subgraphs</span>
 
     <span class="c1"># Display control</span>
-    <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>             <span class="c1"># Show plot immediately</span>
-    <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># Matplotlib axis (None = create new)</span>
+    <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>            <span class="c1"># Show plot immediately</span>
+    <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                <span class="c1"># Matplotlib axis (None = create new)</span>
 
     <span class="c1"># Node appearance</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>             <span class="c1"># Base node size</span>
@@ -577,7 +577,7 @@ Journal of complex networks, 2(3), 203-271.</p>
     <span class="n">background_color</span><span class="o">=</span><span class="s2">"rainbow"</span><span class="p">,</span>  <span class="c1"># Background color scheme</span>
 
     <span class="c1"># Labels</span>
-    <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>              <span class="c1"># Show layer labels?</span>
+    <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>             <span class="c1"># Show layer labels?</span>
     <span class="n">label_position</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>       <span class="c1"># Label distance from center</span>
 
     <span class="c1"># Cleanup</span>
@@ -596,7 +596,7 @@ Journal of complex networks, 2(3), 203-271.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
 
 <span class="c1"># Get layers</span>
-<span class="n">layers</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
 
 <span class="c1"># Modify specific layer (e.g., highlight layer 0)</span>
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
@@ -627,7 +627,7 @@ Journal of complex networks, 2(3), 203-271.</p>
     <span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">'color'</span><span class="p">]</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">comm_id</span><span class="p">]</span>
 
 <span class="c1"># Visualize</span>
-<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example output (community-colored network):</strong></p>
@@ -646,9 +646,9 @@ Journal of complex networks, 2(3), 203-271.</p>
 
 <span class="c1"># Draw network</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">axis</span><span class="o">=</span><span class="n">ax</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
 <span class="p">)</span>
 
 <span class="c1"># Customize and save</span>
@@ -673,9 +673,9 @@ Journal of complex networks, 2(3), 203-271.</p>
 
 <span class="c1"># Dense mode for publications</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">node_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
     <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">alphalevel</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
@@ -984,7 +984,7 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 
 <span class="c1"># Visualize</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_default</span>
-<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1007,14 +1007,14 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 <span class="n">subnetwork</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_subnetwork</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">)</span>
 
 <span class="c1"># Visualize sample</span>
-<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">subnetwork</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">subnetwork</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
 <li><p><strong>Remove isolated nodes</strong>:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">remove_isolated_nodes</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Faster rendering</span>
 <span class="p">)</span>
 </pre></div>
@@ -1037,7 +1037,7 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
 
 <span class="c1"># Python script: Add plt.show()</span>
-<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
 <span class="c1"># Headless server: Save to file</span>
@@ -1051,11 +1051,11 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 <p><strong>Issue:</strong> Nodes overlap and are hard to distinguish</p>
 <p><strong>Solutions:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Use smaller node size</span>
-<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">node_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="c1"># 2. Increase layout area</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">rectanglex</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>  <span class="c1"># Wider layout</span>
     <span class="n">rectangley</span><span class="o">=</span><span class="mf">2.0</span>   <span class="c1"># Taller layout</span>
 <span class="p">)</span>
@@ -1070,18 +1070,18 @@ pip<span class="w"> </span>install<span class="w"> </span>plotly
 <p><strong>Issue:</strong> Layer labels overlap or are too dense</p>
 <p><strong>Solutions:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Disable labels for large networks</span>
-<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">draw_multilayer_default</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># 2. Adjust label position</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">label_position</span><span class="o">=</span><span class="mf">1.2</span>  <span class="c1"># Move labels outward</span>
 <span class="p">)</span>
 
 <span class="c1"># 3. Use smaller font</span>
 <span class="n">draw_multilayer_default</span><span class="p">(</span>
-    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">(),</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">node_font_size</span><span class="o">=</span><span class="mi">3</span>  <span class="c1"># Smaller font</span>
 <span class="p">)</span>
 </pre></div>
@@ -1129,7 +1129,7 @@ the unified <code class="docutils literal notranslate"><span class="pre">visuali
 <h3><a class="toc-backref" href="#id42" role="doc-backlink">Small Multiples View</a><a class="headerlink" href="#small-multiples-view" title="Link to this heading"></a></h3>
 <p>Displays each layer as a separate subplot in a grid layout, making it easy to compare
 layer structures side-by-side.</p>
-<a class="reference internal image-reference" href="../example_images/multilayer_small_multiples_shared.png"><img alt="Small multiples visualization with shared layout" class="align-center" src="../example_images/multilayer_small_multiples_shared.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/multilayer_small_multiples_shared.png"><img alt="Small multiples visualization with shared layout" class="align-center" src="_images/multilayer_small_multiples_shared.png" style="width: 600px;" />
 </a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
 
@@ -1173,7 +1173,7 @@ layer structures side-by-side.</p>
 <h3><a class="toc-backref" href="#id43" role="doc-backlink">Edge-Colored Projection</a><a class="headerlink" href="#edge-colored-projection" title="Link to this heading"></a></h3>
 <p>Projects all layers onto a single 2D graph, using edge colors to indicate layer membership.
 Useful for seeing the overall structure while maintaining layer information.</p>
-<a class="reference internal image-reference" href="../example_images/multilayer_edge_projection_spring.png"><img alt="Edge-colored projection visualization" class="align-center" src="../example_images/multilayer_edge_projection_spring.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/multilayer_edge_projection_spring.png"><img alt="Edge-colored projection visualization" class="align-center" src="_images/multilayer_edge_projection_spring.png" style="width: 600px;" />
 </a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
 
@@ -1220,7 +1220,7 @@ Useful for seeing the overall structure while maintaining layer information.</p>
 <h3><a class="toc-backref" href="#id44" role="doc-backlink">Supra-Adjacency Heatmap</a><a class="headerlink" href="#supra-adjacency-heatmap" title="Link to this heading"></a></h3>
 <p>Shows the multilayer network as a block matrix where each block represents the
 adjacency matrix of one layer. Can optionally include inter-layer connections.</p>
-<a class="reference internal image-reference" href="../example_images/multilayer_supra_heatmap_inter.png"><img alt="Supra-adjacency heatmap with inter-layer connections" class="align-center" src="../example_images/multilayer_supra_heatmap_inter.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/multilayer_supra_heatmap_inter.png"><img alt="Supra-adjacency heatmap with inter-layer connections" class="align-center" src="_images/multilayer_supra_heatmap_inter.png" style="width: 600px;" />
 </a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
 
@@ -1267,7 +1267,7 @@ adjacency matrix of one layer. Can optionally include inter-layer connections.</
 <h3><a class="toc-backref" href="#id45" role="doc-backlink">Radial/Concentric Layers</a><a class="headerlink" href="#radial-concentric-layers" title="Link to this heading"></a></h3>
 <p>Arranges layers as concentric circles, with nodes positioned on rings and
 inter-layer edges shown as radial connections.</p>
-<a class="reference internal image-reference" href="../example_images/multilayer_radial_with_inter.png"><img alt="Radial layers visualization with concentric circles" class="align-center" src="../example_images/multilayer_radial_with_inter.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/multilayer_radial_with_inter.png"><img alt="Radial layers visualization with concentric circles" class="align-center" src="_images/multilayer_radial_with_inter.png" style="width: 600px;" />
 </a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.multilayer</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_multilayer_network</span>
 
@@ -1387,7 +1387,7 @@ by color and size.</p>
 </pre></div>
 </div>
 <p><strong>Example output:</strong></p>
-<a class="reference internal image-reference" href="../example_images/multilayer_flow.png"><img alt="Flow/Alluvial visualization showing inter-layer connections" class="align-center" src="../example_images/multilayer_flow.png" style="width: 600px;" />
+<a class="reference internal image-reference" href="_images/multilayer_flow.png"><img alt="Flow/Alluvial visualization showing inter-layer connections" class="align-center" src="_images/multilayer_flow.png" style="width: 600px;" />
 </a>
 <p><strong>Best for:</strong></p>
 <ul class="simple">
@@ -1414,7 +1414,7 @@ individual node connections.</p>
 </pre></div>
 </div>
 <p><strong>Example output:</strong></p>
-<a class="reference internal image-reference" href="../example_images/multilayer_sankey_diagram.png"><img alt="Sankey diagram showing inter-layer flow strength" class="align-center" src="../example_images/multilayer_sankey_diagram.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="_images/multilayer_sankey_diagram.png"><img alt="Sankey diagram showing inter-layer flow strength" class="align-center" src="_images/multilayer_sankey_diagram.png" style="width: 500px;" />
 </a>
 <p>You can also use the function directly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">py3plex.visualization.sankey</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_multilayer_sankey</span>

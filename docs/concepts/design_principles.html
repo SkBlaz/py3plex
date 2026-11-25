@@ -305,7 +305,7 @@
 <span class="c1"># Multiple ways to access nodes</span>
 <span class="n">nodes1</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
 <span class="n">nodes2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">core_network</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
-<span class="n">nodes3</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="s1">'L1'</span><span class="p">)</span>
+<span class="n">nodes3</span> <span class="o">=</span> <span class="p">[</span><span class="n">replica</span> <span class="k">for</span> <span class="n">replica</span> <span class="ow">in</span> <span class="n">network</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">replica</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'L1'</span><span class="p">]</span>
 </pre></div>
 </div>
 <p><strong>Rationale:</strong> Different users have different preferences and workflows. Flexibility ensures py3plex adapts to the user’s needs, not vice versa.</p>
@@ -383,10 +383,10 @@
 <p><strong>Principle:</strong> Use sparse data structures for large networks.</p>
 <p><strong>In practice:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sparse matrix by default (efficient for large networks)</span>
-<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">supra_adj</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"sparse"</span><span class="p">)</span>
 
 <span class="c1"># Dense only for small networks or specific algorithms</span>
-<span class="n">supra_adj_dense</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">supra_adj_dense</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">get_supra_adjacency_matrix</span><span class="p">(</span><span class="n">mtype</span><span class="o">=</span><span class="s2">"dense"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Rationale:</strong> Real-world networks are typically sparse (few edges relative to potential edges). The supra-adjacency matrix indexes (node, layer) pairs, so sparsity keeps it tractable. Sparse representations:</p>

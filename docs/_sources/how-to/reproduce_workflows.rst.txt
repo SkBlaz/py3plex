@@ -109,35 +109,34 @@ Use configuration files for reproducibility:
 
 .. code-block:: yaml
 
-    # workflow_config.yaml
-    network:
-      input_file: "data.multiedgelist"
-      input_type: "multiedgelist"
-    
-    analysis:
-      - name: "statistics"
-        metrics: ["degree", "betweenness_centrality"]
-      
-      - name: "community_detection"
-        algorithm: "louvain"
-        params:
-          resolution: 1.0
-      
-      - name: "visualization"
-        output: "network.png"
-        layout: "force_directed"
+    name: "Reproducible network statistics"
+    datasets:
+      - name: "sample"
+        type: "generate"
+        generator: "random"
+        parameters:
+          nodes: 12
+          layers: 2
+          probability: 0.3
+          seed: 42
+    operations:
+      - type: "stats"
+        dataset: "sample"
 
-Execute workflow:
+Save the YAML as ``workflow_config.yaml`` and install the
+``py3plex[workflows]`` extra for YAML support.
 
 .. code-block:: python
 
-    from py3plex.workflows import execute_workflow
+    from py3plex.workflows import WorkflowConfig, WorkflowRunner
 
-    results = execute_workflow("workflow_config.yaml")
+    runner = WorkflowRunner(WorkflowConfig.from_file("workflow_config.yaml"))
+    runner.run()
+    print(runner.results["sample_stats_0"])
 
 See :doc:`../user_guide/recipes_and_workflows` for complete config-driven workflow examples.
 
-The config captures *what* to run (input format, metrics, algorithms, visualization) so you can reuse the same analysis across datasets by swapping only the file path.
+A workflow can load datasets from files or generate them with a seed. Operations name the dataset they use.
 
 DSL-Driven Analysis Workflows
 ------------------------------
@@ -157,23 +156,21 @@ Basic DSL Workflow Pattern
     from py3plex.dsl import Q, L
     
     # 1. Load network
-    network = multinet.multi_layer_network(directed=False)
-    network.load_network(
-        "py3plex/datasets/_data/synthetic_multilayer.edges",
-        input_type="multiedgelist"
-    )
+    from py3plex.datasets import load_synthetic_multilayer
+
+    network = load_synthetic_multilayer()
     
     # 2. Query and filter nodes with DSL
     high_degree_nodes = (
         Q.nodes()
          .compute("degree", "betweenness_centrality")
          .where(degree__gt=5)
-         .order_by("betweenness_centrality", reverse=True)
+         .order_by("betweenness_centrality", desc=True)
          .execute(network)
-    )  # dict keyed by (node_id, layer) -> metrics
+    )  # QueryResult with one item per node replica
     
     # 3. Extract subnetwork
-    subgraph = network.core_network.subgraph(high_degree_nodes.keys())
+    subgraph = high_degree_nodes.to_networkx(network)
     
     # 4. Analyze subnetwork
     print(f"High-degree subnetwork:")
@@ -181,25 +178,7 @@ Basic DSL Workflow Pattern
     print(f"  Edges: {subgraph.number_of_edges()}")
     
     # 5. Export results
-    import pandas as pd
-    df = pd.DataFrame([
-        {
-            'node': node[0],
-            'layer': node[1],
-            'degree': data['degree'],
-            'betweenness': data['betweenness_centrality']
-        }
-        for node, data in high_degree_nodes.items()
-    ])
-    df.to_csv('high_degree_analysis.csv', index=False)
-
-**Expected output (synthetic_multilayer sample):**
-
-.. code-block:: text
-
-    High-degree subnetwork:
-      Nodes: 25
-      Edges: 89
+    high_degree_nodes.to_pandas().to_csv("high_degree_analysis.csv", index=False)
 
 Multilayer Exploration Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -213,11 +192,9 @@ Multilayer Exploration Workflow
     import pandas as pd
     
     # Load network
-    network = multinet.multi_layer_network(directed=False)
-    network.load_network(
-        "py3plex/datasets/_data/synthetic_multilayer.edges",
-        input_type="multiedgelist"
-    )
+    from py3plex.datasets import load_synthetic_multilayer
+
+    network = load_synthetic_multilayer()
     
     print("MULTILAYER NETWORK EXPLORATION")
     print("=" * 70)
@@ -226,7 +203,7 @@ Multilayer Exploration Workflow
     print("\n1. Per-Layer Statistics:")
     layer_stats = []
     
-    for layer in network.get_layers():
+    for layer in network.layers:
         # Query layer nodes
         layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
         layer_edges = Q.edges().from_layers(L[layer]).execute(network)
@@ -235,11 +212,11 @@ Multilayer Exploration Workflow
         result = (
             Q.nodes()
              .from_layers(L[layer])
-             .compute("degree")
+             .compute("degree", kind="intra")
              .execute(network)
         )
         
-        avg_degree = sum(d['degree'] for d in result.values()) / len(result) if result else 0
+        avg_degree = result.to_pandas()['degree'].mean() if result.count else 0
         
         layer_stats.append({
             'layer': layer,
@@ -270,12 +247,12 @@ Multilayer Exploration Workflow
     
     # Step 3: Layer comparison
     print("\n3. Layer Overlap Analysis:")
-    layers = network.get_layers()
+    layers = network.layers
     
     for i, layer1 in enumerate(layers):
         for layer2 in layers[i+1:]:
-            nodes1 = set(n[0] for n in Q.nodes().from_layers(L[layer1]).execute(network).keys())
-            nodes2 = set(n[0] for n in Q.nodes().from_layers(L[layer2]).execute(network).keys())
+            nodes1 = set(n[0] for n in Q.nodes().from_layers(L[layer1]).execute(network).items)
+            nodes2 = set(n[0] for n in Q.nodes().from_layers(L[layer2]).execute(network).items)
             
             overlap = nodes1 & nodes2
             jaccard = len(overlap) / len(nodes1 | nodes2) if (nodes1 | nodes2) else 0
@@ -297,7 +274,7 @@ Multilayer Exploration Workflow
     from collections import defaultdict
     hub_layers = defaultdict(set)
     
-    for (node, layer), data in all_metrics.items():
+    for node, layer in all_metrics.items:
         hub_layers[node].add(layer)
     
     print(f"  Unique hub node IDs: {len(hub_layers)}")
@@ -305,43 +282,9 @@ Multilayer Exploration Workflow
     for node, layers in sorted(hub_layers.items(), key=lambda x: len(x[1]), reverse=True)[:5]:
         print(f"    {node}: present in {len(layers)} layers - {list(layers)}")
 
-**Expected output:**
-
-.. code-block:: text
-
-    MULTILAYER NETWORK EXPLORATION
-    ======================================================================
-    
-    1. Per-Layer Statistics:
-      layer1: 40 nodes, 95 edges, avg_degree=4.75
-      layer2: 40 nodes, 87 edges, avg_degree=4.35
-      layer3: 40 nodes, 102 edges, avg_degree=5.10
-    
-    2. Versatile Nodes (multilayer presence):
-      Total versatile nodes: 35
-      Top 5 most versatile:
-        node7: 3 layers
-        node12: 3 layers
-        node3: 3 layers
-        node15: 3 layers
-        node1: 3 layers
-    
-    3. Layer Overlap Analysis:
-      layer1 ∩ layer2: 35 nodes, Jaccard=0.875
-      layer1 ∩ layer3: 32 nodes, Jaccard=0.800
-      layer2 ∩ layer3: 33 nodes, Jaccard=0.825
-    
-    4. Cross-Layer Hub Nodes:
-      Hub nodes (degree > 7): 18
-      Unique hub node IDs: 12
-      Top 5 hub nodes:
-        node7: present in 3 layers - ['layer1', 'layer2', 'layer3']
-        node12: present in 3 layers - ['layer1', 'layer2', 'layer3']
-        node3: present in 3 layers - ['layer1', 'layer2', 'layer3']
-        node15: present in 2 layers - ['layer1', 'layer3']
-        node8: present in 2 layers - ['layer2', 'layer3']
-
-The thresholds (degree > 7, overlap counts) match the bundled ``synthetic_multilayer`` dataset. Adjust them for sparser or denser graphs so averages and Jaccard scores remain meaningful.
+Adjust the degree threshold to suit your network. The comparison reports
+Jaccard overlap over physical node IDs, while the hub query starts from
+node replicas.
 
 Community Detection + DSL Workflow
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -427,12 +370,12 @@ Dynamics + DSL Workflow
     print("=" * 70)
     
     # Per-layer infection analysis
-    for layer in network.get_layers():
+    for layer in network.layers:
         layer_nodes = Q.nodes().from_layers(L[layer]).execute(network)
         
         state_counts = Counter(
             network.core_network.nodes[node].get('sir_state', 'unknown')
-            for node in layer_nodes.keys()
+            for node in layer_nodes.items
         )
         
         total = len(layer_nodes)
@@ -445,19 +388,18 @@ Dynamics + DSL Workflow
         print(f"  I: {state_counts.get('I', 0)} ({pct(state_counts.get('I', 0)):.1f}%)")
         print(f"  R: {state_counts.get('R', 0)} ({pct(state_counts.get('R', 0)):.1f}%)")
     
-    # Identify superspreaders (infected nodes with high degree)
-    superspreaders = (
+    # Find high-degree infected replicas at the final step
+    infected_hubs = (
         Q.nodes()
          .where(sir_state='I')
          .compute("degree", "betweenness_centrality")
          .where(degree__gt=6)
-         .order_by("degree", reverse=True)
+         .order_by("degree", desc=True)
          .execute(network)
     )
     
-    print(f"\nSuperspreaders (infected, degree > 6): {len(superspreaders)}")
-    for node, data in list(superspreaders.items())[:5]:
-        print(f"  {node}: degree={data['degree']}, betw={data['betweenness_centrality']:.4f}")
+    print(f"\nInfected replicas with degree > 6: {len(infected_hubs)}")
+    print(infected_hubs.to_pandas().head(5))
 
 **Notes:** The SIR outcomes depend on ``beta`` (infection rate), ``gamma`` (recovery rate), and the random seed. Percentages are guarded against empty layers so the snippet can be reused on sparse networks, and ``sir_state`` is stored per node as ``S``, ``I``, or ``R`` for follow-up filtering.
 
@@ -477,7 +419,7 @@ Reusable DSL Query Functions
              .from_layers(L[layer])
              .compute("degree")
              .where(degree__gt=degree_threshold)
-             .order_by("degree", reverse=True)
+             .order_by("degree", desc=True)
              .execute(network)
         )
     
@@ -502,6 +444,7 @@ Reusable DSL Query Functions
         result1 = (
             Q.nodes()
              .from_layers(L[layer1])
+             .per_layer()
              .compute("betweenness_centrality")
              .execute(network)
         )
@@ -509,12 +452,13 @@ Reusable DSL Query Functions
         result2 = (
             Q.nodes()
              .from_layers(L[layer2])
+             .per_layer()
              .compute("betweenness_centrality")
              .execute(network)
         )
         
-        betw1 = [d['betweenness_centrality'] for d in result1.values()]
-        betw2 = [d['betweenness_centrality'] for d in result2.values()]
+        betw1 = result1.to_pandas()["betweenness_centrality"]
+        betw2 = result2.to_pandas()["betweenness_centrality"]
         
         return {
             'layer1': {'mean': np.mean(betw1), 'std': np.std(betw1)},
@@ -551,28 +495,24 @@ Process multiple networks:
 
 .. code-block:: python
 
-    import glob
-    from py3plex.core import multinet
-    
-    results = []
-    
-    for filename in glob.glob("data/*.multiedgelist"):
-        # Load network
-        network = multinet.multi_layer_network()
-        network.load_network(filename, input_type="multiedgelist")
-        
-        # Apply analysis pipeline
-        stats = analyze_network(network)  # Your custom function
-        
-        results.append({
-            'filename': filename,
-            'stats': stats
-        })
-    
-    # Aggregate results
-    summary = aggregate_results(results)
+    from pathlib import Path
 
-``analyze_network`` and ``aggregate_results`` are placeholders for your own reusable pipeline (e.g., computing summary stats, exporting community labels). Keep them pure functions so the batch loop stays predictable.
+    import pandas as pd
+    from py3plex.core import multinet
+
+    records = []
+    for filename in sorted(Path("data").glob("*.multiedgelist")):
+        batch_network = multinet.multi_layer_network(directed=False)
+        batch_network.load_network(str(filename), input_type="multiedgelist")
+        records.append({
+            "filename": str(filename),
+            "replicas": sum(1 for _ in batch_network.get_nodes()),
+            "edges": sum(1 for _ in batch_network.get_edges()),
+            "layers": batch_network.layer_count,
+        })
+
+    summary = pd.DataFrame(records, columns=["filename", "replicas", "edges", "layers"])
+    print(summary)
 
 Complete Example Templates
 ---------------------------

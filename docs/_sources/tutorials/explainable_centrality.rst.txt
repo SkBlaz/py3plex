@@ -256,7 +256,7 @@ Heuristic Nature
 
 The layer breakdown for **betweenness** and **eigenvector/PageRank** centralities are **heuristic approximations**, not exact decompositions. They provide interpretable insights but should not be treated as mathematically rigorous attributions.
 
-For fully rigorous explanations, consider using **Shapley values** or other game-theoretic attribution methods (not currently implemented).
+For attribution that recomputes the metric on each coalition, see the Shapley attribution block in :doc:`../reference/dsl_reference`.
 
 Performance
 ~~~~~~~~~~~

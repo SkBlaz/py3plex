@@ -909,14 +909,16 @@ to the DSL syntax but with Python-native ergonomics.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">Q.edges()</span></code> - Start a query for edges</p></li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">QueryBuilder</span></code> returned supports these chainable methods:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
- <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layer_expr</span><span class="p">)</span>    <span class="c1"># Filter by layers (optional)</span>
- <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">**</span><span class="n">conditions</span><span class="p">)</span>        <span class="c1"># Filter by conditions (optional)</span>
- <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">measures</span><span class="p">)</span>         <span class="c1"># Compute measures (optional)</span>
- <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="o">**</span><span class="n">transformations</span><span class="p">)</span>  <span class="c1"># Transform/create columns (optional)</span>
- <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">)</span>            <span class="c1"># Order results (optional)</span>
- <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>                   <span class="c1"># Limit results (optional)</span>
- <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span> <span class="c1"># Execute the query</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">layer_expr</span><span class="p">)</span>    <span class="c1"># Filter by layers (optional)</span>
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">**</span><span class="n">conditions</span><span class="p">)</span>        <span class="c1"># Filter by conditions (optional)</span>
+    <span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="o">*</span><span class="n">measures</span><span class="p">)</span>         <span class="c1"># Compute measures (optional)</span>
+    <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="o">**</span><span class="n">transformations</span><span class="p">)</span>  <span class="c1"># Transform/create columns (optional)</span>
+    <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="o">*</span><span class="n">keys</span><span class="p">)</span>            <span class="c1"># Order results (optional)</span>
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>                   <span class="c1"># Limit results (optional)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span> <span class="c1"># Execute the query</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -3354,25 +3356,29 @@ where I has I[u,u]=1 and I[u,v]=0 for u≠v, and multiplication/addition are sem
 <section id="s-builder-api-reference">
 <h3><a class="toc-backref" href="#id114" role="doc-backlink">S Builder API Reference</a><a class="headerlink" href="#s-builder-api-reference" title="Link to this heading"></a></h3>
 <p><strong>Path queries</strong>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">S</span><span class="o">.</span><span class="n">paths</span><span class="p">()</span>
-  <span class="o">.</span><span class="n">from_node</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>           <span class="c1"># Required: source node</span>
-  <span class="o">.</span><span class="n">to_node</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>              <span class="c1"># Optional: target node (all if omitted)</span>
-  <span class="o">.</span><span class="n">semiring</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>               <span class="c1"># Semiring name or spec</span>
-  <span class="o">.</span><span class="n">lift</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="s2">"weight"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># Edge attribute extraction</span>
-  <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>          <span class="c1"># Layer filter</span>
-  <span class="o">.</span><span class="n">max_hops</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>                  <span class="c1"># Maximum path length</span>
-  <span class="o">.</span><span class="n">witness</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>                <span class="c1"># Request path witnesses</span>
-  <span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="s2">"auto"</span><span class="o">|</span><span class="s2">"dijkstra"</span><span class="o">|</span><span class="s2">"bellman_ford"</span><span class="p">)</span>
-  <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span>
+    <span class="n">S</span><span class="o">.</span><span class="n">paths</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">from_node</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>           <span class="c1"># Required: source node</span>
+    <span class="o">.</span><span class="n">to_node</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>              <span class="c1"># Optional: target node (all if omitted)</span>
+    <span class="o">.</span><span class="n">semiring</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>               <span class="c1"># Semiring name or spec</span>
+    <span class="o">.</span><span class="n">lift</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="s2">"weight"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># Edge attribute extraction</span>
+    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>          <span class="c1"># Layer filter</span>
+    <span class="o">.</span><span class="n">max_hops</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>                  <span class="c1"># Maximum path length</span>
+    <span class="o">.</span><span class="n">witness</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>                <span class="c1"># Request path witnesses</span>
+    <span class="o">.</span><span class="n">backend</span><span class="p">(</span><span class="s2">"graph"</span><span class="p">)</span>             <span class="c1"># Optional: "graph" or "matrix"</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Closure queries</strong>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">S</span><span class="o">.</span><span class="n">closure</span><span class="p">()</span>
-  <span class="o">.</span><span class="n">semiring</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-  <span class="o">.</span><span class="n">lift</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="s2">"weight"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-  <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
-  <span class="o">.</span><span class="n">max_hops</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-  <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span>
+    <span class="n">S</span><span class="o">.</span><span class="n">closure</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">semiring</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">lift</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="s2">"weight"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">from_layers</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">max_hops</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">network</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -3644,15 +3650,14 @@ where I has I[u,u]=1 and I[u,v]=0 for u≠v, and multiplication/addition are sem
 </ul>
 <p><strong>Example</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Deterministic meta-analysis</span>
-<span class="n">meta1</span> <span class="o">=</span> <span class="p">(</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">M</span><span class="o">.</span><span class="n">meta</span><span class="p">()</span>
      <span class="o">.</span><span class="n">on_networks</span><span class="p">(</span><span class="n">nets</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">),</span> <span class="n">effect</span><span class="o">=</span><span class="s2">"pagerank"</span><span class="p">,</span> <span class="n">se</span><span class="o">=</span><span class="s2">"pagerank_std"</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span><span class="o">.</span><span class="n">uq</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="s2">"pagerank"</span><span class="p">),</span> <span class="n">effect</span><span class="o">=</span><span class="s2">"pagerank"</span><span class="p">)</span>
      <span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>  <span class="c1"># Fills missing seeds only</span>
-     <span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 <span class="p">)</span>
-
-<span class="n">meta2</span> <span class="o">=</span> <span class="p">(</span><span class="o">/*</span> <span class="n">same</span> <span class="n">config</span> <span class="o">*/</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+<span class="n">meta1</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+<span class="n">meta2</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
 <span class="c1"># meta1 and meta2 produce identical results</span>
 </pre></div>

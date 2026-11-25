@@ -12,7 +12,7 @@ py3plex is built as a **modular, layered architecture** with clear separation of
 
     ┌─────────────────────────────────────────────────────┐
     │          High-Level Interfaces (Wrappers)           │
-    │  node2vec_embedding, benchmark_nodes                │
+    │  train_node2vec_embedding, benchmark_nodes          │
     └─────────────────────────────────────────────────────┘
                             ↓
     ┌─────────────────────────────────────────────────────┐
@@ -127,7 +127,7 @@ Wrappers Layer
 
 **Key Components:**
 
-* ``node2vec_embedding.py`` - Node2Vec embedding generation
+* ``train_node2vec_embedding.py`` - Node2Vec embedding generation
 * ``benchmark_nodes.py`` - Node classification benchmarking
 
 **Responsibilities:**
@@ -243,11 +243,11 @@ Dependency Injection
 .. code-block:: python
 
     # Configuration injected rather than hard-coded
-    from py3plex.config import DEFAULT_COLORS, LAYOUT_PARAMS
+    from py3plex.config import FORCE_LAYOUT_ITERATIONS, get_color_palette
     
     def draw_network(network, colors=None, layout_params=None):
-        colors = colors or DEFAULT_COLORS
-        layout_params = layout_params or LAYOUT_PARAMS
+        colors = get_color_palette() if colors is None else colors
+        layout_params = {"iterations": FORCE_LAYOUT_ITERATIONS} if layout_params is None else layout_params
         # Use injected configuration
 
 Data Flow
@@ -436,10 +436,10 @@ Usage:
 
 .. code-block:: python
 
-    from py3plex.config import DEFAULT_COLORS, LAYOUT_PARAMS
+    from py3plex.config import FORCE_LAYOUT_ITERATIONS, get_color_palette
     
-    colors = DEFAULT_COLORS
-    iterations = LAYOUT_PARAMS['force']['iterations']
+    colors = get_color_palette()
+    iterations = FORCE_LAYOUT_ITERATIONS
 
 Override configuration at call sites instead of mutating globals to keep tests reproducible. If a global default must change, document the reason and expected downstream effects on visualization, performance, or memory.
 
@@ -512,15 +512,13 @@ Expensive operations are computed on-demand:
 Sparse Matrices
 ~~~~~~~~~~~~~~~
 
-Use sparse representations for large networks:
+The supra-adjacency matrix defaults to a sparse representation. Request a
+dense matrix only when it fits comfortably in memory.
 
 .. code-block:: python
 
-    def get_supra_adjacency_matrix(self, sparse=True):
-        adj = self._compute_dense_adjacency()
-        if sparse or len(self.get_nodes()) > SPARSE_THRESHOLD:
-            return scipy.sparse.csr_matrix(adj)
-        return np.array(adj)
+    sparse_adjacency = network.get_supra_adjacency_matrix()
+    dense_adjacency = network.get_supra_adjacency_matrix(mtype="dense")
 
 In this section, ``n`` refers to encoded nodes (node-layer pairs) and ``m`` to edges in the aggregated core graph. Use sparse matrices once ``n`` grows beyond a few thousand to avoid cubic blowups in dense linear algebra. Dense operations scale poorly on supra-adjacency matrices because they are block-structured but still quadratic in layer count.
 
@@ -593,12 +591,11 @@ Usage:
 
 .. code-block:: python
 
-    from py3plex.exceptions import LayerNotFoundError
-    
-    def get_layer(self, layer_name):
-        if layer_name not in self.layer_name_map:
-            raise LayerNotFoundError(f"Layer '{layer_name}' not found")
-        return self.layer_name_map[layer_name]
+    from py3plex.dsl.layers import LayerSet
+
+    def require_layer(network, layer_name):
+        # strict=True raises py3plex.dsl.errors.UnknownLayerError.
+        return LayerSet(layer_name).resolve(network, strict=True)
 
 Future Architecture
 -------------------

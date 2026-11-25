@@ -239,22 +239,14 @@ System Requirements
 Python Version
 ~~~~~~~~~~~~~~
 
-py3plex requires Python 3.8 or higher. We test on:
-
-* Python 3.8
-* Python 3.9
-* Python 3.10
-* Python 3.11
-* Python 3.12
+The package metadata requires Python 3.8 or newer. The main CI test
+matrix runs Python 3.9 through 3.13.
 
 Platform Support
 ~~~~~~~~~~~~~~~~
 
-py3plex is cross-platform and tested on:
-
-* **Linux** (Ubuntu 20.04, 22.04)
-* **macOS** (macOS 11, 12, 13)
-* **Windows** (Windows Server 2019, 2022)
+CI runs on Linux, macOS, and Windows. Python 3.9 in the main test matrix
+runs on Linux.
 
 Core Dependencies
 ~~~~~~~~~~~~~~~~~

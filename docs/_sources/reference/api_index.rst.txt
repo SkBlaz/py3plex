@@ -179,12 +179,6 @@ Statistics
 
 Network statistics, enrichment tests, and topology utilities.
 
-.. automodule:: py3plex.algorithms.statistics.statistics
-   :no-index:
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 .. automodule:: py3plex.algorithms.statistics.multilayer_statistics
    :no-index:
    :members:
@@ -197,7 +191,7 @@ Network statistics, enrichment tests, and topology utilities.
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.algorithms.statistics.enrichment
+.. automodule:: py3plex.algorithms.statistics.enrichment_modules
    :no-index:
    :members:
    :undoc-members:
@@ -297,7 +291,6 @@ Label propagation and related network classification helpers.
    :members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
 
 Visualization
 -------------
@@ -345,28 +338,12 @@ Wrappers
 
 Convenience wrappers for embedding and benchmarking workflows.
 
-.. automodule:: py3plex.wrappers.node2vec_embedding
-   :no-index:
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 .. automodule:: py3plex.wrappers.benchmark_nodes
    :no-index:
    :members:
    :undoc-members:
    :show-inheritance:
-
-I/O Operations
---------------
-
-File readers, writers, and related helpers.
-
-.. automodule:: py3plex.io.input_output
-   :no-index:
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   :exclude-members: TopKRanker
 
 Aggregation and Network Operations
 ----------------------------------
@@ -414,7 +391,6 @@ Schema definitions and validation helpers for I/O routines.
    :members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
 
 .. automodule:: py3plex.io.api
    :no-index:
@@ -484,7 +460,7 @@ Network Generation and Benchmarking
 
 Synthetic network generation and benchmarking utilities.
 
-.. automodule:: py3plex.algorithms.general.network_generation
+.. automodule:: py3plex.algorithms.advanced_random_generators
    :no-index:
    :members:
    :undoc-members:
@@ -493,7 +469,7 @@ Synthetic network generation and benchmarking utilities.
 Additional Statistics and Analysis
 ----------------------------------
 
-Supplementary statistical tests and information-theoretic utilities.
+Supplementary statistical tests and power-law fitting.
 
 .. automodule:: py3plex.algorithms.statistics.bayesiantests
    :no-index:
@@ -501,13 +477,13 @@ Supplementary statistical tests and information-theoretic utilities.
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.algorithms.statistics.information_theory
+.. automodule:: py3plex.algorithms.statistics.stats_comparison
    :no-index:
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.algorithms.statistics.distribution
+.. automodule:: py3plex.algorithms.statistics.powerlaw
    :no-index:
    :members:
    :undoc-members:
@@ -530,7 +506,7 @@ Additional community detection and ranking algorithms.
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.algorithms.community_detection.label_propagation_multilayer
+.. automodule:: py3plex.algorithms.community_detection.label_propagation
    :no-index:
    :members:
    :undoc-members:
@@ -630,22 +606,13 @@ Wrapper Entry Points
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.wrappers.train_word2vec_embedding
-   :no-index:
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Network Motifs and Patterns
 ---------------------------
 
-Motif detection and pattern discovery tools.
+Count multilayer motifs with the statistics API.
 
-.. automodule:: py3plex.algorithms.network_patterns.motif_detection
+.. autofunction:: py3plex.algorithms.statistics.multilayer_statistics.multilayer_motif_frequency
    :no-index:
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 HINMINE Data Structures
 -----------------------
@@ -683,21 +650,15 @@ Validation helpers for input data and configuration.
 Network Comparison and Testing
 ------------------------------
 
-Network distance measures, slicing, and comparison helpers.
+Network distances and comparison helpers.
 
-.. automodule:: py3plex.algorithms.general.network_comparison
+.. automodule:: py3plex.comparison.metrics
    :no-index:
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: py3plex.algorithms.general.distances
-   :no-index:
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: py3plex.algorithms.general.network_slicer
+.. automodule:: py3plex.comparison.executor
    :no-index:
    :members:
    :undoc-members:
@@ -771,7 +732,7 @@ Time Series and Temporal Analysis
 
 Temporal analysis utilities.
 
-.. automodule:: py3plex.algorithms.temporal.time_series_analysis
+.. automodule:: py3plex.algorithms.temporal.centrality
    :no-index:
    :members:
    :undoc-members:
@@ -782,12 +743,6 @@ Advanced Visualization
 
 Specialized visualizations such as hairball and Sankey diagrams.
 
-.. automodule:: py3plex.visualization.hairballs
-   :no-index:
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 .. automodule:: py3plex.visualization.sankey
    :no-index:
    :members:
@@ -797,9 +752,9 @@ Specialized visualizations such as hairball and Sankey diagrams.
 Link Prediction
 ---------------
 
-Link prediction algorithms.
+Link prediction results, heuristics, and evaluation.
 
-.. automodule:: py3plex.algorithms.link_prediction.link_prediction
+.. automodule:: py3plex.dsl.predictive
    :no-index:
    :members:
    :undoc-members:

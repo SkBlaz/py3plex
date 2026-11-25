@@ -170,7 +170,7 @@ You want to:
     
     # Get edges from each layer
     edges_by_layer = {}
-    for layer in network.get_layers():
+    for layer in network.layers:
         layer_subnet = network.subnetwork([layer], subset_by="layers")
         # Extract edge pairs (ignoring layer info)
         edges = set()
@@ -354,7 +354,7 @@ You want to:
     
     for user in sorted(unique_users):
         activity = mls.node_activity(network, user)
-        platforms = activity * len(network.get_layers())
+        platforms = activity * len(network.layers)
         if activity == 1.0:
             print(f"  {user}: present on ALL platforms")
         elif activity > 0.5:
@@ -363,7 +363,7 @@ You want to:
     # === 4. Platform-specific centrality ===
     print("\n=== Centrality by Platform ===")
     
-    for platform in network.get_layers():
+    for platform in network.layers:
         layer_subnet = network.subnetwork([platform], subset_by="layers")
         G = layer_subnet.core_network
         
@@ -385,7 +385,7 @@ You want to:
     
     # === 6. Layer similarity ===
     print("\n=== Platform Similarity ===")
-    layers = list(network.get_layers())
+    layers = list(network.layers)
     for i in range(len(layers)):
         for j in range(i+1, len(layers)):
             layer1, layer2 = str(layers[i]), str(layers[j])
@@ -536,13 +536,13 @@ You want to:
     station_modes = {}
     for station in unique_stations:
         activity = mls.node_activity(network, station)
-        num_modes = activity * len(network.get_layers())
+        num_modes = activity * len(network.layers)
         station_modes[station] = num_modes
     
     print("Stations by number of transport modes:")
     for station, modes in sorted(station_modes.items(), key=lambda x: x[1], reverse=True):
         mode_names = []
-        for mode in network.get_layers():
+        for mode in network.layers:
             layer_subnet = network.subnetwork([mode], subset_by="layers")
             layer_nodes = [n[0] for n in layer_subnet.get_nodes()]
             if station in layer_nodes:
@@ -554,7 +554,7 @@ You want to:
     # === 4. Mode-specific analysis ===
     print("\n=== Transport Mode Characteristics ===")
     
-    for mode in network.get_layers():
+    for mode in network.layers:
         layer_subnet = network.subnetwork([mode], subset_by="layers")
         G = layer_subnet.core_network
         

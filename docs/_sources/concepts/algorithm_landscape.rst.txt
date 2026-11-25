@@ -428,7 +428,7 @@ Algorithm Families
         p=1.0, q=0.5  # DFS-like
     )
 
-Pass ``random_seed`` to ``generate_walks`` for reproducible samples.
+Pass ``seed`` to ``generate_walks`` for reproducible samples.
 
 **Embedding Methods**
 
@@ -448,11 +448,10 @@ Pass ``random_seed`` to ``generate_walks`` for reproducible samples.
 
 .. code-block:: python
 
-    from py3plex.wrappers import node2vec_embedding
     
     # Generate embeddings
-    embeddings = node2vec_embedding.generate_embeddings(
-        network.core_network,
+    embeddings = network.embed(
+        method="node2vec",
         dimensions=128,
         walk_length=80,
         num_walks=10,
@@ -461,7 +460,7 @@ Pass ``random_seed`` to ``generate_walks`` for reproducible samples.
     )
     
     # Use embeddings for ML
-    # embeddings is a numpy array: (num_nodes, dimensions)
+    matrix = embeddings.to_numpy()  # one row per replica
 
 Choosing Walk Parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~
