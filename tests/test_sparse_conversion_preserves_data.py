@@ -98,3 +98,18 @@ def test_dummy_layers_preserves_graph_node_and_edge_data(graph_type):
             assert converted[(u, "measurements")][(v, "measurements")][0] == data
     # Relabeling the wrapper must not relabel or modify a caller-owned graph.
     assert nx.utils.graphs_equal(graph, original)
+
+
+@pytest.mark.parametrize("directed", [True, False])
+def test_numeric_adjacency_groups_parallel_weights_in_insertion_order(directed):
+    from py3plex.core.multinet import _encode_multilayer_network
+
+    graph = nx.MultiDiGraph() if directed else nx.MultiGraph()
+    graph.add_nodes_from(("a", "b", "isolated"))
+    for weight in (1e20, -1e20, "invalid", 0.25):
+        graph.add_edge("a", "b", weight=weight)
+    graph.add_edge("b", "b")
+    matrix, order = _encode_multilayer_network(graph, directed)
+    np.testing.assert_array_equal(matrix.toarray(),
+                                  [[0, 1.25, 0], [0 if directed else 1.25, 1, 0], [0, 0, 0]])
+    assert list(order) == [0, 1, 2] and order[1] == {}

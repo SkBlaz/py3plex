@@ -339,6 +339,35 @@ def _encode_multilayer_network(core_network, directed):
     Returns:
         Tuple of (numeric_network, node_order)
     """
+    # When the wrapper and graph agree on direction, adjacency is already
+    # grouped by source and neighbor. Write each entry once, including loops.
+    if core_network and directed == core_network.is_directed():
+        from array import array
+        from scipy.sparse import csr_matrix
+
+        nmap = {node: i for i, node in enumerate(core_network)}
+        index_type = "q" if max(len(nmap), 2 * core_network.number_of_edges()) >= 2**31 else "i"
+        indices = array(index_type)
+        indptr = array(index_type, [0])
+        values = array("d")
+        multi = core_network.is_multigraph()
+        for _, neighbors in core_network.adjacency():
+            for neighbor, attributes in neighbors.items():
+                total = 0.0
+                for record in (attributes.values() if multi else (attributes,)):
+                    try:
+                        total += float(record["weight"])
+                    except (KeyError, IndexError, ValueError, TypeError):
+                        total += 1
+                indices.append(nmap[neighbor])
+                values.append(total)
+            indptr.append(len(indices))
+        matrix = csr_matrix((np.asarray(values), np.asarray(indices), np.asarray(indptr)),
+                            shape=(len(nmap), len(nmap)))
+        matrix.sort_indices()
+        # Preserve the public numeric NodeView (including mapping-style access).
+        return matrix, nx.empty_graph(len(nmap)).nodes()
+
     nmap = {}
     n_count = 0
 
