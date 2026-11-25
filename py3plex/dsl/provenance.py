@@ -89,7 +89,7 @@ def get_py3plex_version() -> str:
     return "unknown"
 
 
-def network_fingerprint(network: Any) -> Dict[str, Any]:
+def network_fingerprint(network: Any, *, counts=None) -> Dict[str, Any]:
     """Create a lightweight fingerprint of a network.
     
     Args:
@@ -107,13 +107,17 @@ def network_fingerprint(network: Any) -> Dict[str, Any]:
     
     try:
         # Get node count
-        if hasattr(network, "get_nodes"):
+        if counts is not None:
+            fingerprint["node_count"] = counts[0]
+        elif hasattr(network, "get_nodes"):
             fingerprint["node_count"] = len(list(network.get_nodes()))
         elif hasattr(network, "core_network"):
             fingerprint["node_count"] = network.core_network.number_of_nodes()
         
         # Get edge count
-        if hasattr(network, "get_edges"):
+        if counts is not None:
+            fingerprint["edge_count"] = counts[1]
+        elif hasattr(network, "get_edges"):
             fingerprint["edge_count"] = len(list(network.get_edges()))
         elif hasattr(network, "core_network"):
             fingerprint["edge_count"] = network.core_network.number_of_edges()
@@ -410,13 +414,13 @@ class ProvenanceBuilder:
         """Start the execution timer."""
         self.start_time = time.monotonic()
     
-    def set_network(self, network: Any) -> None:
+    def set_network(self, network: Any, *, counts=None) -> None:
         """Set network fingerprint.
         
         Args:
             network: Multilayer network object
         """
-        self.network_fp = network_fingerprint(network)
+        self.network_fp = network_fingerprint(network, counts=counts)
         
         # Prefer the public network_version property (monotonic mutation counter)
         _nv = getattr(network, "network_version", None)

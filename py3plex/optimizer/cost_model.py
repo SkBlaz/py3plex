@@ -52,17 +52,20 @@ class NetworkStats:
         """Extract statistics from a ``multi_layer_network`` instance."""
         try:
             nodes = list(network.get_nodes())
-            edges = list(network.get_edges())
+            from py3plex.core.multinet import multi_layer_network
+            from collections import Counter
+
+            if type(network) is multi_layer_network and network.network_type == "multilayer":
+                edge_count = network.core_network.number_of_edges()
+            else:
+                edge_count = sum(1 for _ in network.get_edges())
             layers = list(network.layers)
             node_count = len(nodes)
-            edge_count = len(edges)
             layer_count = max(len(layers), 1)
             avg_degree = (2 * edge_count / node_count) if node_count > 0 else 0.0
 
-            layer_sizes: Dict[str, int] = {}
-            for layer in layers:
-                layer_nodes = [n for n in nodes if len(n) > 1 and n[1] == layer]
-                layer_sizes[str(layer)] = len(layer_nodes)
+            counts = Counter(n[1] for n in nodes if isinstance(n, tuple) and len(n) > 1)
+            layer_sizes = {str(layer): counts[layer] for layer in layers}
 
             density = (
                 edge_count / (node_count * (node_count - 1) / 2)

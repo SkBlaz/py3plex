@@ -34,7 +34,7 @@ from pathlib import Path
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
-from ..ast import Query, SelectStmt, Target, ast_from_json, ast_to_json
+from ..ast import ComputeItem, Query, SelectStmt, Target, ast_from_json, ast_to_json
 from ..executor import execute_ast
 from ..result import QueryResult
 from .types import Type, infer_type, type_check, TypeCheckError
@@ -293,7 +293,12 @@ class GraphProgram:
         # Cache only seeded executions. Unsupported values execute normally
         # without caching rather than receiving an incomplete cache identity.
         cache_key = None
-        if cache_policy != "disabled" and seed is not None:
+        use_cache = seed is not None and cache_policy != "disabled"
+        if use_cache and cache_policy == "auto":
+            # Content hashing costs more than recomputing an ordinary degree query.
+            plain_degree = SelectStmt(target=Target.NODES, compute=[ComputeItem(name="degree")])
+            use_cache = self.canonical_ast.select != plain_degree
+        if use_cache:
             from .cache import (
                 get_global_cache,
                 graph_fingerprint,

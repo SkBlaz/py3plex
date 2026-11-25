@@ -499,7 +499,14 @@ def execute_ast(
         if optimize is None
         else bool(optimize)
     )
+    counts = None
     if optimizer_enabled:
+        from py3plex.core.multinet import multi_layer_network
+        from py3plex.optimizer.cost_model import NetworkStats
+        stats = None
+        if type(network) is multi_layer_network and isinstance(network.core_network, nx.Graph):
+            stats = NetworkStats.from_network(network)
+            counts = (stats.node_count, stats.edge_count)
         from py3plex.optimizer import optimize_query as _optimize_query
         _physical_plan, optimizer_meta = _optimize_query(
             ast=query.select,
@@ -510,6 +517,7 @@ def execute_ast(
             enable_cost_based=getattr(_cfg, "OPTIMIZER_ENABLE_COST_BASED", True),
             max_iter=getattr(_cfg, "OPTIMIZER_MAX_ITER", 10),
             include_trace=explain_plan,
+            stats=stats,
         )
     else:
         optimizer_meta = {"enabled": False, "rules_applied": [], "rule_ids_applied": []}
@@ -567,7 +575,7 @@ def execute_ast(
         capture_method = capture_method_map.get(capture_method_str, CaptureMethod.AUTO)
 
         # Capture network fingerprint
-        net_fingerprint = network_fingerprint(network)
+        net_fingerprint = network_fingerprint(network, counts=counts)
 
         # Decide whether to capture inline
         snapshot_data = None
@@ -614,7 +622,7 @@ def execute_ast(
         # Use legacy provenance builder
         provenance_builder = ProvenanceBuilder("dsl_v2_executor")
         provenance_builder.start_timer()
-        provenance_builder.set_network(network)
+        provenance_builder.set_network(network, counts=counts)
         provenance_builder.set_query_ast(query)
         provenance_builder.set_params(params)
 
