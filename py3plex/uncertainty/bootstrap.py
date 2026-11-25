@@ -16,6 +16,44 @@ from py3plex import config
 from .resampling_graph import _add_sample_edge, _bootstrap_edges, _bootstrap_units, _edge_sample_base, _edge_pool
 
 
+class _AggregateDegree:
+    """Unweighted total degree over the full graph for selected replicas."""
+
+    def __init__(self, items):
+        self.items = items
+
+    def __call__(self, network):
+        graph = network.core_network
+        return {node: graph.degree(node) for node in self.items if node in graph}
+
+    @staticmethod
+    def edge_draws(pool, index, child_seeds):
+        # An undirected loop and a directed loop both contribute two to total
+        # degree. Endpoints outside the selection contribute to a spare bin.
+        positions = {node: i for i, node in enumerate(index)}
+        bins = len(index) + 1
+
+        def endpoints(records):
+            return np.fromiter(
+                (positions.get(node, len(index))
+                 for u, v, _, _ in records for node in (u, v)),
+                dtype=np.intp, count=2 * len(records),
+            ).reshape(-1, 2)
+
+        interactions, coupling = pool
+        edges = endpoints(interactions)
+        fixed = np.bincount(endpoints(coupling).ravel(), minlength=bins)
+        samples = np.empty((len(child_seeds), len(index)))
+        for row, seed in enumerate(child_seeds):
+            if len(edges):
+                draws = np.random.default_rng(seed).integers(len(edges), size=len(edges))
+                degree = fixed + np.bincount(edges[draws].ravel(), minlength=bins)
+            else:
+                degree = fixed
+            samples[row] = degree[:-1]
+        return samples
+
+
 def _bootstrap_single_replicate(args):
     """Generate and compute metric for a single bootstrap replicate.
     
@@ -177,22 +215,25 @@ def bootstrap_metric(
     
     # Prepare arguments for each bootstrap replicate
     pool = _edge_pool(graph) if n_jobs == 1 and unit == "edges" else None
-    replicate_args = [
-        (graph, metric_fn, unit, mode, child_seed, index, pool)
-        for child_seed in child_seeds
-    ]
-    
-    # Run bootstrap replicates in parallel or serial
-    samples_list = parallel_map(
-        _bootstrap_single_replicate,
-        replicate_args,
-        n_jobs=n_jobs,
-        backend=getattr(config, 'DEFAULT_PARALLEL_BACKEND', 'multiprocessing'),
-    )
-    
-    # Stack results into array: (n_boot, n_items)
-    samples = np.array(samples_list)
-    
+    if isinstance(metric_fn, _AggregateDegree) and pool is not None and mode == "resample":
+        samples = metric_fn.edge_draws(pool, index, child_seeds)
+    else:
+        replicate_args = [
+            (graph, metric_fn, unit, mode, child_seed, index, pool)
+            for child_seed in child_seeds
+        ]
+
+        # Run bootstrap replicates in parallel or serial
+        samples_list = parallel_map(
+            _bootstrap_single_replicate,
+            replicate_args,
+            n_jobs=n_jobs,
+            backend=getattr(config, 'DEFAULT_PARALLEL_BACKEND', 'multiprocessing'),
+        )
+
+        # Stack results into array: (n_boot, n_items)
+        samples = np.array(samples_list)
+
     # Missing items are summarized conditionally on presence.
     alpha = (1 - ci) / 2
     mean, std, ci_low, ci_high = np.full((4, len(index)), np.nan)

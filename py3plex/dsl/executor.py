@@ -1724,9 +1724,21 @@ def _compute_measure_with_uncertainty(
         bootstrap_unit = resolved_config.kwargs.get("bootstrap_unit", "edges")
         bootstrap_mode = resolved_config.kwargs.get("bootstrap_mode", "resample")
         
+        from py3plex import config
+        from py3plex.core.multinet import multi_layer_network
+        from py3plex.uncertainty.bootstrap import _AggregateDegree
+        from .registry import _compute_degree
+
+        metric = metric_fn_wrapper
+        if (bootstrap_unit == "edges" and bootstrap_mode == "resample"
+                and config.DEFAULT_N_JOBS == 1 and measure_fn is _compute_degree and layer_scope is None
+                and type(network) is multi_layer_network
+                and type(network.core_network) in (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)):
+            metric = _AggregateDegree(items)
+
         result = bootstrap_metric(
             graph=network,
-            metric_fn=metric_fn_wrapper,
+            metric_fn=metric,
             n_boot=resolved_config.n_samples,
             unit=bootstrap_unit,
             mode=bootstrap_mode,

@@ -533,3 +533,28 @@ def test_bootstrap_column_summaries_match_individual_draws():
                                        np.quantile(values, [.025, .975]))
         else:
             assert np.isnan(result["mean"][i]) and np.isnan(result["ci_low"][i])
+
+
+@pytest.mark.parametrize("directed", [True, False])
+@pytest.mark.parametrize("network_type", ["multilayer", "multiplex"])
+def test_endpoint_bootstrap_matches_materialized_draws(directed, network_type):
+    import networkx as nx
+    import numpy as np
+    from py3plex.core.multinet import multi_layer_network
+    from py3plex.uncertainty.bootstrap import bootstrap_metric, _AggregateDegree
+
+    net = multi_layer_network(directed=directed, network_type=network_type)
+    graph = nx.MultiDiGraph() if directed else nx.MultiGraph()
+    net.core_network = graph
+    a, b, c, d = ((i, "L") for i in range(4))
+    graph.add_nodes_from([a, b, c, d])
+    graph.add_edge(a, b, weight=123)
+    graph.add_edge(a, b, weight=-5)
+    graph.add_edge(a, a)
+    graph.add_edge(b, c, type="coupling")
+    metric = _AggregateDegree([d, b, a])
+    kwargs = dict(n_boot=11, unit="edges", mode="resample", random_state=123, n_jobs=1)
+    reference = bootstrap_metric(net, lambda sample: metric(sample), **kwargs)
+    fast = bootstrap_metric(net, metric, **kwargs)
+    for key in reference:
+        np.testing.assert_array_equal(fast[key], reference[key])

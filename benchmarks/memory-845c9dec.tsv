@@ -1,0 +1,237 @@
+series	case	n	mode	repetition	baseline_kib	peak_delta_kib	live_delta_kib	after_gc_delta_kib	after_clear_delta_kib	live_bytes	peak_bytes	after_gc_bytes	after_clear_bytes	ms	scratch_bytes	output_bytes	csr_bytes	count	digest	loaded
+memory	temporal	512	rss	1	235636	764	764	764												
+memory	temporal	512	rss	2	235544	836	836	836												
+memory	temporal	512	rss	3	235276	840	840	840												
+memory	temporal	512	trace	1	235336	1644	1644	1644		749558	782846	748876								
+memory	temporal	2048	rss	1	256172	3340	3348	3348												
+memory	temporal	2048	rss	2	256480	3344	3348	3348												
+memory	temporal	2048	rss	3	256040	3344	3352	3352												
+memory	temporal	2048	trace	1	256612	8636	8640	8640		3024054	3155646	3023372								
+memory	temporal_packed	512	rss	1	235160	320	320	320												
+memory	temporal_packed	512	rss	2	235564	324	324	324												
+memory	temporal_packed	512	rss	3	235008	320	320	320												
+memory	temporal_packed	512	trace	1	235120	320	320	320		132762	201514	132040								
+memory	temporal_packed	2048	rss	1	256212	900	900	900												
+memory	temporal_packed	2048	rss	2	256392	904	904	904												
+memory	temporal_packed	2048	rss	3	256100	900	900	900												
+memory	temporal_packed	2048	trace	1	256236	904	904	904		525978	791338	525256								
+memory	bootstrap	512	rss	1	235212	22096	15288	7236												
+memory	bootstrap	512	rss	2	235420	22136	15184	7008												
+memory	bootstrap	512	rss	3	235164	22016	15140	7104												
+memory	bootstrap	512	trace	1	235428	41544	36624	27552		13426973	21737436	794464								
+memory	bootstrap	2048	rss	1	256120	54584	54588	6340												
+memory	bootstrap	2048	rss	2	256248	54932	54936	6596												
+memory	bootstrap	2048	rss	3	255952	54728	54732	5388												
+memory	bootstrap	2048	trace	1	256168	101612	101384	53548		50786420	53732968	794720								
+memory	netmf	512	rss	1	236948	7472	5624	5624												
+memory	netmf	512	rss	2	236864	7588	5696	5696												
+memory	netmf	512	rss	3	236804	7540	5652	5652												
+memory	netmf	512	trace	1	236704	7540	5604	5604		39543	6603179	16485								
+memory	netmf	2048	rss	1	262088	98892	3640	3640												
+memory	netmf	2048	rss	2	261616	98876	3964	3964												
+memory	netmf	2048	rss	3	262084	98820	3624	3624												
+memory	netmf	2048	trace	1	261672	98872	4004	4004		88809	101866048	16489								
+memory	netmf_sparse	512	rss	1	236988	2272	2272	2272												
+memory	netmf_sparse	512	rss	2	236808	2208	2208	2208												
+memory	netmf_sparse	512	rss	3	236904	2124	2124	2124												
+memory	netmf_sparse	512	trace	1	237308	2320	2320	2320		40458	557110	17284								
+memory	netmf_sparse	2048	rss	1	261632	2328	2328	2328												
+memory	netmf_sparse	2048	rss	2	260180	2952	2952	2952												
+memory	netmf_sparse	2048	rss	3	259768	3264	3264	3264												
+memory	netmf_sparse	2048	trace	1	262192	2256	2256	2256		89400	2129811	17016								
+memory	ooc_file_coverage	512	rss	1	227980	940	940	940							151552					
+memory	ooc_file_coverage	512	rss	2	228556	920	920	920							151552					
+memory	ooc_file_coverage	512	rss	3	228080	968	968	968							151552					
+memory	ooc_file_coverage	512	trace	1	228212	996	996	996		16765	67534	752			151552					
+memory	ooc_file_coverage	2048	rss	1	228440	1476	1476	1476							618496					
+memory	ooc_file_coverage	2048	rss	2	228232	1488	1488	1488							618496					
+memory	ooc_file_coverage	2048	rss	3	227828	1512	1512	1512							618496					
+memory	ooc_file_coverage	2048	trace	1	227884	1488	1488	1488		16765	67538	811			618496					
+memory	supra	512	rss	1	233712	5836	5836	5836									278536			
+memory	supra	512	rss	2	234396	5784	5784	5784									278536			
+memory	supra	512	rss	3	234420	5796	5796	4788									278536			
+memory	supra	512	trace	1	234700	10128	10128	9100		3182384	5243176	551668					278536			
+memory	supra	2048	rss	1	255900	21100	20284	12092									1114120			
+memory	supra	2048	rss	2	255792	21824	19984	12928									1114120			
+memory	supra	2048	rss	3	255432	21156	19284	10212									1114120			
+memory	supra	2048	trace	1	255436	40892	39020	27816		12324656	20971816	2198260					1114120			
+memory	supra_direct	512	rss	1	234628	1332	1332	1332									204804			
+memory	supra_direct	512	rss	2	234600	1328	1332	1332									204804			
+memory	supra_direct	512	rss	3	234700	1332	1332	1332									204804			
+memory	supra_direct	512	trace	1	234812	1292	1296	1296		209890	597150	5266					204804			
+memory	supra_direct	2048	rss	1	255752	3188	3188	1092									819204			
+memory	supra_direct	2048	rss	2	255620	2788	2788	1092									819204			
+memory	supra_direct	2048	rss	3	255244	3188	3188	1092									819204			
+memory	supra_direct	2048	trace	1	255392	3252	3252	1092		824395	2391303	5322					819204			
+memory	capture	512	rss	1	234404	4448	4452	2436												
+memory	capture	512	rss	2	234940	4348	4352	2304												
+memory	capture	512	rss	3	234904	4492	4492	1468												
+memory	capture	512	trace	1	234276	7792	7796	4720		4330994	4406186	1168								
+memory	capture	2048	rss	1	255476	17452	17452	2336												
+memory	capture	2048	rss	2	255864	17716	17716	2596												
+memory	capture	2048	rss	3	255584	17772	17776	2656												
+memory	capture	2048	trace	1	255628	32996	32996	13728		17320466	17616842	1168								
+memory	gzip	512	rss	1	239408	4448	832	832								78063				
+memory	gzip	512	rss	2	239268	4460	900	900								78063				
+memory	gzip	512	rss	3	239436	4816	1164	1164								78063				
+memory	gzip	512	trace	1	239392	4456	836	836		80071	4203429	1377				78063				
+memory	gzip	2048	rss	1	273616	15932	776	776								300604				
+memory	gzip	2048	rss	2	273600	15952	868	868								300604				
+memory	gzip	2048	rss	3	273856	15956	880	880								300604				
+memory	gzip	2048	trace	1	273448	15988	872	872		302612	16199761	1377				300604				
+memory	gzip_stream	512	rss	1	239088	368	368	368								78069				
+memory	gzip_stream	512	rss	2	239732	336	336	336								78069				
+memory	gzip_stream	512	rss	3	239508	372	372	372								78069				
+memory	gzip_stream	512	trace	1	239228	360	360	360		116238	432575	978				78069				
+memory	gzip_stream	2048	rss	1	273596	396	396	396								300610				
+memory	gzip_stream	2048	rss	2	273948	416	416	416								300610				
+memory	gzip_stream	2048	rss	3	273472	464	464	464								300610				
+memory	gzip_stream	2048	trace	1	273272	456	456	456		338779	696475	978				300610				
+memory	cache_stream	512	rss	1	240568	0	0	0												
+memory	cache_stream	512	rss	2	240612	0	0	0												
+memory	cache_stream	512	rss	3	240928	0	0	0												
+memory	cache_stream	512	trace	1	241264	0	0	0		3066	115247	712								
+memory	cache_stream	2048	rss	1	261836	288	288	288												
+memory	cache_stream	2048	rss	2	261892	288	288	288												
+memory	cache_stream	2048	rss	3	262856	0	0	0												
+memory	cache_stream	2048	trace	1	263116	0	0	0		3066	447023	712								
+memory	import_package	0	rss	1	19932	205976	205976	205976												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_package	0	rss	2	20064	205952	205952	205952												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_package	0	rss	3	20052	205860	205864	205864												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_package	0	trace	1	19996	293716	293716	293716		114456474	114534401	114442278								numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_core	0	rss	1	20060	205820	205820	205820												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_core	0	rss	2	20032	206048	206052	206052												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_core	0	rss	3	19896	206208	206208	206208												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_core	0	trace	1	19984	293452	293452	293452		114457072	114536747	114442336								numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_dsl	0	rss	1	19908	206168	206172	206172												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_dsl	0	rss	2	19916	206068	206068	206068												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_dsl	0	rss	3	20044	206280	206284	206284												numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	import_dsl	0	trace	1	20124	293700	293704	293704		114458856	114537476	114444258								numpy|scipy|networkx|matplotlib.pyplot|pandas|sklearn|pyarrow
+memory	ooc_all	512	rss	1	226904	3392	3396	2268												
+memory	ooc_all	512	rss	2	227816	3424	3428	3196												
+memory	ooc_all	512	rss	3	227732	3428	3432	2304												
+memory	ooc_all	512	trace	1	227884	7540	7544	6016		1641501	3208092	779								
+memory	ooc_all	2048	rss	1	227516	13832	13832	3884												
+memory	ooc_all	2048	rss	2	227808	13668	13668	2904												
+memory	ooc_all	2048	rss	3	227764	13824	13828	3060												
+memory	ooc_all	2048	trace	1	227480	32828	32836	20844		6617245	12915932	779								
+memory	ooc_stream	512	rss	1	227668	1796	1800	1800												
+memory	ooc_stream	512	rss	2	228104	1860	1864	1864												
+memory	ooc_stream	512	rss	3	227900	1852	1856	1856												
+memory	ooc_stream	512	trace	1	227844	4136	4140	4400		1640917	1672462	779								
+memory	ooc_stream	2048	rss	1	227996	7320	7320	3288												
+memory	ooc_stream	2048	rss	2	227876	7192	7192	3096												
+memory	ooc_stream	2048	rss	3	227576	7520	7524	2404												
+memory	ooc_stream	2048	trace	1	227884	18768	18768	12648		6616661	6648206	779								
+memory	ooc_top	512	rss	1	227844	20	20	20												
+memory	ooc_top	512	rss	2	227796	20	20	20												
+memory	ooc_top	512	rss	3	227604	20	20	20												
+memory	ooc_top	512	trace	1	228056	40	40	40		25042	73513	715								
+memory	ooc_top	2048	rss	1	228000	32	32	32												
+memory	ooc_top	2048	rss	2	228020	24	24	24												
+memory	ooc_top	2048	rss	3	227600	12	12	12												
+memory	ooc_top	2048	trace	1	227876	24	28	28		25042	73517	715								
+memory	ooc_coverage	512	rss	1	228404	2176	2176	2176												
+memory	ooc_coverage	512	rss	2	228084	2224	2224	2224												
+memory	ooc_coverage	512	rss	3	228232	2228	2228	2228												
+memory	ooc_coverage	512	trace	1	228024	2188	2188	2188		17648	67925	838								
+memory	ooc_coverage	2048	rss	1	228404	6628	896	896												
+memory	ooc_coverage	2048	rss	2	227956	6564	892	892												
+memory	ooc_coverage	2048	rss	3	228284	6616	900	900												
+memory	ooc_coverage	2048	trace	1	228280	6624	964	964		17648	67929	838								
+memory	pandas	512	rss	1	237292	496	500	500												
+memory	pandas	512	rss	2	237536	560	564	564												
+memory	pandas	512	rss	3	237464	560	560	560												
+memory	pandas	512	trace	1	237704	732	736	736		77364	559193	4230								
+memory	pandas	2048	rss	1	258800	1956	1956	1956												
+memory	pandas	2048	rss	2	258564	1956	1960	1960												
+memory	pandas	2048	rss	3	259012	1936	1940	1940												
+memory	pandas	2048	trace	1	258652	3120	3124	3124		224820	2193337	4230								
+memory	arrow	512	rss	1	237724	280	280	280												
+memory	arrow	512	rss	2	238096	276	276	276												
+memory	arrow	512	rss	3	237492	280	280	280												
+memory	arrow	512	trace	1	237408	276	276	276		2156	57822	972								
+memory	arrow	2048	rss	1	258860	408	408	408												
+memory	arrow	2048	rss	2	258684	404	404	404												
+memory	arrow	2048	rss	3	258624	408	408	408												
+memory	arrow	2048	trace	1	258992	408	408	408		2060	204750	930								
+memory	networkx	512	rss	1	237916	4772	4772	2756												
+memory	networkx	512	rss	2	237840	4772	4772	2756												
+memory	networkx	512	rss	3	237912	4768	4768	2752												
+memory	networkx	512	trace	1	237968	8136	8136	5804		4594290	4594434	720								
+memory	networkx	2048	rss	1	259068	19024	19028	2900												
+memory	networkx	2048	rss	2	258692	19024	19028	2900												
+memory	networkx	2048	rss	3	258592	19096	19100	1700												
+memory	networkx	2048	trace	1	258872	34368	34372	17016		18356850	18356994	720								
+memory	noop	512	rss	1	236428	0	0	0												
+memory	noop	512	rss	2	227848	0	0	0												
+memory	noop	512	rss	3	227892	0	0	0												
+memory	noop	512	trace	1	227660	0	0	0		1162	11462	656								
+memory	noop	2048	rss	1	227912	0	0	0												
+memory	noop	2048	rss	2	227840	0	0	0												
+memory	noop	2048	rss	3	227880	0	0	0												
+memory	noop	2048	trace	1	227996	0	0	0		1162	11462	656								
+memory	build	512	rss	1	227936	6924	6928	2896												
+memory	build	512	rss	2	227904	6936	6944	1824												
+memory	build	512	rss	3	227852	6884	6884	2852												
+memory	build	512	trace	1	227728	15080	15088	9004		6666946	6667482	720								
+memory	build	2048	rss	1	227900	27908	27908	2308												
+memory	build	2048	rss	2	227948	27736	27736	3544												
+memory	build	2048	rss	3	227892	27720	27724	3532												
+memory	build	2048	trace	1	227500	62584	62592	34244		26705346	26705882	720								
+memory	degree	512	rss	1	234456	3236	3236	3236												
+memory	degree	512	rss	2	234720	964	964	964												
+memory	degree	512	rss	3	235108	960	960	960												
+memory	degree	512	trace	1	234768	1168	1168	1168		886928	932995	774419								
+memory	degree	2048	rss	1	255672	1308	1308	1308												
+memory	degree	2048	rss	2	255276	1308	1308	1308												
+memory	degree	2048	rss	3	255888	1312	1312	1312												
+memory	degree	2048	trace	1	255552	1384	1384	1384		1157149	1313808	774419								
+memory	cache_hit	512	rss	1	240616	15740	1308	896												
+memory	cache_hit	512	rss	2	239920	16856	2320	1656												
+memory	cache_hit	512	rss	3	240744	15488	932	396												
+memory	cache_hit	512	trace	1	240364	53508	32300	31908		261482	18127357	720								
+memory	cache_hit	2048	rss	1	263012	76108	7024	5552												
+memory	cache_hit	2048	rss	2	261652	77368	8244	6872												
+memory	cache_hit	2048	rss	3	261532	77332	8248	6952												
+memory	cache_hit	2048	trace	1	262972	228036	131808	130492		261482	72155480	720								
+memory	cache_churn	512	rss	1	234848	21936	16636	14620	8120											
+memory	cache_churn	512	rss	2	234896	21992	17600	15584	9932											
+memory	cache_churn	512	rss	3	235120	22160	16652	13628	9080											
+memory	cache_churn	512	trace	1	235428	60352	56376	54360	48788	1823829	19586546	1557763	774862							
+memory	cache_churn	2048	rss	1	256260	85664	23416	22408	16840											
+memory	cache_churn	2048	rss	2	255984	85708	22420	21412	15972											
+memory	cache_churn	2048	rss	3	256168	85532	22084	21076	15632											
+memory	cache_churn	2048	trace	1	256072	238500	148352	147344	142372	3985198	75505812	3719156	775039							
+memory	mlking	99168	rss	1	228264	21964	21964	21964										3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+memory	mlking	99168	rss	2	228508	21912	21912	21912										3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+memory	mlking	99168	rss	3	228656	21952	21952	21952										3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+memory	mlking	99168	trace	1	228008	22116	22116	22116		822835	1831787	1191						3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+memory	mlking_file	99168	rss	1	228380	2808	2808	2808							2330624			3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+memory	mlking_file	99168	rss	2	228488	2764	2764	2764							2330624			3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+memory	mlking_file	99168	rss	3	228772	2704	2704	2704							2330624			3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+memory	mlking_file	99168	trace	1	228348	3224	3224	3224		710352	756913	1412			2330624			3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+timing	gzip	2048	rss	1	273728	15888	864	864						468.902842		300604				
+timing	gzip_stream	2048	rss	1	274216	152	156	156						935.582945		300610				
+timing	cache_hit	2048	rss	1	264488	75132	6992	5984						1242.476999						
+timing	cache_stream	2048	rss	1	262984	0	0	0						447.210859						
+timing	netmf	2048	rss	1	262112	98940	3652	3652						212.755729						
+timing	netmf_sparse	2048	rss	1	262520	2124	2124	2124						28.140153						
+timing	mlking	99168	rss	1	228548	21928	21928	21928						1421.205206				3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+timing	mlking_file	99168	rss	1	228508	2752	2752	2752						1907.342646	2330624			3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+timing	gzip	2048	rss	2	273680	15972	884	884						531.906948		300604				
+timing	gzip_stream	2048	rss	2	273928	396	396	396						1066.402824		300610				
+timing	cache_hit	2048	rss	2	262220	77372	9292	8268						1196.934762						
+timing	cache_stream	2048	rss	2	262240	0	0	0						469.737932						
+timing	netmf	2048	rss	2	260716	99988	3476	3476						228.485683						
+timing	netmf_sparse	2048	rss	2	262468	2320	2320	2320						28.40824						
+timing	mlking	99168	rss	2	228664	21844	21844	21844						1725.539982				3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+timing	mlking_file	99168	rss	2	228368	2760	2760	2760						2004.768784	2330624			3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+timing	gzip	2048	rss	3	274108	15936	868	868						507.077706		300604				
+timing	gzip_stream	2048	rss	3	273704	392	392	392						1075.97219		300610				
+timing	cache_hit	2048	rss	3	261000	78332	9288	8264						1170.755494						
+timing	cache_stream	2048	rss	3	261988	288	288	288						426.504178						
+timing	netmf	2048	rss	3	261960	98876	3704	3704						211.631947						
+timing	netmf_sparse	2048	rss	3	262052	2320	2320	2320						29.265507						
+timing	mlking	99168	rss	3	228808	21916	21916	21916						1851.6928				3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
+timing	mlking_file	99168	rss	3	228472	2784	2784	2784						1965.988363	2330624			3360	1cfeab0376152021c81ee667ab659bb5d62543426741fced0cf704337b563468	
