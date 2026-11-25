@@ -7,6 +7,11 @@ Overview
 
 py3plex implements an **uncertainty-first statistics system** where every statistic is represented as ``(value + uncertainty + provenance)``. This design makes uncertainty a core part of statistics computation, not an afterthought.
 
+Use ``py3plex.stats`` for arithmetic on individual uncertain values. The
+``py3plex.uncertainty`` module provides series and graph resampling routines
+such as ``StatSeries`` and ``bootstrap_metric``. Run the statistics core and
+registry tests with ``python -m pytest tests/test_stats_core.py tests/test_stats_registry.py``.
+
 Key Principles
 --------------
 

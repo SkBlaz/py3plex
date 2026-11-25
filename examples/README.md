@@ -48,21 +48,21 @@ Run the file: `python getting_started/dsl_patterns_quick_reference.py` to see al
 New to py3plex? Start here.
 - 10-minute tutorial covering essentials
 - Creating and manipulating networks
-- Basic NetworkX integration
+- [Use NetworkX algorithms on a multilayer network](getting_started/example_networkx_wrapper.py)
 - **15 examples** - All fast and beginner-friendly
 
 ### [I/O and Data](io_and_data/)
 Load, save, and manage network data.
-- Load from multiple formats (edgelist, GML, GraphML, etc.)
-- Save networks in various formats
-- Data validation and schema checking
+- [Load networks using the I/O API](io_and_data/example_new_io.py)
+- [Export networks to Arrow](io_and_data/example_save_to_arrow.py)
+- [Validate a network schema](io_and_data/example_schema_validation.py)
 - Performance optimisation (caching, lazy evaluation)
 - **11 examples**
 
 ### [Network Analysis](network_analysis/)
 Analyse network properties and compute metrics.
-- Network statistics and metrics
-- Centrality measures (degree, betweenness, eigenvector, etc.)
+- [Compute multilayer statistics](network_analysis/example_multilayer_statistics.py)
+- [Compare centrality measures](network_analysis/example_centrality_toolkit.py)
 - Community detection (Louvain, Leiden, label propagation, SBM, AutoCommunity)
 - Temporal network queries and windowed analysis
 - Uncertainty quantification and bootstrap methods
@@ -88,17 +88,17 @@ Create network visualisations.
 
 ### [Advanced](advanced/)
 Specialised techniques for power users.
-- Network embeddings (Node2Vec)
+- [Construct network embeddings](advanced/example_embedding_construction.py)
 - Dynamics and spreading processes (SIR, SIS, random walks)
 - Network decomposition and classification
-- Tensor operations and matrix methods
+- [Construct a supra-adjacency matrix](advanced/example_supra_adjacency.py)
 - Geometric analysis (Ricci curvature)
 - **34 examples**
 
 ### [Pipelines](pipelines/)
 Automation, workflows, and plugins.
 - Config-driven workflows (YAML/JSON)
-- Sklearn-style pipelines
+- [Build a pipeline with named steps](pipelines/example_1_basic_stats.py) and [chain filtering, aggregation, and analysis](pipelines/example_6_complex_pipeline.py). See the [pipeline API reference](../AGENTS.md#pipeline-api-sklearn-style) for custom steps.
 - Plugin development and usage
 - Null models and uncertainty workflows
 - **12 examples**
@@ -122,7 +122,7 @@ Examples are marked with runtime characteristics:
 
 ## Learning Paths
 
-See [Getting Started](getting_started/) for guided learning paths.
+Follow the [quick start paths](#quick-start-paths) above for a guided introduction.
 
 ## Testing Examples
 

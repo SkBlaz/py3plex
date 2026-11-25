@@ -8,7 +8,8 @@ This script checks for:
 - Docker command inconsistency (stricter check)
 - Version inconsistencies
 
-Exit code 0 if all checks pass, 1 if issues found.
+Run `python scripts/lint_docs.py` from the repository root to check RST files
+in book/ and docfiles/. Exit code 0 if all checks pass, 1 if issues found.
 """
 
 import sys
