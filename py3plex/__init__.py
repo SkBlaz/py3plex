@@ -55,160 +55,181 @@ from ._version import __version__
 
 __api_version__ = __version__
 
-from py3plex.core.multinet import multi_layer_network
-from py3plex.core.types import (
-    Color,
-    ColorList,
-    EdgeDict,
-    EdgeTuple,
-    LayerId,
-    LayoutDict,
-    LayerGraph,
-    NetworkData,
-    Node,
-    NodeDict,
-    Position,
-    Weight,
-)
-from py3plex.dsl import (
-    DSLExecutionError,
-    DSLSyntaxError,
-    execute_query,
-    format_result,
-    select_nodes_by_layer,
-    select_high_degree_nodes,
-    compute_centrality_for_layer,
-)
-from py3plex.graph_ops import (
-    nodes,
-    edges,
-    NodeFrame,
-    EdgeFrame,
-    GroupedNodeFrame,
-    GroupedEdgeFrame,
-)
-from py3plex.exceptions import (
-    AlgorithmError,
-    CentralityComputationError,
-    CommunityDetectionError,
-    ConversionError,
-    DecompositionError,
-    EmbeddingError,
-    ExternalToolError,
-    IncompatibleNetworkError,
-    InvalidEdgeError,
-    InvalidLayerError,
-    InvalidNodeError,
-    NetworkConstructionError,
-    ParsingError,
-    Py3plexException,
-    Py3plexFormatError,
-    Py3plexIOError,
-    Py3plexLayoutError,
-    Py3plexMatrixError,
-    VisualizationError,
-)
-from py3plex.errors import (
-    ErrorMessage,
-    Note,
-    Severity,
-    SourceContext,
-    Span,
-    Suggestion,
-    find_similar,
-    format_exception,
-)
-from py3plex.profiling import (
-    benchmark,
-    get_monitor,
-    profile_performance,
-    timed_section,
-)
-import py3plex.config as config
+from importlib import import_module as _import_module
 
-# Plugin system - import for easy access
-from py3plex.plugins import (
-    BasePlugin,
-    CentralityPlugin,
-    CommunityPlugin,
-    LayoutPlugin,
-    MetricPlugin,
-    PluginRegistry,
-    discover_plugins,
+
+_EXPORT_MODULES = {
+    "py3plex.core.multinet": (
+        "multi_layer_network",
+    ),
+    "py3plex.core.types": (
+        "Color",
+        "ColorList",
+        "EdgeDict",
+        "EdgeTuple",
+        "LayerId",
+        "LayoutDict",
+        "LayerGraph",
+        "NetworkData",
+        "Node",
+        "NodeDict",
+        "Position",
+        "Weight",
+    ),
+    "py3plex.dsl": (
+        "DSLExecutionError",
+        "DSLSyntaxError",
+        "execute_query",
+        "format_result",
+        "select_nodes_by_layer",
+        "select_high_degree_nodes",
+        "compute_centrality_for_layer",
+    ),
+    "py3plex.graph_ops": (
+        "nodes",
+        "edges",
+        "NodeFrame",
+        "EdgeFrame",
+        "GroupedNodeFrame",
+        "GroupedEdgeFrame",
+    ),
+    "py3plex.exceptions": (
+        "AlgorithmError",
+        "CentralityComputationError",
+        "CommunityDetectionError",
+        "ConversionError",
+        "DecompositionError",
+        "EmbeddingError",
+        "ExternalToolError",
+        "IncompatibleNetworkError",
+        "InvalidEdgeError",
+        "InvalidLayerError",
+        "InvalidNodeError",
+        "NetworkConstructionError",
+        "ParsingError",
+        "Py3plexException",
+        "Py3plexFormatError",
+        "Py3plexIOError",
+        "Py3plexLayoutError",
+        "Py3plexMatrixError",
+        "VisualizationError",
+    ),
+    "py3plex.errors": (
+        "ErrorMessage",
+        "Note",
+        "Severity",
+        "SourceContext",
+        "Span",
+        "Suggestion",
+        "find_similar",
+        "format_exception",
+    ),
+    "py3plex.profiling": (
+        "benchmark",
+        "get_monitor",
+        "profile_performance",
+        "timed_section",
+    ),
+    "py3plex.plugins": (
+        "BasePlugin",
+        "CentralityPlugin",
+        "CommunityPlugin",
+        "LayoutPlugin",
+        "MetricPlugin",
+        "PluginRegistry",
+        "discover_plugins",
+    ),
+    "py3plex.pipeline": (
+        "Pipeline",
+        "PipelineStep",
+        "LoadStep",
+        "AggregateLayers",
+        "LeidenMultilayer",
+        "LouvainCommunity",
+        "ComputeStats",
+        "FilterNodes",
+        "SaveNetwork",
+        "NodeEmbedding",
+    ),
+    "py3plex.workflows": (
+        "WorkflowConfig",
+        "WorkflowRunner",
+        "run_workflow",
+    ),
+    "py3plex.datasets": (
+        "get_data_dir",
+        "list_datasets",
+        "load_aarhus_cs",
+        "load_synthetic_multilayer",
+        "make_clique_multiplex",
+        "make_random_multilayer",
+        "make_random_multiplex",
+        "make_social_network",
+    ),
+    "py3plex.dynamics": (
+        "D",
+        "SimulationBuilder",
+        "ProcessSpec",
+        "SIS",
+        "SIR",
+        "RandomWalk",
+        "SimulationResult",
+        "run_simulation",
+        "DynamicsError",
+        "UnknownProcessError",
+        "MissingInitialConditionError",
+    ),
+    "py3plex.runtime.capabilities": (
+        "capabilities",
+        "capabilities_flat",
+        "capabilities_fingerprint",
+    ),
+    "py3plex.uncertainty": (
+        "StatSeries",
+        "StatMatrix",
+        "CommunityStats",
+        "ResamplingStrategy",
+        "UncertaintyMode",
+        "UncertaintyConfig",
+        "get_uncertainty_config",
+        "set_uncertainty_config",
+        "uncertainty_enabled",
+        "estimate_uncertainty",
+    ),
+    "py3plex.agent": (
+        "load_network_from_path",
+        "top_hubs_by_layer",
+        "uncertainty_centrality",
+        "community_detection_with_uq",
+        "temporal_slice",
+        "reproducible_export_bundle",
+        "compare_networks",
+        "summarize_result",
+    ),
+}
+_EXPORTS = {name: module for module, names in _EXPORT_MODULES.items() for name in names}
+# Public submodules previously exposed as a side effect of eager imports.
+_SUBMODULES = frozenset(
+    "agent algorithms config core datasets diagnostics dsl dsl_legacy dynamics "
+    "embeddings errors exceptions graph_ops logging_config meta ml pipeline plugins "
+    "profiling requirements robustness runtime selection uncertainty utils "
+    "visualization workflows".split()
 )
 
-# Pipeline system for composable workflows
-from py3plex.pipeline import (
-    Pipeline,
-    PipelineStep,
-    LoadStep,
-    AggregateLayers,
-    LeidenMultilayer,
-    LouvainCommunity,
-    ComputeStats,
-    FilterNodes,
-    SaveNetwork,
-    NodeEmbedding,
-)
 
-# Config-driven workflows
-from py3plex.workflows import WorkflowConfig, WorkflowRunner, run_workflow
+def __getattr__(name):
+    if name in _EXPORTS:
+        value = getattr(_import_module(_EXPORTS[name]), name)
+    elif name in _SUBMODULES:
+        value = _import_module(f"{__name__}.{name}")
+    else:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    globals()[name] = value
+    return value
 
-# Built-in datasets (similar to scikit-learn)
-from py3plex.datasets import (
-    get_data_dir,
-    list_datasets,
-    load_aarhus_cs,
-    load_synthetic_multilayer,
-    make_clique_multiplex,
-    make_random_multilayer,
-    make_random_multiplex,
-    make_social_network,
-)
-# Dynamics module for simulating dynamical processes
-from py3plex.dynamics import (
-    D,
-    SimulationBuilder,
-    ProcessSpec,
-    SIS,
-    SIR,
-    RandomWalk,
-    SimulationResult,
-    run_simulation,
-    DynamicsError,
-    UnknownProcessError,
-    MissingInitialConditionError,
-)
 
-# Uncertainty module for first-class uncertainty estimation
-from py3plex.runtime.capabilities import (
-    capabilities,
-    capabilities_flat,
-    capabilities_fingerprint,
-)
-
-from py3plex.uncertainty import (
-    StatSeries,
-    StatMatrix,
-    CommunityStats,
-    ResamplingStrategy,
-    UncertaintyMode,
-    UncertaintyConfig,
-    get_uncertainty_config,
-    set_uncertainty_config,
-    uncertainty_enabled,
-    estimate_uncertainty,
-)
-from py3plex.agent import (
-    load_network_from_path,
-    top_hubs_by_layer,
-    uncertainty_centrality,
-    community_detection_with_uq,
-    temporal_slice,
-    reproducible_export_bundle,
-    compare_networks,
-    summarize_result,
-)
+def __dir__():
+    return sorted(set(globals()) | _EXPORTS.keys() | _SUBMODULES)
 
 
 def save_to_arrow(network, path, **kwargs):
