@@ -242,12 +242,14 @@ def _netmf_embed(
 
     # Divide by the context nodes' stationary degrees before taking the log.
     scale = vol / max(negative, 1e-12)
-    M_dense = (PT_sum @ d_inv).toarray() * scale
-
-    # Log + PPMI
-    with np.errstate(divide="ignore", invalid="ignore"):
-        log_M = np.log(np.maximum(M_dense, 1e-30))
-    log_M = np.maximum(log_M, 0.0)  # PPMI clamp
+    log_M = (PT_sum @ d_inv).tocsr()
+    log_M.sum_duplicates()
+    # Implicit zeros stay zero under positive PMI. Transform stored values
+    # in place so sparse short walks never need an n-by-n dense buffer.
+    log_M.data *= scale
+    np.maximum(log_M.data, 1.0, out=log_M.data)
+    np.log(log_M.data, out=log_M.data)
+    log_M.eliminate_zeros()
 
     # Symmetric so use real symmetric decomposition
     if approx == "randomized_svd":

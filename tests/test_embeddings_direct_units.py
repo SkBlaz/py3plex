@@ -241,3 +241,25 @@ def test_netmf_on_unequal_degrees_matches_reference_singular_values():
             adjacency, dim=1, window=1, negative=1, approx=solver, seed=42
         )
         assert np.sum(embedding ** 2) == pytest.approx(np.sqrt(2) * np.log(2))
+
+
+def test_netmf_sparse_context_matches_dense_walk_formula(monkeypatch):
+    import sklearn.utils.extmath as extmath
+    from scipy import sparse
+
+    matrix = np.array([[0., 2., 1., 0.], [2., 0., 0., 0.], [1., 0., 0., 0.], [0., 0., 0., 0.]])
+    degree = matrix.sum(axis=1)
+    inverse = 1 / np.where(degree == 0, 1, degree)
+    transition = inverse[:, None] * matrix
+    context = (transition + transition @ transition) / 2 * inverse
+    expected = np.log(np.maximum(context * matrix.sum() / 1.5, 1))
+    solver = extmath.randomized_svd
+
+    def compare(actual, **kwargs):
+        assert sparse.issparse(actual)
+        np.testing.assert_allclose(actual.toarray(), expected)
+        return solver(actual, **kwargs)
+
+    monkeypatch.setattr(extmath, "randomized_svd", compare)
+    _netmf_embed(sparse.csr_matrix(matrix), dim=2, window=2, negative=1.5,
+                 approx="randomized_svd", seed=3)
