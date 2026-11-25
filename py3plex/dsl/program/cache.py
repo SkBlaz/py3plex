@@ -202,15 +202,38 @@ class ProgramCache:
     
     def __init__(self, max_entries: Optional[int] = 128):
         """Retain the most recently used entries; None opts into unlimited storage."""
-        if max_entries is not None and (not isinstance(max_entries, int) or max_entries < 0):
-            raise ValueError("max_entries must be a nonnegative integer or None")
-        self._max_entries = max_entries
         self._lock = RLock()
         self._cache = OrderedDict()
-        self._evictions = 0
-        self._hits = 0
-        self._misses = 0
-    
+        self._evictions = self._hits = self._misses = 0
+        self.max_entries = max_entries
+
+    @property
+    def max_entries(self) -> Optional[int]:
+        """Capacity of this cache, including the one returned by get_global_cache()."""
+        return self._max_entries
+
+    @max_entries.setter
+    def max_entries(self, limit: Optional[int]) -> None:
+        if limit is not None and (not isinstance(limit, int) or limit < 0):
+            raise ValueError("max_entries must be a nonnegative integer or None")
+        with self._lock:
+            self._max_entries = limit
+            while limit is not None and len(self._cache) > limit:
+                self._cache.popitem(last=False)
+                self._evictions += 1
+
+    def __getstate__(self):
+        with self._lock:
+            return {key: (value.copy() if key == "_cache" else value)
+                    for key, value in vars(self).items() if key != "_lock"}
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._lock = RLock()
+        self._cache = OrderedDict(self._cache)
+        self._evictions = state.get("_evictions", 0)
+        self.max_entries = state.get("_max_entries", None)
+
     def get(self, key: CacheKey) -> Optional[Any]:
         """Get cached result.
         
@@ -228,7 +251,6 @@ class ProgramCache:
                 return self._cache[key_str][1]
             self._misses += 1
             return None
-
 
     def put(self, key: CacheKey, result: Any) -> None:
         """Store result in cache.
