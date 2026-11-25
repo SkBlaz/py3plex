@@ -81,3 +81,25 @@ def test_plain_degree_recomputes_on_auto_and_honors_explicit_cache(monkeypatch):
     assert cache.statistics()["hits"] == 1
     net.core_network.add_edge(("a", "L"), ("b", "L"))
     assert run("enabled").attributes["degree"][("a", "L")] == 2
+
+
+def test_lru_cache_evicts_after_hit_and_releases_results():
+    import weakref
+    from py3plex.dsl.program.cache import CacheKey, ProgramCache
+
+    class Result:
+        pass
+
+    cache = ProgramCache(max_entries=2)
+    keys = [CacheKey(str(i), "program", "context", "env") for i in range(3)]
+    result = Result()
+    ref = weakref.ref(result)
+    cache.put(keys[0], 0)
+    cache.put(keys[1], result)
+    del result
+    assert cache.get(keys[0]) == 0
+    cache.put(keys[2], 2)
+    assert cache.get(keys[1]) is None and ref() is None
+    assert cache.statistics()["evictions"] == 1
+    cache.clear()
+    assert cache.size() == cache.statistics()["evictions"] == 0
