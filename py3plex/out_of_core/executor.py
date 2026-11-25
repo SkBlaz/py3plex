@@ -10,6 +10,7 @@ Supports the following MVP query patterns without loading the full graph:
 
 from __future__ import annotations
 
+from contextlib import closing
 import sqlite3
 import tempfile
 import os
@@ -324,77 +325,38 @@ class OutOfCoreBackend:
         k = coverage_spec.get("k", 1)
         directed = plan.get("directed", self.network.directed)
 
-        # Step 1: emit (base_edge_key, source_layer, target_layer) per row
-        def _key_rows(reader, preds):
-            for row in reader.scan(predicates=preds):
-                s = str(row.get("source", ""))
-                t = str(row.get("target", ""))
-                sl = str(row.get("source_layer", ""))
-                tl = str(row.get("target_layer", ""))
-                if directed:
-                    base = (s, t)
-                else:
-                    base = canonical_undirected_edge_key(s, t)
-                yield {
-                    "_base_src": base[0],
-                    "_base_dst": base[1],
-                    "_sl": sl,
-                    "_tl": tl,
-                    "_orig_row": row,
-                }
+        def base_key(row):
+            source = str(row.get("source", ""))
+            target = str(row.get("target", ""))
+            return (source, target) if directed else canonical_undirected_edge_key(source, target)
 
-        # Step 2: count distinct layer pairs per base edge using sqlite3
-        conn = sqlite3.connect(":memory:")
-        cur = conn.cursor()
-        cur.execute(
-            "CREATE TABLE _edge_lp ("
-            "  base_src TEXT, base_dst TEXT, sl TEXT, tl TEXT, "
-            "  PRIMARY KEY(base_src, base_dst, sl, tl))"
-        )
-        # Also count rows for later result reconstruction
-        cur.execute(
-            "CREATE TABLE _edge_rows ("
-            "  base_src TEXT, base_dst TEXT, sl TEXT, tl TEXT, row_json TEXT)"
-        )
-        import json
-        for krow in _key_rows(reader, preds):
-            bs, bd = krow["_base_src"], krow["_base_dst"]
-            sl, tl = krow["_sl"], krow["_tl"]
-            try:
-                cur.execute("INSERT OR IGNORE INTO _edge_lp VALUES (?,?,?,?)", (bs, bd, sl, tl))
-            except sqlite3.IntegrityError:
-                pass
-            cur.execute(
-                "INSERT INTO _edge_rows VALUES (?,?,?,?,?)",
-                (bs, bd, sl, tl, json.dumps(krow["_orig_row"], ensure_ascii=False)),
-            )
-
-        # Step 3: find base edges with >= k distinct layer pairs
-        cur.execute(
-            "SELECT base_src, base_dst FROM _edge_lp "
-            "GROUP BY base_src, base_dst HAVING COUNT(*) >= ?",
-            (k,),
-        )
-        qualifying = set((r[0], r[1]) for r in cur.fetchall())
-        conn.close()
-
-        # Step 4: re-scan original reader (or use stored rows) and filter
-        reader2 = make_edge_reader(self.network.edges_path, self.network.edges_format)
-        result_rows = []
-        for row in reader2.scan(predicates=preds):
-            s = str(row.get("source", ""))
-            t = str(row.get("target", ""))
-            if not directed:
-                base = canonical_undirected_edge_key(s, t)
-            else:
-                base = (s, t)
-            if base in qualifying:
-                result_rows.append(row)
-
+        with tempfile.TemporaryDirectory(dir=self.network.workdir) as scratch:
+            with closing(sqlite3.connect(os.path.join(scratch, "coverage.sqlite"))) as conn:
+                conn.execute("PRAGMA cache_size=-1024")
+                conn.execute("PRAGMA temp_store=FILE")
+                conn.execute(
+                    "CREATE TABLE pairs (u TEXT,v TEXT,sl TEXT,tl TEXT,"
+                    "PRIMARY KEY(u,v,sl,tl)) WITHOUT ROWID"
+                )
+                conn.executemany(
+                    "INSERT OR IGNORE INTO pairs VALUES (?,?,?,?)",
+                    ((*base_key(row), str(row.get("source_layer", "")),
+                      str(row.get("target_layer", ""))) for row in reader.scan(predicates=preds)),
+                )
+                conn.execute("CREATE TABLE qualifying (u TEXT,v TEXT,PRIMARY KEY(u,v)) WITHOUT ROWID")
+                conn.execute(
+                    "INSERT INTO qualifying SELECT u,v FROM pairs GROUP BY u,v HAVING COUNT(*)>=?",
+                    (k,),
+                )
+                qualifying_rows = []
+                if conn.execute("SELECT 1 FROM qualifying LIMIT 1").fetchone():
+                    for row in reader.scan(predicates=preds):
+                        if conn.execute("SELECT 1 FROM qualifying WHERE u=? AND v=?", base_key(row)).fetchone():
+                            qualifying_rows.append(row)
+                            if len(qualifying_rows) == plan.get("limit_n"):
+                                break
         limit_n = plan.get("limit_n")
-        if limit_n:
-            result_rows = result_rows[:limit_n]
-
+        result_rows = qualifying_rows[:limit_n] if limit_n and limit_n < 0 else qualifying_rows
         return self._rows_to_edge_result(result_rows, plan)
 
     def _execute_edges_groupby(
