@@ -63,13 +63,40 @@ def graph_fingerprint(network: Any) -> str:
         raise TypeError("Unsupported graph for cache fingerprint")
 
     edges = graph.edges(keys=True, data=True) if graph.is_multigraph() else graph.edges(data=True)
-    partitions = []
-    if hasattr(network, "list_partitions"):
-        for name in network.list_partitions():
-            partition = network.get_partition_by_name(name)
-            if partition is not None:
-                partitions.append((name, list(partition.items())))
-    data = (
+    digest = hashlib.sha256()
+
+    def emit(value):
+        try:
+            digest.update(json.dumps(_cache_value(value), allow_nan=False).encode())
+        except RecursionError as exc:
+            raise ValueError("Nested value cannot be safely hashed") from exc
+
+    def emit_list(records, emit_record):
+        digest.update(b'["list", [')
+        for index, record in enumerate(records):
+            if index:
+                digest.update(b", ")
+            emit_record(record)
+        digest.update(b"]]")
+
+    def partitions():
+        if hasattr(network, "list_partitions"):
+            for name in network.list_partitions():
+                partition = network.get_partition_by_name(name)
+                if partition is not None:
+                    yield name, partition
+
+    def emit_partition(record):
+        name, partition = record
+        digest.update(b'["tuple", [')
+        emit(name)
+        digest.update(b", ")
+        emit_list(partition.items(), emit)
+        digest.update(b"]]")
+
+    # Match _fingerprint_value's tagged tuple/list encoding byte for byte.
+    digest.update(b'["tuple", [')
+    for value in (
         type(graph).__name__,
         getattr(network, "directed", graph.is_directed()),
         getattr(network, "network_type", None),
@@ -78,11 +105,16 @@ def graph_fingerprint(network: Any) -> str:
         getattr(network, "layers", None),
         getattr(network, "temporal_edges", None),
         graph.graph,
-        list(graph.nodes(data=True)),
-        list(edges),
-        partitions,
-    )
-    return _fingerprint_value(data)
+    ):
+        emit(value)
+        digest.update(b", ")
+    emit_list(graph.nodes(data=True), emit)
+    digest.update(b", ")
+    emit_list(edges, emit)
+    digest.update(b", ")
+    emit_list(partitions(), emit_partition)
+    digest.update(b"]]")
+    return digest.hexdigest()
 
 
 def _fingerprint_value(value: Any) -> str:
