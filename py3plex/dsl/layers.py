@@ -361,9 +361,7 @@ class LayerSet:
         # Regular layer name
         if name not in available:
             if strict:
-                raise UnknownLayerError(
-                    f"Layer '{name}' not found. Available: {sorted(available)}"
-                )
+                raise UnknownLayerError(name, sorted(available))
             # In non-strict mode, just skip unknown layers
             return set()
         

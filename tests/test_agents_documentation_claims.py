@@ -20,9 +20,9 @@ def test_quickstart_validation_status_is_explicit():
     text = _read_agents_md()
 
     assert "**Validation status**:" in text
-    assert "Path 1 and Path 2 are exercised in `tests/test_agents_golden_paths.py`" in text
+    assert "Paths 1–3 are exercised in `tests/test_agents_golden_paths.py`" in text
     assert (
-        "Path 3, Path 4, and Path 5 are advanced workflows and may require optional modules or setup in the current environment"
+        "Paths 4 and 5 are advanced workflows and may require optional modules or setup in the current environment"
         in text
     )
 

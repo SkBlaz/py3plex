@@ -17,6 +17,8 @@ from .ast import (
     Comparison,
     FunctionCall,
     SpecialPredicate,
+    TemporalContext,
+    WindowSpec,
     ComputeItem,
     OrderItem,
     ParamRef,
@@ -120,6 +122,12 @@ def _serialize_conditions(conditions: ConditionExpr) -> str:
     if not conditions.atoms:
         return ""
     
+    if conditions.postfix is not None:
+        return conditions.fold_postfix(
+            _serialize_atom,
+            lambda op, left, right: f"({left} {op} {right})",
+            lambda value: f"NOT ({value})",
+        )
     parts = [_serialize_atom(conditions.atoms[0])]
     
     for i, op in enumerate(conditions.ops):
@@ -202,6 +210,8 @@ def serialize_query(query: Query) -> Dict[str, Any]:
             result = {}
             for field_name in obj.__dataclass_fields__:
                 value = getattr(obj, field_name)
+                if isinstance(obj, ConditionExpr) and field_name == "postfix" and value is None:
+                    continue
                 result[field_name] = _to_dict(value)
             result['__class__'] = obj.__class__.__name__
             return result
@@ -252,6 +262,8 @@ def deserialize_query(data: Dict[str, Any]) -> Query:
                     'Comparison': Comparison,
                     'FunctionCall': FunctionCall,
                     'SpecialPredicate': SpecialPredicate,
+                    'TemporalContext': TemporalContext,
+                    'WindowSpec': WindowSpec,
                     'ComputeItem': ComputeItem,
                     'OrderItem': OrderItem,
                     'ParamRef': ParamRef,

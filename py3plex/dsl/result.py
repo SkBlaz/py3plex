@@ -763,7 +763,12 @@ class QueryResult:
 
                     rows.append(row)
 
-            df = pd.DataFrame(rows)
+            if rows:
+                df = pd.DataFrame(rows)
+            else:
+                columns = ["source", "source_layer", "target", "target_layer", "weight"]
+                columns.extend(name for name in self.attributes if name not in columns)
+                df = pd.DataFrame(columns=columns)
 
             # Apply grouping metadata if present
             if include_grouping and "grouping" in self.meta:

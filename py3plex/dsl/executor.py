@@ -48,6 +48,8 @@ from .errors import (
     ParameterMissingError,
     UnknownMeasureError,
     UnknownAttributeError,
+    UnknownLayerError,
+    DslMissingMetricError,
     GroupingError,
 )
 from .warnings import (
@@ -895,14 +897,18 @@ def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalCon
     Returns:
         TemporalMultinetView if temporal context exists, otherwise original network
     """
-    if temporal_context is None:
-        return network
-
-    # Import here to avoid circular dependencies
+    from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
     from py3plex.temporal_view import TemporalMultinetView
 
-    # Create temporal view
-    view = TemporalMultinetView(network)
+    if isinstance(network, TemporalMultiLayerNetwork):
+        if temporal_context is None:
+            return network.get_base_network()
+        base = network.get_base_network()
+        view = TemporalMultinetView(base, time_attr=network.time_attribute)
+    elif temporal_context is None:
+        return network
+    else:
+        view = TemporalMultinetView(network)
 
     # Apply temporal slice based on context kind
     if temporal_context.kind == "at":
@@ -913,8 +919,13 @@ def _apply_temporal_context(network: Any, temporal_context: Optional[TemporalCon
             raise DslExecutionError("AT clause requires a timestamp")
 
     elif temporal_context.kind == "during":
-        # Time range
-        return view.with_slice(temporal_context.t0, temporal_context.t1)
+        from py3plex.temporal_utils import _parse_time
+
+        start = _parse_time(temporal_context.t0) if temporal_context.t0 is not None else None
+        end = _parse_time(temporal_context.t1) if temporal_context.t1 is not None else None
+        if start is not None and end is not None and start > end:
+            raise DslExecutionError("during() requires a start time at or before the end time.")
+        return view.with_slice(start, end)
 
     else:
         raise DslExecutionError(
@@ -1312,6 +1323,21 @@ def _ensure_attribute(
                 if base_metric in item[2]:
                     # This is a valid edge attribute, don't auto-compute
                     return
+
+    if base_metric in _intrinsic_filter_fields(select.target) and not (
+        select.target == Target.NODES and base_metric in CENTRALITY_ALIASES
+    ):
+        attributes[base_metric] = {
+            _get_item_key(item): _get_attribute_value(item, base_metric, network, G)
+            for item in items
+        }
+        return
+
+    if select.target == Target.NODES and base_metric not in CENTRALITY_ALIASES:
+        node_values = nx.get_node_attributes(G, base_metric)
+        if node_values:
+            attributes[base_metric] = {item: node_values[item] for item in items if item in node_values}
+            return
 
     # Check if this is a known centrality that can be auto-computed
     if auto_compute and base_metric in CENTRALITY_ALIASES:
@@ -2572,21 +2598,12 @@ def _execute_select(
 
     # Step 2: Apply layer filter
     stage_start = time.monotonic()
-    if not goto_step3 and select.layer_set is not None:
-        # New style: LayerSet with algebra
+    if not goto_step3 and (select.layer_set is not None or select.layer_expr is not None):
         if progress:
             logger.info("Step 3.2: Applying layer filter")
-        active_layers = select.layer_set.resolve(network, strict=False, warn_empty=True)
-        items = _filter_by_layers(items, active_layers, select.target)
-        if progress:
-            logger.info(
-                f"Filtered to {len(items)} {select.target.value} in {len(active_layers)} layers"
-            )
-    elif not goto_step3 and select.layer_expr:
-        # Old style: LayerExprBuilder compatibility
-        if progress:
-            logger.info("Step 3.2: Applying layer filter")
-        active_layers = _evaluate_layer_expr(select.layer_expr, network)
+        active_layers = _resolve_active_layers(
+            select, network, strict=bool(select.coverage_mode), warn_empty=True
+        )
         items = _filter_by_layers(items, active_layers, select.target)
         if progress:
             logger.info(
@@ -2594,14 +2611,29 @@ def _execute_select(
             )
     _record_timing("filter_layers", (time.monotonic() - stage_start) * 1000)
 
-    # Step 3: Apply WHERE conditions
+    # Step 3: Apply conditions on source attributes before computing metrics.
+    # A condition involving computed fields must be evaluated as a whole.
     stage_start = time.monotonic()
+    deferred_where = None
+    deferred_metrics = set()
     if not goto_step3 and select.where:
-        if progress:
-            logger.info("Step 3.3: Applying WHERE conditions")
-        items = _filter_by_conditions(items, select.where, network, G, params)
-        if progress:
-            logger.info(f"Filtered to {len(items)} {select.target.value}")
+        names = {atom.comparison.left for atom in select.where.atoms if atom.comparison}
+        computed_names = {metric.result_name for metric in select.compute}
+        intrinsic = _intrinsic_filter_fields(select.target)
+        implicit = CENTRALITY_ALIASES.keys() if select.target == Target.NODES else set()
+        _validate_query_fields(names, intrinsic | computed_names | implicit, G, select.target)
+        deferred_metrics = names & implicit - intrinsic - computed_names
+        for name in deferred_metrics:
+            if not select.autocompute:
+                raise DslMissingMetricError(name, required_by="where", autocompute_enabled=False)
+        if names & computed_names or deferred_metrics:
+            deferred_where = select.where
+        else:
+            if progress:
+                logger.info("Step 3.3: Applying WHERE conditions")
+            items = _filter_by_conditions(items, select.where, network, G, params)
+            if progress:
+                logger.info(f"Filtered to {len(items)} {select.target.value}")
     _record_timing("filter_where", (time.monotonic() - stage_start) * 1000)
 
     # Step 3.5: Apply post-filters (e.g., has_community with lambdas)
@@ -2622,55 +2654,25 @@ def _execute_select(
         and select.order_by
         and not select.group_by  # Only works for non-grouped queries
         and select.compute
+        and deferred_where is None
     ):  # Only beneficial when we have compute operations
 
-        # Check if all ORDER BY keys are available without computing
-        # (i.e., they're not in the COMPUTE list)
-        compute_names = {c.result_name for c in select.compute}
-        order_keys_to_check = []
-        for o in select.order_by:
-            # Extract base key, handling "-degree" prefix and "__mean" suffix
-            key = o.key.lstrip("-").split("__")[0]
-            order_keys_to_check.append(key)
-
-        # If ordering attributes are not being computed, check if they're available
-        can_apply_early_limit = True
-        if not set(order_keys_to_check).intersection(compute_names):
-            # Check if attributes exist (e.g., "degree" from graph structure)
-            for key in order_keys_to_check:
-                # Check if this is a graph attribute that exists
-                attr_available = False
-
-                if select.target == Target.NODES and len(items) > 0:
-                    # Check if it's a node attribute
-                    first_item = items[0]
-                    if first_item in G:
-                        # Check node data
-                        if key in G.nodes[first_item]:
-                            attr_available = True
-                        # Check if it's a special attribute like "layer" or "degree"
-                        elif key == "layer" or key == "degree":
-                            attr_available = True
-                elif select.target == Target.EDGES and len(items) > 0:
-                    # Check if it's an edge attribute
-                    if (
-                        isinstance(items[0], tuple)
-                        and len(items[0]) >= 3
-                        and isinstance(items[0][2], dict)
-                    ):
-                        if key in items[0][2]:
-                            attr_available = True
-                    # Check special edge attributes
-                    elif key in ["source_layer", "target_layer", "layer", "weight"]:
-                        attr_available = True
-
-                if not attr_available:
-                    can_apply_early_limit = False
-                    break
-
-            # If all ordering attributes are available, apply early limit
-            if can_apply_early_limit:
-                items = _apply_ordering(items, select.order_by, {})
+        compute_names = {metric.result_name for metric in select.compute}
+        order_keys = {order.key for order in select.order_by}
+        if items and not order_keys & compute_names:
+            if select.target == Target.NODES and all(
+                _get_attribute_value(items[0], key, network, G) is not None for key in order_keys
+            ):
+                ordering_attributes = {
+                    key: {item: _get_attribute_value(item, key, network, G) for item in items}
+                    for key in order_keys
+                }
+            elif select.target == Target.EDGES and order_keys <= items[0][2].keys():
+                ordering_attributes = {}
+            else:
+                ordering_attributes = None
+            if ordering_attributes is not None:
+                items = _apply_ordering(items, select.order_by, ordering_attributes)
                 items = items[: select.limit]
                 early_limit_applied = True
 
@@ -2846,6 +2848,15 @@ def _execute_select(
                         f"Error computing edge measure '{compute_item.name}': {e}"
                     )
                     attributes[compute_item.result_name] = {}
+
+    if deferred_where is not None:
+        if progress:
+            logger.info("Step 3.4.1: Applying WHERE conditions on computed fields")
+        for name in sorted(deferred_metrics):
+            _ensure_attribute(name, attributes, items, network, G, select)
+        items = _filter_by_conditions(items, deferred_where, network, G, params, attributes)
+        if progress:
+            logger.info(f"Filtered to {len(items)} {select.target.value}")
 
     # Step 4.5: Apply grouping, per-group operations, and coverage filtering
     grouping_metadata = None
@@ -3311,13 +3322,11 @@ def _execute_auto_community(
         
         # Now apply WHERE filters (including community filters)
         if select.where:
-            filtered_items = []
-            for i in base_result.items:
-                if _check_where_condition(base_result, i, select.where, params):
-                    filtered_items.append(i)
-            
-            base_result.items = filtered_items
-        
+            base_result.items = _filter_by_conditions(
+                base_result.items, select.where, network, network.core_network,
+                params, base_result.attributes,
+            )
+
         # Update metadata
         base_result.meta["auto_community"] = meta
         
@@ -3356,58 +3365,14 @@ def _extract_auto_community_filters(where: ConditionExpr, filters: Dict[str, Any
             filters[filter_key] = value
 
 
-def _check_where_condition(
-    result: QueryResult,
-    item_idx: int,
-    where: ConditionExpr,
-    params: Dict[str, Any]
-) -> bool:
-    """Check if an item satisfies WHERE conditions.
-    
-    Args:
-        result: QueryResult with attributes
-        item_idx: Index of item to check
-        where: WHERE condition expression
-        params: Parameter bindings
-    
-    Returns:
-        True if item satisfies conditions, False otherwise
-    """
-    for atom in where.atoms:
-        if atom.comparison:
-            comp = atom.comparison
-            attr = comp.left
-            op = comp.op
-            value = comp.right
-            
-            # Get actual value
-            if attr in result.attributes:
-                actual = result.attributes[attr].get(item_idx)
-            else:
-                # Attribute not present, skip this condition
-                continue
-            
-            # Check condition
-            if op == ">":
-                if not (actual > value):
-                    return False
-            elif op == ">=":
-                if not (actual >= value):
-                    return False
-            elif op == "<":
-                if not (actual < value):
-                    return False
-            elif op == "<=":
-                if not (actual <= value):
-                    return False
-            elif op == "=":
-                if not (actual == value):
-                    return False
-            elif op == "!=":
-                if not (actual != value):
-                    return False
-    
-    return True
+def _matches_record_conditions(where, get_value, params):
+    def evaluate(atom):
+        comparison = atom.comparison
+        if comparison is None:
+            raise DslExecutionError("Community filters require a field comparison.")
+        return _evaluate_comparison(get_value(comparison.left), comparison, params or {})
+
+    return where.matches(evaluate)
 
 
 def _execute_community_select(
@@ -3465,14 +3430,21 @@ def _execute_community_select(
         if progress:
             logger.info("Step 2: Applying WHERE conditions")
 
-        # Build filters dict from conditions
-        filters = {}
-        _extract_community_filters(select.where, filters)
+        if select.where.postfix is not None or "OR" in select.where.ops:
+            records = [
+                record for record in records
+                if _matches_record_conditions(
+                    select.where,
+                    lambda name: getattr(record, "layer_scope" if name == "layer" else name, None),
+                    params,
+                )
+            ]
+        else:
+            from .communities import filter_communities
 
-        # Apply filters
-        from .communities import filter_communities
-
-        records = filter_communities(records, **filters)
+            filters = {}
+            _extract_community_filters(select.where, filters)
+            records = filter_communities(records, **filters)
 
         if progress:
             logger.info(f"Filtered to {len(records)} communities")
@@ -4216,7 +4188,9 @@ def _expand_layer_term(name: str, network: Any) -> Set[str]:
 _DEGREE_METRICS = {"degree"}
 
 
-def _resolve_active_layers(select: SelectStmt, network: Any) -> Optional[Set[str]]:
+def _resolve_active_layers(
+    select: SelectStmt, network: Any, *, strict: bool = False, warn_empty: bool = False
+) -> Optional[Set[str]]:
     """Resolve select.layer_set / select.layer_expr to a concrete layer set.
 
     Returns None to mean "all layers" (no restriction). Factors out the
@@ -4226,8 +4200,15 @@ def _resolve_active_layers(select: SelectStmt, network: Any) -> Optional[Set[str
     if select is None:
         return None
     if getattr(select, "layer_set", None) is not None:
-        return set(select.layer_set.resolve(network, strict=False, warn_empty=False))
+        return set(select.layer_set.resolve(network, strict=strict, warn_empty=warn_empty))
     if getattr(select, "layer_expr", None):
+        if strict:
+            available = _expand_layer_term("*", network)
+            for index, term in enumerate(select.layer_expr.terms):
+                if index and select.layer_expr.ops[index - 1] == "-":
+                    continue
+                if term.name != "*" and term.name not in available:
+                    raise UnknownLayerError(term.name, sorted(available))
         return _evaluate_layer_expr(select.layer_expr, network)
     return None
 
@@ -4393,22 +4374,39 @@ def _filter_by_layers(
         return filtered
 
 
+def _intrinsic_filter_fields(target: Target) -> Set[str]:
+    if target == Target.NODES:
+        return {"id", "node", "node_id", "layer", "degree"}
+    return {
+        "source", "target", "source_layer", "target_layer", "src_layer", "dst_layer",
+        "layer", "weight", "src_degree", "dst_degree", "source_degree", "target_degree",
+    }
+
+
+def _validate_query_fields(names: Set[str], known: Set[str], G: nx.Graph, target: Target) -> None:
+    if names <= known or G.number_of_nodes() == 0:
+        return
+    data = G.nodes(data=True) if target == Target.NODES else G.edges(data=True)
+    for record in data:
+        known.update(record[-1])
+        if names <= known:
+            return
+    raise UnknownAttributeError(sorted(names - known)[0], sorted(known))
+
+
 def _filter_by_conditions(
     items: List[Any],
     conditions: ConditionExpr,
     network: Any,
     G: nx.Graph,
     params: Optional[Dict[str, Any]] = None,
+    attributes: Optional[Dict[str, Dict]] = None,
 ) -> List[Any]:
     """Filter items by WHERE conditions."""
-    params = params or {}
-    result = []
-
-    for item in items:
-        if _evaluate_conditions(item, conditions, network, G, params):
-            result.append(item)
-
-    return result
+    return [
+        item for item in items
+        if _evaluate_conditions(item, conditions, network, G, params, attributes)
+    ]
 
 
 def _evaluate_conditions(
@@ -4417,65 +4415,34 @@ def _evaluate_conditions(
     network: Any,
     G: nx.Graph,
     params: Optional[Dict[str, Any]] = None,
+    attributes: Optional[Dict[str, Dict]] = None,
 ) -> bool:
     """Evaluate all conditions for an item."""
     params = params or {}
 
-    if not conditions.atoms:
+    def evaluate(atom):
+        if atom.comparison:
+            comparison = atom.comparison
+            if attributes is not None and comparison.left in attributes:
+                actual = attributes[comparison.left].get(_get_item_key(item))
+                if isinstance(actual, dict) and "mean" in actual:
+                    actual = actual["mean"]
+            else:
+                actual = _get_attribute_value(item, comparison.left, network, G)
+            return _evaluate_comparison(actual, comparison, params)
+        if atom.special:
+            return _evaluate_special(item, atom.special, network, G)
         return True
 
-    # Standard boolean precedence: AND binds tighter than OR.
-    # ConditionExpr is a flat sequence of atoms with ops in-between; interpret it as
-    # an OR of AND-chains.
-    first = _evaluate_atom(item, conditions.atoms[0], network, G, params)
-    current_and_chain = first
-    or_terms: List[bool] = []
-
-    for i, op in enumerate(conditions.ops):
-        next_result = _evaluate_atom(item, conditions.atoms[i + 1], network, G, params)
-        if op == "AND":
-            current_and_chain = current_and_chain and next_result
-        elif op == "OR":
-            or_terms.append(current_and_chain)
-            current_and_chain = next_result
-
-    or_terms.append(current_and_chain)
-    return any(or_terms)
-
-
-def _evaluate_atom(
-    item: Any,
-    atom: ConditionAtom,
-    network: Any,
-    G: nx.Graph,
-    params: Optional[Dict[str, Any]] = None,
-) -> bool:
-    """Evaluate a single condition atom."""
-    params = params or {}
-
-    if atom.comparison:
-        return _evaluate_comparison(item, atom.comparison, network, G, params)
-    elif atom.special:
-        return _evaluate_special(item, atom.special, network, G)
-    elif atom.function:
-        # Function calls would need more complex handling
-        return True
-    return True
+    return conditions.matches(evaluate)
 
 
 def _evaluate_comparison(
-    item: Any,
+    actual_value: Any,
     comparison: Comparison,
-    network: Any,
-    G: nx.Graph,
-    params: Optional[Dict[str, Any]] = None,
+    params: Dict[str, Any],
 ) -> bool:
-    """Evaluate a comparison condition."""
-    params = params or {}
-
-    # Get actual value
-    actual_value = _get_attribute_value(item, comparison.left, network, G)
-
+    """Compare a field value against a literal or bound parameter."""
     if actual_value is None:
         return False
 
@@ -4599,13 +4566,17 @@ def _get_attribute_value(item: Any, attribute: str, network: Any, G: nx.Graph) -
         if isinstance(first_elem, tuple) and isinstance(second_elem, tuple):
             if len(first_elem) >= 2 and len(second_elem) >= 2:
                 # This is an edge
-                _source_node, source_layer = first_elem[0], first_elem[1]
-                _target_node, target_layer = second_elem[0], second_elem[1]
+                source_node, source_layer = first_elem[0], first_elem[1]
+                target_node, target_layer = second_elem[0], second_elem[1]
 
                 # Handle edge-specific attributes
-                if attribute == "source_layer":
+                if attribute == "source":
+                    return source_node
+                elif attribute == "target":
+                    return target_node
+                elif attribute in ("source_layer", "src_layer"):
                     return str(source_layer)
-                elif attribute == "target_layer":
+                elif attribute in ("target_layer", "dst_layer"):
                     return str(target_layer)
                 elif attribute == "layer":
                     # For intralayer edges, return the common layer
@@ -4645,8 +4616,10 @@ def _get_attribute_value(item: Any, attribute: str, network: Any, G: nx.Graph) -
                 return None
 
         # This is a node (tuple of (node_id, layer))
-        _node_id, layer = item[0], item[1]
+        node_id, layer = item[0], item[1]
 
+        if attribute in ("id", "node", "node_id"):
+            return node_id
         if attribute == "layer":
             return str(layer)
 
@@ -4924,7 +4897,7 @@ def _apply_ordering(
             if metric_name in attributes:
                 # For edges, use hashable key
                 item_key = _get_item_key(item)
-                value = attributes[metric_name].get(item_key, 0)
+                value = attributes[metric_name].get(item_key)
 
                 # Resolve selector if present
                 if selector:
@@ -4948,7 +4921,7 @@ def _apply_ordering(
             if order_item.desc and isinstance(value, (int, float)):
                 value = -value
 
-            values.append(value)
+            values.append((value is None, value))
 
         return tuple(values)
 
@@ -5149,6 +5122,10 @@ def _apply_grouping_and_coverage(
                 auto_compute=True,
             )
 
+    _validate_query_fields(
+        set(select.group_by), _intrinsic_filter_fields(select.target), G, select.target
+    )
+
     # Build groups
     if progress:
         logger.info(f"  Grouping {len(items)} items by {select.group_by}")
@@ -5259,6 +5236,11 @@ def _apply_grouping_and_coverage(
         
         # Use bitmask-based coverage filtering
         num_groups = len(groups)
+        if select.target == Target.NODES and select.group_by == ["layer"]:
+            active_layers = _resolve_active_layers(select, network)
+            if active_layers is None:
+                active_layers = _expand_layer_term("*", network)
+            num_groups += len(active_layers.difference(groups))
         allowed_ids = _coverage_bitmask(groups, select, network, G, num_groups)
 
         # Filter groups to only include allowed identities

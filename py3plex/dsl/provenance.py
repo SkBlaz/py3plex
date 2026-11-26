@@ -98,6 +98,14 @@ def network_fingerprint(network: Any, *, counts=None) -> Dict[str, Any]:
     Returns:
         Dictionary with node_count, edge_count, layer_count, layers (list)
     """
+    from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+
+    if isinstance(network, TemporalMultiLayerNetwork):
+        return {
+            **network_fingerprint(network.get_base_network()),
+            "time_attribute": network.time_attribute,
+        }
+
     fingerprint = {
         "node_count": 0,
         "edge_count": 0,
@@ -211,6 +219,8 @@ def _ast_repr(obj: Any, depth: int = 0) -> str:
         cls_name = obj.__class__.__name__
         attrs = {}
         for k, v in obj.__dict__.items():
+            if cls_name == "ConditionExpr" and k == "postfix" and v is None:
+                continue
             if not k.startswith('_'):
                 attrs[k] = _ast_repr(v, depth + 1)
         items = sorted((k, v) for k, v in attrs.items())
@@ -348,6 +358,11 @@ def _summarize_layer_expr(layer_expr: Any) -> str:
 def _summarize_conditions(where: Any) -> str:
     """Summarize WHERE conditions."""
     try:
+        if getattr(where, "postfix", None) is not None:
+            from .serializer import _serialize_conditions
+
+            return _serialize_conditions(where)
+
         # ConditionExpr has atoms and ops
         if hasattr(where, 'atoms') and where.atoms:
             atom_strs = []

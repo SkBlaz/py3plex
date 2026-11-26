@@ -81,6 +81,18 @@ def _restore_identity(value):
 def capture_network(network: Any, include_attributes: bool = True) -> NetworkCapture:
     """Capture graph topology, replica order, and data for replay."""
     from py3plex.core.multinet import multi_layer_network
+    from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+
+    temporal = {}
+    if isinstance(network, TemporalMultiLayerNetwork):
+        temporal = {
+            "time_attribute": network.time_attribute,
+            "temporal_records": [
+                (deepcopy(edge), interval.start, interval.end)
+                for edge, interval in network.temporal_edges
+            ],
+        }
+        network = network.get_base_network()
 
     graph = network.core_network
     is_multigraph = graph is None or graph.is_multigraph()
@@ -89,6 +101,7 @@ def capture_network(network: Any, include_attributes: bool = True) -> NetworkCap
         "coupling_weight": getattr(network, "coupling_weight", 1),
         "multigraph": is_multigraph,
         "layers": list(network.layers),
+        **temporal,
     }
     nodes = []
     edges = []
@@ -168,7 +181,21 @@ def restore_network(capture: NetworkCapture) -> Any:
             attrs["weight"] = deepcopy(edge["weight"])
 
     network.core_network = graph
-    return network
+    if "temporal_records" not in metadata:
+        return network
+
+    from py3plex.core.temporal_multinet import TemporalMultiLayerNetwork
+    from py3plex.temporal_utils import EdgeTimeInterval
+
+    temporal = TemporalMultiLayerNetwork(
+        base_network=network, time_attribute=metadata["time_attribute"]
+    )
+    temporal.temporal_edges = [
+        (deepcopy(edge), EdgeTimeInterval(start, end))
+        for edge, start, end in metadata["temporal_records"]
+    ]
+    temporal.time_index = sorted(interval.start for _, interval in temporal.temporal_edges)
+    return temporal
 
 
 def estimate_capture_size(capture: NetworkCapture) -> int:

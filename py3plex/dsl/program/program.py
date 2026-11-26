@@ -882,7 +882,9 @@ def _select_to_dict(select: SelectStmt) -> Dict[str, Any]:
     
     # Conditions
     if select.where:
-        result["where"] = str(select.where)  # Simplified
+        result["where"] = str(select.where)
+        if select.where.postfix is not None:
+            result["where_postfix"] = select.where.postfix
     
     # Ordering
     if select.order_by:
@@ -968,5 +970,8 @@ def _merge_asts(ast1: Query, ast2: Query) -> Query:
 
 def _format_condition(condition) -> str:
     """Format condition for human-readable output."""
-    # Simplified - just convert to string
+    if condition.postfix is not None:
+        from ..serializer import _serialize_conditions
+
+        return _serialize_conditions(condition)
     return str(condition)
